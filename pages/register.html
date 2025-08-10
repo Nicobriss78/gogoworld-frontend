@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Registrazione — GoGo.World</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <h1>Registrati</h1>
+
+  <form id="regForm" novalidate>
+    <input name="name" type="text" placeholder="Nome" required />
+    <input name="email" type="email" placeholder="Email" required />
+    <input name="password" type="password" placeholder="Password (min 8, almeno 1 lettera e 1 numero)" required />
+    <select name="role" required>
+      <option value="participant" selected>Partecipante</option>
+      <option value="organizer">Organizzatore</option>
+    </select>
+    <label style="display:block;margin:.5rem 0;">
+      <input name="acceptTerms" type="checkbox" required />
+      Accetto termini e condizioni
+    </label>
+    <button type="submit">Crea account</button>
+  </form>
+
+  <p><a href="/">Torna alla Home</a></p>
+
+  <script src="/pages/register.js" defer></script>
+</body>
+</html>

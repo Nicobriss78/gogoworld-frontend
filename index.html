@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GoGo.World – Homepage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    button {
+      padding: 1rem 2rem;
+      margin: 1rem;
+      font-size: 1rem;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .link-registrati {
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: 2rem;
+    }
+
+    .link-registrati button {
+      background-color: #2ecc71;
+    }
+
+    .link-registrati button:hover {
+      background-color: #27ae60;
+    }
+  </style>
+  <script src="js/index.js" defer></script>
+</head>
+<body>
+  <h1>Benvenuto su GoGo.World</h1>
+  <button id="btn-partecipante">Sono un Partecipante</button>
+  <button id="btn-organizzatore">Sono un Organizzatore</button>
+
+  <!-- ✅ Nuovo pulsante "Registrati" (fix path) -->
+  <div class="link-registrati">
+    <button onclick="window.location.href='/pages/register.html'">Registrati</button>
+  </div>
+</body>
+</html>

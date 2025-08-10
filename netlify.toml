@@ -1,0 +1,14 @@
+[build]
+  command = ""         # no build, it's a static site
+  publish = "."
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://<your-render-backend>.onrender.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

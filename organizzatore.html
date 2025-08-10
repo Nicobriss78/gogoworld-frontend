@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Area Organizzatore – GoGo.World</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <h1>Area Organizzatore</h1>
+  <p>Benvenuto nell'area riservata agli organizzatori.</p>
+
+  <div style="margin:8px 0;">
+    <button id="logout-btn">Logout</button>
+    <button id="cambia-ruolo-btn">Cambia ruolo</button>
+  </div>
+
+  <h2>I tuoi eventi</h2>
+  <div id="event-list"></div>
+
+  <h2>Crea un nuovo evento</h2>
+  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+    <input id="titolo" type="text" placeholder="Titolo evento" />
+    <input id="descrizione" type="text" placeholder="Descrizione" />
+    <input id="data" type="datetime-local" placeholder="Data e ora" />
+    <input id="luogo" type="text" placeholder="Luogo" />
+    <button id="crea-btn">Aggiungi evento</button>
+  </div>
+
+  <script src="/js/organizzatore.js" defer></script>
+</body>
+</html>
