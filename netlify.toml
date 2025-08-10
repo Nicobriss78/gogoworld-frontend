@@ -4,7 +4,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://gogoworld-api.onrender.com/:splat"
+  to = "https://gogoworld-api.onrender.com/api/:splat"
   status = 200
   force = true
 
