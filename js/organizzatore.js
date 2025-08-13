@@ -1,24 +1,20 @@
+// public/js/organizzatore.js — pointing to Render API
+
+// 👉 Base URL dell’API su Render (assoluto)
+const API_BASE = 'https://gogoworld-api.onrender.com';
+
 // ---- GUARD compat: non mandare al login mentre sto cambiando ruolo ----
 (function guardOrganizzatore(){
   const switching = localStorage.getItem("switchingRole") === "1";
-  if (switching) {
-    // Sto cambiando ruolo: non fare redirect qui.
-    return;
-  }
+  if (switching) return;
 
   const userId = localStorage.getItem("userId");
   const role = localStorage.getItem("role") || localStorage.getItem("currentRole");
   const orgFlag = sessionStorage.getItem("organizzatoreLoggato") === "true";
 
   if (!userId) { location.href = "/login.html"; return; }
-
-  // Se davvero non sono organizzatore, non mandarmi al login: porta direttamente a Partecipante
-  if (role !== "organizer" && !orgFlag) {
-    location.href = "/partecipante.html";
-    return;
-  }
+  if (role !== "organizer" && !orgFlag) { location.href = "/partecipante.html"; return; }
 })();
-
 
 document.addEventListener("DOMContentLoaded", () => { initOrganizzatore().catch(console.error); });
 
@@ -27,14 +23,16 @@ async function initOrganizzatore() {
   const logoutBtn = document.getElementById("logout-btn");
   const creaBtn = document.getElementById("crea-btn");
 
-  if (logoutBtn) logoutBtn.addEventListener("click", () => { localStorage.removeItem("userId"); location.href = "/"; });
+  if (logoutBtn) logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("userId"); location.href = "/";
+  });
   if (creaBtn) creaBtn.addEventListener("click", createEvent);
 
   await refreshList(listEl);
 }
 
 async function refreshList(container) {
-  const events = await fetchJSON("/api/events");
+  const events = await fetchJSON(`${API_BASE}/api/events`);
   renderEvents(container, events);
 }
 
@@ -45,18 +43,12 @@ async function createEvent() {
   const location = document.getElementById("luogo").value.trim();
 
   if (!title || !dt || !location) {
-    alert("Titolo, Data e Luogo sono obbligatori.");
-    return;
+    alert("Titolo, Data e Luogo sono obbligatori."); return;
   }
 
-  const body = {
-    title,
-    description,
-    date: new Date(dt).toISOString(),
-    location
-  };
+  const body = { title, description, date: new Date(dt).toISOString(), location };
 
-  const r = await fetch("/api/events", {
+  const r = await fetch(`${API_BASE}/api/events`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
@@ -66,6 +58,7 @@ async function createEvent() {
     alert("Errore creazione evento: " + msg);
     return;
   }
+
   // pulizia form
   document.getElementById("titolo").value = "";
   document.getElementById("descrizione").value = "";
@@ -76,11 +69,8 @@ async function createEvent() {
 }
 
 async function deleteEvent(id) {
-  const r = await fetch(`/api/events/${id}`, { method: "DELETE" });
-  if (!r.ok) {
-    alert("Errore eliminazione evento");
-    return;
-  }
+  const r = await fetch(`${API_BASE}/api/events/${id}`, { method: "DELETE" });
+  if (!r.ok) { alert("Errore eliminazione evento"); return; }
   await refreshList(document.getElementById("event-list"));
 }
 
@@ -116,8 +106,10 @@ function renderEvents(container, events) {
 
 function safe(v, d="—"){ return (v===undefined||v===null||v==="") ? d : String(v); }
 function fmtDate(v){
-  try { const d = new Date(v); if (Number.isNaN(d.getTime())) return safe(v);
-    return d.toLocaleString("it-IT",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+  try {
+    const d = new Date(v);
+    if (Number.isNaN(d.getTime())) return safe(v);
+    return d.toLocaleString("it-IT", {year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
   } catch { return safe(v); }
 }
 
@@ -129,7 +121,6 @@ function fmtDate(v){
 
   if (!btn) return;
 
-  // neutralizza onclick/vecchi listener
   try { btn.setAttribute("onclick", ""); } catch {}
   btn.type = "button";
   const clone = btn.cloneNode(true);
@@ -141,17 +132,16 @@ function fmtDate(v){
     ev.stopPropagation();
 
     const userId = localStorage.getItem("userId");
-    const current =
-      localStorage.getItem("role") ||
-      localStorage.getItem("currentRole") ||
-      "participant";
+    const current = localStorage.getItem("role") || localStorage.getItem("currentRole") || "participant";
     const next = current === "organizer" ? "participant" : "organizer";
 
     if (!userId) { location.href = "/"; return; }
 
     try {
-      localStorage.setItem("swtchingRole", "1")
-      const r = await fetch(`/api/users/${userId}/role`, {
+      // flag per non far scattare i guard durante il cambio
+      localStorage.setItem("switchingRole", "1");
+
+      const r = await fetch(`${API_BASE}/api/users/${userId}/role`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newRole: next })
@@ -163,9 +153,9 @@ function fmtDate(v){
       localStorage.setItem("role", data.currentRole);
       localStorage.setItem("currentRole", data.currentRole);
 
-      // ---- Legacy flags (IT) usate dai guard vecchi ----
+      // ---- Legacy flags (IT) ----
       const itRole = (data.currentRole === "organizer") ? "organizzatore" : "partecipante";
-      localStorage.setItem("userRole", itRole); // molti guard leggono questo
+      localStorage.setItem("userRole", itRole);
       if (data.currentRole === "organizer") {
         sessionStorage.setItem("organizzatoreLoggato", "true");
         sessionStorage.setItem("partecipanteLoggato", "");
@@ -174,15 +164,18 @@ function fmtDate(v){
         sessionStorage.setItem("organizzatoreLoggato", "");
       }
 
-      // ---- Aggiorna utenteCorrente sia EN che IT ----
+      // ---- Aggiorna utenteCorrente ----
       try {
         const raw = sessionStorage.getItem("utenteCorrente");
         const u = raw ? JSON.parse(raw) : {};
         u.role = data.currentRole; // EN
         u.currentRole = data.currentRole; // EN
-        u.ruolo = itRole; // IT (compat vecchi check)
+        u.ruolo = itRole; // IT
         sessionStorage.setItem("utenteCorrente", JSON.stringify(u));
       } catch {}
+
+      // via il flag (verrà comunque ripulito anche dalla pagina di arrivo)
+      localStorage.removeItem("switchingRole");
 
       // redirect diretto
       if (data.currentRole === "organizer") {
@@ -191,7 +184,11 @@ function fmtDate(v){
         location.href = "/partecipante.html";
       }
     } catch (err) {
+      localStorage.removeItem("switchingRole");
       alert(err.message || "Errore cambio ruolo");
     }
   }, { capture: true });
+})();
+
+
 })();
