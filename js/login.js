@@ -1,4 +1,8 @@
 // backend/public/js/login.js
+
+// 👉 Base URL dell’API su Render (assoluto, così funziona da Netlify)
+const API_BASE = 'https://gogoworld-api.onrender.com';
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("login-form") || document.querySelector("form");
   if (!form) return;
@@ -21,7 +25,7 @@ async function onSubmit(e) {
 
   try {
     // 1) Login senza vincolo di ruolo
-    const r = await fetch("/api/users/login", {
+    const r = await fetch(`${API_BASE}/api/users/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -33,7 +37,7 @@ async function onSubmit(e) {
 
     // 2) Se è stato scelto un ruolo diverso in home, fai switch server-side
     if (desiredRole && desiredRole !== finalRole) {
-      const sw = await fetch(`/api/users/${data.id}/role`, {
+      const sw = await fetch(`${API_BASE}/api/users/${data.id}/role`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newRole: desiredRole })
@@ -90,3 +94,4 @@ function mapRoleToEn(v) {
   if (s === "partecipante") return "participant";
   return null;
 }
+
