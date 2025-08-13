@@ -1,4 +1,8 @@
-// partecipante.js — patch 2025-08-09 (con Partecipa/Annulla)
+// public/js/partecipante.js — pointing to Render API
+
+// 👉 Base URL dell’API su Render (assoluto, così funziona da Netlify)
+const API_BASE = 'https://gogoworld-api.onrender.com';
+
 document.addEventListener("DOMContentLoaded", () => { initPartecipante().catch(console.error); });
 
 async function initPartecipante() {
@@ -15,13 +19,13 @@ async function initPartecipante() {
 }
 
 async function refreshLists(allEl, myEl) {
-  const events = await fetchJSON("/api/events");
+  const events = await fetchJSON(`${API_BASE}/api/events`);
 
   const userId = localStorage.getItem("userId");
   let myIds = [];
   if (userId) {
     try {
-      const user = await fetchJSON(`/api/users/${userId}`);
+      const user = await fetchJSON(`${API_BASE}/api/users/${userId}`);
       const raw = user.eventsPartecipati || user.eventiPartecipati || user.partecipazioni || [];
       myIds = raw.map(n => Number(n)).filter(n => !Number.isNaN(n));
     } catch (e) { console.warn("Dati utente non disponibili:", e); }
@@ -67,9 +71,9 @@ function renderAll(container, list, myIds) {
     const eventId = Number(btn.getAttribute("data-id"));
     try {
       if (btn.dataset.act === "join") {
-        await postJSON(`/api/users/${userId}/partecipa`, { eventId });
+        await postJSON(`${API_BASE}/api/users/${userId}/partecipa`, { eventId });
       } else {
-        await postJSON(`/api/users/${userId}/annulla`, { eventId });
+        await postJSON(`${API_BASE}/api/users/${userId}/annulla`, { eventId });
       }
       await refreshLists(
         document.getElementById("eventi-disponibili"),
@@ -130,7 +134,7 @@ function fmtDate(v) {
   } catch { return safe(v); }
 }
 
-// === Role Switcher robusto e compat legacy IT/EN ===
+// === Role Switcher (usa API_BASE anche qui)
 (function setupRoleSwitcher(){
   const btn =
     document.getElementById("cambia-ruolo-btn") ||
@@ -138,7 +142,6 @@ function fmtDate(v) {
 
   if (!btn) return;
 
-  // neutralizza onclick/vecchi listener
   try { btn.setAttribute("onclick", ""); } catch {}
   btn.type = "button";
   const clone = btn.cloneNode(true);
@@ -159,7 +162,7 @@ function fmtDate(v) {
     if (!userId) { location.href = "/"; return; }
 
     try {
-      const r = await fetch(`/api/users/${userId}/role`, {
+      const r = await fetch(`${API_BASE}/api/users/${userId}/role`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newRole: next })
@@ -167,13 +170,11 @@ function fmtDate(v) {
       const data = await r.json();
       if (!r.ok) throw new Error(data.error || `Errore cambio ruolo (${r.status})`);
 
-      // ---- Nuovo schema (EN) ----
       localStorage.setItem("role", data.currentRole);
       localStorage.setItem("currentRole", data.currentRole);
 
-      // ---- Legacy flags (IT) usate dai guard vecchi ----
       const itRole = (data.currentRole === "organizer") ? "organizzatore" : "partecipante";
-      localStorage.setItem("userRole", itRole); // molti guard leggono questo
+      localStorage.setItem("userRole", itRole);
       if (data.currentRole === "organizer") {
         sessionStorage.setItem("organizzatoreLoggato", "true");
         sessionStorage.setItem("partecipanteLoggato", "");
@@ -182,17 +183,15 @@ function fmtDate(v) {
         sessionStorage.setItem("organizzatoreLoggato", "");
       }
 
-      // ---- Aggiorna utenteCorrente sia EN che IT ----
       try {
         const raw = sessionStorage.getItem("utenteCorrente");
         const u = raw ? JSON.parse(raw) : {};
-        u.role = data.currentRole; // EN
-        u.currentRole = data.currentRole; // EN
-        u.ruolo = itRole; // IT (compat vecchi check)
+        u.role = data.currentRole;
+        u.currentRole = data.currentRole;
+        u.ruolo = itRole;
         sessionStorage.setItem("utenteCorrente", JSON.stringify(u));
       } catch {}
 
-      // redirect diretto
       if (data.currentRole === "organizer") {
         location.href = "/organizzatore.html";
       } else {
