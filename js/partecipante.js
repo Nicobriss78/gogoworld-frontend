@@ -3,6 +3,9 @@
 // 👉 Base URL dell’API su Render (assoluto, così funziona da Netlify)
 const API_BASE = 'https://gogoworld-api.onrender.com';
 
+const getToken = () => localStorage.getItem("token");
+const getUserId = () => localStorage.getItem("userId");
+
 document.addEventListener("DOMContentLoaded", () => { initPartecipante().catch(console.error); });
 
 async function initPartecipante() {
@@ -12,193 +15,130 @@ async function initPartecipante() {
 
   const logoutBtn = document.getElementById("logout-btn");
   const switchBtn = document.getElementById("cambia-ruolo-btn");
-  if (logoutBtn) logoutBtn.addEventListener("click", () => { localStorage.removeItem("userId"); location.href = "/"; });
+  if (logoutBtn) logoutBtn.addEventListener("click", () => { 
+    localStorage.removeItem("userId");
+    localStorage.removeItem("token");
+    location.href = "/";
+  });
   if (switchBtn) switchBtn.addEventListener("click", () => { location.href = "/"; });
 
   await refreshLists(allEl, myEl);
+
+  // delega: partecipa/annulla
+  document.body.addEventListener("click", async (ev) => {
+    const joinBtn = ev.target.closest("[data-partecipa]");
+    const leaveBtn = ev.target.closest("[data-annulla]");
+    if (joinBtn) {
+      await partecipa(joinBtn.getAttribute("data-partecipa"));
+    } else if (leaveBtn) {
+      await annulla(leaveBtn.getAttribute("data-annulla"));
+    }
+  });
 }
 
 async function refreshLists(allEl, myEl) {
-  const events = await fetchJSON(`${API_BASE}/api/events`);
+  const [me, events] = await Promise.all([
+    fetchJSON(`${API_BASE}/api/users/${getUserId()}`),
+    fetchJSON(`${API_BASE}/api/events`)
+  ]);
 
-  const userId = localStorage.getItem("userId");
-  let myIds = [];
-  if (userId) {
-    try {
-      const user = await fetchJSON(`${API_BASE}/api/users/${userId}`);
-      const raw = user.eventsPartecipati || user.eventiPartecipati || user.partecipazioni || [];
-      myIds = raw.map(n => Number(n)).filter(n => !Number.isNaN(n));
-    } catch (e) { console.warn("Dati utente non disponibili:", e); }
-  }
-
-  renderAll(allEl, events, myIds);
-  const mine = events.filter(ev => myIds.includes(Number(ev.id)));
-  renderMine(myEl, mine);
+  renderAll(allEl, events);
+  renderMine(myEl, events, me);
 }
 
-function renderAll(container, list, myIds) {
+// ---- Azioni partecipazione ----
+async function partecipa(eventId) {
+  if (!getToken()) { alert("Sessione scaduta. Effettua di nuovo il login."); location.href="/login.html"; return; }
+  const data = await postJSON(`${API_BASE}/api/users/${getUserId()}/partecipa`, { eventId });
+  alert("Iscrizione effettuata!");
+  await refreshLists(
+    document.getElementById("eventi-disponibili"),
+    document.getElementById("miei-eventi")
+  );
+}
+
+async function annulla(eventId) {
+  if (!getToken()) { alert("Sessione scaduta. Effettua di nuovo il login."); location.href="/login.html"; return; }
+  const data = await postJSON(`${API_BASE}/api/users/${getUserId()}/annulla`, { eventId });
+  alert("Partecipazione annullata");
+  await refreshLists(
+    document.getElementById("eventi-disponibili"),
+    document.getElementById("miei-eventi")
+  );
+}
+
+// ---- Helpers fetch ----
+async function fetchJSON(url) {
+  const headers = {};
+  if (getToken()) headers.Authorization = `Bearer ${getToken()}`;
+  const r = await fetch(url, { headers });
+  if (!r.ok) {
+    const t = await r.text().catch(()=> "");
+    throw new Error(`HTTP ${r.status} su ${url} – ${t || "Missing token"}`);
+  }
+  return r.json();
+}
+
+async function postJSON(url, body) {
+  const headers = { "Content-Type": "application/json" };
+  if (getToken()) headers.Authorization = `Bearer ${getToken()}`;
+  const r = await fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body || {})
+  });
+  const data = await r.json().catch(()=> ({}));
+  if (!r.ok) {
+    throw new Error(data.error || `HTTP ${r.status} su ${url}`);
+  }
+  return data;
+}
+
+// ---- Render minimal (adatta al tuo markup esistente) ----
+function renderAll(container, events){
   if (!container) return;
-  container.innerHTML = `<h3>Tutti gli Eventi</h3>`;
-  if (!list || list.length === 0) {
-    container.innerHTML += `<p>Nessun evento disponibile.</p>`;
+  container.innerHTML = "";
+  if (!events || events.length === 0){
+    container.innerHTML = "<p>Nessun evento disponibile.</p>";
     return;
   }
   const ul = document.createElement("ul");
-  list.forEach(ev => {
-    const li = document.createElement("li");
-    const joined = myIds.includes(Number(ev.id));
-    li.innerHTML = `
-      <strong>${safe(ev.title)}</strong> – ${fmtDate(ev.date)}
-      <div>${safe(ev.description)}</div>
-      <div><em>${safe(ev.location)}</em></div>
-      <div style="margin:.4rem 0;">
-        ${joined
-          ? `<button data-act="leave" data-id="${ev.id}">Annulla partecipazione</button>`
-          : `<button data-act="join" data-id="${ev.id}">Partecipa</button>`}
-      </div>
-    `;
-    ul.appendChild(li);
-  });
-  container.appendChild(ul);
-
-  // delega click
-  ul.addEventListener("click", async (e) => {
-    const btn = e.target.closest("button[data-act]");
-    if (!btn) return;
-    const userId = localStorage.getItem("userId");
-    if (!userId) { alert("Devi fare login."); location.href = "/login.html"; return; }
-
-    const eventId = Number(btn.getAttribute("data-id"));
-    try {
-      if (btn.dataset.act === "join") {
-        await postJSON(`${API_BASE}/api/users/${userId}/partecipa`, { eventId });
-      } else {
-        await postJSON(`${API_BASE}/api/users/${userId}/annulla`, { eventId });
-      }
-      await refreshLists(
-        document.getElementById("eventi-disponibili"),
-        document.getElementById("miei-eventi")
-      );
-    } catch (err) {
-      alert(err.message || "Errore");
-    }
-  });
-}
-
-function renderMine(container, list) {
-  if (!container) return;
-  container.innerHTML = `<h3>I Miei Eventi</h3>`;
-  if (!list || list.length === 0) {
-    container.innerHTML += `<p>Nessun evento disponibile.</p>`;
-    return;
-  }
-  const ul = document.createElement("ul");
-  list.forEach(ev => {
+  events.forEach(ev => {
     const li = document.createElement("li");
     li.innerHTML = `
       <strong>${safe(ev.title)}</strong> – ${fmtDate(ev.date)} <em>${safe(ev.location)}</em>
-      <div>${safe(ev.description)}</div>
+      <button data-partecipa="${ev._id}" style="margin-left:8px;">Partecipa</button>
     `;
     ul.appendChild(li);
   });
   container.appendChild(ul);
 }
 
-async function fetchJSON(url) {
-  const r = await fetch(url);
-  if (!r.ok) throw new Error(`HTTP ${r.status} su ${url}`);
-  return r.json();
-}
-async function postJSON(url, body) {
-  const r = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body || {})
-  });
-  if (!r.ok) {
-    const m = await r.json().catch(()=> ({}));
-    throw new Error(m.error || `HTTP ${r.status} su ${url}`);
+function renderMine(container, events, me){
+  if (!container) return;
+  container.innerHTML = "";
+  const myEvents = (events || []).filter(e => Array.isArray(e.participants) && e.participants.includes(String(getUserId())));
+  if (myEvents.length === 0){
+    container.innerHTML = "<p>Non partecipi ad alcun evento.</p>";
+    return;
   }
-  return r.json().catch(()=> ({}));
+  const ul = document.createElement("ul");
+  myEvents.forEach(ev => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${safe(ev.title)}</strong> – ${fmtDate(ev.date)} <em>${safe(ev.location)}</em>
+      <button data-annulla="${ev._id}" style="margin-left:8px;">Annulla</button>
+    `;
+    ul.appendChild(li);
+  });
+  container.appendChild(ul);
 }
 
-function safe(v, d = "—") { return (v === undefined || v === null || v === "") ? d : String(v); }
-function fmtDate(v) {
+function safe(v, d="—"){ return (v===undefined||v===null||v==="") ? d : String(v); }
+function fmtDate(v){
   try {
     const d = new Date(v);
     if (Number.isNaN(d.getTime())) return safe(v);
-    return d.toLocaleString("it-IT", {
-      weekday:"long", year:"numeric", month:"long", day:"numeric",
-      hour:"2-digit", minute:"2-digit"
-    });
+    return d.toLocaleString("it-IT", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
   } catch { return safe(v); }
 }
-
-// === Role Switcher (usa API_BASE anche qui)
-(function setupRoleSwitcher(){
-  const btn =
-    document.getElementById("cambia-ruolo-btn") ||
-    document.querySelector('[data-action="switch-role"]');
-
-  if (!btn) return;
-
-  try { btn.setAttribute("onclick", ""); } catch {}
-  btn.type = "button";
-  const clone = btn.cloneNode(true);
-  btn.parentNode.replaceChild(clone, btn);
-  const switchBtn = clone;
-
-  switchBtn.addEventListener("click", async (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-
-    const userId = localStorage.getItem("userId");
-    const current =
-      localStorage.getItem("role") ||
-      localStorage.getItem("currentRole") ||
-      "participant";
-    const next = current === "organizer" ? "participant" : "organizer";
-
-    if (!userId) { location.href = "/"; return; }
-
-    try {
-      const r = await fetch(`${API_BASE}/api/users/${userId}/role`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newRole: next })
-      });
-      const data = await r.json();
-      if (!r.ok) throw new Error(data.error || `Errore cambio ruolo (${r.status})`);
-
-      localStorage.setItem("role", data.currentRole);
-      localStorage.setItem("currentRole", data.currentRole);
-
-      const itRole = (data.currentRole === "organizer") ? "organizzatore" : "partecipante";
-      localStorage.setItem("userRole", itRole);
-      if (data.currentRole === "organizer") {
-        sessionStorage.setItem("organizzatoreLoggato", "true");
-        sessionStorage.setItem("partecipanteLoggato", "");
-      } else {
-        sessionStorage.setItem("partecipanteLoggato", "true");
-        sessionStorage.setItem("organizzatoreLoggato", "");
-      }
-
-      try {
-        const raw = sessionStorage.getItem("utenteCorrente");
-        const u = raw ? JSON.parse(raw) : {};
-        u.role = data.currentRole;
-        u.currentRole = data.currentRole;
-        u.ruolo = itRole;
-        sessionStorage.setItem("utenteCorrente", JSON.stringify(u));
-      } catch {}
-
-      if (data.currentRole === "organizer") {
-        location.href = "/organizzatore.html";
-      } else {
-        location.href = "/partecipante.html";
-      }
-    } catch (err) {
-      alert(err.message || "Errore cambio ruolo");
-    }
-  }, { capture: true });
-})();
