@@ -15,16 +15,11 @@ async function onSubmit(e) {
   const email = (document.getElementById("email")?.value || "").trim();
   const password = (document.getElementById("password")?.value || "").trim();
 
-  const desiredRoleIt = localStorage.getItem("userRole"); // "organizzatore" | "partecipante"
-  const desiredRole = mapRoleToEn(desiredRoleIt); // "organizer" | "participant"
-
-  if (!email || !password) {
-    alert("Inserisci email e password.");
-    return;
-  }
+  // ruolo desiderato (selezionato altrove, es. da homepage)
+  const desiredRole = mapRoleToEn(localStorage.getItem("desiredRole"));
 
   try {
-    // 1) Login senza vincolo di ruolo
+    // 1) Login
     const r = await fetch(`${API_BASE}/api/users/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -33,26 +28,38 @@ async function onSubmit(e) {
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || data.message || `Errore login (${r.status})`);
 
+    // salva SEMPRE id + token + ruolo
+    localStorage.setItem("userId", String(data.id));
+    if (data.token) localStorage.setItem("token", data.token);
+
     let finalRole = data.currentRole || data.role || "participant";
 
-    // 2) Se è stato scelto un ruolo diverso in home, fai switch server-side
+    // 2) Switch ruolo subito dopo il login (se richiesto)
     if (desiredRole && desiredRole !== finalRole) {
       const sw = await fetch(`${API_BASE}/api/users/${data.id}/role`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newRole: desiredRole })
+        headers: {
+          "Content-Type": "application/json",
+          // usa il token ricevuto dal login
+          Authorization: `Bearer ${localStorage.getItem("token") || data.token || ""}`
+        },
+        body: JSON.stringify({ role: desiredRole })
       });
       const swData = await sw.json();
       if (!sw.ok) throw new Error(swData.error || `Errore cambio ruolo (${sw.status})`);
-      finalRole = swData.currentRole || desiredRole;
+
+      // backend risponde { token, role }
+      if (swData.token) localStorage.setItem("token", swData.token);
+      finalRole = swData.role || desiredRole;
     }
 
-    // 3) Salva sessione (nuovo schema)
-    localStorage.setItem("userId", String(data.id));
+    // Sincronizza chiavi ruolo
     localStorage.setItem("role", finalRole);
     localStorage.setItem("currentRole", finalRole);
 
-    // 3bis) Compat: salva anche le flag legacy che i guard potrebbero usare
+    // Legacy IT
+    const itRole = (finalRole === "organizer") ? "organizzatore" : "partecipante";
+    localStorage.setItem("userRole", itRole);
     if (finalRole === "organizer") {
       sessionStorage.setItem("organizzatoreLoggato", "true");
       sessionStorage.setItem("partecipanteLoggato", "");
@@ -60,6 +67,7 @@ async function onSubmit(e) {
       sessionStorage.setItem("partecipanteLoggato", "true");
       sessionStorage.setItem("organizzatoreLoggato", "");
     }
+
     // aggiorna/crea utenteCorrente legacy se esiste
     try {
       const raw = sessionStorage.getItem("utenteCorrente");
@@ -68,19 +76,20 @@ async function onSubmit(e) {
       base.currentRole = finalRole;
       base.id = data.id;
       base.email = data.email;
-      base.name = data.name;
+      base.ruolo = itRole;
       sessionStorage.setItem("utenteCorrente", JSON.stringify(base));
     } catch {}
 
-    // 4) Redirect in base al ruolo attivo
+    // redirect coerente
     if (finalRole === "organizer") {
       location.href = "/organizzatore.html";
     } else {
       location.href = "/partecipante.html";
     }
+
   } catch (err) {
-    console.error("Errore durante il login:", err);
-    alert(err.message || "Errore di connessione. Riprova.");
+    console.error(err);
+    alert(err.message || "Errore di accesso");
   }
 }
 
@@ -94,4 +103,3 @@ function mapRoleToEn(v) {
   if (s === "partecipante") return "participant";
   return null;
 }
-
