@@ -1,18 +1,18 @@
+// ---- Helpers base ----
+const API_BASE = ""; // vuoto perché Netlify proxy /api → backend; se servi statico, metti qui l'URL Render
+const getToken = () => localStorage.getItem("token");
+const getUserId = () => localStorage.getItem("userId");
+
 // ---- GUARD compat: non mandare al login mentre sto cambiando ruolo ----
 (function guardOrganizzatore(){
   const switching = localStorage.getItem("switchingRole") === "1";
-  if (switching) {
-    // Sto cambiando ruolo: non fare redirect qui.
-    return;
-  }
+  if (switching) return;
 
-  const userId = localStorage.getItem("userId");
+  const userId = getUserId();
   const role = localStorage.getItem("role") || localStorage.getItem("currentRole");
   const orgFlag = sessionStorage.getItem("organizzatoreLoggato") === "true";
 
   if (!userId) { location.href = "/login.html"; return; }
-
-  // Se non sono organizzatore, porta alla pagina partecipante
   if (role !== "organizer" && !orgFlag) {
     location.href = "/partecipante.html";
     return;
@@ -28,9 +28,13 @@ async function initOrganizzatore() {
 
   if (logoutBtn) logoutBtn.addEventListener("click", () => {
     localStorage.removeItem("userId");
+    localStorage.removeItem("token");
     location.href = "/";
   });
   if (creaBtn) creaBtn.addEventListener("click", createEvent);
+
+  // modal setup
+  setupEditModal();
 
   await refreshList(listEl);
 }
@@ -40,6 +44,7 @@ async function refreshList(container) {
   renderEvents(container, events);
 }
 
+// ---- CREATE ----
 async function createEvent() {
   const title = document.getElementById("titolo").value.trim();
   const description = document.getElementById("descrizione").value.trim();
@@ -58,11 +63,15 @@ async function createEvent() {
     location
   };
 
-  const r = await fetch("/api/events", {
+  const r = await fetch(API_BASE + "/api/events", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {})
+    },
     body: JSON.stringify(body)
   });
+
   if (!r.ok) {
     const msg = await r.text();
     alert("Errore creazione evento: " + msg);
@@ -77,17 +86,98 @@ async function createEvent() {
   await refreshList(document.getElementById("event-list"));
 }
 
+// ---- DELETE ----
 async function deleteEvent(id) {
-  const r = await fetch(`/api/events/${id}`, { method: "DELETE" });
+  const r = await fetch(API_BASE + `/api/events/${id}`, {
+    method: "DELETE",
+    headers: {
+      ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {})
+    }
+  });
   if (!r.ok) {
-    alert("Errore eliminazione evento");
+    const msg = await r.text().catch(()=> "Errore eliminazione evento");
+    alert(msg);
     return;
   }
   await refreshList(document.getElementById("event-list"));
 }
 
+// ---- EDIT (modal) ----
+let editingId = null;
+
+function setupEditModal() {
+  const backdrop = document.getElementById("edit-backdrop");
+  const btnCancel = document.getElementById("edit-cancel");
+  const btnSave = document.getElementById("edit-save");
+
+  btnCancel.addEventListener("click", () => closeEditModal());
+  backdrop.addEventListener("click", (e) => {
+    if (e.target === backdrop) closeEditModal();
+  });
+  btnSave.addEventListener("click", saveEditModal);
+}
+
+function openEditModal(ev) {
+  editingId = ev._id;
+
+  // precompila
+  document.getElementById("edit-title-input").value = ev.title || "";
+  document.getElementById("edit-desc-input").value = ev.description || "";
+  // normalizza la data per input datetime-local
+  try {
+    const d = new Date(ev.date);
+    document.getElementById("edit-date-input").value = isNaN(d.getTime()) ? "" : new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  } catch { document.getElementById("edit-date-input").value = ""; }
+  document.getElementById("edit-loc-input").value = ev.location || "";
+
+  document.getElementById("edit-backdrop").style.display = "flex";
+}
+
+function closeEditModal() {
+  editingId = null;
+  document.getElementById("edit-backdrop").style.display = "none";
+}
+
+async function saveEditModal() {
+  if (!editingId) return;
+
+  const title = document.getElementById("edit-title-input").value.trim();
+  const description = document.getElementById("edit-desc-input").value.trim();
+  const dt = document.getElementById("edit-date-input").value;
+  const location = document.getElementById("edit-loc-input").value.trim();
+
+  const patch = {};
+  if (title) patch.title = title;
+  if (description || description === "") patch.description = description;
+  if (dt) patch.date = new Date(dt).toISOString();
+  if (location) patch.location = location;
+
+  const r = await fetch(API_BASE + `/api/events/${editingId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {})
+    },
+    body: JSON.stringify(patch)
+  });
+
+  if (!r.ok) {
+    const msg = await r.text().catch(()=> "Errore salvataggio");
+    alert(msg);
+    return;
+  }
+
+  closeEditModal();
+  await refreshList(document.getElementById("event-list"));
+}
+
+// ---- Fetch util ----
 async function fetchJSON(url) {
-  const r = await fetch(url);
+  const r = await fetch(API_BASE + url, {
+    headers: {
+      ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {})
+    }
+  });
   if (!r.ok) throw new Error(`HTTP ${r.status} su ${url}`);
   return r.json();
 }
@@ -99,20 +189,40 @@ function renderEvents(container, events) {
     container.innerHTML = "<p>Nessun evento trovato.</p>";
     return;
   }
+
+  const myId = getUserId();
   const ul = document.createElement("ul");
+  ul.className = "events";
+
   events.forEach(ev => {
+    const mine = String(ev.organizerId) === String(myId);
     const li = document.createElement("li");
-    li.innerHTML = `
-      <strong>${safe(ev.title)}</strong> – ${fmtDate(ev.date)} <em>${safe(ev.location)}</em>
-      <button data-del="${ev.id}" style="margin-left:8px;">🗑️</button>
-    `;
+
+    const title = `<strong>${safe(ev.title)}</strong>`;
+    const meta = `<span class="meta">– ${fmtDate(ev.date)} <em>${safe(ev.location)}</em></span>`;
+    const actions = mine
+      ? `<span class="actions">
+          <button data-edit="${ev._id}">✏️ Modifica</button>
+          <button data-del="${ev._id}">🗑️ Elimina</button>
+        </span>`
+      : "";
+
+    li.innerHTML = `${title} ${meta} ${actions}`;
     ul.appendChild(li);
   });
   container.appendChild(ul);
 
-  // bind delete
+  // bind edit/delete solo sui miei eventi
   container.querySelectorAll("[data-del]").forEach(btn => {
     btn.addEventListener("click", () => deleteEvent(btn.getAttribute("data-del")));
+  });
+  container.querySelectorAll("[data-edit]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const id = btn.getAttribute("data-edit");
+      // carico il dettaglio per sicurezza (così prendo ultimo stato)
+      const ev = await fetchJSON(`/api/events/${id}`);
+      openEditModal(ev);
+    });
   });
 }
 
@@ -125,7 +235,7 @@ function fmtDate(v){
   } catch { return safe(v); }
 }
 
-// === Role Switcher robusto e compat legacy IT/EN ===
+// === Role Switcher: ora usa Authorization e aggiorna token ===
 (function setupRoleSwitcher(){
   const btn =
     document.getElementById("cambia-ruolo-btn") ||
@@ -133,7 +243,6 @@ function fmtDate(v){
 
   if (!btn) return;
 
-  // neutralizza onclick/vecchi listener
   try { btn.setAttribute("onclick", ""); } catch {}
   btn.type = "button";
   const clone = btn.cloneNode(true);
@@ -144,7 +253,7 @@ function fmtDate(v){
     ev.preventDefault();
     ev.stopPropagation();
 
-    const userId = localStorage.getItem("userId");
+    const userId = getUserId();
     const current =
       localStorage.getItem("role") ||
       localStorage.getItem("currentRole") ||
@@ -154,25 +263,31 @@ function fmtDate(v){
     if (!userId) { location.href = "/"; return; }
 
     try {
-      // ✅ scrivi la flag correttamente
       localStorage.setItem("switchingRole", "1");
 
-      const r = await fetch(`/api/users/${userId}/role`, {
+      const r = await fetch(API_BASE + `/api/users/${userId}/role`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newRole: next })
+        headers: {
+          "Content-Type": "application/json",
+          ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {})
+        },
+        body: JSON.stringify({ role: next })
       });
       const data = await r.json();
       if (!r.ok) throw new Error(data.error || `Errore cambio ruolo (${r.status})`);
 
-      // ---- Nuovo schema (EN) ----
-      localStorage.setItem("role", data.currentRole);
-      localStorage.setItem("currentRole", data.currentRole);
+      // ⬇️ backend risponde { token, role }
+      if (data.token) localStorage.setItem("token", data.token);
+      const newRole = data.role || next;
 
-      // ---- Legacy flags (IT) ----
-      const itRole = (data.currentRole === "organizer") ? "organizzatore" : "partecipante";
+      // chiavi “EN”
+      localStorage.setItem("role", newRole);
+      localStorage.setItem("currentRole", newRole);
+
+      // legacy IT
+      const itRole = (newRole === "organizer") ? "organizzatore" : "partecipante";
       localStorage.setItem("userRole", itRole);
-      if (data.currentRole === "organizer") {
+      if (newRole === "organizer") {
         sessionStorage.setItem("organizzatoreLoggato", "true");
         sessionStorage.setItem("partecipanteLoggato", "");
       } else {
@@ -180,18 +295,18 @@ function fmtDate(v){
         sessionStorage.setItem("organizzatoreLoggato", "");
       }
 
-      // ---- Aggiorna utenteCorrente ----
+      // utenteCorrente
       try {
         const raw = sessionStorage.getItem("utenteCorrente");
         const u = raw ? JSON.parse(raw) : {};
-        u.role = data.currentRole;
-        u.currentRole = data.currentRole;
+        u.role = newRole;
+        u.currentRole = newRole;
         u.ruolo = itRole;
         sessionStorage.setItem("utenteCorrente", JSON.stringify(u));
       } catch {}
 
-      // redirect diretto
-      if (data.currentRole === "organizer") {
+      // redirect coerente
+      if (newRole === "organizer") {
         location.href = "/organizzatore.html";
       } else {
         location.href = "/partecipante.html";
@@ -200,6 +315,5 @@ function fmtDate(v){
       alert(err.message || "Errore cambio ruolo");
     }
   }, { capture: true });
-})(); // ⬅️ chiusura IIFE mancante prima
-
+})();
 
