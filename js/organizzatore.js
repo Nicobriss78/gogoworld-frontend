@@ -1,10 +1,10 @@
 // js/organizzatore.js
-// Helpers base
-const API_BASE = "https://gogoworld-api.onrender.com"; // unificato su assoluto
+const API_BASE = "https://gogoworld-api.onrender.com";
 const getToken = () => localStorage.getItem("token");
 const getUserId = () => localStorage.getItem("userId");
 
-// GUARD: evita redirect mentre cambio ruolo
+// GUARD: se non organizer o non loggato, rimanda dove serve.
+// Evita redirect mentre sto cambiando ruolo.
 (function guardOrganizzatore(){
   const switching = localStorage.getItem("switchingRole") === "1";
   if (switching) return;
@@ -26,21 +26,15 @@ async function initOrganizzatore() {
   const listEl = document.getElementById("event-list");
   const logoutBtn = document.getElementById("logout-btn");
   const creaBtn = document.getElementById("crea-btn");
+  const switchBtn = document.getElementById("cambia-ruolo-btn");
 
-  if (logoutBtn) logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("currentRole");
-    sessionStorage.removeItem("organizzatoreLoggato");
-    sessionStorage.removeItem("partecipanteLoggato");
-    location.href = "/";
-  });
-
+  if (logoutBtn) logoutBtn.addEventListener("click", doLogout);
   if (creaBtn) creaBtn.addEventListener("click", onCreate);
+  if (switchBtn) switchBtn.addEventListener("click", onSwitchRoleToParticipant);
 
   await reloadList(listEl);
 
+  // delega click per eliminazione
   document.body.addEventListener("click", async (e) => {
     const el = e.target;
     if (el.matches("[data-del]")) {
@@ -50,25 +44,73 @@ async function initOrganizzatore() {
   });
 }
 
+function doLogout(){
+  localStorage.removeItem("userId");
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  localStorage.removeItem("currentRole");
+  sessionStorage.removeItem("organizzatoreLoggato");
+  sessionStorage.removeItem("partecipanteLoggato");
+  location.href = "/";
+}
+
+/* ======== SWITCH ROLE → participant ======== */
+async function onSwitchRoleToParticipant() {
+  const userId = getUserId();
+  const token = getToken();
+  if (!userId || !token) { alert("Sessione scaduta. Effettua di nuovo il login."); location.href="/login.html"; return; }
+
+  try {
+    localStorage.setItem("switchingRole", "1");
+    const r = await fetch(`${API_BASE}/api/users/${userId}/role`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ role: "participant" })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || `Errore cambio ruolo (${r.status})`);
+
+    if (data.token) localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.role);
+    localStorage.setItem("currentRole", data.role);
+
+    // pulizia/flag
+    sessionStorage.removeItem("organizzatoreLoggato");
+    sessionStorage.setItem("partecipanteLoggato", "true");
+
+    location.href = "/partecipante.html";
+  } catch (err) {
+    alert(err.message || "Errore cambio ruolo");
+  } finally {
+    localStorage.removeItem("switchingRole");
+  }
+}
+
+/* ======== Eventi ======== */
 async function reloadList(container){
   if (!container) return;
   container.innerHTML = "<em>Carico eventi...</em>";
-  const res = await fetch(`${API_BASE}/api/events`);
-  const data = await res.json();
-  if (!Array.isArray(data) || data.length === 0) {
-    container.innerHTML = "<p>Nessun evento.</p>";
-    return;
+  try {
+    const res = await fetch(`${API_BASE}/api/events`);
+    const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) {
+      container.innerHTML = "<p>Nessun evento.</p>";
+      return;
+    }
+    const ul = document.createElement("ul");
+    data.forEach(ev => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <strong>${safe(ev.title)}</strong> – ${fmtDate(ev.date)} <em>${safe(ev.location)}</em>
+        <button data-del="${ev._id}" style="margin-left:8px;">Elimina</button>
+      `;
+      ul.appendChild(li);
+    });
+    container.innerHTML = "";
+    container.appendChild(ul);
+  } catch (err) {
+    container.innerHTML = `<span style="color:red;">Errore caricamento eventi</span>`;
   }
-  const ul = document.createElement("ul");
-  data.forEach(ev => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <strong>${safe(ev.title)}</strong> – ${fmtDate(ev.date)} <em>${safe(ev.location)}</em>
-      <button data-del="${ev._id}" style="margin-left:8px;">Elimina</button>
-    `;
-    ul.appendChild(li);
-  });
-  container.appendChild(ul);
 }
 
 async function onCreate(){
@@ -101,6 +143,7 @@ async function onDelete(id){
   }
 }
 
+/* ======== Utils ======== */
 function safe(v, d="—"){ return (v===undefined||v===null||v==="") ? d : String(v); }
 function fmtDate(v){
   try {
@@ -109,6 +152,7 @@ function fmtDate(v){
     return d.toLocaleString("it-IT", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
   } catch { return safe(v); }
 }
+
 
 
 
