@@ -1,4 +1,7 @@
-// js/partecipante.js — area Partecipante
+// js/partecipante.js — Area Partecipante (FILE COMPLETO)
+// Coerente con: BE attuale (events pubblici, POST /users/:id/partecipa, POST /users/:id/annulla)
+// e con login.js (token/id salvati). API base assoluta.
+
 const API_BASE = 'https://gogoworld-api.onrender.com';
 
 const getToken = () => localStorage.getItem("token");
@@ -109,7 +112,7 @@ async function joinEvent(eventId) {
   });
   const data = await res.json();
   if (!res.ok) { alert(data.error || "Errore partecipazione"); return; }
-  // refresh
+  // refresh sezioni
   await loadAllEvents(document.getElementById("eventi-disponibili"));
   await loadMyEvents(document.getElementById("miei-eventi"));
 }
@@ -124,7 +127,7 @@ async function cancelEvent(eventId) {
   });
   const data = await res.json();
   if (!res.ok) { alert(data.error || "Errore annullamento"); return; }
-  // refresh
+  // refresh sezioni
   await loadAllEvents(document.getElementById("eventi-disponibili"));
   await loadMyEvents(document.getElementById("miei-eventi"));
 }
@@ -132,12 +135,17 @@ async function cancelEvent(eventId) {
 /* ======== Rendering ======== */
 function renderAllEvents(container, events) {
   container.innerHTML = "";
-  if (!Array.isArray(events) || events.length === 0) {
-    container.innerHTML = "<p>Nessun evento disponibile.</p>";
+  const uid = String(getUserId() || "");
+
+  // Filtra: qui MOSTRIAMO SOLO gli eventi a cui NON partecipo
+  const available = (events || []).filter(e => !Array.isArray(e.participants) || !e.participants.includes(uid));
+
+  if (!Array.isArray(available) || available.length === 0) {
+    container.innerHTML = "<p>Nessun evento disponibile (o partecipi già a tutti quelli presenti).</p>";
     return;
   }
   const ul = document.createElement("ul");
-  events.forEach(ev => {
+  available.forEach(ev => {
     const li = document.createElement("li");
     li.innerHTML = `
       <strong>${safe(ev.title)}</strong> – ${fmtDate(ev.date)} <em>${safe(ev.location)}</em>
@@ -150,7 +158,9 @@ function renderAllEvents(container, events) {
 
 function renderMyEvents(container, events) {
   container.innerHTML = "";
-  const myEvents = (events || []).filter(e => Array.isArray(e.participants) && e.participants.includes(String(getUserId())));
+  const uid = String(getUserId() || "");
+  const myEvents = (events || []).filter(e => Array.isArray(e.participants) && e.participants.includes(uid));
+
   if (myEvents.length === 0){
     container.innerHTML = "<p>Non partecipi ad alcun evento.</p>";
     return;
@@ -158,6 +168,8 @@ function renderMyEvents(container, events) {
   const ul = document.createElement("ul");
   myEvents.forEach(ev => {
     const li = document.createElement("li");
+    // Per resilienza: se per qualche motivo l'evento appare anche tra i disponibili,
+    // disabilitiamo il bottone "Partecipa" (non dovrebbe, ma meglio sicuri).
     li.innerHTML = `
       <strong>${safe(ev.title)}</strong> – ${fmtDate(ev.date)} <em>${safe(ev.location)}</em>
       <button data-annulla="${ev._id}" style="margin-left:8px;">Annulla</button>
@@ -175,5 +187,7 @@ function fmtDate(v){
     return d.toLocaleString("it-IT", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
   } catch { return safe(v); }
 }
+
+
 
 
