@@ -1,17 +1,14 @@
-// public/js/partecipante.js — versione DEBUG con log completi
+// js/partecipante.js — area Partecipante
 const API_BASE = 'https://gogoworld-api.onrender.com';
 
 const getToken = () => localStorage.getItem("token");
 const getUserId = () => localStorage.getItem("userId");
 
 document.addEventListener("DOMContentLoaded", () => { 
-  console.log("[DEBUG] DOMContentLoaded → avvio initPartecipante");
-  initPartecipante().catch(err => console.error("[DEBUG] Errore initPartecipante:", err));
+  initPartecipante().catch(err => console.error("[Partecipante] init error:", err));
 });
 
 async function initPartecipante() {
-  console.log("[DEBUG] initPartecipante → userId:", getUserId(), "token:", getToken());
-  
   localStorage.removeItem("switchingRole");
   const allEl = document.getElementById("eventi-disponibili");
   const myEl = document.getElementById("miei-eventi");
@@ -20,119 +17,122 @@ async function initPartecipante() {
   const switchBtn = document.getElementById("cambia-ruolo-btn");
   
   if (logoutBtn) logoutBtn.addEventListener("click", () => { 
-    console.log("[DEBUG] Logout cliccato");
     localStorage.removeItem("userId");
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("currentRole");
+    sessionStorage.removeItem("organizzatoreLoggato");
+    sessionStorage.removeItem("partecipanteLoggato");
     location.href = "/";
   });
 
-  if (switchBtn) switchBtn.addEventListener("click", () => { 
-    console.log("[DEBUG] Cambia ruolo cliccato");
-    location.href = "/"; 
-  });
+  if (switchBtn) switchBtn.addEventListener("click", onSwitchRole);
 
-  await refreshLists(allEl, myEl);
+  await loadAllEvents(allEl);
+  await loadMyEvents(myEl);
 
-  document.body.addEventListener("click", async (ev) => {
-    const joinBtn = ev.target.closest("[data-partecipa]");
-    const leaveBtn = ev.target.closest("[data-annulla]");
-    if (joinBtn) {
-      console.log("[DEBUG] Click partecipa → eventId:", joinBtn.getAttribute("data-partecipa"));
-      await partecipa(joinBtn.getAttribute("data-partecipa"));
-    } else if (leaveBtn) {
-      console.log("[DEBUG] Click annulla → eventId:", leaveBtn.getAttribute("data-annulla"));
-      await annulla(leaveBtn.getAttribute("data-annulla"));
+  // delega click per Partecipa/Annulla
+  document.body.addEventListener("click", async (e) => {
+    const el = e.target;
+    if (el.matches("[data-partecipa]")) {
+      await joinEvent(el.getAttribute("data-partecipa"));
+    } else if (el.matches("[data-annulla]")) {
+      await cancelEvent(el.getAttribute("data-annulla"));
     }
   });
 }
 
-async function refreshLists(allEl, myEl) {
-  console.log("[DEBUG] refreshLists → chiamata API utente e lista eventi");
-  const [me, events] = await Promise.all([
-    fetchJSON(`${API_BASE}/api/users/${getUserId()}`),
-    fetchJSON(`${API_BASE}/api/events`)
-  ]);
-  console.log("[DEBUG] refreshLists → me:", me);
-  console.log("[DEBUG] refreshLists → events:", events);
+async function onSwitchRole() {
+  const userId = getUserId();
+  const current = localStorage.getItem("role") || localStorage.getItem("currentRole") || "participant";
+  const next = "organizer";
 
-  renderAll(allEl, events);
-  renderMine(myEl, events, me);
-}
-
-async function partecipa(eventId) {
-  if (!getToken()) { 
-    console.warn("[DEBUG] Nessun token trovato in partecipa()");
-    alert("Sessione scaduta. Effettua di nuovo il login."); 
-    location.href="/login.html"; 
-    return; 
+  if (!userId || !getToken()) {
+    alert("Sessione scaduta. Effettua di nuovo il login.");
+    location.href = "/login.html"; return;
   }
-  console.log("[DEBUG] partecipa → POST", eventId);
-  const data = await postJSON(`${API_BASE}/api/users/${getUserId()}/partecipa`, { eventId });
-  console.log("[DEBUG] partecipa → risposta:", data);
-  alert("Iscrizione effettuata!");
-  await refreshLists(
-    document.getElementById("eventi-disponibili"),
-    document.getElementById("miei-eventi")
-  );
-}
 
-async function annulla(eventId) {
-  if (!getToken()) { 
-    console.warn("[DEBUG] Nessun token trovato in annulla()");
-    alert("Sessione scaduta. Effettua di nuovo il login."); 
-    location.href="/login.html"; 
-    return; 
+  try {
+    localStorage.setItem("switchingRole", "1");
+    const r = await fetch(`${API_BASE}/api/users/${userId}/role`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+      body: JSON.stringify({ role: next })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || `Errore cambio ruolo (${r.status})`);
+
+    if (data.token) localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.role);
+    localStorage.setItem("currentRole", data.role);
+
+    location.href = (data.role === "organizer") ? "/organizzatore.html" : "/partecipante.html";
+  } catch (err) {
+    alert(err.message || "Errore cambio ruolo");
+  } finally {
+    localStorage.removeItem("switchingRole");
   }
-  console.log("[DEBUG] annulla → POST", eventId);
-  const data = await postJSON(`${API_BASE}/api/users/${getUserId()}/annulla`, { eventId });
-  console.log("[DEBUG] annulla → risposta:", data);
-  alert("Partecipazione annullata");
-  await refreshLists(
-    document.getElementById("eventi-disponibili"),
-    document.getElementById("miei-eventi")
-  );
 }
 
-// ---- Helpers fetch ----
-async function fetchJSON(url) {
-  const headers = {};
-  if (getToken()) headers.Authorization = `Bearer ${getToken()}`;
-  console.log("[DEBUG] fetchJSON → URL:", url, "Headers:", headers);
-  const r = await fetch(url, { headers });
-  console.log("[DEBUG] fetchJSON → status:", r.status);
-  if (!r.ok) {
-    const t = await r.text().catch(()=> "");
-    console.error("[DEBUG] fetchJSON → errore:", t);
-    throw new Error(`HTTP ${r.status} su ${url} – ${t || "Missing token"}`);
-  }
-  const json = await r.json();
-  console.log("[DEBUG] fetchJSON → risposta JSON:", json);
-  return json;
-}
-
-async function postJSON(url, body) {
-  const headers = { "Content-Type": "application/json" };
-  if (getToken()) headers.Authorization = `Bearer ${getToken()}`;
-  console.log("[DEBUG] postJSON → URL:", url, "Headers:", headers, "Body:", body);
-  const r = await fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body || {})
-  });
-  const data = await r.json().catch(()=> ({}));
-  console.log("[DEBUG] postJSON → status:", r.status, "data:", data);
-  if (!r.ok) {
-    console.error("[DEBUG] postJSON → errore:", data.error);
-    throw new Error(data.error || `HTTP ${r.status} su ${url}`);
-  }
-  return data;
-}
-
-// ---- Render minimal ----
-function renderAll(container, events){
+/* ======== Eventi ======== */
+async function loadAllEvents(container) {
   if (!container) return;
+  container.innerHTML = "<em>Carico eventi...</em>";
+  try {
+    const res = await fetch(`${API_BASE}/api/events`);
+    const events = await res.json();
+    renderAllEvents(container, events || []);
+  } catch (err) {
+    container.innerHTML = `<span style="color:red;">Errore caricamento eventi</span>`;
+  }
+}
+
+async function loadMyEvents(container) {
+  if (!container) return;
+  container.innerHTML = "<em>Carico i tuoi eventi...</em>";
+  try {
+    const res = await fetch(`${API_BASE}/api/events`);
+    const events = await res.json();
+    renderMyEvents(container, events || []);
+  } catch (err) {
+    container.innerHTML = `<span style="color:red;">Errore caricamento eventi</span>`;
+  }
+}
+
+async function joinEvent(eventId) {
+  if (!getToken()) { alert("Devi effettuare il login"); location.href="/login.html"; return; }
+  const uid = getUserId();
+  const res = await fetch(`${API_BASE}/api/users/${uid}/partecipa`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+    body: JSON.stringify({ eventId })
+  });
+  const data = await res.json();
+  if (!res.ok) { alert(data.error || "Errore partecipazione"); return; }
+  // refresh
+  await loadAllEvents(document.getElementById("eventi-disponibili"));
+  await loadMyEvents(document.getElementById("miei-eventi"));
+}
+
+async function cancelEvent(eventId) {
+  if (!getToken()) { alert("Devi effettuare il login"); location.href="/login.html"; return; }
+  const uid = getUserId();
+  const res = await fetch(`${API_BASE}/api/users/${uid}/annulla`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+    body: JSON.stringify({ eventId })
+  });
+  const data = await res.json();
+  if (!res.ok) { alert(data.error || "Errore annullamento"); return; }
+  // refresh
+  await loadAllEvents(document.getElementById("eventi-disponibili"));
+  await loadMyEvents(document.getElementById("miei-eventi"));
+}
+
+/* ======== Rendering ======== */
+function renderAllEvents(container, events) {
   container.innerHTML = "";
-  if (!events || events.length === 0){
+  if (!Array.isArray(events) || events.length === 0) {
     container.innerHTML = "<p>Nessun evento disponibile.</p>";
     return;
   }
@@ -148,8 +148,7 @@ function renderAll(container, events){
   container.appendChild(ul);
 }
 
-function renderMine(container, events, me){
-  if (!container) return;
+function renderMyEvents(container, events) {
   container.innerHTML = "";
   const myEvents = (events || []).filter(e => Array.isArray(e.participants) && e.participants.includes(String(getUserId())));
   if (myEvents.length === 0){
@@ -176,3 +175,5 @@ function fmtDate(v){
     return d.toLocaleString("it-IT", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
   } catch { return safe(v); }
 }
+
+
