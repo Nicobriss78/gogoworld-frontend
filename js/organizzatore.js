@@ -1,281 +1,250 @@
-// js/organizzatore.js
-// === GoGo.World — Area Organizzatore (FILE COMPLETO) ===
-// Dipendenze: token/userId salvati da login.js; BE: /api/events, /api/events/:id protetti organizer
+// === GoGo.World — Area Organizzatore ===
+// Versione allineata a organizzatore.html (ID reali):
+// Form: titolo, descrizione, data, luogo, crea-btn
+// Lista: event-list
+// Azioni globali: logout-btn, cambia-ruolo-btn
+// Modal edit: edit-backdrop, edit-title-input, edit-desc-input, edit-date-input, edit-loc-input, edit-cancel, edit-save
 
+/* ===================== Config ===================== */
 const API_BASE = "https://gogoworld-api.onrender.com";
 const getToken = () => localStorage.getItem("token");
 const getUserId = () => localStorage.getItem("userId");
+const getRole = () => localStorage.getItem("role") || localStorage.getItem("currentRole");
 
-// --- GUARD iniziale ---
-// Evita redirect mentre sto cambiando ruolo.
-(function guardOrganizzatore(){
+/* ===================== Guard ===================== */
+(function guardOrganizzatore() {
   const switching = localStorage.getItem("switchingRole") === "1";
   if (switching) return;
-
-  const userId = getUserId();
-  const role = localStorage.getItem("role") || localStorage.getItem("currentRole");
-  const orgFlag = sessionStorage.getItem("organizzatoreLoggato") === "true";
-
-  if (!userId) { location.href = "/login.html"; return; }
-  if (role !== "organizer" && !orgFlag) {
-    location.href = "/partecipante.html";
+  const uid = getUserId();
+  const tok = getToken();
+  if (!uid || !tok) {
+    location.href = "/login.html";
     return;
   }
+  // Nota: consentiamo lo switch di ruolo senza forzare il role=organizer
 })();
 
-document.addEventListener("DOMContentLoaded", () => { initOrganizzatore().catch(console.error); });
+/* ===================== Init ===================== */
+document.addEventListener("DOMContentLoaded", () => {
+  bindUi();
+  loadEvents();
+});
 
-// --- helpers DOM resilienti (supporto a più id possibili) ---
-const pick = (ids) => ids.map(id => document.getElementById(id)).find(el => !!el) || null;
+/* ===================== UI Bindings ===================== */
+function bindUi() {
+  byId("crea-btn")?.addEventListener("click", onCreate);
+  byId("event-list")?.addEventListener("click", onListClick);
+  byId("logout-btn")?.addEventListener("click", onLogout);
+  byId("cambia-ruolo-btn")?.addEventListener("click", onSwitchRole);
 
-function getFields() {
-  // prova più nomi per compatibilità col markup esistente
-  const titleEl = pick(["event-title","title","titolo"]);
-  const descEl = pick(["event-description","description","descrizione"]);
-  const dateEl = pick(["event-date","date","data"]);
-  const locEl = pick(["event-location","location","luogo"]);
-  const addBtn = pick(["crea-btn","aggiungi-btn","add-btn"]);
-  const cancelEditBtn = pick(["annulla-edit-btn","cancel-edit-btn"]);
-
-  return { titleEl, descEl, dateEl, locEl, addBtn, cancelEditBtn };
+  // Modal edit
+  byId("edit-cancel")?.addEventListener("click", closeEditModal);
+  byId("edit-save")?.addEventListener("click", onSaveEdit);
 }
 
-let editingId = null; // quando valorizzato siamo in modalità "modifica"
+/* ===================== Data Load ===================== */
+async function loadEvents() {
+  try {
+    const r = await fetch(`${API_BASE}/api/events`);
+    const data = await r.json();
+    const events = Array.isArray(data) ? data : (data && Array.isArray(data.items) ? data.items : []);
+    renderEvents(events);
+  } catch (err) {
+    console.error("loadEvents error:", err);
+    alert("Errore nel caricamento eventi");
+  }
+}
 
-async function initOrganizzatore() {
-  const listEl = document.getElementById("event-list");
-  const logoutBtn = document.getElementById("logout-btn");
-  const switchBtn = document.getElementById("cambia-ruolo-btn");
-  const { titleEl, descEl, dateEl, locEl, addBtn, cancelEditBtn } = getFields();
+/* ===================== Render List ===================== */
+function renderEvents(events) {
+  const list = byId("event-list");
+  if (!list) return;
+  list.innerHTML = "";
 
-  if (logoutBtn) logoutBtn.addEventListener("click", doLogout);
-  if (switchBtn) switchBtn.addEventListener("click", onSwitchRoleToParticipant);
+  const myId = getUserId();
 
-  // CREA / SALVA MODIFICHE
-  if (addBtn) addBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-    await onCreateOrUpdate({ titleEl, descEl, dateEl, locEl, addBtn });
+  events.forEach(ev => {
+    const li = document.createElement("div");
+    li.className = "event-row";
+    const mine = String(ev.organizerId) === String(myId);
+
+    li.innerHTML = `
+      <div class="row">
+        <div><strong>${escapeHtml(safe(ev.title))}</strong></div>
+        <div>${escapeHtml(safe(ev.date))}, ${escapeHtml(safe(ev.location))}</div>
+        <div class="desc" style="margin:4px 0;">${escapeHtml(safe(ev.description, ""))}</div>
+        <div class="actions">
+          ${ mine ? `<button class="edit-btn" data-id="${ev._id}">Modifica</button>
+                     <button class="del-btn" data-id="${ev._id}">Elimina</button>` : "" }
+        </div>
+      </div>
+      <hr/>
+    `;
+    list.appendChild(li);
   });
+}
 
-  // ANNULLA MODIFICA (opzionale)
-  if (cancelEditBtn) cancelEditBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    clearForm({ titleEl, descEl, dateEl, locEl, addBtn });
-  });
+/* ===================== Create ===================== */
+async function onCreate() {
+  const title = val("titolo").trim();
+  const description = val("descrizione").trim();
+  const date = val("data").trim();
+  const location = val("luogo").trim();
 
-  await reloadList(listEl);
+  if (!title) { alert("Titolo obbligatorio"); return; }
 
-  // delega click per Modifica/Elimina
-  document.body.addEventListener("click", async (e) => {
-    const el = e.target;
-    if (el.matches("[data-del]")) {
-      await onDelete(el.getAttribute("data-del"));
-      await reloadList(listEl);
-      // se stavo modificando quell'evento, resetto il form
-      if (editingId && editingId === el.getAttribute("data-del")) {
-        clearForm({ titleEl, descEl, dateEl, locEl, addBtn });
-      }
-    } else if (el.matches("[data-edit]")) {
-      const id = el.getAttribute("data-edit");
-      await startEdit(id, { titleEl, descEl, dateEl, locEl, addBtn });
+  try {
+    const r = await fetch(`${API_BASE}/api/events`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({ title, description, date, location })
+    });
+
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      alert(e.error || "Errore creazione evento");
+      return;
     }
-  });
+
+    // reset form
+    setVal("titolo", "");
+    setVal("descrizione", "");
+    setVal("data", "");
+    setVal("luogo", "");
+
+    await loadEvents();
+  } catch (err) {
+    console.error("onCreate error:", err);
+    alert("Errore di rete");
+  }
 }
 
-function doLogout(){
-  localStorage.removeItem("userId");
+/* ===================== Edit / Delete (lista) ===================== */
+let editingEventId = null;
+
+function onListClick(e) {
+  const t = e.target;
+  if (t.classList.contains("edit-btn")) {
+    const id = t.getAttribute("data-id");
+    openEditModal(id);
+  } else if (t.classList.contains("del-btn")) {
+    const id = t.getAttribute("data-id"); // ID corretto
+    onDelete(id);
+  }
+}
+
+async function onDelete(id) {
+  if (!confirm("Eliminare definitivamente questo evento?")) return;
+  try {
+    const r = await fetch(`${API_BASE}/api/events/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      alert(e.error || "Errore eliminazione (verifica di essere il creatore dell’evento)");
+      return;
+    }
+    await loadEvents();
+  } catch (err) {
+    console.error("onDelete error:", err);
+    alert("Errore di rete");
+  }
+}
+
+/* ===================== Edit modal ===================== */
+async function openEditModal(id) {
+  try {
+    const r = await fetch(`${API_BASE}/api/events/${id}`);
+    if (!r.ok) throw new Error("not found");
+    const ev = await r.json();
+
+    editingEventId = id;
+    setVal("edit-title-input", ev.title || "");
+    setVal("edit-desc-input", ev.description || "");
+    setVal("edit-date-input", ev.date || "");
+    setVal("edit-loc-input", ev.location || "");
+
+    byId("edit-backdrop").style.display = "flex";
+  } catch (err) {
+    console.error("openEditModal error:", err);
+    alert("Errore nel caricamento dell'evento");
+  }
+}
+
+function closeEditModal() {
+  editingEventId = null;
+  byId("edit-backdrop").style.display = "none";
+  setVal("edit-title-input", "");
+  setVal("edit-desc-input", "");
+  setVal("edit-date-input", "");
+  setVal("edit-loc-input", "");
+}
+
+async function onSaveEdit() {
+  if (!editingEventId) return;
+
+  const title = val("edit-title-input").trim();
+  const description = val("edit-desc-input").trim();
+  const date = val("edit-date-input").trim();
+  const location = val("edit-loc-input").trim();
+
+  if (!title) { alert("Titolo obbligatorio"); return; }
+
+  try {
+    const r = await fetch(`${API_BASE}/api/events/${editingEventId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({ title, description, date, location })
+    });
+
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      alert(e.error || "Errore salvataggio");
+      return;
+    }
+
+    closeEditModal();
+    await loadEvents();
+  } catch (err) {
+    console.error("onSaveEdit error:", err);
+    alert("Errore di rete");
+  }
+}
+
+/* ===================== Role switch & logout ===================== */
+function onSwitchRole() {
+  try {
+    localStorage.setItem("switchingRole", "1");
+    localStorage.setItem("role", "participant");
+    location.href = "/partecipante.html";
+  } finally {
+    setTimeout(() => localStorage.removeItem("switchingRole"), 1000);
+  }
+}
+
+function onLogout() {
   localStorage.removeItem("token");
+  localStorage.removeItem("userId");
   localStorage.removeItem("role");
-  localStorage.removeItem("currentRole");
-  sessionStorage.removeItem("organizzatoreLoggato");
-  sessionStorage.removeItem("partecipanteLoggato");
+  localStorage.removeItem("desiredRole");
+  localStorage.removeItem("userRole");
   location.href = "/";
 }
 
-/* ======== SWITCH ROLE → participant ======== */
-async function onSwitchRoleToParticipant() {
-  const userId = getUserId();
-  const token = getToken();
-  if (!userId || !token) { alert("Sessione scaduta. Effettua di nuovo il login."); location.href="/login.html"; return; }
-
-  try {
-    localStorage.setItem("switchingRole", "1");
-    const r = await fetch(`${API_BASE}/api/users/${userId}/role`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ role: "participant" })
-    });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || `Errore cambio ruolo (${r.status})`);
-
-    if (data.token) localStorage.setItem("token", data.token);
-    localStorage.setItem("role", data.role);
-    localStorage.setItem("currentRole", data.role);
-
-    sessionStorage.removeItem("organizzatoreLoggato");
-    sessionStorage.setItem("partecipanteLoggato", "true");
-
-    location.href = "/partecipante.html";
-  } catch (err) {
-    alert(err.message || "Errore cambio ruolo");
-  } finally {
-    localStorage.removeItem("switchingRole");
-  }
-}
-
-/* ======== CREATE / UPDATE ======== */
-async function onCreateOrUpdate({ titleEl, descEl, dateEl, locEl, addBtn }) {
-  const title = (titleEl?.value || "").trim();
-  const description = (descEl?.value || "").trim();
-  const dateRaw = (dateEl?.value || "").trim();
-  const location = (locEl?.value || "").trim();
-
-  if (!title || !dateRaw || !location) {
-    alert("Compila almeno Titolo, Data e Luogo.");
-    return;
-  }
-
-  const isoDate = normalizeDate(dateRaw); // converte "YYYY-MM-DDTHH:mm" in ISO se serve
-
-  try {
-    let res, data;
-    if (editingId) {
-      // PUT (modifica)
-      res = await fetch(`${API_BASE}/api/events/${editingId}`, {
-        method: "PUT",
-        headers: { "Content-Type":"application/json", Authorization:`Bearer ${getToken()}` },
-        body: JSON.stringify({ title, date: isoDate, location, description })
-      });
-      data = await res.json();
-      if (!res.ok) throw new Error(data?.error || `Errore modifica (${res.status})`);
-      alert("Modificato!");
-    } else {
-      // POST (crea)
-      res = await fetch(`${API_BASE}/api/events`, {
-        method: "POST",
-        headers: { "Content-Type":"application/json", Authorization:`Bearer ${getToken()}` },
-        body: JSON.stringify({ title, date: isoDate, location, description })
-      });
-      data = await res.json();
-      if (!res.ok) throw new Error(data?.error || `Errore creazione (${res.status})`);
-      alert("Creato!");
-    }
-
-    await reloadList(document.getElementById("event-list"));
-    clearForm({ titleEl, descEl, dateEl, locEl, addBtn });
-
-  } catch (err) {
-    alert(err.message || "Errore salvataggio evento");
-  }
-}
-
-function normalizeDate(v) {
-  // Se v è tipo "2025-12-01T18:00" → converto in ISO completo
-  // Se è già ISO completo → la ritorno così com'è
-  try {
-    // se manca la 'Z' o i secondi, provo a costruire ISO
-    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(v)) {
-      return new Date(v).toISOString();
-    }
-    // altrimenti provo a fare il parse; se valido lo trasformo comunque in ISO
-    const d = new Date(v);
-    if (!Number.isNaN(d.getTime())) return d.toISOString();
-    return v; // fallback: mando quello che c'è
-  } catch { return v; }
-}
-
-function clearForm({ titleEl, descEl, dateEl, locEl, addBtn }) {
-  editingId = null;
-  if (titleEl) titleEl.value = "";
-  if (descEl) descEl.value = "";
-  if (dateEl) dateEl.value = "";
-  if (locEl) locEl.value = "";
-  if (addBtn) addBtn.textContent = "Aggiungi evento";
-}
-
-async function startEdit(id, { titleEl, descEl, dateEl, locEl, addBtn }) {
-  try {
-    // recupero l'evento dalla lista corrente (già in pagina) per popolare il form
-    const item = document.querySelector(`[data-item="${id}"]`);
-    if (!item) {
-      // fallback: refetch singolo se avessimo endpoint GET /api/events/:id (non è strettamente necessario)
-      alert("Impossibile preparare la modifica. Ricarica la pagina.");
-      return;
-    }
-
-    // Ho salvato i dati nell'attributo data-json (vedi render)
-    const json = item.getAttribute("data-json");
-    const ev = json ? JSON.parse(json) : null;
-    if (!ev) { alert("Dati evento non disponibili"); return; }
-
-    editingId = id;
-    if (titleEl) titleEl.value = ev.title || "";
-    if (descEl) descEl.value = ev.description || "";
-    if (dateEl) dateEl.value = toInputDateValue(ev.date);
-    if (locEl) locEl.value = ev.location || "";
-    if (addBtn) addBtn.textContent = "Salva modifiche";
-
-    // scroll al form per UX
-    try { document.querySelector("#crea-evento, #create-form, form")?.scrollIntoView({ behavior:"smooth" }); } catch {}
-  } catch (err) {
-    alert(err.message || "Errore attivazione modifica");
-  }
-}
-
-function toInputDateValue(iso) {
-  try {
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return "";
-    // per input datetime-local (YYYY-MM-DDTHH:mm)
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth()+1).padStart(2,"0");
-    const dd = String(d.getDate()).padStart(2,"0");
-    const hh = String(d.getHours()).padStart(2,"0");
-    const mi = String(d.getMinutes()).padStart(2,"0");
-    return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
-  } catch { return ""; }
-}
-
-/* ======== LISTA ======== */
-async function reloadList(container){
-  if (!container) return;
-  container.innerHTML = "<em>Carico eventi...</em>";
-  try {
-    const res = await fetch(`${API_BASE}/api/events`);
-    const data = await res.json();
-    if (!Array.isArray(data) || data.length === 0) {
-      container.innerHTML = "<p>Nessun evento.</p>";
-      return;
-    }
-    const ul = document.createElement("ul");
-    data.forEach(ev => {
-      const li = document.createElement("li");
-      li.setAttribute("data-item", ev._id);
-      // salvo il JSON stringato per popolare il form in startEdit()
-      li.setAttribute("data-json", JSON.stringify(ev));
-      li.innerHTML = `
-        <strong>${safe(ev.title)}</strong> – ${fmtDate(ev.date)} <em>${safe(ev.location)}</em>
-        <button data-edit="${ev._id}" style="margin-left:8px;">Modifica</button>
-        <button data-del="${ev._id}" style="margin-left:8px;">Elimina</button>
-      `;
-      ul.appendChild(li);
-    });
-    container.innerHTML = "";
-    container.appendChild(ul);
-  } catch (err) {
-    container.innerHTML = `<span style="color:red;">Errore caricamento eventi</span>`;
-  }
-}
-
-/* ======== Utils ======== */
+/* ===================== Utils ===================== */
+function byId(id){ return document.getElementById(id); }
+function val(id){ const el = byId(id); return el ? String(el.value || "") : ""; }
+function setVal(id, v){ const el = byId(id); if (el) el.value = v; }
 function safe(v, d="—"){ return (v===undefined||v===null||v==="") ? d : String(v); }
-function fmtDate(v){
-  try {
-    const d = new Date(v);
-    if (Number.isNaN(d.getTime())) return safe(v);
-    return d.toLocaleString("it-IT", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
-  } catch { return safe(v); }
-}
+function escapeHtml(s){ return String(s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
 
 
 
