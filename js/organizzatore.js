@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnLogout = document.getElementById("logoutBtn");
   const btnSwitch = document.getElementById("switchRoleBtn");
 
-  // campi form base (estendibili)
   const F = (id) => document.getElementById(id);
 
   function token() { return localStorage.getItem("token") || ""; }
@@ -46,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Crea evento (campi minimi — estendere successivamente con tutti i campi pro)
   if (form) {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -75,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Delegazione azioni publish/unpublish + delete
   if (list) {
     list.addEventListener("click", async (e) => {
       const pub = e.target.closest(".publish");
@@ -132,8 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // (Opzionale) Real-time leggero: refresh ogni 20s
   // setInterval(loadMine, 20000);
 });
-
-
 
 
 
