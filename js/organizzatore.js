@@ -1,249 +1,294 @@
-// === GoGo.World — Area Organizzatore ===
-// Versione allineata a organizzatore.html (ID reali):
-// Form: titolo, descrizione, data, luogo, crea-btn
-// Lista: event-list
-// Azioni globali: logout-btn, cambia-ruolo-btn
-// Modal edit: edit-backdrop, edit-title-input, edit-desc-input, edit-date-input, edit-loc-input, edit-cancel, edit-save
+// GoGo.World — organizzatore.js aggiornato (Fase 0)
+// Usa window.API e window.GGW per endpoint relativi e gestione ID/_id
+// Funzioni coperte: lista "I miei eventi", crea, modifica, elimina, publish/unpublish (status)
 
-/* ===================== Config ===================== */
-const API_BASE = "https://gogoworld-api.onrender.com";
-const getToken = () => localStorage.getItem("token");
-const getUserId = () => localStorage.getItem("userId");
-const getRole = () => localStorage.getItem("role") || localStorage.getItem("currentRole");
-
-/* ===================== Guard ===================== */
-(function guardOrganizzatore() {
-  const switching = localStorage.getItem("switchingRole") === "1";
-  if (switching) return;
-  const uid = getUserId();
-  const tok = getToken();
-  if (!uid || !tok) {
-    location.href = "/login.html";
-    return;
-  }
-  // Nota: consentiamo lo switch di ruolo senza forzare il role=organizer
-})();
-
-/* ===================== Init ===================== */
 document.addEventListener("DOMContentLoaded", () => {
-  bindUi();
-  loadEvents();
+  const listContainer = document.getElementById("myEventsContainer");
+  const createForm = document.getElementById("createEventForm");
+  const editModal = document.getElementById("editModal"); // opzionale
+  const editForm = document.getElementById("editEventForm"); // opzionale
+  const logoutBtn = document.getElementById("logoutBtn");
+  const switchRoleBtn = document.getElementById("switchRoleBtn");
+
+  // Helpers UI
+  function htmlEscape(s = "") {
+    return String(s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
+  function statusBadge(status) {
+    const st = (status || "draft").toLowerCase();
+    return `<span class="badge badge-${st}">${htmlEscape(st)}</span>`;
+  }
+  function toISO(dateStr) {
+    // accetta sia dateStart ISO che una semplice input date/datetime-local
+    try {
+      if (!dateStr) return "";
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return "";
+      return d.toISOString();
+    } catch { return ""; }
+  }
+
+  // =========================
+  // LISTA "I MIEI EVENTI"
+  // =========================
+  async function loadMyEvents() {
+    if (listContainer) listContainer.innerHTML = "<p>Caricamento eventi...</p>";
+    try {
+      const mine = await API.events.mine();
+      if (!Array.isArray(mine) || mine.length === 0) {
+        if (listContainer) listContainer.innerHTML = "<p>Nessun evento creato.</p>";
+        return;
+      }
+      if (listContainer) listContainer.innerHTML = "";
+      mine.forEach(ev => {
+        const id = GGW.eventId(ev);
+        const div = document.createElement("div");
+        div.className = "event-card";
+
+        const when = GGW.formatDateTime(ev.dateStart || ev.date);
+        const where = ev.city || ev.location || "";
+        const capStr = (ev.capacity ? ` — Capienza: ${ev.capacity}` : "");
+
+        div.innerHTML = `
+          <h3>${htmlEscape(ev.title || "Senza titolo")}</h3>
+          <p>${htmlEscape(where)} — ${htmlEscape(when)} ${capStr}</p>
+          <p>Stato: ${statusBadge(ev.status)}</p>
+          <div class="actions">
+            <button class="editBtn" data-id="${id}">Modifica</button>
+            <button class="deleteBtn" data-id="${id}">Elimina</button>
+            ${ev.status === "published"
+              ? `<button class="unpublishBtn" data-id="${id}">Metti in bozza</button>`
+              : `<button class="publishBtn" data-id="${id}">Pubblica</button>`}
+          </div>
+        `;
+        listContainer && listContainer.appendChild(div);
+      });
+    } catch (err) {
+      console.error("Errore caricamento miei eventi:", err);
+      if (listContainer) listContainer.innerHTML = "<p>Errore durante il caricamento.</p>";
+    }
+  }
+
+  // =========================
+  // CREA
+  // =========================
+  async function createEvent(payload) {
+    try {
+      const normalized = {
+        title: (payload.title || "").trim(),
+        description: (payload.description || "").trim(),
+        dateStart: toISO(payload.dateStart || payload.date),
+        dateEnd: toISO(payload.dateEnd || ""),
+        city: (payload.city || payload.location || "").trim(),
+        address: (payload.address || "").trim(),
+        status: (payload.status || "draft").trim(),
+        visibility: payload.visibility || "public",
+        isFree: payload.isFree === true || payload.isFree === "true",
+        price: payload.price ? Number(payload.price) : undefined,
+        capacity: payload.capacity ? Number(payload.capacity) : undefined,
+        category: payload.category || undefined,
+        type: payload.type || undefined
+      };
+      await API.events.create(normalized);
+      alert("Evento creato con successo.");
+      await loadMyEvents();
+      if (createForm) createForm.reset();
+    } catch (err) {
+      console.error("Errore creazione evento:", err);
+      alert(err?.error || "Errore durante la creazione.");
+    }
+  }
+
+  if (createForm) {
+    createForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const get = (id) => (document.getElementById(id)?.value ?? "").trim();
+
+      createEvent({
+        title: get("title"),
+        description: get("description"),
+        dateStart: document.getElementById("dateStart")?.value || document.getElementById("date")?.value || "",
+        dateEnd: document.getElementById("dateEnd")?.value || "",
+        city: get("city") || get("location"),
+        address: get("address"),
+        status: (document.getElementById("status")?.value || "draft"),
+        visibility: (document.getElementById("visibility")?.value || "public"),
+        isFree: document.getElementById("isFree")?.checked === true,
+        price: document.getElementById("price")?.value || "",
+        capacity: document.getElementById("capacity")?.value || "",
+        category: document.getElementById("category")?.value || "",
+        type: document.getElementById("type")?.value || ""
+      });
+    });
+  }
+
+  // =========================
+  // MODIFICA / PUBLISH
+  // =========================
+  async function openEdit(id) {
+    try {
+      const ev = await API.events.get(id);
+      // Popola form di modifica se presente
+      if (editForm) {
+        const set = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.value = val ?? "";
+        };
+        set("edit_id", id);
+        set("edit_title", ev.title || "");
+        set("edit_description", ev.description || "");
+        set("edit_dateStart", (ev.dateStart ? ev.dateStart.substring(0, 16) : "")); // per input datetime-local
+        set("edit_dateEnd", (ev.dateEnd ? ev.dateEnd.substring(0, 16) : ""));
+        set("edit_city", ev.city || ev.location || "");
+        set("edit_address", ev.address || "");
+        set("edit_status", ev.status || "draft");
+        set("edit_visibility", ev.visibility || "public");
+        const freeBox = document.getElementById("edit_isFree");
+        if (freeBox) freeBox.checked = !!ev.isFree;
+        set("edit_price", ev.price ?? "");
+        set("edit_capacity", ev.capacity ?? "");
+        set("edit_category", ev.category || "");
+        set("edit_type", ev.type || "");
+      }
+      // Mostra modale se esiste
+      if (editModal) editModal.style.display = "block";
+    } catch (err) {
+      console.error("Errore apertura modifica:", err);
+      alert("Impossibile aprire l'evento per la modifica.");
+    }
+  }
+
+  async function saveEdit() {
+    try {
+      const id = document.getElementById("edit_id")?.value;
+      if (!id) return alert("ID evento mancante.");
+
+      const payload = {
+        title: document.getElementById("edit_title")?.value || "",
+        description: document.getElementById("edit_description")?.value || "",
+        dateStart: toISO(document.getElementById("edit_dateStart")?.value || ""),
+        dateEnd: toISO(document.getElementById("edit_dateEnd")?.value || ""),
+        city: document.getElementById("edit_city")?.value || "",
+        address: document.getElementById("edit_address")?.value || "",
+        status: document.getElementById("edit_status")?.value || "draft",
+        visibility: document.getElementById("edit_visibility")?.value || "public",
+        isFree: document.getElementById("edit_isFree")?.checked === true,
+        price: document.getElementById("edit_price")?.value || "",
+        capacity: document.getElementById("edit_capacity")?.value || "",
+        category: document.getElementById("edit_category")?.value || "",
+        type: document.getElementById("edit_type")?.value || ""
+      };
+
+      await API.events.update(id, payload);
+      alert("Evento aggiornato.");
+      await loadMyEvents();
+      if (editModal) editModal.style.display = "none";
+      if (editForm) editForm.reset();
+    } catch (err) {
+      console.error("Errore salvataggio modifica:", err);
+      alert(err?.error || "Errore durante l'aggiornamento.");
+    }
+  }
+
+  async function publish(id, makePublished) {
+    try {
+      const payload = { status: makePublished ? "published" : "draft" };
+      await API.events.update(id, payload);
+      await loadMyEvents();
+    } catch (err) {
+      console.error("Errore publish/unpublish:", err);
+      alert("Errore nel cambio stato.");
+    }
+  }
+
+  // =========================
+  // DELETE
+  // =========================
+  async function removeEvent(id) {
+    if (!confirm("Eliminare definitivamente questo evento?")) return;
+    try {
+      await API.events.remove(id);
+      await loadMyEvents();
+    } catch (err) {
+      console.error("Errore eliminazione:", err);
+      alert("Errore durante l'eliminazione.");
+    }
+  }
+
+  // =========================
+  // Delegazione eventi UI
+  // =========================
+  if (listContainer) {
+    listContainer.addEventListener("click", (e) => {
+      const btnEdit = e.target.closest(".editBtn");
+      const btnDel = e.target.closest(".deleteBtn");
+      const btnPub = e.target.closest(".publishBtn");
+      const btnUnp = e.target.closest(".unpublishBtn");
+
+      if (btnEdit) {
+        const id = btnEdit.dataset.id;
+        openEdit(id);
+      }
+      if (btnDel) {
+        const id = btnDel.dataset.id;
+        removeEvent(id);
+      }
+      if (btnPub) {
+        const id = btnPub.dataset.id;
+        publish(id, true);
+      }
+      if (btnUnp) {
+        const id = btnUnp.dataset.id;
+        publish(id, false);
+      }
+    });
+  }
+
+  // Salvataggio dal form di modifica (se presente)
+  if (editForm) {
+    editForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      saveEdit();
+    });
+  }
+
+  // =========================
+  // Logout & Switch Ruolo
+  // =========================
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      API.clearToken();
+      localStorage.clear();
+      window.location.href = "login.html";
+    });
+  }
+
+  if (switchRoleBtn) {
+    switchRoleBtn.addEventListener("click", async () => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) return alert("Utente non identificato.");
+
+      try {
+        const resp = await API.put(`/api/users/${userId}/role`, { body: { role: "participant" } });
+        if (resp && resp.currentRole === "participant") {
+          localStorage.setItem("currentRole", "participant");
+          window.location.href = "partecipante.html";
+        } else {
+          alert("Errore nello switch ruolo.");
+        }
+      } catch (err) {
+        console.error("Errore switch ruolo:", err);
+        alert("Errore nello switch ruolo.");
+      }
+    });
+  }
+
+  // Avvio
+  loadMyEvents();
 });
-
-/* ===================== UI Bindings ===================== */
-function bindUi() {
-  byId("crea-btn")?.addEventListener("click", onCreate);
-  byId("event-list")?.addEventListener("click", onListClick);
-  byId("logout-btn")?.addEventListener("click", onLogout);
-  byId("cambia-ruolo-btn")?.addEventListener("click", onSwitchRole);
-
-  // Modal edit
-  byId("edit-cancel")?.addEventListener("click", closeEditModal);
-  byId("edit-save")?.addEventListener("click", onSaveEdit);
-}
-
-/* ===================== Data Load ===================== */
-async function loadEvents() {
-  try {
-    const r = await fetch(`${API_BASE}/api/events`);
-    const data = await r.json();
-    const events = Array.isArray(data) ? data : (data && Array.isArray(data.items) ? data.items : []);
-    renderEvents(events);
-  } catch (err) {
-    console.error("loadEvents error:", err);
-    alert("Errore nel caricamento eventi");
-  }
-}
-
-/* ===================== Render List ===================== */
-function renderEvents(events) {
-  const list = byId("event-list");
-  if (!list) return;
-  list.innerHTML = "";
-
-  const myId = getUserId();
-
-  events.forEach(ev => {
-    const li = document.createElement("div");
-    li.className = "event-row";
-    const mine = String(ev.organizerId) === String(myId);
-
-    li.innerHTML = `
-      <div class="row">
-        <div><strong>${escapeHtml(safe(ev.title))}</strong></div>
-        <div>${escapeHtml(safe(ev.date))}, ${escapeHtml(safe(ev.location))}</div>
-        <div class="desc" style="margin:4px 0;">${escapeHtml(safe(ev.description, ""))}</div>
-        <div class="actions">
-          ${ mine ? `<button class="edit-btn" data-id="${ev._id}">Modifica</button>
-                     <button class="del-btn" data-id="${ev._id}">Elimina</button>` : "" }
-        </div>
-      </div>
-      <hr/>
-    `;
-    list.appendChild(li);
-  });
-}
-
-/* ===================== Create ===================== */
-async function onCreate() {
-  const title = val("titolo").trim();
-  const description = val("descrizione").trim();
-  const date = val("data").trim();
-  const location = val("luogo").trim();
-
-  if (!title) { alert("Titolo obbligatorio"); return; }
-
-  try {
-    const r = await fetch(`${API_BASE}/api/events`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`
-      },
-      body: JSON.stringify({ title, description, date, location })
-    });
-
-    if (!r.ok) {
-      const e = await r.json().catch(() => ({}));
-      alert(e.error || "Errore creazione evento");
-      return;
-    }
-
-    // reset form
-    setVal("titolo", "");
-    setVal("descrizione", "");
-    setVal("data", "");
-    setVal("luogo", "");
-
-    await loadEvents();
-  } catch (err) {
-    console.error("onCreate error:", err);
-    alert("Errore di rete");
-  }
-}
-
-/* ===================== Edit / Delete (lista) ===================== */
-let editingEventId = null;
-
-function onListClick(e) {
-  const t = e.target;
-  if (t.classList.contains("edit-btn")) {
-    const id = t.getAttribute("data-id");
-    openEditModal(id);
-  } else if (t.classList.contains("del-btn")) {
-    const id = t.getAttribute("data-id"); // ID corretto
-    onDelete(id);
-  }
-}
-
-async function onDelete(id) {
-  if (!confirm("Eliminare definitivamente questo evento?")) return;
-  try {
-    const r = await fetch(`${API_BASE}/api/events/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    if (!r.ok) {
-      const e = await r.json().catch(() => ({}));
-      alert(e.error || "Errore eliminazione (verifica di essere il creatore dell’evento)");
-      return;
-    }
-    await loadEvents();
-  } catch (err) {
-    console.error("onDelete error:", err);
-    alert("Errore di rete");
-  }
-}
-
-/* ===================== Edit modal ===================== */
-async function openEditModal(id) {
-  try {
-    const r = await fetch(`${API_BASE}/api/events/${id}`);
-    if (!r.ok) throw new Error("not found");
-    const ev = await r.json();
-
-    editingEventId = id;
-    setVal("edit-title-input", ev.title || "");
-    setVal("edit-desc-input", ev.description || "");
-    setVal("edit-date-input", ev.date || "");
-    setVal("edit-loc-input", ev.location || "");
-
-    byId("edit-backdrop").style.display = "flex";
-  } catch (err) {
-    console.error("openEditModal error:", err);
-    alert("Errore nel caricamento dell'evento");
-  }
-}
-
-function closeEditModal() {
-  editingEventId = null;
-  byId("edit-backdrop").style.display = "none";
-  setVal("edit-title-input", "");
-  setVal("edit-desc-input", "");
-  setVal("edit-date-input", "");
-  setVal("edit-loc-input", "");
-}
-
-async function onSaveEdit() {
-  if (!editingEventId) return;
-
-  const title = val("edit-title-input").trim();
-  const description = val("edit-desc-input").trim();
-  const date = val("edit-date-input").trim();
-  const location = val("edit-loc-input").trim();
-
-  if (!title) { alert("Titolo obbligatorio"); return; }
-
-  try {
-    const r = await fetch(`${API_BASE}/api/events/${editingEventId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`
-      },
-      body: JSON.stringify({ title, description, date, location })
-    });
-
-    if (!r.ok) {
-      const e = await r.json().catch(() => ({}));
-      alert(e.error || "Errore salvataggio");
-      return;
-    }
-
-    closeEditModal();
-    await loadEvents();
-  } catch (err) {
-    console.error("onSaveEdit error:", err);
-    alert("Errore di rete");
-  }
-}
-
-/* ===================== Role switch & logout ===================== */
-function onSwitchRole() {
-  try {
-    localStorage.setItem("switchingRole", "1");
-    localStorage.setItem("role", "participant");
-    location.href = "/partecipante.html";
-  } finally {
-    setTimeout(() => localStorage.removeItem("switchingRole"), 1000);
-  }
-}
-
-function onLogout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("userId");
-  localStorage.removeItem("role");
-  localStorage.removeItem("desiredRole");
-  localStorage.removeItem("userRole");
-  location.href = "/";
-}
-
-/* ===================== Utils ===================== */
-function byId(id){ return document.getElementById(id); }
-function val(id){ const el = byId(id); return el ? String(el.value || "") : ""; }
-function setVal(id, v){ const el = byId(id); if (el) el.value = v; }
-function safe(v, d="—"){ return (v===undefined||v===null||v==="") ? d : String(v); }
-function escapeHtml(s){ return String(s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 
 
