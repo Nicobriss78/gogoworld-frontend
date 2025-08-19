@@ -5,20 +5,74 @@
   <title>Area Partecipante – GoGo.World</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="/style.css" />
+  <style>
+    .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:12px 0}
+    .filters input,.filters select{width:100%;padding:8px;border:1px solid #ccc;border-radius:8px}
+    .lists{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media (max-width: 900px){.lists{grid-template-columns:1fr}}
+    ul{list-style:none;padding:0;margin:0}
+    li{border:1px solid #eee;border-radius:10px;padding:10px;margin:8px 0;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .meta{opacity:.8;font-size:.9em}
+    .toolbar{display:flex;gap:8px;margin:8px 0}
+    .badge{display:inline-block;padding:2px 8px;border-radius:12px;background:#eee;margin-left:6px;font-size:.85em}
+    .loading{opacity:.7}
+  </style>
 </head>
 <body>
   <main class="container">
-    <h1>Area Partecipante</h1>
-    <div style="margin:8px 0;">
+    <h1>Area Partecipante <span id="welcome"></span></h1>
+
+    <div class="toolbar">
       <button id="logoutBtn">Logout</button>
       <button id="switchRoleBtn">Diventa organizzatore</button>
     </div>
 
-    <section id="eventsContainer"></section>
+    <!-- FILTRI -->
+    <section>
+      <h2>Filtri</h2>
+      <div class="filters" id="filtersForm">
+        <input type="text" id="q" placeholder="Cerca testo (titolo, descrizione, città)"/>
+        <select id="visibility">
+          <option value="">Visibilità (tutti)</option>
+          <option value="public">Pubblico</option>
+          <option value="private">Privato</option>
+          <option value="unlisted">Non in elenco</option>
+        </select>
+        <select id="isFree">
+          <option value="">Prezzo (tutti)</option>
+          <option value="true">Gratuito</option>
+          <option value="false">A pagamento</option>
+        </select>
+        <input type="date" id="dateFrom" />
+        <input type="date" id="dateTo" />
+        <input type="text" id="city" placeholder="Città"/>
+        <input type="text" id="province" placeholder="Provincia"/>
+        <input type="text" id="region" placeholder="Regione"/>
+        <input type="text" id="country" placeholder="Paese"/>
+        <input type="text" id="category" placeholder="Categoria"/>
+        <input type="text" id="type" placeholder="Tipo evento"/>
+        <select id="status">
+          <option value="published" selected>Solo pubblicati</option>
+          <option value="">Tutti gli stati</option>
+          <option value="draft">Bozza</option>
+          <option value="cancelled">Annullato</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="lists">
+      <div>
+        <h2>Eventi disponibili</h2>
+        <ul id="eventi-disponibili"></ul>
+      </div>
+      <div>
+        <h2>I miei eventi (a cui parteciperò)</h2>
+        <ul id="miei-eventi"></ul>
+      </div>
+    </section>
   </main>
 
-  <script src="/js/api.js"></script>
-  <script src="/js/utils.js"></script>
   <script src="/js/partecipante.js" defer></script>
 </body>
 </html>
+
