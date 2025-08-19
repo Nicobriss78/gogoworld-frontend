@@ -1,202 +1,131 @@
-// frontend/js/partecipante.js
-// GoGo.World — Area Partecipante (coerente con HTML attuale + retry/backoff)
+// GoGo.World — partecipante.js aggiornato (Fase 0)
+// Usa window.API e window.GGW per coerenza endpoint e gestione ID
 
-const API_BASE = 'https://gogoworld-api.onrender.com';
+document.addEventListener("DOMContentLoaded", () => {
+  const eventsContainer = document.getElementById("eventsContainer");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const switchRoleBtn = document.getElementById("switchRoleBtn");
 
-const getToken = () => localStorage.getItem('token');
-const getUserId = () => localStorage.getItem('userId');
+  // --- Caricamento eventi disponibili
+  async function loadEvents() {
+    eventsContainer.innerHTML = "<p>Caricamento eventi...</p>";
+    try {
+      const events = await API.events.list();
+      if (!events || !Array.isArray(events)) {
+        eventsContainer.innerHTML = "<p>Nessun evento disponibile.</p>";
+        return;
+      }
 
-document.addEventListener('DOMContentLoaded', () => {
-  initPartecipante().catch(err => console.error('[Partecipante] init error:', err));
-});
+      if (events.length === 0) {
+        eventsContainer.innerHTML = "<p>Nessun evento trovato.</p>";
+        return;
+      }
 
-/* ===================== Init ===================== */
-async function initPartecipante() {
-  // fine ciclo di switch "soft" da organizer
-  localStorage.removeItem('switchingRole');
+      eventsContainer.innerHTML = "";
+      events.forEach(ev => {
+        const id = GGW.eventId(ev);
+        const div = document.createElement("div");
+        div.className = "event-card";
 
-  const tok = getToken();
-  const uid = getUserId();
-  if (!tok || !uid) {
-    location.href = '/login.html';
-    return;
+        div.innerHTML = `
+          <h3>${ev.title || "Evento senza titolo"}</h3>
+          <p>${ev.city || ev.location || ""} — ${GGW.formatDateTime(ev.dateStart || ev.date)}</p>
+          <button class="joinBtn" data-id="${id}">Partecipa</button>
+          <button class="cancelBtn" data-id="${id}">Annulla</button>
+        `;
+
+        eventsContainer.appendChild(div);
+      });
+    } catch (err) {
+      console.error("Errore caricamento eventi:", err);
+      eventsContainer.innerHTML = "<p>Errore durante il caricamento eventi.</p>";
+    }
   }
 
-  // Bind UI
-  document.getElementById('logout-btn')?.addEventListener('click', onLogout);
-  document.getElementById('cambia-ruolo-btn')?.addEventListener('click', onSwitchRole);
+  // --- Partecipazione evento
+  async function joinEvent(eventId) {
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        alert("Utente non identificato. Effettua il login.");
+        return;
+      }
+      await API.post(`/api/users/${userId}/partecipa`, { body: { eventId } });
+      alert("Partecipazione confermata!");
+      loadEvents();
+    } catch (err) {
+      console.error("Errore partecipazione:", err);
+      alert("Errore durante la partecipazione all'evento.");
+    }
+  }
 
-  // Deleghe click per i bottoni nelle liste
-  document.body.addEventListener('click', async (e) => {
-    const el = e.target;
-    if (el.matches('[data-partecipa]')) {
-      e.preventDefault();
-      await joinEvent(el.getAttribute('data-partecipa'));
-    } else if (el.matches('[data-annulla]')) {
-      e.preventDefault();
-      await leaveEvent(el.getAttribute('data-annulla'));
+  // --- Annulla partecipazione
+  async function cancelEvent(eventId) {
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        alert("Utente non identificato. Effettua il login.");
+        return;
+      }
+      await API.post(`/api/users/${userId}/annulla`, { body: { eventId } });
+      alert("Partecipazione annullata.");
+      loadEvents();
+    } catch (err) {
+      console.error("Errore annullamento:", err);
+      alert("Errore durante l'annullamento.");
+    }
+  }
+
+  // --- Delegazione eventi click
+  eventsContainer.addEventListener("click", (e) => {
+    const joinBtn = e.target.closest(".joinBtn");
+    const cancelBtn = e.target.closest(".cancelBtn");
+
+    if (joinBtn) {
+      const id = joinBtn.dataset.id;
+      joinEvent(id);
+    }
+    if (cancelBtn) {
+      const id = cancelBtn.dataset.id;
+      cancelEvent(id);
     }
   });
 
-  // Carica liste
-  await reloadLists();
-}
-
-/* ===================== API helper con retry/backoff ===================== */
-async function apiFetch(url, opts = {}, retries = 2, delayMs = 400) {
-  try {
-    const res = await fetch(url, opts);
-    // retry su errori transitori del backend / cold start
-    if ([502, 503, 504].includes(res.status) && retries > 0) {
-      await wait(delayMs);
-      return apiFetch(url, opts, retries - 1, delayMs * 2);
-    }
-    return res;
-  } catch (err) {
-    if (retries > 0) {
-      await wait(delayMs);
-      return apiFetch(url, opts, retries - 1, delayMs * 2);
-    }
-    throw err;
-  }
-}
-function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-/* ===================== Load & Render ===================== */
-async function reloadLists() {
-  const allEl = document.getElementById('eventi-disponibili');
-  const myEl = document.getElementById('miei-eventi');
-
-  if (allEl) allEl.innerHTML = 'Caricamento…';
-  if (myEl) myEl.innerHTML = 'Caricamento…';
-
-  try {
-    const r = await fetch(`${API_BASE}/api/events`);
-    const data = await r.json();
-    const events = Array.isArray(data) ? data : (data && Array.isArray(data.items) ? data.items : []);
-
-    const uid = String(getUserId());
-    const mine = [];
-    const others = [];
-
-    events.forEach(ev => {
-      const partecipanti = Array.isArray(ev.participants) ? ev.participants.map(String) : [];
-      if (partecipanti.includes(uid)) mine.push(ev);
-      else others.push(ev);
+  // --- Logout
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      API.clearToken();
+      localStorage.clear();
+      window.location.href = "login.html";
     });
-
-    if (allEl) allEl.innerHTML = renderEventsList(others, false);
-    if (myEl) myEl.innerHTML = renderEventsList(mine, true);
-  } catch (err) {
-    console.error('reloadLists error:', err);
-    if (allEl) allEl.innerHTML = '<em>Errore nel caricamento eventi</em>';
-    if (myEl) myEl.innerHTML = '<em>Errore nel caricamento eventi</em>';
   }
-}
 
-function renderEventsList(list, isMine) {
-  if (!Array.isArray(list) || list.length === 0) {
-    return '<p><em>Nessun evento.</em></p>';
-  }
-  return `
-    <ul class="event-list">
-      ${list.map(ev => `
-        <li class="event-item">
-          <div><strong>${escapeHtml(safe(ev.title))}</strong></div>
-          <div>${escapeHtml(fmtDate(ev.date || ev.dateStart))}, ${escapeHtml(safe(ev.location))}</div>
-          <div class="desc" style="margin:4px 0;">${escapeHtml(safe(ev.description, ""))}</div>
-          <div class="actions">
-            ${ isMine
-                ? `<button data-annulla="${ev._id}">Annulla partecipazione</button>`
-                : `<button data-partecipa="${ev._id}">Partecipa</button>` }
-          </div>
-          <hr/>
-        </li>
-      `).join('')}
-    </ul>
-  `;
-}
+  // --- Switch ruolo (participant → organizer)
+  if (switchRoleBtn) {
+    switchRoleBtn.addEventListener("click", async () => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) return alert("Utente non identificato.");
 
-/* ===================== Azioni: partecipa / annulla ===================== */
-async function joinEvent(eventId) {
-  if (!eventId) return;
-  const url = `${API_BASE}/api/users/${encodeURIComponent(getUserId())}/partecipa`;
-  try {
-    const r = await apiFetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`
-      },
-      body: JSON.stringify({ eventId })
+      try {
+        const resp = await API.put(`/api/users/${userId}/role`, { body: { role: "organizer" } });
+        if (resp && resp.currentRole === "organizer") {
+          localStorage.setItem("currentRole", "organizer");
+          window.location.href = "organizzatore.html";
+        } else {
+          alert("Errore nello switch ruolo.");
+        }
+      } catch (err) {
+        console.error("Errore switch ruolo:", err);
+        alert("Errore nello switch ruolo.");
+      }
     });
-    if (!r.ok) {
-      const e = await r.json().catch(() => ({}));
-      alert(e.error || 'Errore nella partecipazione');
-      return;
-    }
-    await reloadLists();
-  } catch (err) {
-    console.error('joinEvent error:', err);
-    alert('Errore di rete');
   }
-}
 
-async function leaveEvent(eventId) {
-  if (!eventId) return;
-  const url = `${API_BASE}/api/users/${encodeURIComponent(getUserId())}/annulla`;
-  try {
-    const r = await apiFetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`
-      },
-      body: JSON.stringify({ eventId })
-    });
-    if (!r.ok) {
-      const e = await r.json().catch(() => ({}));
-      alert(e.error || 'Errore nell’annullamento partecipazione');
-      return;
-    }
-    await reloadLists();
-  } catch (err) {
-    console.error('leaveEvent error:', err);
-    alert('Errore di rete');
-  }
-}
+  // Avvio
+  loadEvents();
+});
 
-/* ===================== Ruolo & Logout ===================== */
-function onSwitchRole() {
-  try {
-    localStorage.setItem('switchingRole', '1');
-    localStorage.setItem('role', 'organizer'); // switch soft
-    location.href = '/organizzatore.html';
-  } finally {
-    setTimeout(() => localStorage.removeItem('switchingRole'), 1000);
-  }
-}
 
-function onLogout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('userId');
-  localStorage.removeItem('role');
-  localStorage.removeItem('desiredRole');
-  localStorage.removeItem('userRole');
-  sessionStorage.removeItem('partecipanteLoggato');
-  location.href = '/';
-}
-
-/* ===================== Utils ===================== */
-function safe(v, d='—'){ return (v===undefined||v===null||v==='') ? d : String(v); }
-function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function fmtDate(v){
-  try {
-    const d = new Date(v);
-    if (Number.isNaN(d.getTime())) return safe(v);
-    return d.toLocaleString('it-IT', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
-  } catch { return safe(v); }
-}
 
 
 
