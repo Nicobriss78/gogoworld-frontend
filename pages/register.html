@@ -4,28 +4,51 @@
   <meta charset="utf-8" />
   <title>Registrazione — GoGo.World</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="../style.css" />
 </head>
 <body>
-  <h1>Registrati</h1>
+  <main class="container">
+    <h1>Crea il tuo account</h1>
 
-  <form id="regForm" novalidate>
-    <input name="name" type="text" placeholder="Nome" required />
-    <input name="email" type="email" placeholder="Email" required />
-    <input name="password" type="password" placeholder="Password (min 8, almeno 1 lettera e 1 numero)" required />
-    <select name="role" required>
-      <option value="participant" selected>Partecipante</option>
-      <option value="organizer">Organizzatore</option>
-    </select>
-    <label style="display:block;margin:.5rem 0;">
-      <input name="acceptTerms" type="checkbox" required />
-      Accetto termini e condizioni
-    </label>
-    <button type="submit">Crea account</button>
-  </form>
+    <form id="registerForm" class="form">
+      <div class="form-row">
+        <label for="name">Nome</label>
+        <input id="name" type="text" required autocomplete="name" />
+      </div>
+      <div class="form-row">
+        <label for="email">Email</label>
+        <input id="email" type="email" required autocomplete="email" />
+      </div>
+      <div class="form-row">
+        <label for="password">Password</label>
+        <input id="password" type="password" required autocomplete="new-password" />
+      </div>
+      <div class="form-row">
+        <label for="role">Registrati come</label>
+        <select id="role">
+          <option value="participant">Partecipante</option>
+          <option value="organizer">Organizzatore</option>
+        </select>
+      </div>
+      <button type="submit">Registrati</button>
+      <p id="registerError" class="error" style="display:none;"></p>
+    </form>
+
+    <p class="small">
+      Hai già un account? <a href="../login.html">Accedi</a>
+    </p>
+  </main>
+
+  <!-- Import ordine corretto -->
+  <script src="../js/api.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="register.js"></script>
+</body>
+</html>
 
   <p><a href="/">Torna alla Home</a></p>
 
   <script src="/pages/register.js" defer></script>
 </body>
+
 </html>
