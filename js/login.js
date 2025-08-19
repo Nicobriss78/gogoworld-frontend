@@ -1,51 +1,41 @@
-// GoGo.World — login.js aggiornato (Fase 0)
-// Usa window.API (api.js) per chiamate API con endpoint relativi
-
+// login.js — login con desiredRole → server emette token con sessionRole
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("loginForm");
+  const form = document.getElementById("loginForm") || document.getElementById("login-form");
   if (!form) return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const desiredRole = document.getElementById("role").value; // select ruolo login
+    const email = document.getElementById("email")?.value?.trim();
+    const password = document.getElementById("password")?.value?.trim();
+    const desiredRole = localStorage.getItem("desiredRole") || "participant";
 
     try {
-      const data = await API.users.login(email, password, desiredRole);
+      const resp = await fetch("/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, desiredRole })
+      });
+      if (!resp.ok) throw new Error("LOGIN_FAILED");
+      const data = await resp.json();
 
-      // Risposta attesa dal backend:
-      // { token, userId, role, currentRole }
-      if (!data || !data.token) {
-        alert("Errore login: risposta non valida dal server");
-        return;
-      }
+      // Salva token e info
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("registeredRole", data.registeredRole);
+      localStorage.setItem("sessionRole", data.sessionRole);
 
-      // Salvataggio token e info utente
-      API.setToken(data.token);
-      localStorage.setItem("userId", data.userId || "");
-      if (data.role) localStorage.setItem("role", data.role);
-      if (data.currentRole) localStorage.setItem("currentRole", data.currentRole);
-
-      // Redirect in base al ruolo attivo
-      const roleToGo = data.currentRole || data.role;
-      if (roleToGo === "organizer") {
-        window.location.href = "organizzatore.html";
-      } else if (roleToGo === "participant") {
-        window.location.href = "partecipante.html";
-      } else {
-        // fallback guest → redirect a home
-        window.location.href = "index.html";
-      }
+      // Redirect coerente al sessionRole
+      if (data.sessionRole === "organizer") window.location.href = "organizzatore.html";
+      else window.location.href = "partecipante.html";
     } catch (err) {
       console.error("Login error:", err);
-      let msg = "Errore di rete o credenziali non valide.";
-      if (err && err.error) msg = err.error;
-      alert(msg);
+      alert("Credenziali non valide o errore di rete.");
     }
   });
 });
+
+
 
 
 
