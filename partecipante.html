@@ -7,17 +7,18 @@
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <h1>Area Partecipante</h1>
-  <p>Benvenuto nell'area riservata ai partecipanti.</p>
+  <main class="container">
+    <h1>Area Partecipante</h1>
+    <div style="margin:8px 0;">
+      <button id="logoutBtn">Logout</button>
+      <button id="switchRoleBtn">Diventa organizzatore</button>
+    </div>
 
-  <div style="margin:8px 0;">
-    <button id="logout-btn">Logout</button>
-    <button id="cambia-ruolo-btn">Cambia ruolo</button>
-  </div>
+    <section id="eventsContainer"></section>
+  </main>
 
-  <section id="eventi-disponibili"></section>
-  <section id="miei-eventi"></section>
-
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
   <script src="/js/partecipante.js" defer></script>
 </body>
 </html>
