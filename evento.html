@@ -2,18 +2,18 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dettagli Evento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Evento – GoGo.World</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <section class="evento-container">
-    <h1 id="evento-titolo">🔍 Evento</h1>
-    <p>📅 Data: <span id="evento-data">...</span></p>
-    <p>📍 Luogo: <span id="evento-luogo">...</span></p>
-    <a href="partecipante.html" class="btn-link">← Torna alla lista eventi</a>
-  </section>
+  <main class="container">
+    <button id="backBtn" class="btn">← Torna</button>
+    <div id="eventDetail"></div>
+  </main>
 
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
   <script src="js/evento.js"></script>
 </body>
 </html>
