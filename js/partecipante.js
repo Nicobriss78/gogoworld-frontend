@@ -1,129 +1,112 @@
-// GoGo.World — partecipante.js aggiornato (Fase 0)
-// Usa window.API e window.GGW per coerenza endpoint e gestione ID
-
+// partecipante.js — due elenchi (disponibili / miei), switch sessionRole senza re-login
 document.addEventListener("DOMContentLoaded", () => {
-  const eventsContainer = document.getElementById("eventsContainer");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const switchRoleBtn = document.getElementById("switchRoleBtn");
+  const listDisp = document.getElementById("eventi-disponibili");
+  const listMiei = document.getElementById("miei-eventi");
+  const btnLogout = document.getElementById("logoutBtn");
+  const btnSwitch = document.getElementById("switchRoleBtn");
 
-  // --- Caricamento eventi disponibili
-  async function loadEvents() {
-    eventsContainer.innerHTML = "<p>Caricamento eventi...</p>";
-    try {
-      const events = await API.events.list();
-      if (!events || !Array.isArray(events)) {
-        eventsContainer.innerHTML = "<p>Nessun evento disponibile.</p>";
-        return;
+  function token() { return localStorage.getItem("token") || ""; }
+  function userId() { return localStorage.getItem("userId") || ""; }
+
+  async function fetchJSON(url, opts = {}) {
+    const resp = await fetch(url, {
+      ...opts,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token()}`,
+        ...(opts.headers || {})
       }
-
-      if (events.length === 0) {
-        eventsContainer.innerHTML = "<p>Nessun evento trovato.</p>";
-        return;
-      }
-
-      eventsContainer.innerHTML = "";
-      events.forEach(ev => {
-        const id = GGW.eventId(ev);
-        const div = document.createElement("div");
-        div.className = "event-card";
-
-        div.innerHTML = `
-          <h3>${ev.title || "Evento senza titolo"}</h3>
-          <p>${ev.city || ev.location || ""} — ${GGW.formatDateTime(ev.dateStart || ev.date)}</p>
-          <button class="joinBtn" data-id="${id}">Partecipa</button>
-          <button class="cancelBtn" data-id="${id}">Annulla</button>
-        `;
-
-        eventsContainer.appendChild(div);
-      });
-    } catch (err) {
-      console.error("Errore caricamento eventi:", err);
-      eventsContainer.innerHTML = "<p>Errore durante il caricamento eventi.</p>";
-    }
+    });
+    if (!resp.ok) throw new Error(await resp.text());
+    return resp.json();
   }
 
-  // --- Partecipazione evento
-  async function joinEvent(eventId) {
-    try {
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        alert("Utente non identificato. Effettua il login.");
-        return;
-      }
-      await API.post(`/api/users/${userId}/partecipa`, { body: { eventId } });
-      alert("Partecipazione confermata!");
-      loadEvents();
-    } catch (err) {
-      console.error("Errore partecipazione:", err);
-      alert("Errore durante la partecipazione all'evento.");
-    }
+  function renderLists(events) {
+    if (listDisp) listDisp.innerHTML = "";
+    if (listMiei) listMiei.innerHTML = "";
+
+    const uid = userId();
+    const mine = [];
+    const others = [];
+
+    (events || []).forEach(ev => {
+      const isMine = (ev.participants || []).some(pid => String(pid) === String(uid));
+      (isMine ? mine : others).push(ev);
+    });
+
+    const makeItem = (ev, join) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <strong>${ev.title || "Senza titolo"}</strong>
+        <span> — ${ev.city || ""} · ${new Date(ev.dateStart).toLocaleString("it-IT")}</span>
+        <button class="${join ? "join" : "leave"}" data-id="${ev._id}">
+          ${join ? "Partecipa" : "Annulla partecipazione"}
+        </button>
+      `;
+      return li;
+    };
+
+    others.forEach(ev => listDisp && listDisp.appendChild(makeItem(ev, true)));
+    mine.forEach(ev => listMiei && listMiei.appendChild(makeItem(ev, false)));
   }
 
-  // --- Annulla partecipazione
-  async function cancelEvent(eventId) {
-    try {
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        alert("Utente non identificato. Effettua il login.");
-        return;
-      }
-      await API.post(`/api/users/${userId}/annulla`, { body: { eventId } });
-      alert("Partecipazione annullata.");
-      loadEvents();
-    } catch (err) {
-      console.error("Errore annullamento:", err);
-      alert("Errore durante l'annullamento.");
-    }
+  async function load() {
+    // Filtri minimi: solo pubblicati
+    const data = await fetchJSON(`/api/events?status=published`);
+    renderLists(Array.isArray(data) ? data : []);
   }
 
-  // --- Delegazione eventi click
-  eventsContainer.addEventListener("click", (e) => {
-    const joinBtn = e.target.closest(".joinBtn");
-    const cancelBtn = e.target.closest(".cancelBtn");
-
-    if (joinBtn) {
-      const id = joinBtn.dataset.id;
-      joinEvent(id);
-    }
-    if (cancelBtn) {
-      const id = cancelBtn.dataset.id;
-      cancelEvent(id);
-    }
+  // Azioni join/leave
+  [listDisp, listMiei].forEach(list => {
+    if (!list) return;
+    list.addEventListener("click", async (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      const id = btn.dataset.id;
+      try {
+        if (btn.classList.contains("join")) {
+          await fetchJSON(`/api/users/${userId()}/partecipa`, { method: "POST", body: JSON.stringify({ eventId: id }) });
+        } else {
+          await fetchJSON(`/api/users/${userId()}/annulla`, { method: "POST", body: JSON.stringify({ eventId: id }) });
+        }
+        await load();
+      } catch (err) {
+        console.error(err);
+        alert("Operazione non riuscita.");
+      }
+    });
   });
 
-  // --- Logout
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      API.clearToken();
-      localStorage.clear();
-      window.location.href = "login.html";
-    });
-  }
-
-  // --- Switch ruolo (participant → organizer)
-  if (switchRoleBtn) {
-    switchRoleBtn.addEventListener("click", async () => {
-      const userId = localStorage.getItem("userId");
-      if (!userId) return alert("Utente non identificato.");
-
+  // Switch ruolo dinamico (→ organizer) SENZA re-login: chiediamo nuovo token di sessione
+  if (btnSwitch) {
+    btnSwitch.addEventListener("click", async () => {
       try {
-        const resp = await API.put(`/api/users/${userId}/role`, { body: { role: "organizer" } });
-        if (resp && resp.currentRole === "organizer") {
-          localStorage.setItem("currentRole", "organizer");
-          window.location.href = "organizzatore.html";
-        } else {
-          alert("Errore nello switch ruolo.");
-        }
+        const out = await fetchJSON(`/api/users/session-role`, {
+          method: "PUT",
+          body: JSON.stringify({ sessionRole: "organizer" })
+        });
+        localStorage.setItem("token", out.token);
+        localStorage.setItem("sessionRole", out.sessionRole);
+        window.location.href = "organizzatore.html";
       } catch (err) {
-        console.error("Errore switch ruolo:", err);
-        alert("Errore nello switch ruolo.");
+        console.error(err);
+        alert("Impossibile cambiare ruolo.");
       }
     });
   }
 
-  // Avvio
-  loadEvents();
+  if (btnLogout) {
+    btnLogout.addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "index.html";
+    });
+  }
+
+  load();
+  // (Opzionale) Real-time leggero: refresh ogni 20s
+  // setInterval(load, 20000);
 });
+
 
 
 
