@@ -1,4 +1,4 @@
-// partecipante.js — filtri + doppia lista + switch sessionRole senza re-login
+// partecipante.js — liste (disponibili / miei), filtri, join/leave, switch ruolo
 document.addEventListener("DOMContentLoaded", () => {
   const listDisp = document.getElementById("eventi-disponibili");
   const listMiei = document.getElementById("miei-eventi");
@@ -17,174 +17,131 @@ document.addEventListener("DOMContentLoaded", () => {
     province: document.getElementById("province"),
     region: document.getElementById("region"),
     country: document.getElementById("country"),
+    status: document.getElementById("status"), // di default "published" lato UI
     category: document.getElementById("category"),
     type: document.getElementById("type"),
-    status: document.getElementById("status"),
   };
 
-  function token() { return localStorage.getItem("token") || ""; }
-  function userId() { return localStorage.getItem("userId") || ""; }
-  function sessionRole() { return localStorage.getItem("sessionRole") || ""; }
-  function registeredRole() { return localStorage.getItem("registeredRole") || ""; }
+  const token = () => localStorage.getItem("token") || "";
+  const uid = () => localStorage.getItem("userId") || "";
+  const regRole = () => localStorage.getItem("registeredRole") || "participant";
+  const sessRole = () => localStorage.getItem("sessionRole") || "participant";
 
-  // Benvenuto (finché /api/users/me non restituisce il nome, mostro solo ruoli)
-  if (welcome) {
-    const sr = sessionRole();
-    const rr = registeredRole();
-    welcome.textContent = sr ? `— ruolo attivo: ${sr} (ruolo registrato: ${rr})` : "";
+  if (welcome) welcome.textContent = `Ciao! Sei in sessione come ${sessRole()}`;
+
+  function qs(params) {
+    const p = new URLSearchParams();
+    Object.entries(params).forEach(([k,v]) => {
+      if (v === null || v === undefined || v === "") return;
+      p.set(k, v);
+    });
+    return p.toString();
   }
 
   async function fetchJSON(url, opts = {}) {
-    const resp = await fetch(url, {
-      ...opts,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token()}`,
-        ...(opts.headers || {})
-      }
+    const res = await fetch(url, {
+      method: opts.method || "GET",
+      headers: Object.assign(
+        { "Content-Type": "application/json", ...(token() ? { Authorization: `Bearer ${token()}` } : {}) },
+        opts.headers || {}
+      ),
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
     });
-    if (!resp.ok) throw new Error(await resp.text());
-    return resp.json();
+    if (!res.ok) throw new Error(`HTTP_${res.status}`);
+    return res.json();
   }
 
-  // Costruisce query string dai filtri attivi
-  function buildQuery() {
-    const sp = new URLSearchParams();
-    Object.entries(filters).forEach(([key, el]) => {
-      const val = (el?.value ?? "").trim();
-      if (val) sp.set(key, val);
-    });
-    // Default: se non c'è status, forzo published (coerente con UX Partecipante)
-    if (!sp.has("status")) sp.set("status", "published");
-    return sp.toString() ? `?${sp.toString()}` : "";
-  }
-
-  function setLoading(on) {
-    if (on) {
-      listDisp && (listDisp.innerHTML = `<li class="loading">Caricamento...</li>`);
-      listMiei && (listMiei.innerHTML = `<li class="loading">Caricamento...</li>`);
-    }
-  }
-
-  function renderLists(events) {
-    if (listDisp) listDisp.innerHTML = "";
-    if (listMiei) listMiei.innerHTML = "";
-
-    const uid = userId();
-    const mine = [];
-    const others = [];
-
-    (events || []).forEach(ev => {
-      const isMine = (ev.participants || []).some(pid => String(pid) === String(uid));
-      (isMine ? mine : others).push(ev);
-    });
-
-    const makeItem = (ev, join) => {
+  function renderList(target, arr, mine = false) {
+    target.innerHTML = "";
+    arr.forEach(ev => {
       const li = document.createElement("li");
-      const when = ev.dateStart ? new Date(ev.dateStart).toLocaleString("it-IT") : "";
-      const where = ev.city || ev.location || "";
-      const vis = ev.visibility ? `<span class="badge">${ev.visibility}</span>` : "";
       li.innerHTML = `
         <div>
-          <div><strong>${ev.title || "Senza titolo"}</strong> ${vis}</div>
-          <div class="meta">${where ? where + " · " : ""}${when}</div>
+          <strong>${ev.title || "(senza titolo)"} </strong>
+          <div class="meta">${(ev.city||"")}${ev.region?`, ${ev.region}`:""} — ${new Date(ev.dateStart||ev.createdAt||Date.now()).toLocaleString()}</div>
+          <div class="toolbar">
+            <a href="evento.html?id=${ev._id}">Dettagli</a>
+          </div>
         </div>
-        <div>
-          <a href="evento.html?id=${ev._id}" class="btn-ghost" style="margin-right:8px;">Dettagli</a>
-          <button class="${join ? "join" : "leave"}" data-id="${ev._id}">
-            ${join ? "Partecipa" : "Annulla partecipazione"}
-          </button>
+        <div class="toolbar">
+          ${sessRole()==="participant" ? (mine
+            ? `<button data-act="leave" data-id="${ev._id}">Annulla</button>`
+            : `<button data-act="join" data-id="${ev._id}">Partecipa</button>`) : ""}
         </div>
       `;
-      return li;
-    };
-
-    if (others.length === 0 && listDisp) {
-      listDisp.innerHTML = `<li>Nessun evento disponibile con i filtri correnti.</li>`;
-    } else {
-      others.forEach(ev => listDisp && listDisp.appendChild(makeItem(ev, true)));
-    }
-
-    if (mine.length === 0 && listMiei) {
-      listMiei.innerHTML = `<li>Non stai partecipando ad alcun evento con i filtri correnti.</li>`;
-    } else {
-      mine.forEach(ev => listMiei && listMiei.appendChild(makeItem(ev, false)));
-    }
+      target.appendChild(li);
+    });
   }
 
   async function load() {
-    setLoading(true);
-    try {
-      const qs = buildQuery();
-      const data = await fetchJSON(`/api/events${qs}`);
-      renderLists(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error(err);
-      listDisp && (listDisp.innerHTML = `<li>Errore nel caricamento.</li>`);
-      listMiei && (listMiei.innerHTML = `<li>Errore nel caricamento.</li>`);
-    }
+    // Costruisci parametri dai filtri
+    const params = {
+      q: filters.q?.value?.trim(),
+      visibility: filters.visibility?.value,
+      isFree: filters.isFree?.checked ? "true" : "",
+      dateFrom: filters.dateFrom?.value,
+      dateTo: filters.dateTo?.value,
+      city: filters.city?.value,
+      province: filters.province?.value,
+      region: filters.region?.value,
+      country: filters.country?.value,
+      status: (filters.status?.value || "published"),
+      category: filters.category?.value,
+      type: filters.type?.value,
+    };
+    const query = qs(params);
+
+    // `/api/events` restituisce un ARRAY (controller allineato)
+    const all = await fetchJSON(`/api/events?${query}`);
+    const myId = uid();
+    const mine = all.filter(ev => (ev.participants||[]).some(pid => String(pid) === String(myId)));
+    const disp = all.filter(ev => !(ev.participants||[]).some(pid => String(pid) === String(myId)));
+
+    renderList(listMiei, mine, true);
+    renderList(listDisp, disp, false);
   }
 
-  // Azioni join/leave
-  [listDisp, listMiei].forEach(list => {
-    if (!list) return;
-    list.addEventListener("click", async (e) => {
-      const btn = e.target.closest("button");
-      if (!btn) return;
-      const id = btn.dataset.id;
-      try {
-        if (btn.classList.contains("join")) {
-          await fetchJSON(`/api/users/${userId()}/partecipa`, { method: "POST", body: JSON.stringify({ eventId: id }) });
-        } else {
-          await fetchJSON(`/api/users/${userId()}/annulla`, { method: "POST", body: JSON.stringify({ eventId: id }) });
-        }
-        await load();
-      } catch (err) {
-        console.error(err);
-        alert("Operazione non riuscita.");
-      }
-    });
+  listDisp?.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-act='join']");
+    if (!btn) return;
+    const id = btn.getAttribute("data-id");
+    await fetchJSON(`/api/users/${uid()}/partecipa`, { method: "POST", body: { eventId: id } });
+    await load();
   });
 
-  // Switch ruolo dinamico (→ organizer) SENZA re-login
-  if (btnSwitch) {
-    btnSwitch.addEventListener("click", async () => {
-      try {
-        const out = await fetchJSON(`/api/users/session-role`, {
-          method: "PUT",
-          body: JSON.stringify({ sessionRole: "organizer" })
-        });
-        localStorage.setItem("token", out.token);
-        localStorage.setItem("sessionRole", out.sessionRole);
-        window.location.href = "organizzatore.html";
-      } catch (err) {
-        console.error(err);
-        alert("Impossibile cambiare ruolo.");
-      }
-    });
-  }
-
-  if (btnLogout) {
-    btnLogout.addEventListener("click", () => {
-      localStorage.clear();
-      window.location.href = "index.html";
-    });
-  }
-
-  // Hook filtri (debounce)
-  const debounced = (fn, ms = 250) => {
-    let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
-  };
-  Object.values(filters).forEach(el => {
-    if (!el) return;
-    const ev = el.tagName === "SELECT" ? "change" : "input";
-    el.addEventListener(ev, debounced(load, 250));
+  listMiei?.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-act='leave']");
+    if (!btn) return;
+    const id = btn.getAttribute("data-id");
+    await fetchJSON(`/api/users/${uid()}/annulla`, { method: "POST", body: { eventId: id } });
+    await load();
   });
 
+  btnSwitch?.addEventListener("click", async () => {
+    if (regRole() !== "organizer") return alert("Puoi passare a organizzatore solo se registrato come organizer.");
+    const next = sessRole() === "organizer" ? "participant" : "organizer";
+    const out = await fetchJSON("/api/users/session-role", { method: "PUT", body: { sessionRole: next } });
+    if (out?.token) localStorage.setItem("token", out.token);
+    localStorage.setItem("sessionRole", out.sessionRole || next);
+    window.location.href = next === "organizer" ? "organizzatore.html" : "partecipante.html";
+  });
+
+  btnLogout?.addEventListener("click", () => {
+    ["token","userId","registeredRole","sessionRole"].forEach(k => localStorage.removeItem(k));
+    window.location.href = "index.html";
+  });
+
+  // carica iniziale
   load();
-  // (Opzionale) Real-time leggero: refresh ogni 20s
-  // setInterval(load, 20000);
+
+  // bind form filtri, se presente
+  document.getElementById("filtersForm")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    load();
+  });
 });
+
+
 
 
 
