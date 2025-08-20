@@ -3,11 +3,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("registerForm");
   const favSel = document.getElementById("favoriteCategories");
 
+  // --- util retry (per 502/503/504/timeout) ---
+  async function fetchWithRetry(url, opts = {}, { retries = 2, delayMs = 800 } = {}) {
+    let lastErr;
+    for (let i = 0; i <= retries; i++) {
+      try {
+        const resp = await fetch(url, opts);
+        if (resp.ok) return resp;
+        if (![502, 503, 504].includes(resp.status)) return resp; // errori “logici” non si ritentano
+        lastErr = new Error(`HTTP_${resp.status}`);
+      } catch (e) {
+        lastErr = e; // errori rete
+      }
+      if (i < retries) await new Promise(r => setTimeout(r, delayMs * Math.pow(1.5, i)));
+    }
+    throw lastErr || new Error("RETRY_FAILED");
+  }
+
+  // --- warm‑up backend (non blocca la pagina) ---
+  (async () => {
+    try { await fetchWithRetry("/api/health", { method: "GET" }, { retries: 3, delayMs: 600 }); }
+    catch { /* ignoriamo: la submit farà retry comunque */ }
+  })();
+
   // Auto-popola categorie leggendo gli eventi pubblicati (fallback lista base)
   async function loadCategories() {
     const fallback = ["Sagre", "Concerti", "Mostre", "Teatro", "Sport", "Workshop", "Fiere", "Festival"];
     try {
-      const resp = await fetch("/api/events?status=published");
+      const resp = await fetchWithRetry("/api/events?status=published", { method: "GET" }, { retries: 2, delayMs: 700 });
       if (!resp.ok) throw new Error();
       const events = await resp.json();
       const set = new Set(fallback);
@@ -51,8 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const favoriteCategories = Array.from(favSel?.selectedOptions || []).map(o => o.value);
 
     try {
-      // Registrazione (crea User + UserProfile)
-      const resp = await fetch("/api/users/register", {
+      // Registrazione (crea User + UserProfile) — con retry
+      const resp = await fetchWithRetry("/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -67,16 +90,16 @@ document.addEventListener("DOMContentLoaded", () => {
             newsletterOptIn
           }
         })
-      });
+      }, { retries: 2, delayMs: 900 });
       if (!resp.ok) throw new Error(await resp.text());
 
-      // Login automatico con desiredRole coerente con scelta in home (o con role)
+      // Login automatico con desiredRole coerente con scelta in home (o con role) — con retry
       const desiredRole = localStorage.getItem("desiredRole") || role || "participant";
-      const login = await fetch("/api/users/login", {
+      const login = await fetchWithRetry("/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, desiredRole })
-      });
+      }, { retries: 2, delayMs: 900 });
       if (!login.ok) throw new Error("AUTO_LOGIN_FAILED");
       const data = await login.json();
 
@@ -93,6 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
 
 
 
