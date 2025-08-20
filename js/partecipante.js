@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     province: document.getElementById("province"),
     region: document.getElementById("region"),
     country: document.getElementById("country"),
-    status: document.getElementById("status"), // di default "published" lato UI
+    status: document.getElementById("status"),
     category: document.getElementById("category"),
     type: document.getElementById("type"),
   };
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const res = await fetch(url, {
       method: opts.method || "GET",
       headers: Object.assign(
-        { "Content-Type": "application/json", ...(token() ? { Authorization: `Bearer ${token()}` } : {}) },
+        { "Content-Type": "application/json", ...(token() ? { Authorization: `Bearer ${token}` } : {}) },
         opts.headers || {}
       ),
       body: opts.body ? JSON.stringify(opts.body) : undefined,
@@ -74,7 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function load() {
-    // Costruisci parametri dai filtri
     const params = {
       q: filters.q?.value?.trim(),
       visibility: filters.visibility?.value,
@@ -91,11 +90,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     const query = qs(params);
 
-    // `/api/events` restituisce un ARRAY (controller allineato)
-    const all = await fetchJSON(`/api/events?${query}`);
+    const all = await fetchJSON(`/api/events?${query}`); // array
     const myId = uid();
-    const mine = all.filter(ev => (ev.participants||[]).some(pid => String(pid) === String(myId)));
-    const disp = all.filter(ev => !(ev.participants||[]).some(pid => String(pid) === String(myId)));
+    const mine = all.filter(ev => (ev.participants||[]).some((pid) => String(pid) === String(myId)));
+    const disp = all.filter(ev => !(ev.participants||[]).some((pid) => String(pid) === String(myId)));
 
     renderList(listMiei, mine, true);
     renderList(listDisp, disp, false);
@@ -117,7 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
     await load();
   });
 
-  btnSwitch?.addEventListener("click", async () => {
+  // switch ruolo
+  document.getElementById("switchRoleBtn")?.addEventListener("click", async () => {
     if (regRole() !== "organizer") return alert("Puoi passare a organizzatore solo se registrato come organizer.");
     const next = sessRole() === "organizer" ? "participant" : "organizer";
     const out = await fetchJSON("/api/users/session-role", { method: "PUT", body: { sessionRole: next } });
@@ -126,7 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = next === "organizer" ? "organizzatore.html" : "partecipante.html";
   });
 
-  btnLogout?.addEventListener("click", () => {
+  // logout
+  document.getElementById("logoutBtn")?.addEventListener("click", () => {
     ["token","userId","registeredRole","sessionRole"].forEach(k => localStorage.removeItem(k));
     window.location.href = "index.html";
   });
@@ -134,7 +134,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // carica iniziale
   load();
 
-  // bind form filtri, se presente
+  // 🔧 fix bfcache: ricarica quando torni dal dettaglio o la tab torna visibile
+  window.addEventListener("pageshow", () => load());
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") load();
+  });
+
+  // filtri
   document.getElementById("filtersForm")?.addEventListener("submit", (e) => {
     e.preventDefault();
     load();
