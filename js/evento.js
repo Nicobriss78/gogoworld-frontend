@@ -93,11 +93,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   joinBtn?.addEventListener("click", async () => {
     await fetchJSON(`/api/users/${uid()}/partecipa`, { method: "POST", body: { eventId: id } });
+    sessionStorage.setItem("ggw_list_dirty", "1"); // 🔧 segnala che la lista va ricaricata
     await load();
   });
 
   leaveBtn?.addEventListener("click", async () => {
     await fetchJSON(`/api/users/${uid()}/annulla`, { method: "POST", body: { eventId: id } });
+    sessionStorage.setItem("ggw_list_dirty", "1"); // 🔧 segnala che la lista va ricaricata
     await load();
   });
 
@@ -105,6 +107,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   load();
 });
-
-
 
