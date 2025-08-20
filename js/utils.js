@@ -101,3 +101,4 @@
     roles: { hasRole, requireOrganizer, requireParticipant },
     assert
   };
+})();
