@@ -1,258 +1,177 @@
-
-// organizzatore.js — "miei eventi" (API /events/mine), form PRO, CRUD, publish/unpublish, switch di sessionRole
+// organizzatore.js — lista miei eventi, create, edit, delete, switch ruolo
 document.addEventListener("DOMContentLoaded", () => {
-  const list = document.getElementById("myEventsContainer");
-  const form = document.getElementById("createEventForm");
-  const editModal = document.getElementById("editModal");
+  const myBox = document.getElementById("myEventsContainer");
+  const createForm = document.getElementById("createEventForm");
   const editForm = document.getElementById("editEventForm");
+  const editModal = document.getElementById("editModal");
   const btnLogout = document.getElementById("logoutBtn");
   const btnSwitch = document.getElementById("switchRoleBtn");
+  const welcome = document.getElementById("welcome");
 
-  const F = (id) => document.getElementById(id);
-  function token() { return localStorage.getItem("token") || ""; }
+  const token = () => localStorage.getItem("token") || "";
+  const uid = () => localStorage.getItem("userId") || "";
+  const regRole = () => localStorage.getItem("registeredRole") || "participant";
+  const sessRole = () => localStorage.getItem("sessionRole") || "participant";
+
+  if (welcome) welcome.textContent = `Ciao! Sei in sessione come ${sessRole()}`;
 
   async function fetchJSON(url, opts = {}) {
-    const resp = await fetch(url, {
-      ...opts,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token()}`,
-        ...(opts.headers || {})
-      }
+    const res = await fetch(url, {
+      method: opts.method || "GET",
+      headers: Object.assign(
+        { "Content-Type": "application/json", ...(token() ? { Authorization: `Bearer ${token()}` } : {}) },
+        opts.headers || {}
+      ),
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
     });
-    if (!resp.ok) throw new Error(await resp.text());
-    return resp.json();
+    if (!res.ok) throw new Error(`HTTP_${res.status}`);
+    return res.json();
   }
 
-  function toISO(v) { if (!v) return ""; const d = new Date(v); return isNaN(d) ? "" : d.toISOString(); }
-  function dtLocal(v) { if (!v) return ""; try { return String(v).substring(0,16); } catch { return ""; } }
+  function val(id) { return document.getElementById(id)?.value?.trim() || ""; }
+  function bool(id) { return !!document.getElementById(id)?.checked; }
+  function num(id) { const x = +val(id); return Number.isFinite(x) ? x : undefined; }
 
-  function renderList(events) {
-    if (list) list.innerHTML = "";
-    (events || []).forEach(ev => {
-      const div = document.createElement("div");
-      div.className = "event-card";
-      const when = ev.dateStart ? new Date(ev.dateStart).toLocaleString("it-IT") : "";
-      const where = [ev.city, ev.province, ev.region, ev.country].filter(Boolean).join(", ");
-      div.innerHTML = `
-        <h3>${ev.title || "Senza titolo"}
-          ${ev.visibility ? `<span class="badge">${ev.visibility}</span>` : ""}
-          ${ev.status ? `<span class="badge">${ev.status}</span>` : ""}
-        </h3>
-        <p>${where || ""} ${when ? " · " + when : ""}</p>
-        <p>${ev.category || ""} ${ev.subcategory ? " · " + ev.subcategory : ""} ${ev.type ? " · " + ev.type : ""}</p>
-        <div class="actions">
-          <button class="edit" data-id="${ev._id}">Modifica</button>
-          <button class="publish" data-id="${ev._id}" data-on="${ev.status !== "published"}">
-            ${ev.status === "published" ? "Metti in bozza" : "Pubblica"}
-          </button>
-          <button class="delete" data-id="${ev._id}">Elimina</button>
+  function renderList(items) {
+    myBox.innerHTML = "";
+    items.forEach(ev => {
+      const el = document.createElement("div");
+      el.className = "card";
+      el.innerHTML = `
+        <h3>${ev.title || "(senza titolo)"} <small class="badge badge-${ev.status||"draft"}">${ev.status||"draft"}</small></h3>
+        <div class="meta">${(ev.city||"")}${ev.region?`, ${ev.region}`:""} — ${new Date(ev.dateStart||ev.createdAt||Date.now()).toLocaleString()}</div>
+        <div class="toolbar">
+          <button data-act="edit" data-id="${ev._id}">Modifica</button>
+          <button data-act="del" data-id="${ev._id}">Elimina</button>
+          <a href="evento.html?id=${ev._id}">Apri</a>
         </div>
       `;
-      list && list.appendChild(div);
+      myBox.appendChild(el);
     });
-    if (list && (!events || events.length === 0)) {
-      list.innerHTML = "<p>Nessun evento creato.</p>";
-    }
   }
 
   async function loadMine() {
-    if (list) list.innerHTML = "<p>Caricamento...</p>";
-    try {
-      const data = await fetchJSON(`/api/events/mine`);
-      renderList(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error(err);
-      if (list) list.innerHTML = "<p>Errore durante il caricamento.</p>";
-    }
+    // backend espone GET /api/events/mine/list (coerente con le tue routes)
+    const rows = await fetchJSON("/api/events/mine/list");
+    renderList(rows || []);
   }
 
-  // ====== CREATE ======
-  if (form) {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      try {
-        const payload = {
-          title: F("title")?.value || "",
-          description: F("description")?.value || "",
-          dateStart: toISO(F("dateStart")?.value || ""),
-          dateEnd: toISO(F("dateEnd")?.value || ""),
-          timezone: F("timezone")?.value || "",
-          venueName: F("venueName")?.value || "",
-          address: F("address")?.value || "",
-          city: F("city")?.value || "",
-          province: F("province")?.value || "",
-          region: F("region")?.value || "",
-          country: F("country")?.value || "",
-          category: F("category")?.value || "",
-          subcategory: F("subcategory")?.value || "",
-          type: F("type")?.value || "",
-          visibility: F("visibility")?.value || "public",
-          status: F("status")?.value || "draft",
-          isFree: F("isFree")?.checked === true,
-          priceMin: F("priceMin")?.value ? Number(F("priceMin").value) : undefined,
-          priceMax: F("priceMax")?.value ? Number(F("priceMax").value) : undefined,
-          currency: F("currency")?.value || "",
-          capacity: F("capacity")?.value ? Number(F("capacity").value) : undefined,
-          images: F("imageUrl")?.value ? [F("imageUrl").value] : undefined,
-          externalUrl: F("externalUrl")?.value || "",
-          contactEmail: F("contactEmail")?.value || "",
-          contactPhone: F("contactPhone")?.value || "",
-        };
-        await fetchJSON(`/api/events`, { method: "POST", body: JSON.stringify(payload) });
-        form.reset();
-        await loadMine();
-      } catch (err) {
-        console.error(err);
-        alert("Creazione non riuscita.");
-      }
-    });
-  }
+  createForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const body = {
+      title: val("title"),
+      description: val("description"),
+      status: val("status") || "draft",
+      visibility: val("visibility") || "public",
+      type: val("type"),
+      category: val("category"),
+      subcategory: val("subcategory"),
+      dateStart: val("dateStart") || undefined,
+      dateEnd: val("dateEnd") || undefined,
+      timezone: val("timezone") || "Europe/Rome",
+      venueName: val("venueName"),
+      address: val("address"),
+      city: val("city"),
+      province: val("province"),
+      region: val("region"),
+      country: val("country"),
+      capacity: num("capacity"),
+      isFree: bool("isFree"),
+      priceMin: num("priceMin"),
+      priceMax: num("priceMax"),
+      currency: val("currency") || "EUR",
+      imageUrl: val("imageUrl"),
+      externalUrl: val("externalUrl"),
+      contactEmail: val("contactEmail"),
+      contactPhone: val("contactPhone"),
+    };
+    await fetchJSON("/api/events", { method: "POST", body });
+    await loadMine();
+    createForm.reset();
+  });
 
-  // ====== OPEN EDIT ======
-  async function openEdit(id) {
-    try {
+  myBox?.addEventListener("click", async (e) => {
+    const editBtn = e.target.closest("[data-act='edit']");
+    const delBtn = e.target.closest("[data-act='del']");
+    if (editBtn) {
+      const id = editBtn.getAttribute("data-id");
       const ev = await fetchJSON(`/api/events/${id}`);
-      // fill
-      F("edit_id").value = id;
-      F("edit_title").value = ev.title || "";
-      F("edit_description").value = ev.description || "";
-      F("edit_dateStart").value = dtLocal(ev.dateStart);
-      F("edit_dateEnd").value = dtLocal(ev.dateEnd);
-      F("edit_timezone").value = ev.timezone || "";
-      F("edit_venueName").value = ev.venueName || "";
-      F("edit_address").value = ev.address || "";
-      F("edit_city").value = ev.city || "";
-      F("edit_province").value = ev.province || "";
-      F("edit_region").value = ev.region || "";
-      F("edit_country").value = ev.country || "";
-      F("edit_category").value = ev.category || "";
-      F("edit_subcategory").value = ev.subcategory || "";
-      F("edit_type").value = ev.type || "";
-      F("edit_visibility").value = ev.visibility || "public";
-      F("edit_status").value = ev.status || "draft";
-      F("edit_isFree").checked = !!ev.isFree;
-      F("edit_priceMin").value = ev.priceMin ?? "";
-      F("edit_priceMax").value = ev.priceMax ?? "";
-      F("edit_currency").value = ev.currency || "";
-      F("edit_capacity").value = ev.capacity ?? "";
-      F("edit_imageUrl").value = Array.isArray(ev.images) && ev.images.length ? ev.images[0] : "";
-      F("edit_externalUrl").value = ev.externalUrl || "";
-      F("edit_contactEmail").value = ev.contactEmail || "";
-      F("edit_contactPhone").value = ev.contactPhone || "";
-
-      if (editModal) editModal.style.display = "flex";
-    } catch (err) {
-      console.error(err);
-      alert("Impossibile aprire l'evento per la modifica.");
+      // popola form di edit (id prefissati "edit_")
+      const set = (k,v)=>{ const el=document.getElementById(`edit_${k}`); if (el) el.value = v ?? ""; };
+      set("id", ev._id);
+      ["title","description","status","visibility","type","category","subcategory","timezone","venueName","address","city","province","region","country","currency","externalUrl","contactEmail","contactPhone"].forEach(k=>set(k,ev[k]));
+      const dts = (x)=> x ? new Date(x).toISOString().slice(0,16) : "";
+      set("dateStart", dts(ev.dateStart));
+      set("dateEnd", dts(ev.dateEnd));
+      document.getElementById("edit_isFree")?.toggleAttribute("checked", !!ev.isFree);
+      document.getElementById("edit_priceMin") && (document.getElementById("edit_priceMin").value = ev.priceMin ?? "");
+      document.getElementById("edit_priceMax") && (document.getElementById("edit_priceMax").value = ev.priceMax ?? "");
+      document.getElementById("edit_capacity") && (document.getElementById("edit_capacity").value = ev.capacity ?? "");
+      document.getElementById("edit_imageUrl") && (document.getElementById("edit_imageUrl").value = (ev.images||[])[0] || "");
+      // mostra modal se previsto
+      if (editModal) editModal.style.display = "block";
     }
-  }
+    if (delBtn) {
+      const id = delBtn.getAttribute("data-id");
+      if (!confirm("Eliminare definitivamente l'evento?")) return;
+      await fetchJSON(`/api/events/${id}`, { method: "DELETE" });
+      await loadMine();
+    }
+  });
 
-  // ====== SAVE EDIT ======
-  if (editForm) {
-    editForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const id = F("edit_id")?.value;
-      if (!id) return alert("ID mancante.");
+  editForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = document.getElementById("edit_id")?.value;
+    const body = {
+      title: document.getElementById("edit_title")?.value?.trim(),
+      description: document.getElementById("edit_description")?.value?.trim(),
+      status: document.getElementById("edit_status")?.value,
+      visibility: document.getElementById("edit_visibility")?.value,
+      type: document.getElementById("edit_type")?.value,
+      category: document.getElementById("edit_category")?.value,
+      subcategory: document.getElementById("edit_subcategory")?.value,
+      dateStart: document.getElementById("edit_dateStart")?.value || undefined,
+      dateEnd: document.getElementById("edit_dateEnd")?.value || undefined,
+      timezone: document.getElementById("edit_timezone")?.value || "Europe/Rome",
+      venueName: document.getElementById("edit_venueName")?.value,
+      address: document.getElementById("edit_address")?.value,
+      city: document.getElementById("edit_city")?.value,
+      province: document.getElementById("edit_province")?.value,
+      region: document.getElementById("edit_region")?.value,
+      country: document.getElementById("edit_country")?.value,
+      capacity: +document.getElementById("edit_capacity")?.value || undefined,
+      isFree: !!document.getElementById("edit_isFree")?.checked,
+      priceMin: +document.getElementById("edit_priceMin")?.value || undefined,
+      priceMax: +document.getElementById("edit_priceMax")?.value || undefined,
+      currency: document.getElementById("edit_currency")?.value || "EUR",
+      imageUrl: document.getElementById("edit_imageUrl")?.value,
+      externalUrl: document.getElementById("edit_externalUrl")?.value,
+      contactEmail: document.getElementById("edit_contactEmail")?.value,
+      contactPhone: document.getElementById("edit_contactPhone")?.value,
+    };
+    await fetchJSON(`/api/events/${id}`, { method: "PUT", body });
+    if (editModal) editModal.style.display = "none";
+    await loadMine();
+  });
 
-      try {
-        const payload = {
-          title: F("edit_title")?.value || "",
-          description: F("edit_description")?.value || "",
-          dateStart: toISO(F("edit_dateStart")?.value || ""),
-          dateEnd: toISO(F("edit_dateEnd")?.value || ""),
-          timezone: F("edit_timezone")?.value || "",
-          venueName: F("edit_venueName")?.value || "",
-          address: F("edit_address")?.value || "",
-          city: F("edit_city")?.value || "",
-          province: F("edit_province")?.value || "",
-          region: F("edit_region")?.value || "",
-          country: F("edit_country")?.value || "",
-          category: F("edit_category")?.value || "",
-          subcategory: F("edit_subcategory")?.value || "",
-          type: F("edit_type")?.value || "",
-          visibility: F("edit_visibility")?.value || "public",
-          status: F("edit_status")?.value || "draft",
-          isFree: F("edit_isFree")?.checked === true,
-          priceMin: F("edit_priceMin")?.value ? Number(F("edit_priceMin").value) : undefined,
-          priceMax: F("edit_priceMax")?.value ? Number(F("edit_priceMax").value) : undefined,
-          currency: F("edit_currency")?.value || "",
-          capacity: F("edit_capacity")?.value ? Number(F("edit_capacity").value) : undefined,
-          images: F("edit_imageUrl")?.value ? [F("edit_imageUrl").value] : undefined,
-          externalUrl: F("edit_externalUrl")?.value || "",
-          contactEmail: F("edit_contactEmail")?.value || "",
-          contactPhone: F("edit_contactPhone")?.value || "",
-        };
-        await fetchJSON(`/api/events/${id}`, { method: "PUT", body: JSON.stringify(payload) });
-        if (editModal) editModal.style.display = "none";
-        editForm.reset();
-        await loadMine();
-      } catch (err) {
-        console.error(err);
-        alert("Aggiornamento non riuscito.");
-      }
-    });
-  }
+  btnSwitch?.addEventListener("click", async () => {
+    // organizer → participant (o viceversa)
+    if (regRole() !== "organizer") return alert("Non sei registrato come organizer.");
+    const next = sessRole() === "organizer" ? "participant" : "organizer";
+    const out = await fetchJSON("/api/users/session-role", { method: "PUT", body: { sessionRole: next } });
+    if (out?.token) localStorage.setItem("token", out.token);
+    localStorage.setItem("sessionRole", out.sessionRole || next);
+    window.location.href = next === "organizer" ? "organizzatore.html" : "partecipante.html";
+  });
 
-  // ====== PUBLISH / DELETE ======
-  if (list) {
-    list.addEventListener("click", async (e) => {
-      const btnEdit = e.target.closest(".edit");
-      const btnPub = e.target.closest(".publish");
-      const btnDel = e.target.closest(".delete");
-
-      try {
-        if (btnEdit) {
-          await openEdit(btnEdit.dataset.id);
-        }
-        if (btnPub) {
-          const id = btnPub.dataset.id;
-          const makePublished = btnPub.dataset.on === "true";
-          await fetchJSON(`/api/events/${id}`, { method: "PUT", body: JSON.stringify({ status: makePublished ? "published" : "draft" }) });
-          await loadMine();
-        }
-        if (btnDel) {
-          const id = btnDel.dataset.id;
-          if (!confirm("Eliminare l'evento?")) return;
-          await fetchJSON(`/api/events/${id}`, { method: "DELETE" });
-          await loadMine();
-        }
-      } catch (err) {
-        console.error(err);
-        alert("Azione non riuscita.");
-      }
-    });
-  }
-
-  // ====== SWITCH ROLE ======
-  if (btnSwitch) {
-    btnSwitch.addEventListener("click", async () => {
-      try {
-        const out = await fetchJSON(`/api/users/session-role`, {
-          method: "PUT",
-          body: JSON.stringify({ sessionRole: "participant" })
-        });
-        localStorage.setItem("token", out.token);
-        localStorage.setItem("sessionRole", out.sessionRole);
-        window.location.href = "partecipante.html";
-      } catch (err) {
-        console.error(err);
-        alert("Impossibile cambiare ruolo.");
-      }
-    });
-  }
-
-  if (btnLogout) {
-    btnLogout.addEventListener("click", () => {
-      localStorage.clear();
-      window.location.href = "index.html";
-    });
-  }
+  btnLogout?.addEventListener("click", () => {
+    ["token","userId","registeredRole","sessionRole"].forEach(k => localStorage.removeItem(k));
+    window.location.href = "index.html";
+  });
 
   loadMine();
-  // (Opzionale) Real-time leggero
-  // setInterval(loadMine, 20000);
 });
+
 
 
 
