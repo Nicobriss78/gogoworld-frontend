@@ -96,6 +96,43 @@
       </form>
     </section>
 
+    <!-- 🔎 FILTRI “I miei eventi” -->
+    <section class="card">
+      <h3>Filtra i miei eventi</h3>
+      <form id="filtersForm" class="grid" style="margin-top:6px">
+        <input id="f_q" class="col-2" type="text" placeholder="Cerca (titolo/descrizione/luogo)" />
+        <input id="f_city" type="text" placeholder="Città" />
+        <input id="f_region" type="text" placeholder="Regione" />
+        <input id="f_country" type="text" placeholder="Paese" />
+
+        <input id="f_dateFrom" type="date" placeholder="Dal" />
+        <input id="f_dateTo" type="date" placeholder="Al" />
+
+        <select id="f_status">
+          <option value="">Stato (tutti)</option>
+          <option value="draft">Bozza</option>
+          <option value="published">Pubblicato</option>
+          <option value="cancelled">Annullato</option>
+        </select>
+
+        <select id="f_visibility">
+          <option value="">Visibilità (tutte)</option>
+          <option value="public">Pubblico</option>
+          <option value="private">Privato</option>
+          <option value="unlisted">Non in elenco</option>
+        </select>
+
+        <input id="f_category" list="categoryOptions" placeholder="Categoria" />
+        <input id="f_type" list="typeOptions" placeholder="Tipo evento" />
+        <label><input id="f_isFree" type="checkbox" /> Solo gratuiti</label>
+
+        <div class="col-4" style="display:flex;gap:8px;justify-content:flex-end">
+          <button type="submit" class="btn">Applica filtri</button>
+          <button type="button" id="filtersReset" class="btn ghost">Reset</button>
+        </div>
+      </form>
+    </section>
+
     <section>
       <h2>I miei eventi</h2>
       <div id="myEventsContainer"></div>
