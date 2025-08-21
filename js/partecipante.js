@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return p.toString();
   }
 
-  // 🔹 NUOVO: leggo i filtri dalla URL (per persistenza su refresh/F5)
+  // Leggi filtri dalla URL (persistenza su refresh/F5)
   function readFiltersFromURL() {
     const u = new URL(location.href);
     const set = (el, val) => { if (el && val != null) el.value = val; };
@@ -56,12 +56,11 @@ document.addEventListener("DOMContentLoaded", () => {
     set(filters.type, u.searchParams.get("type"));
   }
 
-  // 🔹 NUOVO: raccolgo i filtri correnti dagli input
   function collectFilters() {
     return {
       q: filters.q?.value?.trim(),
       visibility: filters.visibility?.value,
-      // ✅ tua correzione mantenuta: isFree è un <select>, non una checkbox
+      // isFree è un <select>
       isFree: (filters.isFree?.value || ""), // "", "true", "false"
       dateFrom: filters.dateFrom?.value,
       dateTo: filters.dateTo?.value,
@@ -75,7 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // 🔹 NUOVO: applico i filtri → aggiorno la URL → ricarico la lista
   function applyFilters() {
     const params = collectFilters();
     const query = qs(params);
@@ -120,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function load() {
-    // 🔹 NUOVO: all'avvio (o dopo back/refresh) leggo i filtri dalla URL
+    // rileggi eventuali filtri dalla URL
     readFiltersFromURL();
 
     const params = collectFilters();
@@ -135,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderList(listDisp, disp, false);
   }
 
+  // JOIN/LEAVE
   listDisp?.addEventListener("click", async (e) => {
     const btn = e.target.closest("[data-act='join']");
     if (!btn) return;
@@ -151,10 +150,9 @@ document.addEventListener("DOMContentLoaded", () => {
     await load();
   });
 
-  // ✅ SWITCH/UPGRADE ruolo (come da tua base)
+  // SWITCH / UPGRADE ruolo
   document.getElementById("switchRoleBtn")?.addEventListener("click", async () => {
     try {
-      // Se NON sei registrato come organizer → UPGRADE permanente
       if (regRole() !== "organizer") {
         const resp = await fetch("/api/users/upgrade", {
           method: "PUT",
@@ -164,20 +162,16 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
         if (!resp.ok) throw new Error(`HTTP_${resp.status}`);
-        const data = await resp.json(); // { ok:true, token, registeredRole:"organizer", sessionRole:"organizer" }
-
+        const data = await resp.json();
         if (data?.token) {
           localStorage.setItem("token", data.token);
           try { localStorage.setItem("ggw_token", data.token); } catch {}
         }
         if (data?.registeredRole) localStorage.setItem("registeredRole", data.registeredRole);
         if (data?.sessionRole) localStorage.setItem("sessionRole", data.sessionRole);
-
         window.location.href = "organizzatore.html";
         return;
       }
-
-      // Altrimenti (sei già organizer): switch di sessione
       const next = sessRole() === "organizer" ? "participant" : "organizer";
       const out = await fetchJSON("/api/users/session-role", { method: "PUT", body: { sessionRole: next } });
       if (out?.token) localStorage.setItem("token", out.token);
@@ -198,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // carica iniziale
   load();
 
-  // 🔧 FIX ritorno dal dettaglio: ricarica solo se il dettaglio ha impostato il flag
+  // ritorno dal dettaglio: ricarica solo se il dettaglio ha impostato il flag
   window.addEventListener("pageshow", () => {
     if (sessionStorage.getItem("ggw_list_dirty") === "1") {
       sessionStorage.removeItem("ggw_list_dirty");
@@ -206,20 +200,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🔧 UX filtri: applica filtri anche da ENTER e change (contenitore è un <div id="filtersForm">)
+  // UX filtri: ENTER, CHANGE, e SUBMIT con la lente
   const filtersBox = document.getElementById("filtersForm");
+  // Enter dentro un input
   filtersBox?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       applyFilters();
     }
   });
+  // Cambio di select/input
   filtersBox?.addEventListener("change", () => applyFilters());
+  // ✅ NUOVO: submit del form (click sulla lente)
+  filtersBox?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    applyFilters();
+  });
+  // Se in futuro aggiungi un bottone con id="applyFilters"
   document.getElementById("applyFilters")?.addEventListener("click", (e) => {
     e.preventDefault();
     applyFilters();
   });
 });
+
+
 
 
 
