@@ -38,6 +38,52 @@ document.addEventListener("DOMContentLoaded", () => {
     return p.toString();
   }
 
+  // 🔹 NUOVO: leggo i filtri dalla URL (per persistenza su refresh/F5)
+  function readFiltersFromURL() {
+    const u = new URL(location.href);
+    const set = (el, val) => { if (el && val != null) el.value = val; };
+    set(filters.q, u.searchParams.get("q"));
+    set(filters.visibility, u.searchParams.get("visibility"));
+    set(filters.isFree, u.searchParams.get("isFree"));
+    set(filters.dateFrom, u.searchParams.get("dateFrom"));
+    set(filters.dateTo, u.searchParams.get("dateTo"));
+    set(filters.city, u.searchParams.get("city"));
+    set(filters.province, u.searchParams.get("province"));
+    set(filters.region, u.searchParams.get("region"));
+    set(filters.country, u.searchParams.get("country"));
+    set(filters.status, u.searchParams.get("status") || "published");
+    set(filters.category, u.searchParams.get("category"));
+    set(filters.type, u.searchParams.get("type"));
+  }
+
+  // 🔹 NUOVO: raccolgo i filtri correnti dagli input
+  function collectFilters() {
+    return {
+      q: filters.q?.value?.trim(),
+      visibility: filters.visibility?.value,
+      // ✅ tua correzione mantenuta: isFree è un <select>, non una checkbox
+      isFree: (filters.isFree?.value || ""), // "", "true", "false"
+      dateFrom: filters.dateFrom?.value,
+      dateTo: filters.dateTo?.value,
+      city: filters.city?.value,
+      province: filters.province?.value,
+      region: filters.region?.value,
+      country: filters.country?.value,
+      status: (filters.status?.value || "published"),
+      category: filters.category?.value,
+      type: filters.type?.value,
+    };
+  }
+
+  // 🔹 NUOVO: applico i filtri → aggiorno la URL → ricarico la lista
+  function applyFilters() {
+    const params = collectFilters();
+    const query = qs(params);
+    const url = location.pathname + (query ? `?${query}` : "");
+    history.replaceState(null, "", url);
+    load();
+  }
+
   async function fetchJSON(url, opts = {}) {
     const res = await fetch(url, {
       method: opts.method || "GET",
@@ -74,21 +120,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function load() {
-    const params = {
-      q: filters.q?.value?.trim(),
-      visibility: filters.visibility?.value,
-      // ✅ FIX: isFree è un <select>, non una checkbox
-      isFree: (filters.isFree?.value || ""),
-      dateFrom: filters.dateFrom?.value,
-      dateTo: filters.dateTo?.value,
-      city: filters.city?.value,
-      province: filters.province?.value,
-      region: filters.region?.value,
-      country: filters.country?.value,
-      status: (filters.status?.value || "published"),
-      category: filters.category?.value,
-      type: filters.type?.value,
-    };
+    // 🔹 NUOVO: all'avvio (o dopo back/refresh) leggo i filtri dalla URL
+    readFiltersFromURL();
+
+    const params = collectFilters();
     const query = qs(params);
 
     const all = await fetchJSON(`/api/events?${query}`); // array
@@ -116,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
     await load();
   });
 
-  // ✅ SWITCH/UPGRADE ruolo
+  // ✅ SWITCH/UPGRADE ruolo (come da tua base)
   document.getElementById("switchRoleBtn")?.addEventListener("click", async () => {
     try {
       // Se NON sei registrato come organizer → UPGRADE permanente
@@ -171,11 +206,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🔧 UX filtri: ricarica al cambio di un filtro (il tuo HTML usa un <div id="filtersForm">)
-  document.getElementById("filtersForm")?.addEventListener("change", () => {
-    load();
+  // 🔧 UX filtri: applica filtri anche da ENTER e change (contenitore è un <div id="filtersForm">)
+  const filtersBox = document.getElementById("filtersForm");
+  filtersBox?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      applyFilters();
+    }
+  });
+  filtersBox?.addEventListener("change", () => applyFilters());
+  document.getElementById("applyFilters")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    applyFilters();
   });
 });
+
 
 
 
