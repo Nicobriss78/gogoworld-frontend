@@ -77,7 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const params = {
       q: filters.q?.value?.trim(),
       visibility: filters.visibility?.value,
-      isFree: filters.isFree?.checked ? "true" : "",
+      // ✅ FIX: isFree è un <select>, non una checkbox
+      isFree: (filters.isFree?.value || ""),
       dateFrom: filters.dateFrom?.value,
       dateTo: filters.dateTo?.value,
       city: filters.city?.value,
@@ -115,14 +116,42 @@ document.addEventListener("DOMContentLoaded", () => {
     await load();
   });
 
-  // switch ruolo
+  // ✅ SWITCH/UPGRADE ruolo
   document.getElementById("switchRoleBtn")?.addEventListener("click", async () => {
-    if (regRole() !== "organizer") return alert("Puoi passare a organizzatore solo se registrato come organizer.");
-    const next = sessRole() === "organizer" ? "participant" : "organizer";
-    const out = await fetchJSON("/api/users/session-role", { method: "PUT", body: { sessionRole: next } });
-    if (out?.token) localStorage.setItem("token", out.token);
-    localStorage.setItem("sessionRole", out.sessionRole || next);
-    window.location.href = next === "organizer" ? "organizzatore.html" : "partecipante.html";
+    try {
+      // Se NON sei registrato come organizer → UPGRADE permanente
+      if (regRole() !== "organizer") {
+        const resp = await fetch("/api/users/upgrade", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token() ? { Authorization: `Bearer ${token()}` } : {})
+          }
+        });
+        if (!resp.ok) throw new Error(`HTTP_${resp.status}`);
+        const data = await resp.json(); // { ok:true, token, registeredRole:"organizer", sessionRole:"organizer" }
+
+        if (data?.token) {
+          localStorage.setItem("token", data.token);
+          try { localStorage.setItem("ggw_token", data.token); } catch {}
+        }
+        if (data?.registeredRole) localStorage.setItem("registeredRole", data.registeredRole);
+        if (data?.sessionRole) localStorage.setItem("sessionRole", data.sessionRole);
+
+        window.location.href = "organizzatore.html";
+        return;
+      }
+
+      // Altrimenti (sei già organizer): switch di sessione
+      const next = sessRole() === "organizer" ? "participant" : "organizer";
+      const out = await fetchJSON("/api/users/session-role", { method: "PUT", body: { sessionRole: next } });
+      if (out?.token) localStorage.setItem("token", out.token);
+      localStorage.setItem("sessionRole", out.sessionRole || next);
+      window.location.href = next === "organizer" ? "organizzatore.html" : "partecipante.html";
+    } catch (err) {
+      console.error("Switch/Upgrade error:", err);
+      alert("Operazione non riuscita. Riprova.");
+    }
   });
 
   // logout
@@ -134,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // carica iniziale
   load();
 
-  // 🔧 FIX bfcache/ritorno dal dettaglio: ricarica SOLO se il dettaglio ha impostato il flag
+  // 🔧 FIX ritorno dal dettaglio: ricarica solo se il dettaglio ha impostato il flag
   window.addEventListener("pageshow", () => {
     if (sessionStorage.getItem("ggw_list_dirty") === "1") {
       sessionStorage.removeItem("ggw_list_dirty");
@@ -142,20 +171,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // (Opzionale, non invasivo) se la tab torna visibile ricarica, ma solo se c'è il flag
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible" && sessionStorage.getItem("ggw_list_dirty") === "1") {
-      sessionStorage.removeItem("ggw_list_dirty");
-      load();
-    }
-  });
-
-  // filtri
-  document.getElementById("filtersForm")?.addEventListener("submit", (e) => {
-    e.preventDefault();
+  // 🔧 UX filtri: ricarica al cambio di un filtro (il tuo HTML usa un <div id="filtersForm">)
+  document.getElementById("filtersForm")?.addEventListener("change", () => {
     load();
   });
 });
+
 
 
 
