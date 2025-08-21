@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const res = await fetch(url, {
       method: opts.method || "GET",
       headers: Object.assign(
-        { "Content-Type": "application/json", ...(token() ? { Authorization: `Bearer ${token}` } : {}) },
+        { "Content-Type": "application/json", ...(token() ? { Authorization: `Bearer ${token()}` } : {}) },
         opts.headers || {}
       ),
       body: opts.body ? JSON.stringify(opts.body) : undefined,
@@ -134,10 +134,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // carica iniziale
   load();
 
-  // 🔧 fix bfcache: ricarica quando torni dal dettaglio o la tab torna visibile
-  window.addEventListener("pageshow", () => load());
+  // 🔧 FIX bfcache/ritorno dal dettaglio: ricarica SOLO se il dettaglio ha impostato il flag
+  window.addEventListener("pageshow", () => {
+    if (sessionStorage.getItem("ggw_list_dirty") === "1") {
+      sessionStorage.removeItem("ggw_list_dirty");
+      load();
+    }
+  });
+
+  // (Opzionale, non invasivo) se la tab torna visibile ricarica, ma solo se c'è il flag
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") load();
+    if (document.visibilityState === "visible" && sessionStorage.getItem("ggw_list_dirty") === "1") {
+      sessionStorage.removeItem("ggw_list_dirty");
+      load();
+    }
   });
 
   // filtri
@@ -146,6 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
     load();
   });
 });
+
 
 
 
