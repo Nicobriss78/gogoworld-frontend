@@ -16,6 +16,7 @@
     .toolbar{display:flex;gap:8px;margin:8px 0}
     .badge{display:inline-block;padding:2px 8px;border-radius:12px;background:#eee;margin-left:6px;font-size:.85em}
     .loading{opacity:.7}
+    .btn-search{background:none;border:1px solid #ccc;border-radius:8px;padding:8px;cursor:pointer;font-size:1.1em}
   </style>
 </head>
 <body>
@@ -30,7 +31,7 @@
     <!-- FILTRI -->
     <section>
       <h2>Filtri</h2>
-      <div class="filters" id="filtersForm">
+      <form class="filters" id="filtersForm">
         <input type="text" id="q" placeholder="Cerca testo (titolo, descrizione, città)"/>
         <select id="visibility">
           <option value="">Visibilità (tutti)</option>
@@ -57,7 +58,9 @@
           <option value="draft">Bozza</option>
           <option value="cancelled">Annullato</option>
         </select>
-      </div>
+        <!-- 🔍 Bottone ricerca -->
+        <button type="submit" id="searchBtn" class="btn-search">🔍</button>
+      </form>
     </section>
 
     <section class="lists">
@@ -75,4 +78,6 @@
   <script src="/js/partecipante.js" defer></script>
 </body>
 </html>
+
+
 
