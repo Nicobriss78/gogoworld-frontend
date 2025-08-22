@@ -1,4 +1,4 @@
-// evento.js — dettaglio evento: cover + galleria + join/leave + range date + link lista dinamico
+// evento.js — dettaglio evento: cover + galleria + join/leave con fallback + range date + link lista dinamico + hide azioni per organizer/owner
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(location.search);
   const id = params.get("id");
@@ -12,8 +12,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const logoutBtn = document.getElementById("logoutBtn");
   const listLink = document.getElementById("listLink");
 
-  // Imposta link "Torna alla lista" in base al ruolo di sessione
   const sessionRole = (localStorage.getItem("sessionRole") || "participant");
+  const userId = localStorage.getItem("userId") || "";
+
   if (listLink) {
     listLink.href = sessionRole === "organizer" ? "organizzatore.html" : "partecipante.html";
   }
@@ -31,23 +32,65 @@ document.addEventListener("DOMContentLoaded", async () => {
       headers: authHeaders(),
       body: opts.body ? JSON.stringify(opts.body) : undefined,
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    // prova a leggere un eventuale messaggio d'errore del server
+    if (!res.ok) {
+      let msg = `HTTP ${res.status}`;
+      try {
+        const err = await res.json();
+        if (err && (err.error || err.message)) msg = (err.error || err.message);
+      } catch {}
+      throw new Error(msg);
+    }
     return res.json();
   }
+
   const esc = (s) => String(s||"").replace(/[&<>]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;" }[c]));
-  const fmtDT = (iso) => {
-    try { return new Date(iso).toLocaleString(); } catch { return ""; }
-  };
+  const fmtDT = (iso) => { try { return new Date(iso).toLocaleString(); } catch { return ""; } };
+
+  function canShowActions(ev) {
+    // nascondi azioni se organizer o owner dell'evento
+    if (sessionRole === "organizer") return false;
+    if (ev && ev.ownerId && userId && String(ev.ownerId) === String(userId)) return false;
+    return true;
+  }
+
+  async function joinEvent(evId) {
+    // 1° tentativo: /api/events/:id/join
+    try {
+      await fetchJSON(`/api/events/${evId}/join`, { method: "POST" });
+      return;
+    } catch (e1) {
+      // 2° fallback: /api/users/:id/partecipa
+      try {
+        await fetchJSON(`/api/users/${evId}/partecipa`, { method: "POST" });
+        return;
+      } catch (e2) {
+        throw e2; // mostra l'errore reale (400 ecc.)
+      }
+    }
+  }
+
+  async function leaveEvent(evId) {
+    try {
+      await fetchJSON(`/api/events/${evId}/leave`, { method: "POST" });
+      return;
+    } catch (e1) {
+      try {
+        await fetchJSON(`/api/users/${evId}/annulla`, { method: "POST" });
+        return;
+      } catch (e2) {
+        throw e2;
+      }
+    }
+  }
 
   function render(ev) {
     if (!ev) return;
 
-    // Cover: preferisci coverImage, fallback images[0]
     const cover = (ev.coverImage && ev.coverImage.trim())
       ? ev.coverImage.trim()
       : (Array.isArray(ev.images) && ev.images.length ? String(ev.images[0]).trim() : "");
 
-    // Range date: se c'è dateEnd, mostra "inizio → fine"
     const startStr = ev.dateStart ? fmtDT(ev.dateStart) : "";
     const endStr = ev.dateEnd ? fmtDT(ev.dateEnd) : "";
     const when = endStr ? `${startStr} → ${endStr}` : (startStr || fmtDT(ev.createdAt));
@@ -80,21 +123,34 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // Azioni (join/leave) — allineate ai tuoi endpoint
+    // Azioni: visibili solo se consentito
     if (actions) {
-      actions.style.display = "";
-      actions.innerHTML = `
-        <button id="joinBtn" class="btn primary">Partecipa</button>
-        <button id="leaveBtn" class="btn">Annulla partecipazione</button>
-      `;
-      document.getElementById("joinBtn")?.addEventListener("click", async () => {
-        await fetchJSON(`/api/users/${ev._id}/partecipa`, { method:"POST" });
-        alert("Sei iscritto a questo evento!");
-      });
-      document.getElementById("leaveBtn")?.addEventListener("click", async () => {
-        await fetchJSON(`/api/users/${ev._id}/annulla`, { method:"POST" });
-        alert("Hai annullato la partecipazione.");
-      });
+      if (!canShowActions(ev)) {
+        actions.style.display = "none";
+        actions.innerHTML = "";
+      } else {
+        actions.style.display = "";
+        actions.innerHTML = `
+          <button id="joinBtn" class="btn primary">Partecipa</button>
+          <button id="leaveBtn" class="btn">Annulla partecipazione</button>
+        `;
+        document.getElementById("joinBtn")?.addEventListener("click", async () => {
+          try {
+            await joinEvent(ev._id);
+            alert("Sei iscritto a questo evento!");
+          } catch (err) {
+            alert(`Errore: ${err.message}`);
+          }
+        });
+        document.getElementById("leaveBtn")?.addEventListener("click", async () => {
+          try {
+            await leaveEvent(ev._id);
+            alert("Hai annullato la partecipazione.");
+          } catch (err) {
+            alert(`Errore: ${err.message}`);
+          }
+        });
+      }
     }
 
     // Extras (contatti, sito esterno)
@@ -119,12 +175,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     box.innerHTML = `<p>Errore nel caricamento dell'evento.</p>`;
   }
 
-  // Logout
   logoutBtn?.addEventListener("click", () => {
     ["token","userId","registeredRole","sessionRole"].forEach(k => localStorage.removeItem(k));
     window.location.href = "index.html";
   });
 });
+
+
 
 
 
