@@ -1,8 +1,9 @@
-// evento.js — dettaglio evento: cover + galleria + join/leave con fallback + range date + link lista dinamico + hide azioni per organizer/owner
+// evento.js — dettaglio evento: cover + galleria + join/leave unificati + range date + link lista dinamico + hide azioni per organizer/owner
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(location.search);
-  const id = params.get("id");
+  const eventId = params.get("id");
 
+  // Riferimenti DOM
   const box = document.getElementById("eventDetail");
   const gallerySection = document.getElementById("gallerySection");
   const galleryBox = document.getElementById("galleryBox");
@@ -12,85 +13,89 @@ document.addEventListener("DOMContentLoaded", async () => {
   const logoutBtn = document.getElementById("logoutBtn");
   const listLink = document.getElementById("listLink");
 
+  // Sessione utente
   const sessionRole = (localStorage.getItem("sessionRole") || "participant");
   const userId = localStorage.getItem("userId") || "";
-
-  if (listLink) {
-    listLink.href = sessionRole === "organizer" ? "organizzatore.html" : "partecipante.html";
-  }
+  if (listLink) listLink.href = sessionRole === "organizer" ? "organizzatore.html" : "partecipante.html";
   if (welcome) welcome.textContent = `Ciao! Sei in sessione come ${sessionRole}`;
 
-  function token() { return localStorage.getItem("token") || ""; }
+  // Helpers
+  const token = () => localStorage.getItem("token") || "";
   function authHeaders() {
-    const h = { "Content-Type": "application/json" };
-    const t = token(); if (t) h.Authorization = `Bearer ${t}`;
-    return h;
+    const t = token();
+    return t ? { "Content-Type": "application/json", Authorization: `Bearer ${t}` } : { "Content-Type": "application/json" };
   }
   async function fetchJSON(url, opts = {}) {
-    const res = await fetch(url, {
-      method: opts.method || "GET",
-      headers: authHeaders(),
-      body: opts.body ? JSON.stringify(opts.body) : undefined,
-    });
-    // prova a leggere un eventuale messaggio d'errore del server
+    const res = await fetch(url, { method: opts.method || "GET", headers: { ...authHeaders(), ...(opts.headers||{}) }, body: opts.body ? JSON.stringify(opts.body) : undefined });
+    let payload = null;
+    try { payload = await res.json(); } catch {}
     if (!res.ok) {
-      let msg = `HTTP ${res.status}`;
-      try {
-        const err = await res.json();
-        if (err && (err.error || err.message)) msg = (err.error || err.message);
-      } catch {}
+      const msg = (payload && (payload.error || payload.message)) ? (payload.error || payload.message) : `HTTP ${res.status}`;
       throw new Error(msg);
     }
-    return res.json();
+    return payload;
   }
-
   const esc = (s) => String(s||"").replace(/[&<>]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;" }[c]));
   const fmtDT = (iso) => { try { return new Date(iso).toLocaleString(); } catch { return ""; } };
 
+  // Join/leave solo se participant e non owner
   function canShowActions(ev) {
-    // nascondi azioni se organizer o owner dell'evento
-    if (sessionRole === "organizer") return false;
+    if (sessionRole !== "participant") return false;
     if (ev && ev.ownerId && userId && String(ev.ownerId) === String(userId)) return false;
     return true;
   }
 
-  async function joinEvent(evId) {
-    // 1° tentativo: /api/events/:id/join
-    try {
-      await fetchJSON(`/api/events/${evId}/join`, { method: "POST" });
+  // Toggle bottoni in base a partecipazione corrente
+  function setActionsUI(ev) {
+    if (!actions) return;
+    if (!canShowActions(ev)) {
+      actions.style.display = "none";
+      actions.innerHTML = "";
       return;
-    } catch (e1) {
-      // 2° fallback: /api/users/:id/partecipa
-      try {
-        await fetchJSON(`/api/users/${evId}/partecipa`, { method: "POST" });
-        return;
-      } catch (e2) {
-        throw e2; // mostra l'errore reale (400 ecc.)
-      }
+    }
+    const participants = Array.isArray(ev.participants) ? ev.participants.map(String) : [];
+    const isIn = userId && participants.includes(String(userId));
+    actions.style.display = "";
+    actions.innerHTML = isIn
+      ? `<button id="leaveBtn" class="btn">Annulla partecipazione</button>`
+      : `<button id="joinBtn" class="btn primary">Partecipa</button>`;
+
+    document.getElementById("joinBtn")?.addEventListener("click", onJoin);
+    document.getElementById("leaveBtn")?.addEventListener("click", onLeave);
+  }
+
+  // --- Azioni
+  async function onJoin() {
+    try {
+      await fetchJSON(`/api/events/${eventId}/join`, { method: "POST" });
+      sessionStorage.setItem("ggw_list_dirty", "1"); // per ricaricare la lista al ritorno
+      await loadAndRender();
+      alert("Sei iscritto a questo evento!");
+    } catch (err) {
+      alert(`Errore: ${err.message}`);
+    }
+  }
+  async function onLeave() {
+    try {
+      await fetchJSON(`/api/events/${eventId}/leave`, { method: "DELETE" });
+      sessionStorage.setItem("ggw_list_dirty", "1");
+      await loadAndRender();
+      alert("Hai annullato la partecipazione.");
+    } catch (err) {
+      alert(`Errore: ${err.message}`);
     }
   }
 
-  async function leaveEvent(evId) {
-    try {
-      await fetchJSON(`/api/events/${evId}/leave`, { method: "POST" });
-      return;
-    } catch (e1) {
-      try {
-        await fetchJSON(`/api/users/${evId}/annulla`, { method: "POST" });
-        return;
-      } catch (e2) {
-        throw e2;
-      }
-    }
-  }
-
+  // --- Render
   function render(ev) {
     if (!ev) return;
 
+    // Cover: coverImage > images[0]
     const cover = (ev.coverImage && ev.coverImage.trim())
       ? ev.coverImage.trim()
       : (Array.isArray(ev.images) && ev.images.length ? String(ev.images[0]).trim() : "");
 
+    // Range date
     const startStr = ev.dateStart ? fmtDT(ev.dateStart) : "";
     const endStr = ev.dateEnd ? fmtDT(ev.dateEnd) : "";
     const when = endStr ? `${startStr} → ${endStr}` : (startStr || fmtDT(ev.createdAt));
@@ -102,7 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <p>${esc(ev.description||"").replace(/\n/g,"<br/>")}</p>
     `;
 
-    // Galleria
+    // Galleria (no duplicati con cover)
     if (gallerySection && galleryBox) {
       const imgs = Array.isArray(ev.images) ? ev.images.map(s => String(s).trim()).filter(Boolean) : [];
       const unique = new Set();
@@ -123,63 +128,41 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // Azioni: visibili solo se consentito
-    if (actions) {
-      if (!canShowActions(ev)) {
-        actions.style.display = "none";
-        actions.innerHTML = "";
-      } else {
-        actions.style.display = "";
-        actions.innerHTML = `
-          <button id="joinBtn" class="btn primary">Partecipa</button>
-          <button id="leaveBtn" class="btn">Annulla partecipazione</button>
-        `;
-        document.getElementById("joinBtn")?.addEventListener("click", async () => {
-          try {
-            await joinEvent(ev._id);
-            alert("Sei iscritto a questo evento!");
-          } catch (err) {
-            alert(`Errore: ${err.message}`);
-          }
-        });
-        document.getElementById("leaveBtn")?.addEventListener("click", async () => {
-          try {
-            await leaveEvent(ev._id);
-            alert("Hai annullato la partecipazione.");
-          } catch (err) {
-            alert(`Errore: ${err.message}`);
-          }
-        });
-      }
-    }
-
-    // Extras (contatti, sito esterno)
+    // Extra
     if (extras) {
-      const extrasHtml = [];
-      if (ev.externalUrl) extrasHtml.push(`<div><a href="${esc(ev.externalUrl)}" target="_blank">Sito ufficiale</a></div>`);
-      if (ev.contactEmail) extrasHtml.push(`<div>Email: ${esc(ev.contactEmail)}</div>`);
-      if (ev.contactPhone) extrasHtml.push(`<div>Tel: ${esc(ev.contactPhone)}</div>`);
-      if (extrasHtml.length) {
-        extras.innerHTML = extrasHtml.join("");
-        extras.style.display = "";
-      } else {
-        extras.style.display = "none";
-      }
+      const out = [];
+      if (ev.externalUrl) out.push(`<div><a href="${esc(ev.externalUrl)}" target="_blank">Sito ufficiale</a></div>`);
+      if (ev.contactEmail) out.push(`<div>Email: ${esc(ev.contactEmail)}</div>`);
+      if (ev.contactPhone) out.push(`<div>Tel: ${esc(ev.contactPhone)}</div>`);
+      if (out.length) { extras.innerHTML = out.join(""); extras.style.display = ""; } else { extras.style.display = "none"; }
+    }
+
+    // Azioni
+    setActionsUI(ev);
+  }
+
+  // --- Load + Render
+  async function loadAndRender() {
+    try {
+      const ev = await fetchJSON(`/api/events/${eventId}`);
+      render(ev);
+    } catch (err) {
+      box.innerHTML = `<p>Errore nel caricamento dell'evento.</p>`;
     }
   }
 
-  try {
-    const ev = await fetchJSON(`/api/events/${id}`);
-    render(ev);
-  } catch (err) {
-    box.innerHTML = `<p>Errore nel caricamento dell'evento.</p>`;
-  }
-
+  // Logout
   logoutBtn?.addEventListener("click", () => {
+    try { localStorage.removeItem("ggw_token"); } catch {}
     ["token","userId","registeredRole","sessionRole"].forEach(k => localStorage.removeItem(k));
     window.location.href = "index.html";
   });
+
+  // Avvio
+  await loadAndRender();
 });
+
+
 
 
 
