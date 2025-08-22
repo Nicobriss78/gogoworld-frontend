@@ -1,4 +1,4 @@
-// organizzatore.js — lista miei eventi, create, edit, delete, switch ruolo
+// organizzatore.js — create/edit/delete + filtri + immagini cover/galleria
 document.addEventListener("DOMContentLoaded", () => {
   const myBox = document.getElementById("myEventsContainer");
   const createForm = document.getElementById("createEventForm");
@@ -9,33 +9,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const welcome = document.getElementById("welcome");
 
   const token = () => localStorage.getItem("token") || "";
-  const uid = () => localStorage.getItem("userId") || "";
-  const regRole = () => localStorage.getItem("registeredRole") || "participant";
   const sessRole = () => localStorage.getItem("sessionRole") || "participant";
-
   if (welcome) welcome.textContent = `Ciao! Sei in sessione come ${sessRole()}`;
 
   function authHeaders() {
     const h = { "Content-Type": "application/json" };
-    const t = token();
-    if (t) h.Authorization = `Bearer ${t}`;
+    const t = token(); if (t) h.Authorization = `Bearer ${t}`;
     return h;
   }
   async function fetchJSON(url, opts = {}) {
-    const res = await fetch(url, {
-      method: opts.method || "GET",
-      headers: authHeaders(),
-      body: opts.body ? JSON.stringify(opts.body) : undefined,
-    });
+    const res = await fetch(url, { method: opts.method || "GET", headers: authHeaders(), body: opts.body ? JSON.stringify(opts.body) : undefined });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
   }
   const val = (id) => document.getElementById(id)?.value?.trim() || "";
   const bool = (id) => !!document.getElementById(id)?.checked;
-  const num = (id) => {
-    const x = +val(id);
-    return Number.isFinite(x) ? x : undefined;
-  };
+  const num = (id) => { const x = +val(id); return Number.isFinite(x) ? x : undefined; };
+
+  function parseImagesText(text) {
+    if (!text) return [];
+    return text.split(/\r?\n|,/g).map(s => s.trim()).filter(Boolean);
+  }
 
   function renderList(items) {
     myBox.innerHTML = "";
@@ -43,26 +37,31 @@ document.addEventListener("DOMContentLoaded", () => {
       const el = document.createElement("div");
       el.className = "card";
       const when = new Date(ev.dateStart || ev.createdAt || Date.now()).toLocaleString();
+      const cover = ev.coverImage ? `<img src="${ev.coverImage}" alt="" style="max-width:120px;max-height:80px;object-fit:cover;border-radius:8px;margin-right:8px;border:1px solid #eee" />` : "";
       el.innerHTML = `
-        <h3>${ev.title || "(senza titolo)"} 
-          <small class="badge badge-${ev.status||"draft"}">${ev.status||"draft"}</small>
-          <small class="badge">${ev.visibility||"public"}</small>
-        </h3>
-        <div class="meta">${(ev.city||"")}${ev.region?`, ${ev.region}`:""}${ev.country?`, ${ev.country}`:""} • ${when}</div>
-        <div class="toolbar">
-          <button data-act="edit" data-id="${ev._id}">Modifica</button>
-          <button data-act="del" data-id="${ev._id}">Elimina</button>
-          <a href="evento.html?id=${ev._id}">Apri</a>
+        <div style="display:flex;align-items:center;gap:10px">
+          ${cover}
+          <div style="flex:1">
+            <h3 style="margin:0">${ev.title || "(senza titolo)"} 
+              <small class="badge badge-${ev.status||"draft"}">${ev.status||"draft"}</small>
+              <small class="badge">${ev.visibility||"public"}</small>
+            </h3>
+            <div class="meta">${(ev.city||"")}${ev.region?`, ${ev.region}`:""}${ev.country?`, ${ev.country}`:""} • ${when}</div>
+            <div class="toolbar" style="margin-top:6px">
+              <button data-act="edit" data-id="${ev._id}">Modifica</button>
+              <button data-act="del" data-id="${ev._id}">Elimina</button>
+              <a href="evento.html?id=${ev._id}">Apri</a>
+            </div>
+          </div>
         </div>
       `;
       myBox.appendChild(el);
     });
   }
 
-  // ----- FILTRI -----
+  // ----- FILTRI (Fase 2 già implementata) -----
   const filtersForm = document.getElementById("filtersForm");
   const filtersReset = document.getElementById("filtersReset");
-
   function currentFilters() {
     const q = {};
     const g = (id) => document.getElementById(id)?.value?.trim() || "";
@@ -80,16 +79,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (b("f_isFree")) q.isFree = "true";
     return q;
   }
-
-  filtersForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    await loadMine(currentFilters());
-  });
-
-  filtersReset?.addEventListener("click", async () => {
-    filtersForm?.reset();
-    await loadMine({});
-  });
+  filtersForm?.addEventListener("submit", async (e) => { e.preventDefault(); await loadMine(currentFilters()); });
+  filtersReset?.addEventListener("click", async () => { filtersForm?.reset(); await loadMine({}); });
 
   async function loadMine(query = {}) {
     const qs = new URLSearchParams(query).toString();
@@ -98,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderList(rows || []);
   }
 
+  // ----- CREATE -----
   createForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const body = {
@@ -122,7 +114,11 @@ document.addEventListener("DOMContentLoaded", () => {
       priceMax: num("priceMax"),
       currency: val("currency") || "EUR",
       capacity: num("capacity"),
-      imageUrl: val("imageUrl"),
+
+      // 🔹 immagini
+      coverImage: val("coverImage"),
+      imagesText: document.getElementById("imagesText")?.value || "",
+
       externalUrl: val("externalUrl"),
       contactEmail: val("contactEmail"),
       contactPhone: val("contactPhone"),
@@ -132,13 +128,50 @@ document.addEventListener("DOMContentLoaded", () => {
     createForm.reset();
   });
 
+  // ----- EDIT -----
   myBox?.addEventListener("click", async (e) => {
     const editBtn = e.target.closest("[data-act='edit']");
     const delBtn = e.target.closest("[data-act='del']");
     if (editBtn) {
       const id = editBtn.getAttribute("data-id");
-      // open modal + populate (già presente nel tuo file; mantenuto)
-      // ...
+      const ev = await fetchJSON(`/api/events/${id}`);
+      // Popola i campi esistenti + nuovi
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = (v ?? "").toString(); };
+      const setBool = (id, v) => { const el = document.getElementById(id); if (el) el.checked = !!v; };
+
+      set("edit_id", ev._id);
+      set("edit_title", ev.title);
+      set("edit_category", ev.category);
+      set("edit_subcategory", ev.subcategory);
+      set("edit_type", ev.type);
+      set("edit_description", ev.description);
+      set("edit_timezone", ev.timezone);
+      set("edit_venueName", ev.venueName);
+      set("edit_address", ev.address);
+      set("edit_city", ev.city);
+      set("edit_province", ev.province);
+      set("edit_region", ev.region);
+      set("edit_country", ev.country);
+      set("edit_status", ev.status);
+      set("edit_visibility", ev.visibility);
+      setBool("edit_isFree", ev.isFree);
+      set("edit_priceMin", ev.priceMin);
+      set("edit_priceMax", ev.priceMax);
+      set("edit_currency", ev.currency);
+      set("edit_capacity", ev.capacity ?? "");
+      // date
+      if (ev.dateStart) set("edit_dateStart", new Date(ev.dateStart).toISOString().slice(0,16));
+      if (ev.dateEnd) set("edit_dateEnd", new Date(ev.dateEnd).toISOString().slice(0,16));
+      // 🔹 immagini
+      set("edit_coverImage", ev.coverImage || "");
+      const galleryText = Array.isArray(ev.images) ? ev.images.join("\n") : "";
+      set("edit_imagesText", galleryText);
+      // extra
+      set("edit_externalUrl", ev.externalUrl);
+      set("edit_contactEmail", ev.contactEmail);
+      set("edit_contactPhone", ev.contactPhone);
+
+      if (editModal) editModal.style.display = "flex";
     }
     if (delBtn) {
       const id = delBtn.getAttribute("data-id");
@@ -149,11 +182,52 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  editForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = val("edit_id");
+    const body = {
+      title: val("edit_title"),
+      description: val("edit_description"),
+      status: val("edit_status"),
+      visibility: val("edit_visibility"),
+      type: val("edit_type"),
+      category: val("edit_category"),
+      subcategory: val("edit_subcategory"),
+      dateStart: val("edit_dateStart") || undefined,
+      dateEnd: val("edit_dateEnd") || undefined,
+      timezone: val("edit_timezone"),
+      venueName: val("edit_venueName"),
+      address: val("edit_address"),
+      city: val("edit_city"),
+      province: val("edit_province"),
+      region: val("edit_region"),
+      country: val("edit_country"),
+      isFree: !!document.getElementById("edit_isFree")?.checked,
+      priceMin: num("edit_priceMin"),
+      priceMax: num("edit_priceMax"),
+      currency: val("edit_currency"),
+      capacity: num("edit_capacity"),
+      // 🔹 immagini
+      coverImage: val("edit_coverImage"),
+      imagesText: document.getElementById("edit_imagesText")?.value || "",
+      // extra
+      externalUrl: val("edit_externalUrl"),
+      contactEmail: val("edit_contactEmail"),
+      contactPhone: val("edit_contactPhone"),
+    };
+    await fetchJSON(`/api/events/${id}`, { method: "PUT", body });
+    if (editModal) editModal.style.display = "none";
+    await loadMine(currentFilters());
+  });
+
+  document.getElementById("edit_cancel")?.addEventListener("click", () => {
+    if (editModal) editModal.style.display = "none";
+  });
+
   btnSwitch?.addEventListener("click", async () => {
     await fetchJSON("/api/users/session-role", { method: "PUT" });
     window.location.reload();
   });
-
   btnLogout?.addEventListener("click", () => {
     ["token","userId","registeredRole","sessionRole"].forEach(k => localStorage.removeItem(k));
     window.location.href = "index.html";
@@ -161,6 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadMine();
 });
+
 
 
 
