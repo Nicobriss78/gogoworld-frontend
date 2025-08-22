@@ -1,4 +1,4 @@
-// organizzatore.js — create/edit/delete + filtri + immagini cover/galleria
+// organizzatore.js — create/edit/delete + filtri + immagini cover/galleria + validazione date
 document.addEventListener("DOMContentLoaded", () => {
   const myBox = document.getElementById("myEventsContainer");
   const createForm = document.getElementById("createEventForm");
@@ -31,6 +31,18 @@ document.addEventListener("DOMContentLoaded", () => {
     return text.split(/\r?\n|,/g).map(s => s.trim()).filter(Boolean);
   }
 
+  // ---- VALIDAZIONE DATE ----
+  function ensureValidDateRange(startStr, endStr) {
+    if (!startStr || !endStr) return true; // se manca una delle due, non validiamo qui
+    const start = new Date(startStr).getTime();
+    const end = new Date(endStr).getTime();
+    if (Number.isFinite(start) && Number.isFinite(end) && end < start) {
+      alert("La data di fine non può essere precedente alla data di inizio.");
+      return false;
+    }
+    return true;
+  }
+
   function renderList(items) {
     myBox.innerHTML = "";
     items.forEach(ev => {
@@ -59,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ----- FILTRI (Fase 2 già implementata) -----
+  // ----- FILTRI -----
   const filtersForm = document.getElementById("filtersForm");
   const filtersReset = document.getElementById("filtersReset");
   function currentFilters() {
@@ -92,6 +104,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // ----- CREATE -----
   createForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    // validazione date
+    if (!ensureValidDateRange(val("dateStart"), val("dateEnd"))) return;
+
     const body = {
       title: val("title"),
       description: val("description"),
@@ -115,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currency: val("currency") || "EUR",
       capacity: num("capacity"),
 
-      // 🔹 immagini
+      // immagini
       coverImage: val("coverImage"),
       imagesText: document.getElementById("imagesText")?.value || "",
 
@@ -162,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // date
       if (ev.dateStart) set("edit_dateStart", new Date(ev.dateStart).toISOString().slice(0,16));
       if (ev.dateEnd) set("edit_dateEnd", new Date(ev.dateEnd).toISOString().slice(0,16));
-      // 🔹 immagini
+      // immagini
       set("edit_coverImage", ev.coverImage || "");
       const galleryText = Array.isArray(ev.images) ? ev.images.join("\n") : "";
       set("edit_imagesText", galleryText);
@@ -184,6 +200,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   editForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    // validazione date
+    if (!ensureValidDateRange(val("edit_dateStart"), val("edit_dateEnd"))) return;
+
     const id = val("edit_id");
     const body = {
       title: val("edit_title"),
@@ -207,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
       priceMax: num("edit_priceMax"),
       currency: val("edit_currency"),
       capacity: num("edit_capacity"),
-      // 🔹 immagini
+      // immagini
       coverImage: val("edit_coverImage"),
       imagesText: document.getElementById("edit_imagesText")?.value || "",
       // extra
@@ -235,6 +255,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadMine();
 });
+
+
 
 
 
