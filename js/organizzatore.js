@@ -1,4 +1,4 @@
-// organizzatore.js — create/edit/delete + filtri + immagini cover/galleria + validazione date
+// organizzatore.js — create/edit/delete + filtri + immagini + validazione date + switch ruolo con fallback
 document.addEventListener("DOMContentLoaded", () => {
   const myBox = document.getElementById("myEventsContainer");
   const createForm = document.getElementById("createEventForm");
@@ -19,7 +19,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   async function fetchJSON(url, opts = {}) {
     const res = await fetch(url, { method: opts.method || "GET", headers: authHeaders(), body: opts.body ? JSON.stringify(opts.body) : undefined });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) {
+      let msg = `HTTP ${res.status}`;
+      try {
+        const err = await res.json();
+        if (err && (err.error || err.message)) msg = (err.error || err.message);
+      } catch {}
+      throw new Error(msg);
+    }
     return res.json();
   }
   const val = (id) => document.getElementById(id)?.value?.trim() || "";
@@ -31,9 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return text.split(/\r?\n|,/g).map(s => s.trim()).filter(Boolean);
   }
 
-  // ---- VALIDAZIONE DATE ----
   function ensureValidDateRange(startStr, endStr) {
-    if (!startStr || !endStr) return true; // se manca una delle due, non validiamo qui
+    if (!startStr || !endStr) return true;
     const start = new Date(startStr).getTime();
     const end = new Date(endStr).getTime();
     if (Number.isFinite(start) && Number.isFinite(end) && end < start) {
@@ -71,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ----- FILTRI -----
+  // FILTRI
   const filtersForm = document.getElementById("filtersForm");
   const filtersReset = document.getElementById("filtersReset");
   function currentFilters() {
@@ -101,11 +107,9 @@ document.addEventListener("DOMContentLoaded", () => {
     renderList(rows || []);
   }
 
-  // ----- CREATE -----
+  // CREATE
   createForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    // validazione date
     if (!ensureValidDateRange(val("dateStart"), val("dateEnd"))) return;
 
     const body = {
@@ -130,11 +134,8 @@ document.addEventListener("DOMContentLoaded", () => {
       priceMax: num("priceMax"),
       currency: val("currency") || "EUR",
       capacity: num("capacity"),
-
-      // immagini
       coverImage: val("coverImage"),
       imagesText: document.getElementById("imagesText")?.value || "",
-
       externalUrl: val("externalUrl"),
       contactEmail: val("contactEmail"),
       contactPhone: val("contactPhone"),
@@ -144,14 +145,13 @@ document.addEventListener("DOMContentLoaded", () => {
     createForm.reset();
   });
 
-  // ----- EDIT -----
+  // EDIT / DELETE
   myBox?.addEventListener("click", async (e) => {
     const editBtn = e.target.closest("[data-act='edit']");
     const delBtn = e.target.closest("[data-act='del']");
     if (editBtn) {
       const id = editBtn.getAttribute("data-id");
       const ev = await fetchJSON(`/api/events/${id}`);
-      // Popola i campi esistenti + nuovi
       const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = (v ?? "").toString(); };
       const setBool = (id, v) => { const el = document.getElementById(id); if (el) el.checked = !!v; };
 
@@ -175,14 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
       set("edit_priceMax", ev.priceMax);
       set("edit_currency", ev.currency);
       set("edit_capacity", ev.capacity ?? "");
-      // date
       if (ev.dateStart) set("edit_dateStart", new Date(ev.dateStart).toISOString().slice(0,16));
       if (ev.dateEnd) set("edit_dateEnd", new Date(ev.dateEnd).toISOString().slice(0,16));
-      // immagini
       set("edit_coverImage", ev.coverImage || "");
       const galleryText = Array.isArray(ev.images) ? ev.images.join("\n") : "";
       set("edit_imagesText", galleryText);
-      // extra
       set("edit_externalUrl", ev.externalUrl);
       set("edit_contactEmail", ev.contactEmail);
       set("edit_contactPhone", ev.contactPhone);
@@ -200,8 +197,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   editForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    // validazione date
     if (!ensureValidDateRange(val("edit_dateStart"), val("edit_dateEnd"))) return;
 
     const id = val("edit_id");
@@ -227,10 +222,8 @@ document.addEventListener("DOMContentLoaded", () => {
       priceMax: num("edit_priceMax"),
       currency: val("edit_currency"),
       capacity: num("edit_capacity"),
-      // immagini
       coverImage: val("edit_coverImage"),
       imagesText: document.getElementById("edit_imagesText")?.value || "",
-      // extra
       externalUrl: val("edit_externalUrl"),
       contactEmail: val("edit_contactEmail"),
       contactPhone: val("edit_contactPhone"),
@@ -244,10 +237,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (editModal) editModal.style.display = "none";
   });
 
+  // Switch ruolo: tentativo senza body, poi fallback con body { role: ... }
   btnSwitch?.addEventListener("click", async () => {
-    await fetchJSON("/api/users/session-role", { method: "PUT" });
+    const current = sessRole();
+    const next = current === "organizer" ? "participant" : "organizer";
+    try {
+      await fetchJSON("/api/users/session-role", { method: "PUT" });
+    } catch (err) {
+      // fallback esplicito
+      await fetchJSON("/api/users/session-role", { method: "PUT", body: { role: next } });
+    }
     window.location.reload();
   });
+
   btnLogout?.addEventListener("click", () => {
     ["token","userId","registeredRole","sessionRole"].forEach(k => localStorage.removeItem(k));
     window.location.href = "index.html";
@@ -255,6 +257,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadMine();
 });
+
+
 
 
 
