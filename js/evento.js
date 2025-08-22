@@ -1,110 +1,119 @@
-// evento.js — dettaglio, join/leave, badge, link mappa
-document.addEventListener("DOMContentLoaded", () => {
+// evento.js — dettaglio evento: cover + galleria + join/leave
+document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(location.search);
   const id = params.get("id");
 
-  const titleEl = document.getElementById("title");
-  const badges = document.getElementById("badges");
-  const coverBox = document.getElementById("coverBox");
-  const descEl = document.getElementById("description");
-  const whenWhere = document.getElementById("whenWhere");
-  const details = document.getElementById("details");
-  const contacts = document.getElementById("contacts");
-  const joinBtn = document.getElementById("joinBtn");
-  const leaveBtn = document.getElementById("leaveBtn");
-  const externalA = document.getElementById("externalUrl");
-  const mapA = document.getElementById("mapLink");
-  const backBtn = document.getElementById("backBtn");
+  const box = document.getElementById("eventDetail");
+  const gallerySection = document.getElementById("gallerySection");
+  const galleryBox = document.getElementById("galleryBox");
+  const actions = document.getElementById("eventActions");
+  const extras = document.getElementById("eventExtras");
+  const welcome = document.getElementById("welcome");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-  if (!id) { titleEl.textContent = "Evento non trovato (manca id)."; return; }
-
-  const token = () => localStorage.getItem("token") || "";
-  const uid = () => localStorage.getItem("userId") || "";
-  const sessionRole = () => localStorage.getItem("sessionRole") || "";
-
-  const b = (s) => (s ?? "").toString();
-  const esc = (s) => b(s)
-    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;").replaceAll("'","&#39;");
-
+  function token() { return localStorage.getItem("token") || ""; }
+  function authHeaders() {
+    const h = { "Content-Type": "application/json" };
+    const t = token(); if (t) h.Authorization = `Bearer ${t}`;
+    return h;
+  }
   async function fetchJSON(url, opts = {}) {
     const res = await fetch(url, {
       method: opts.method || "GET",
-      headers: Object.assign(
-        { "Content-Type": "application/json", ...(token() ? { Authorization: `Bearer ${token()}` } : {}) },
-        opts.headers || {}
-      ),
+      headers: authHeaders(),
       body: opts.body ? JSON.stringify(opts.body) : undefined,
     });
-    if (!res.ok) throw new Error(`HTTP_${res.status}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
   }
+  const esc = (s) => String(s||"").replace(/[&<>]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;" }[c]));
 
-  function setJoinButtons(ev) {
-    const joined = (ev.participants||[]).some(pid => String(pid) === String(uid()));
-    const canJoin = sessionRole() === "participant";
-    if (joinBtn) joinBtn.style.display = canJoin && !joined ? "" : "none";
-    if (leaveBtn) leaveBtn.style.display = canJoin && joined ? "" : "none";
-  }
-
-  function buildMapUrl(ev) {
-    const q = encodeURIComponent([ev.venueName, ev.address, ev.city, ev.region, ev.country].filter(Boolean).join(", "));
-    return `https://www.openstreetmap.org/search?query=${q}`;
-  }
-
+  // ----- RENDER -----
   function render(ev) {
-    titleEl.textContent = ev.title || "(senza titolo)";
-    badges.innerHTML = `
-      <span class="badge badge-${ev.status||"draft"}">${ev.status||"draft"}</span>
-      <span class="badge">visibilità: ${ev.visibility||"public"}</span>
-      ${ev.isFree ? `<span class="badge">gratuito</span>` : ""}
-    `;
-    coverBox.innerHTML = (ev.images && ev.images[0]) ? `<img src="${esc(ev.images[0])}" alt="">` : `<div class="ph cover"></div>`;
-    descEl.textContent = ev.description || "";
+    if (!ev) return;
 
-    whenWhere.innerHTML = `
-      <div><strong>Quando:</strong> ${ev.dateStart ? new Date(ev.dateStart).toLocaleString() : "—"} ${ev.dateEnd ? " → "+new Date(ev.dateEnd).toLocaleString() : ""}</div>
-      <div><strong>Dove:</strong> ${[ev.venueName, ev.address, ev.city, ev.region, ev.country].filter(Boolean).join(", ") || "—"}</div>
-    `;
+    const when = new Date(ev.dateStart || ev.createdAt || Date.now()).toLocaleString();
 
-    details.innerHTML = `
-      <dt>Capienza</dt><dd>${ev.capacity ?? "—"}</dd>
-      <dt>Prezzo</dt><dd>${ev.isFree ? "Gratuito" : [ev.priceMin, ev.priceMax].filter(x=>x!=null).join("–") + " " + (ev.currency||"")}</dd>
-      <dt>Categoria</dt><dd>${[ev.type, ev.category, ev.subcategory].filter(Boolean).join(" / ") || "—"}</dd>
-      <dt>Creato</dt><dd>${new Date(ev.createdAt||Date.now()).toLocaleString()}</dd>
+    // Cover: preferisci coverImage, fallback images[0]
+    const cover = (ev.coverImage && ev.coverImage.trim())
+      ? ev.coverImage.trim()
+      : (Array.isArray(ev.images) && ev.images.length ? String(ev.images[0]).trim() : "");
+
+    box.innerHTML = `
+      ${cover ? `<div style="margin-bottom:12px"><img src="${esc(cover)}" alt="" style="width:100%;max-height:380px;object-fit:cover;border-radius:12px"/></div>` : ""}
+      <h1>${esc(ev.title)}</h1>
+      <div>${when} — ${(ev.city||"")}${ev.region?`, ${ev.region}`:""}${ev.country?`, ${ev.country}`:""}</div>
+      <p>${esc(ev.description||"").replace(/\n/g,"<br/>")}</p>
     `;
 
-    contacts.innerHTML = `
-      ${ev.contactEmail ? `<dt>Email</dt><dd><a href="mailto:${esc(ev.contactEmail)}">${esc(ev.contactEmail)}</a></dd>` : ""}
-      ${ev.contactPhone ? `<dt>Telefono</dt><dd><a href="tel:${esc(ev.contactPhone)}">${esc(ev.contactPhone)}</a></dd>` : ""}
-    `;
+    // Galleria
+    if (gallerySection && galleryBox) {
+      const imgs = Array.isArray(ev.images) ? ev.images.map(s => String(s).trim()).filter(Boolean) : [];
+      const unique = new Set();
+      const coverUrl = (ev.coverImage||"").trim();
+      const gallery = imgs.filter(u => {
+        if (!u) return false;
+        if (coverUrl && u === coverUrl) return false;
+        if (unique.has(u)) return false;
+        unique.add(u);
+        return true;
+      });
+      if (gallery.length) {
+        galleryBox.innerHTML = gallery.map(src => `<img src="${esc(src)}" alt=""/>`).join("");
+        gallerySection.style.display = "";
+      } else {
+        galleryBox.innerHTML = "";
+        gallerySection.style.display = "none";
+      }
+    }
 
-    externalA && (externalA.href = ev.externalUrl || "#");
-    mapA && (mapA.href = buildMapUrl(ev));
+    // Azioni (join/leave)
+    if (actions) {
+      actions.style.display = "";
+      actions.innerHTML = `
+        <button id="joinBtn" class="btn primary">Partecipa</button>
+        <button id="leaveBtn" class="btn">Annulla partecipazione</button>
+      `;
+      document.getElementById("joinBtn")?.addEventListener("click", async () => {
+        await fetchJSON(`/api/users/${ev._id}/partecipa`, { method:"POST" });
+        alert("Sei iscritto a questo evento!");
+      });
+      document.getElementById("leaveBtn")?.addEventListener("click", async () => {
+        await fetchJSON(`/api/users/${ev._id}/annulla`, { method:"POST" });
+        alert("Hai annullato la partecipazione.");
+      });
+    }
 
-    setJoinButtons(ev);
+    // Extras (contatti, sito esterno)
+    if (extras) {
+      const extrasHtml = [];
+      if (ev.externalUrl) extrasHtml.push(`<div><a href="${esc(ev.externalUrl)}" target="_blank">Sito ufficiale</a></div>`);
+      if (ev.contactEmail) extrasHtml.push(`<div>Email: ${esc(ev.contactEmail)}</div>`);
+      if (ev.contactPhone) extrasHtml.push(`<div>Tel: ${esc(ev.contactPhone)}</div>`);
+      if (extrasHtml.length) {
+        extras.innerHTML = extrasHtml.join("");
+        extras.style.display = "";
+      } else {
+        extras.style.display = "none";
+      }
+    }
   }
 
-  async function load() {
-    const data = await fetchJSON(`/api/events/${id}`);
-    // controller get ritorna OGGETTO diretto
-    render(data);
+  // ----- MAIN -----
+  try {
+    const ev = await fetchJSON(`/api/events/${id}`);
+    render(ev);
+  } catch (err) {
+    box.innerHTML = `<p>Errore nel caricamento dell'evento.</p>`;
   }
 
-  joinBtn?.addEventListener("click", async () => {
-    await fetchJSON(`/api/users/${uid()}/partecipa`, { method: "POST", body: { eventId: id } });
-    sessionStorage.setItem("ggw_list_dirty", "1"); // 🔧 segnala che la lista va ricaricata
-    await load();
+  // Logout
+  logoutBtn?.addEventListener("click", () => {
+    ["token","userId","registeredRole","sessionRole"].forEach(k => localStorage.removeItem(k));
+    window.location.href = "index.html";
   });
-
-  leaveBtn?.addEventListener("click", async () => {
-    await fetchJSON(`/api/users/${uid()}/annulla`, { method: "POST", body: { eventId: id } });
-    sessionStorage.setItem("ggw_list_dirty", "1"); // 🔧 segnala che la lista va ricaricata
-    await load();
-  });
-
-  backBtn?.addEventListener("click", () => history.back());
-
-  load();
 });
+
+
+
 
