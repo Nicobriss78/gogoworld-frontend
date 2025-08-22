@@ -1,39 +1,37 @@
-// login.js — login con desiredRole → server emette token con sessionRole
+// login.js — login e memorizzazione ruoli
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("loginForm") || document.getElementById("login-form");
-  if (!form) return;
+  const form = document.getElementById("loginForm");
 
-  form.addEventListener("submit", async (e) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    const email = document.getElementById("email")?.value?.trim();
-    const password = document.getElementById("password")?.value?.trim();
-    const desiredRole = localStorage.getItem("desiredRole") || "participant";
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
     try {
-      const resp = await fetch("/api/users/login", {
+      const res = await fetch("/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, desiredRole })
+        body: JSON.stringify({ email, password }),
       });
-      if (!resp.ok) throw new Error("LOGIN_FAILED");
-      const data = await resp.json();
+      if (!res.ok) throw new Error("Credenziali non valide");
+      const data = await res.json();
 
-      // Salva token e info
       localStorage.setItem("token", data.token);
       localStorage.setItem("userId", data.userId);
-      localStorage.setItem("registeredRole", data.registeredRole);
-      localStorage.setItem("sessionRole", data.sessionRole);
+      localStorage.setItem("registeredRole", data.registeredRole || "participant");
+      localStorage.setItem("sessionRole", data.sessionRole || data.registeredRole || "participant");
 
-      // Redirect coerente al sessionRole
-      if (data.sessionRole === "organizer") window.location.href = "organizzatore.html";
-      else window.location.href = "partecipante.html";
+      if (data.sessionRole === "organizer") {
+        window.location.href = "organizzatore.html";
+      } else {
+        window.location.href = "partecipante.html";
+      }
     } catch (err) {
-      console.error("Login error:", err);
-      alert("Credenziali non valide o errore di rete.");
+      alert("Login fallito: " + err.message);
     }
   });
 });
+
 
 
 
