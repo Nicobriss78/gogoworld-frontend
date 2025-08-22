@@ -1,4 +1,4 @@
-// evento.js — dettaglio evento: cover + galleria + join/leave
+// evento.js — dettaglio evento: cover + galleria + join/leave + range date + link lista dinamico
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(location.search);
   const id = params.get("id");
@@ -10,6 +10,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const extras = document.getElementById("eventExtras");
   const welcome = document.getElementById("welcome");
   const logoutBtn = document.getElementById("logoutBtn");
+  const listLink = document.getElementById("listLink");
+
+  // Imposta link "Torna alla lista" in base al ruolo di sessione
+  const sessionRole = (localStorage.getItem("sessionRole") || "participant");
+  if (listLink) {
+    listLink.href = sessionRole === "organizer" ? "organizzatore.html" : "partecipante.html";
+  }
+  if (welcome) welcome.textContent = `Ciao! Sei in sessione come ${sessionRole}`;
 
   function token() { return localStorage.getItem("token") || ""; }
   function authHeaders() {
@@ -27,17 +35,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     return res.json();
   }
   const esc = (s) => String(s||"").replace(/[&<>]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;" }[c]));
+  const fmtDT = (iso) => {
+    try { return new Date(iso).toLocaleString(); } catch { return ""; }
+  };
 
-  // ----- RENDER -----
   function render(ev) {
     if (!ev) return;
-
-    const when = new Date(ev.dateStart || ev.createdAt || Date.now()).toLocaleString();
 
     // Cover: preferisci coverImage, fallback images[0]
     const cover = (ev.coverImage && ev.coverImage.trim())
       ? ev.coverImage.trim()
       : (Array.isArray(ev.images) && ev.images.length ? String(ev.images[0]).trim() : "");
+
+    // Range date: se c'è dateEnd, mostra "inizio → fine"
+    const startStr = ev.dateStart ? fmtDT(ev.dateStart) : "";
+    const endStr = ev.dateEnd ? fmtDT(ev.dateEnd) : "";
+    const when = endStr ? `${startStr} → ${endStr}` : (startStr || fmtDT(ev.createdAt));
 
     box.innerHTML = `
       ${cover ? `<div style="margin-bottom:12px"><img src="${esc(cover)}" alt="" style="width:100%;max-height:380px;object-fit:cover;border-radius:12px"/></div>` : ""}
@@ -67,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // Azioni (join/leave)
+    // Azioni (join/leave) — allineate ai tuoi endpoint
     if (actions) {
       actions.style.display = "";
       actions.innerHTML = `
@@ -99,7 +112,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // ----- MAIN -----
   try {
     const ev = await fetchJSON(`/api/events/${id}`);
     render(ev);
@@ -113,6 +125,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.href = "index.html";
   });
 });
+
+
 
 
 
