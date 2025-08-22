@@ -60,24 +60,24 @@ document.addEventListener("DOMContentLoaded", () => {
     return {
       q: filters.q?.value?.trim(),
       visibility: filters.visibility?.value,
-      // isFree è un <select>
-      isFree: (filters.isFree?.value || ""), // "", "true", "false"
+      isFree: filters.isFree?.checked ? "true" : "",
       dateFrom: filters.dateFrom?.value,
       dateTo: filters.dateTo?.value,
-      city: filters.city?.value,
-      province: filters.province?.value,
-      region: filters.region?.value,
-      country: filters.country?.value,
-      status: (filters.status?.value || "published"),
-      category: filters.category?.value,
-      type: filters.type?.value,
+      city: filters.city?.value?.trim(),
+      province: filters.province?.value?.trim(),
+      region: filters.region?.value?.trim(),
+      country: filters.country?.value?.trim(),
+      status: filters.status?.value || "published",
+      category: filters.category?.value?.trim(),
+      type: filters.type?.value?.trim(),
     };
   }
 
   function applyFilters() {
-    const params = collectFilters();
-    const query = qs(params);
-    const url = location.pathname + (query ? `?${query}` : "");
+    const f = collectFilters();
+    const query = qs(f);
+    const url = new URL(location.href);
+    url.search = query;
     history.replaceState(null, "", url);
     load();
   }
@@ -95,6 +95,18 @@ document.addEventListener("DOMContentLoaded", () => {
     return res.json();
   }
 
+  async function load() {
+    readFiltersFromURL();
+    const query = qs(collectFilters());
+    const all = await fetchJSON(`/api/events?${query}`); // array
+    const myId = uid();
+    const mine = all.filter(ev => (ev.participants||[]).some((pid) => String(pid) === String(myId)));
+    const disp = all.filter(ev => !(ev.participants||[]).some((pid) => String(pid) === String(myId)));
+
+    renderList(listMiei, mine, true);
+    renderList(listDisp, disp, false);
+  }
+
   function renderList(target, arr, mine = false) {
     target.innerHTML = "";
     arr.forEach(ev => {
@@ -102,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
       li.innerHTML = `
         <div>
           <strong>${ev.title || "(senza titolo)"} </strong>
-          <div class="meta">${(ev.city||"")}${ev.region?`, ${ev.region}`:""} — ${new Date(ev.dateStart||ev.createdAt||Date.now()).toLocaleString()}</div>
+          <div class="meta">${(ev.city||"")}${ev.region?`, ${ev.region}`:""}${ev.country?`, ${ev.country}`:""} • ${new Date(ev.dateStart||ev.createdAt||Date.now()).toLocaleString()}</div>
           <div class="toolbar">
             <a href="evento.html?id=${ev._id}">Dettagli</a>
           </div>
@@ -117,28 +129,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  async function load() {
-    // rileggi eventuali filtri dalla URL
-    readFiltersFromURL();
-
-    const params = collectFilters();
-    const query = qs(params);
-
-    const all = await fetchJSON(`/api/events?${query}`); // array
-    const myId = uid();
-    const mine = all.filter(ev => (ev.participants||[]).some((pid) => String(pid) === String(myId)));
-    const disp = all.filter(ev => !(ev.participants||[]).some((pid) => String(pid) === String(myId)));
-
-    renderList(listMiei, mine, true);
-    renderList(listDisp, disp, false);
-  }
-
   // JOIN/LEAVE
   listDisp?.addEventListener("click", async (e) => {
     const btn = e.target.closest("[data-act='join']");
     if (!btn) return;
     const id = btn.getAttribute("data-id");
-    await fetchJSON(`/api/users/${uid()}/partecipa`, { method: "POST", body: { eventId: id } });
+    // 🔁 Unificazione: endpoint standard /api/events/:id/join
+    await fetchJSON(`/api/events/${id}/join`, { method: "POST" });
     await load();
   });
 
@@ -146,7 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const btn = e.target.closest("[data-act='leave']");
     if (!btn) return;
     const id = btn.getAttribute("data-id");
-    await fetchJSON(`/api/users/${uid()}/annulla`, { method: "POST", body: { eventId: id } });
+    // 🔁 Unificazione: endpoint standard /api/events/:id/leave
+    await fetchJSON(`/api/events/${id}/leave`, { method: "DELETE" });
     await load();
   });
 
@@ -174,17 +172,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const next = sessRole() === "organizer" ? "participant" : "organizer";
       const out = await fetchJSON("/api/users/session-role", { method: "PUT", body: { sessionRole: next } });
-      if (out?.token) localStorage.setItem("token", out.token);
-      localStorage.setItem("sessionRole", out.sessionRole || next);
-      window.location.href = next === "organizer" ? "organizzatore.html" : "partecipante.html";
+      if (out?.sessionRole) localStorage.setItem("sessionRole", out.sessionRole);
+      window.location.reload();
     } catch (err) {
-      console.error("Switch/Upgrade error:", err);
-      alert("Operazione non riuscita. Riprova.");
+      alert("Impossibile cambiare ruolo al momento.");
     }
   });
 
-  // logout
-  document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  // LOGOUT
+  btnLogout?.addEventListener("click", () => {
+    try { localStorage.removeItem("ggw_token"); } catch {}
     ["token","userId","registeredRole","sessionRole"].forEach(k => localStorage.removeItem(k));
     window.location.href = "index.html";
   });
@@ -211,17 +208,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   // Cambio di select/input
   filtersBox?.addEventListener("change", () => applyFilters());
-  // ✅ NUOVO: submit del form (click sulla lente)
+  // ✅ submit del form (click sulla lente)
   filtersBox?.addEventListener("submit", (e) => {
     e.preventDefault();
     applyFilters();
   });
-  // Se in futuro aggiungi un bottone con id="applyFilters"
-  document.getElementById("applyFilters")?.addEventListener("click", (e) => {
-    e.preventDefault();
-    applyFilters();
-  });
 });
+
+
 
 
 
