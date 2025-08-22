@@ -15,7 +15,8 @@
 <body>
   <header class="toolbar">
     <a href="index.html" class="btn">← Home</a>
-    <a href="partecipante.html" class="btn">Lista eventi</a>
+    <!-- link deciso in JS in base a sessionRole -->
+    <a id="listLink" href="#" class="btn">Torna alla lista</a>
     <div style="flex:1"></div>
     <span id="welcome"></span>
     <button id="logoutBtn" class="btn">Logout</button>
@@ -25,7 +26,7 @@
     <!-- Dettaglio evento -->
     <section id="eventDetail" class="card"></section>
 
-    <!-- 🔹 Galleria immagini -->
+    <!-- Galleria immagini -->
     <section id="gallerySection" class="card" style="display:none">
       <h3 style="margin-top:0">Galleria</h3>
       <div id="galleryBox" class="gallery"></div>
@@ -41,5 +42,6 @@
   <script src="/js/evento.js" defer></script>
 </body>
 </html>
+
 
 
