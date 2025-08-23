@@ -1,12 +1,7 @@
 // partecipante.js — lista completa eventi + partecipa/annulla + doppia lista
-// Aderente alle dinamiche:
-// 1) Lista TUTTI gli eventi (campi principali) con "Partecipa" e "Dettagli"
-// 2) Lista "Eventi a cui partecipo" con "Annulla partecipazione" e "Dettagli"
-// 3) Filtri base (query, type) — estendibili
-// 4) Switch ruolo e logout
+// (versione Fase 5: aggiunto fallback di join su /api/events/:id/join).
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ---- RIFERIMENTI DOM
   const allBox = document.getElementById("allEventsList");
   const joinedBox = document.getElementById("joinedEventsList");
   const allEmpty = document.getElementById("allEmpty");
@@ -15,13 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnSwitch = document.getElementById("switchRoleBtn");
   const welcome = document.getElementById("welcome");
 
-  // Filtri
   const qInput = document.getElementById("filterQuery");
   const typeSelect = document.getElementById("filterType");
   const applyBtn = document.getElementById("applyFiltersBtn");
   const resetBtn = document.getElementById("resetFiltersBtn");
 
-  // ---- SESSION HELPERS
   const token = () => localStorage.getItem("token") || localStorage.getItem("ggw_token") || "";
   const getRole = () => localStorage.getItem("sessionRole") || "participant";
   const userId = () => localStorage.getItem("userId") || "";
@@ -30,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function sessionRoleEnsureParticipant() {
     if (getRole() === "participant") return;
-    // Imposta ruolo di sessione a participant
     const res = await fetch("/api/users/session-role", {
       method: "POST",
       headers: {
@@ -49,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ---- API HELPERS (usa window.API se presente, fallback a fetch)
   async function apiGet(path, params) {
     if (window.API?.get) return window.API.get(path, { params });
     const qs = new URLSearchParams(params || {}).toString();
@@ -75,26 +66,19 @@ document.addEventListener("DOMContentLoaded", () => {
     return res.json();
   }
 
-  // ---- STATO
   let allEvents = [];
   let joinedIds = new Set();
 
   function renderLists() {
-    // ALL
     allBox.innerHTML = "";
     const visible = allEvents.filter(ev => !joinedIds.has(ev._id));
-    if (!visible.length) { allEmpty.style.display = "block"; } else { allEmpty.style.display = "none"; }
-    for (const ev of visible) {
-      allBox.appendChild(renderCard(ev, { inJoined: false }));
-    }
+    allEmpty.style.display = visible.length ? "none" : "block";
+    for (const ev of visible) allBox.appendChild(renderCard(ev, { inJoined: false }));
 
-    // JOINED
     joinedBox.innerHTML = "";
     const joinedArray = allEvents.filter(ev => joinedIds.has(ev._id));
-    if (!joinedArray.length) { joinedEmpty.style.display = "block"; } else { joinedEmpty.style.display = "none"; }
-    for (const ev of joinedArray) {
-      joinedBox.appendChild(renderCard(ev, { inJoined: true }));
-    }
+    joinedEmpty.style.display = joinedArray.length ? "none" : "block";
+    for (const ev of joinedArray) joinedBox.appendChild(renderCard(ev, { inJoined: true }));
   }
 
   function toEventUrl(id) {
@@ -127,10 +111,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const action = btn.getAttribute("data-action");
       try {
         if (action === "join") {
-          await apiPost(`/api/users/join/${id}`);
+          // Fallback robusto: prima /users/join, poi canonico /events/:id/join
+          try {
+            await apiPost(`/api/users/join/${id}`);
+          } catch {
+            await apiPost(`/api/events/${id}/join`);
+          }
           joinedIds.add(id);
         } else if (action === "leave") {
-          // alias robusto: prima provo /users/leave, poi /events/:id/leave
+          // già in Fase 3: /users/leave e fallback su /events/:id/leave
           try {
             await apiPost(`/api/users/leave/${id}`);
           } catch {
@@ -159,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return f;
   }
 
-  // Carica info utente per joined
   async function loadJoinedFromMe() {
     try {
       const me = await apiGet("/api/users/me");
@@ -171,9 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
         else if (it && it.eventId) ids.add(it.eventId);
       }
       joinedIds = ids;
-    } catch {
-      // fallback: mantieni lo stato attuale (vuoto la prima volta)
-    }
+    } catch {}
   }
 
   async function loadAll() {
@@ -192,46 +178,41 @@ document.addEventListener("DOMContentLoaded", () => {
     renderLists();
   }
 
-  if (applyBtn) applyBtn.addEventListener("click", refresh);
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      if (qInput) qInput.value = "";
-      if (typeSelect) typeSelect.value = "";
-      refresh();
-    });
-  }
+  applyBtn?.addEventListener("click", refresh);
+  resetBtn?.addEventListener("click", () => {
+    if (qInput) qInput.value = "";
+    if (typeSelect) typeSelect.value = "";
+    refresh();
+  });
 
-  if (btnLogout) {
-    btnLogout.addEventListener("click", () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("ggw_token");
-      localStorage.removeItem("sessionRole");
-      location.href = "/index.html";
-    });
-  }
+  btnLogout?.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("ggw_token");
+    localStorage.removeItem("sessionRole");
+    location.href = "/index.html";
+  });
 
-  if (btnSwitch) {
-    btnSwitch.addEventListener("click", async () => {
-      try {
-        await fetch("/api/users/session-role", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token()}`
-          },
-          body: JSON.stringify({ role: "organizer" })
-        });
-        localStorage.setItem("sessionRole", "organizer");
-        location.href = "/organizzatore.html";
-      } catch {
-        alert("Impossibile cambiare ruolo");
-      }
-    });
-  }
+  btnSwitch?.addEventListener("click", async () => {
+    try {
+      await fetch("/api/users/session-role", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token()}`
+        },
+        body: JSON.stringify({ role: "organizer" })
+      });
+      localStorage.setItem("sessionRole", "organizer");
+      location.href = "/organizzatore.html";
+    } catch {
+      alert("Impossibile cambiare ruolo");
+    }
+  });
 
-  // GO!
   refresh();
 });
+
+
 
 
 
