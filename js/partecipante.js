@@ -134,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const btn = e.target.closest("[data-act='join']");
     if (!btn) return;
     const id = btn.getAttribute("data-id");
-    // 🔁 Unificazione: endpoint standard /api/events/:id/join
     await fetchJSON(`/api/events/${id}/join`, { method: "POST" });
     await load();
   });
@@ -143,12 +142,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const btn = e.target.closest("[data-act='leave']");
     if (!btn) return;
     const id = btn.getAttribute("data-id");
-    // 🔁 Unificazione: endpoint standard /api/events/:id/leave
     await fetchJSON(`/api/events/${id}/leave`, { method: "DELETE" });
     await load();
   });
 
-  // SWITCH / UPGRADE ruolo
+  // SWITCH / UPGRADE ruolo 🔧 (aggiornato: salvo anche data.token)
   document.getElementById("switchRoleBtn")?.addEventListener("click", async () => {
     try {
       if (regRole() !== "organizer") {
@@ -161,19 +159,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         if (!resp.ok) throw new Error(`HTTP_${resp.status}`);
         const data = await resp.json();
-        if (data?.token) {
-          localStorage.setItem("token", data.token);
-          try { localStorage.setItem("ggw_token", data.token); } catch {}
-        }
+        if (data?.token) localStorage.setItem("token", data.token); // <<----
         if (data?.registeredRole) localStorage.setItem("registeredRole", data.registeredRole);
         if (data?.sessionRole) localStorage.setItem("sessionRole", data.sessionRole);
         window.location.href = "organizzatore.html";
         return;
       }
-      const next = sessRole() === "organizer" ? "participant" : "organizer";
+      const current = sessRole();
+      const next = current === "organizer" ? "participant" : "organizer";
       const out = await fetchJSON("/api/users/session-role", { method: "PUT", body: { sessionRole: next } });
+      if (out?.token) localStorage.setItem("token", out.token); // <<----
       if (out?.sessionRole) localStorage.setItem("sessionRole", out.sessionRole);
-      window.location.reload();
+      if (out?.registeredRole) localStorage.setItem("registeredRole", out.registeredRole);
+      window.location.href = (out?.sessionRole || next) === "organizer" ? "organizzatore.html" : "partecipante.html";
     } catch (err) {
       alert("Impossibile cambiare ruolo al momento.");
     }
@@ -199,21 +197,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // UX filtri: ENTER, CHANGE, e SUBMIT con la lente
   const filtersBox = document.getElementById("filtersForm");
-  // Enter dentro un input
   filtersBox?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       applyFilters();
     }
   });
-  // Cambio di select/input
   filtersBox?.addEventListener("change", () => applyFilters());
-  // ✅ submit del form (click sulla lente)
   filtersBox?.addEventListener("submit", (e) => {
     e.preventDefault();
     applyFilters();
   });
 });
+
 
 
 
