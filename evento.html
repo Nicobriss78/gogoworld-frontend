@@ -6,42 +6,113 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="/style.css" />
   <style>
-    .toolbar{display:flex;gap:8px;margin:8px 0}
-    .card{border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin:8px 0;background:#fff}
-    .gallery{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-    .gallery img{width:180px;height:120px;object-fit:cover;border-radius:10px;border:1px solid #eee}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+    .layout{display:grid;grid-template-columns:2fr 1fr;gap:20px}
+    @media (max-width: 1024px){.layout{grid-template-columns:1fr}}
+    .card{border:1px solid #eee;border-radius:12px;padding:14px}
+    .muted{color:#666}
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    @media (max-width: 640px){.gallery{grid-template-columns:repeat(2,1fr)}}
+    .gallery img,.cover img{width:100%;height:auto;border-radius:10px}
+    .field{margin:8px 0}
+    .field label{display:block;font-weight:600;margin-bottom:2px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .hidden{display:none !important}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width: 640px){.two-col{grid-template-columns:1fr}}
+    textarea,input,select{width:100%}
   </style>
 </head>
 <body>
-  <header class="toolbar">
-    <a href="index.html" class="btn">← Home</a>
-    <!-- link deciso in JS in base a sessionRole -->
-    <a id="listLink" href="#" class="btn">Torna alla lista</a>
-    <div style="flex:1"></div>
-    <span id="welcome"></span>
-    <button id="logoutBtn" class="btn">Logout</button>
-  </header>
+  <main class="container">
+    <header class="toolbar">
+      <button id="backBtn" class="btn secondary">Torna alla lista</button>
+      <button id="switchRoleBtn" class="btn secondary">Cambia ruolo</button>
+      <button id="logoutBtn" class="btn danger">Logout</button>
+      <span id="status" class="muted"></span>
+    </header>
 
-  <main class="content">
-    <!-- Dettaglio evento -->
-    <section id="eventDetail" class="card"></section>
+    <section class="layout">
+      <div>
+        <div class="card cover" id="coverCard"></div>
 
-    <!-- Galleria immagini -->
-    <section id="gallerySection" class="card" style="display:none">
-      <h3 style="margin-top:0">Galleria</h3>
-      <div id="galleryBox" class="gallery"></div>
+        <div class="card" id="detailsCard">
+          <h1 id="evTitle">Evento</h1>
+          <div class="muted" id="evId"></div>
+
+          <div id="viewMode">
+            <div class="field"><label>Descrizione</label><div id="evDesc"></div></div>
+            <div class="two-col">
+              <div class="field"><label>Data</label><div id="evDate"></div></div>
+              <div class="field"><label>Tipo</label><div id="evType"></div></div>
+            </div>
+            <div class="field"><label>Luogo</label><div id="evLocation"></div></div>
+            <div class="two-col">
+              <div class="field"><label>Prezzo</label><div id="evPrice"></div></div>
+              <div class="field"><label>Capienza</label><div id="evCapacity"></div></div>
+            </div>
+            <div class="field"><label>Organizzatore</label><div id="evOwner"></div></div>
+          </div>
+
+          <form id="editForm" class="hidden">
+            <div class="field"><label for="fTitle">Titolo</label><input id="fTitle" /></div>
+            <div class="field"><label for="fDesc">Descrizione</label><textarea id="fDesc" rows="4"></textarea></div>
+            <div class="two-col">
+              <div class="field"><label for="fDate">Data</label><input id="fDate" type="datetime-local" /></div>
+              <div class="field">
+                <label for="fType">Tipo</label>
+                <select id="fType">
+                  <option value="">—</option>
+                  <option value="pubblico">Pubblico</option>
+                  <option value="privato">Privato</option>
+                  <option value="ibrido">Ibrido</option>
+                </select>
+              </div>
+            </div>
+            <div class="field"><label for="fLocation">Luogo</label><input id="fLocation" /></div>
+            <div class="two-col">
+              <div class="field"><label for="fPrice">Prezzo</label><input id="fPrice" type="number" step="0.01" /></div>
+              <div class="field"><label for="fCapacity">Capienza</label><input id="fCapacity" type="number" /></div>
+            </div>
+          </form>
+
+          <div class="actions" id="participantActions">
+            <button id="joinBtn" class="btn primary hidden">Partecipa</button>
+            <button id="leaveBtn" class="btn danger hidden">Annulla partecipazione</button>
+          </div>
+
+          <div class="actions" id="organizerActions">
+            <button id="editBtn" class="btn">Modifica</button>
+            <button id="saveBtn" class="btn primary hidden">Salva</button>
+            <button id="cancelEditBtn" class="btn secondary hidden">Annulla</button>
+            <button id="deleteBtn" class="btn danger">Elimina</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Galleria</h2>
+          <div id="gallery" class="gallery"></div>
+          <div id="galleryEmpty" class="muted">Nessuna immagine in galleria.</div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="card">
+          <h3>Informazioni</h3>
+          <div class="muted">ID evento: <span id="infoId"></span></div>
+          <div>Stato partecipazione: <strong id="infoJoinState">—</strong></div>
+          <div>Ruolo sessione: <strong id="infoRole">—</strong></div>
+        </div>
+      </aside>
     </section>
-
-    <!-- Azioni evento (partecipa/annulla) -->
-    <section id="eventActions" class="card" style="display:none"></section>
-
-    <!-- Info extra (tags, link esterni, contatti) -->
-    <section id="eventExtras" class="card" style="display:none"></section>
   </main>
 
-  <script src="/js/evento.js" defer></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/evento.js"></script>
 </body>
 </html>
+
 
 
 
