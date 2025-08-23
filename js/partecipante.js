@@ -1,173 +1,306 @@
-// partecipante.js — liste (disponibili / miei), filtri, join/leave, switch ruolo
+// organizzatore.js — gestione completa eventi organizzatore
+// Mantiene tutta la logica del backup e aggiunge:
+// - Switch ruolo coerente via /api/users/session-role (salvando anche il token aggiornato)
+// - Validazione date in create/edit
+// - Coerenza con endpoints /api/events (listMine, create, update, delete)
+
 document.addEventListener("DOMContentLoaded", () => {
-  const listDisp = document.getElementById("eventi-disponibili");
-  const listMiei = document.getElementById("miei-eventi");
+  // ---- RIFERIMENTI DOM PRINCIPALI
+  const myBox = document.getElementById("myEventsContainer");
+  const createForm = document.getElementById("createEventForm");
+  const editForm = document.getElementById("editEventForm");
+  const editModal = document.getElementById("editModal");
   const btnLogout = document.getElementById("logoutBtn");
   const btnSwitch = document.getElementById("switchRoleBtn");
   const welcome = document.getElementById("welcome");
 
-  // FILTRI
-  const filters = {
-    q: document.getElementById("q"),
-    visibility: document.getElementById("visibility"),
-    isFree: document.getElementById("isFree"),
-    dateFrom: document.getElementById("dateFrom"),
-    dateTo: document.getElementById("dateTo"),
-    city: document.getElementById("city"),
-    province: document.getElementById("province"),
-    region: document.getElementById("region"),
-    country: document.getElementById("country"),
-    status: document.getElementById("status"),
-    category: document.getElementById("category"),
-    type: document.getElementById("type"),
-  };
-
+  // ---- HELPERS SESSIONE
   const token = () => localStorage.getItem("token") || "";
-  const uid = () => localStorage.getItem("userId") || "";
-  const regRole = () => localStorage.getItem("registeredRole") || "participant";
-  const sessRole = () => localStorage.getItem("sessionRole") || "participant";
+  const sessRole = () => localStorage.getItem("sessionRole") || "organizer";
+  const userId = () => localStorage.getItem("userId") || "";
 
   if (welcome) welcome.textContent = `Ciao! Sei in sessione come ${sessRole()}`;
 
-  function qs(params) {
+  // ---- HTTP HELPERS
+  function authHeaders() {
+    const h = { "Content-Type": "application/json" };
+    const t = token(); if (t) h.Authorization = `Bearer ${t}`;
+    return h;
+  }
+  async function fetchJSON(url, opts = {}) {
+    const res = await fetch(url, {
+      method: opts.method || "GET",
+      headers: { ...authHeaders(), ...(opts.headers || {}) },
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+    });
+    let data = null;
+    try { data = await res.json(); } catch {}
+    if (!res.ok) {
+      const msg = (data && (data.error || data.message)) ? (data.error || data.message) : `HTTP_${res.status}`;
+      throw new Error(msg);
+    }
+    return data;
+  }
+
+  // ---- FORM HELPERS
+  const val = (id) => document.getElementById(id)?.value?.trim() || "";
+  const bool = (id) => !!document.getElementById(id)?.checked;
+  const num = (id) => {
+    const x = +(document.getElementById(id)?.value ?? "");
+    return Number.isFinite(x) ? x : undefined;
+  };
+
+  function parseImagesText(text) {
+    if (!text) return [];
+    return text.split(/\r?\n|,/g).map(s => s.trim()).filter(Boolean);
+  }
+
+  // ---- VALIDAZIONE DATE
+  function ensureValidDateRange(startStr, endStr) {
+    if (!startStr || !endStr) return true;
+    const start = new Date(startStr).getTime();
+    const end = new Date(endStr).getTime();
+    if (Number.isFinite(start) && Number.isFinite(end) && end < start) {
+      alert("La data di fine non può essere precedente alla data di inizio.");
+      return false;
+    }
+    return true;
+  }
+
+  // ---- RENDER LISTA EVENTI
+  function renderList(items) {
+    myBox.innerHTML = "";
+    (items || []).forEach(ev => {
+      const el = document.createElement("div");
+      el.className = "card";
+      const when = new Date(ev.dateStart || ev.createdAt || Date.now()).toLocaleString();
+      const cover = ev.coverImage
+        ? `<img src="${ev.coverImage}" alt="" style="max-width:120px;max-height:80px;object-fit:cover;border-radius:8px;margin-right:8px;border:1px solid #eee" />`
+        : "";
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px">
+          ${cover}
+          <div style="flex:1">
+            <h3 style="margin:0">${ev.title || "(senza titolo)"} 
+              <small class="badge badge-${ev.status||"draft"}">${ev.status||"draft"}</small>
+              <small class="badge">${ev.visibility||"public"}</small>
+            </h3>
+            <div class="meta">${(ev.city||"")}${ev.region?`, ${ev.region}`:""}${ev.country?`, ${ev.country}`:""} • ${when}</div>
+            <div class="toolbar" style="margin-top:6px">
+              <a class="btn" href="evento.html?id=${ev._id}">Dettagli</a>
+              <button class="btn" data-act="edit" data-id="${ev._id}">Modifica</button>
+              <button class="btn danger" data-act="del" data-id="${ev._id}">Elimina</button>
+            </div>
+          </div>
+        </div>
+      `;
+      myBox.appendChild(el);
+    });
+  }
+
+  // ---- FILTRI
+  const filtersForm = document.getElementById("filtersForm");
+  const filtersReset = document.getElementById("filtersReset");
+
+  function currentFilters() {
+    const g = (id) => document.getElementById(id)?.value?.trim() || "";
+    const b = (id) => document.getElementById(id)?.checked || false;
+    const q = {};
+    if (g("f_q")) q.q = g("f_q");
+    if (g("f_city")) q.city = g("f_city");
+    if (g("f_province")) q.province = g("f_province");
+    if (g("f_region")) q.region = g("f_region");
+    if (g("f_country")) q.country = g("f_country");
+    if (g("f_dateFrom")) q.dateFrom = g("f_dateFrom");
+    if (g("f_dateTo")) q.dateTo = g("f_dateTo");
+    if (g("f_status")) q.status = g("f_status");
+    if (g("f_visibility")) q.visibility = g("f_visibility");
+    if (g("f_category")) q.category = g("f_category");
+    if (g("f_subcategory")) q.subcategory = g("f_subcategory");
+    if (g("f_type")) q.type = g("f_type");
+    if (b("f_isFree")) q.isFree = "true";
+    return q;
+  }
+
+  function buildQS(obj) {
     const p = new URLSearchParams();
-    Object.entries(params).forEach(([k,v]) => {
-      if (v === null || v === undefined || v === "") return;
-      p.set(k, v);
+    Object.entries(obj).forEach(([k,v]) => {
+      if (v !== undefined && v !== null && v !== "") p.set(k, v);
     });
     return p.toString();
   }
 
-  // Leggi filtri dalla URL (persistenza su refresh/F5)
-  function readFiltersFromURL() {
-    const u = new URL(location.href);
-    const set = (el, val) => { if (el && val != null) el.value = val; };
-    set(filters.q, u.searchParams.get("q"));
-    set(filters.visibility, u.searchParams.get("visibility"));
-    set(filters.isFree, u.searchParams.get("isFree"));
-    set(filters.dateFrom, u.searchParams.get("dateFrom"));
-    set(filters.dateTo, u.searchParams.get("dateTo"));
-    set(filters.city, u.searchParams.get("city"));
-    set(filters.province, u.searchParams.get("province"));
-    set(filters.region, u.searchParams.get("region"));
-    set(filters.country, u.searchParams.get("country"));
-    set(filters.status, u.searchParams.get("status") || "published");
-    set(filters.category, u.searchParams.get("category"));
-    set(filters.type, u.searchParams.get("type"));
+  filtersForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await loadMine(currentFilters());
+  });
+  filtersReset?.addEventListener("click", async () => {
+    filtersForm?.reset();
+    await loadMine({});
+  });
+
+  // ---- LOAD LISTA "MIEI EVENTI"
+  async function loadMine(query = {}) {
+    const qs = buildQS(query);
+    const url = qs ? `/api/events/mine/list?${qs}` : `/api/events/mine/list`;
+    const rows = await fetchJSON(url);
+    renderList(rows || []);
   }
 
-  function collectFilters() {
-    return {
-      q: filters.q?.value?.trim(),
-      visibility: filters.visibility?.value,
-      isFree: filters.isFree?.checked ? "true" : "",
-      dateFrom: filters.dateFrom?.value,
-      dateTo: filters.dateTo?.value,
-      city: filters.city?.value?.trim(),
-      province: filters.province?.value?.trim(),
-      region: filters.region?.value?.trim(),
-      country: filters.country?.value?.trim(),
-      status: filters.status?.value || "published",
-      category: filters.category?.value?.trim(),
-      type: filters.type?.value?.trim(),
+  // ---- CREATE
+  createForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!ensureValidDateRange(val("dateStart"), val("dateEnd"))) return;
+
+    const body = {
+      title: val("title"),
+      description: val("description"),
+      status: val("status") || "draft",
+      visibility: val("visibility") || "public",
+      type: val("type"),
+      category: val("category"),
+      subcategory: val("subcategory"),
+      dateStart: val("dateStart") || undefined,
+      dateEnd: val("dateEnd") || undefined,
+      timezone: val("timezone") || "Europe/Rome",
+      venueName: val("venueName"),
+      address: val("address"),
+      city: val("city"),
+      province: val("province"),
+      region: val("region"),
+      country: val("country"),
+      isFree: bool("isFree"),
+      priceMin: num("priceMin"),
+      priceMax: num("priceMax"),
+      currency: val("currency") || "EUR",
+      capacity: num("capacity"),
+      coverImage: val("coverImage"),
+      imagesText: document.getElementById("imagesText")?.value || "",
+      externalUrl: val("externalUrl"),
+      contactEmail: val("contactEmail"),
+      contactPhone: val("contactPhone"),
     };
-  }
 
-  function applyFilters() {
-    const f = collectFilters();
-    const query = qs(f);
-    const url = new URL(location.href);
-    url.search = query;
-    history.replaceState(null, "", url);
-    load();
-  }
-
-  async function fetchJSON(url, opts = {}) {
-    const res = await fetch(url, {
-      method: opts.method || "GET",
-      headers: Object.assign(
-        { "Content-Type": "application/json", ...(token() ? { Authorization: `Bearer ${token()}` } : {}) },
-        opts.headers || {}
-      ),
-      body: opts.body ? JSON.stringify(opts.body) : undefined,
-    });
-    if (!res.ok) throw new Error(`HTTP_${res.status}`);
-    return res.json();
-  }
-
-  async function load() {
-    readFiltersFromURL();
-    const query = qs(collectFilters());
-    const all = await fetchJSON(`/api/events?${query}`); // array
-    const myId = uid();
-    const mine = all.filter(ev => (ev.participants||[]).some((pid) => String(pid) === String(myId)));
-    const disp = all.filter(ev => !(ev.participants||[]).some((pid) => String(pid) === String(myId)));
-
-    renderList(listMiei, mine, true);
-    renderList(listDisp, disp, false);
-  }
-
-  function renderList(target, arr, mine = false) {
-    target.innerHTML = "";
-    arr.forEach(ev => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <div>
-          <strong>${ev.title || "(senza titolo)"} </strong>
-          <div class="meta">${(ev.city||"")}${ev.region?`, ${ev.region}`:""}${ev.country?`, ${ev.country}`:""} • ${new Date(ev.dateStart||ev.createdAt||Date.now()).toLocaleString()}</div>
-          <div class="toolbar">
-            <a href="evento.html?id=${ev._id}">Dettagli</a>
-          </div>
-        </div>
-        <div class="toolbar">
-          ${sessRole()==="participant" ? (mine
-            ? `<button data-act="leave" data-id="${ev._id}">Annulla</button>`
-            : `<button data-act="join" data-id="${ev._id}">Partecipa</button>`) : ""}
-        </div>
-      `;
-      target.appendChild(li);
-    });
-  }
-
-  // JOIN/LEAVE
-  listDisp?.addEventListener("click", async (e) => {
-    const btn = e.target.closest("[data-act='join']");
-    if (!btn) return;
-    const id = btn.getAttribute("data-id");
-    await fetchJSON(`/api/events/${id}/join`, { method: "POST" });
-    await load();
+    await fetchJSON("/api/events", { method: "POST", body });
+    await loadMine(currentFilters());
+    createForm.reset();
   });
 
-  listMiei?.addEventListener("click", async (e) => {
-    const btn = e.target.closest("[data-act='leave']");
-    if (!btn) return;
-    const id = btn.getAttribute("data-id");
-    await fetchJSON(`/api/events/${id}/leave`, { method: "DELETE" });
-    await load();
-  });
+  // ---- EDIT / DELETE
+  myBox?.addEventListener("click", async (e) => {
+    const editBtn = e.target.closest("[data-act='edit']");
+    const delBtn = e.target.closest("[data-act='del']");
 
-  // SWITCH / UPGRADE ruolo 🔧 (aggiornato: salvo anche data.token)
-  document.getElementById("switchRoleBtn")?.addEventListener("click", async () => {
-    try {
-      if (regRole() !== "organizer") {
-        const resp = await fetch("/api/users/upgrade", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token() ? { Authorization: `Bearer ${token()}` } : {})
-          }
-        });
-        if (!resp.ok) throw new Error(`HTTP_${resp.status}`);
-        const data = await resp.json();
-        if (data?.token) localStorage.setItem("token", data.token); // <<----
-        if (data?.registeredRole) localStorage.setItem("registeredRole", data.registeredRole);
-        if (data?.sessionRole) localStorage.setItem("sessionRole", data.sessionRole);
-        window.location.href = "organizzatore.html";
+    if (editBtn) {
+      const id = editBtn.getAttribute("data-id");
+      const ev = await fetchJSON(`/api/events/${id}`);
+
+      if (String(ev.ownerId || ev.owner || "") !== String(userId())) {
+        alert("Non sei il proprietario di questo evento.");
         return;
       }
+
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = (v ?? "").toString(); };
+      const setBool = (id, v) => { const el = document.getElementById(id); if (el) el.checked = !!v; };
+
+      set("edit_id", ev._id);
+      set("edit_title", ev.title);
+      set("edit_category", ev.category);
+      set("edit_subcategory", ev.subcategory);
+      set("edit_type", ev.type);
+      set("edit_description", ev.description);
+      set("edit_timezone", ev.timezone);
+      set("edit_venueName", ev.venueName);
+      set("edit_address", ev.address);
+      set("edit_city", ev.city);
+      set("edit_province", ev.province);
+      set("edit_region", ev.region);
+      set("edit_country", ev.country);
+      set("edit_status", ev.status);
+      set("edit_visibility", ev.visibility);
+      setBool("edit_isFree", ev.isFree);
+      set("edit_priceMin", ev.priceMin);
+      set("edit_priceMax", ev.priceMax);
+      set("edit_currency", ev.currency);
+      set("edit_capacity", ev.capacity ?? "");
+
+      if (ev.dateStart) set("edit_dateStart", new Date(ev.dateStart).toISOString().slice(0,16));
+      if (ev.dateEnd) set("edit_dateEnd", new Date(ev.dateEnd).toISOString().slice(0,16));
+
+      set("edit_coverImage", ev.coverImage || "");
+      const galleryText = Array.isArray(ev.images) ? ev.images.join("\n") : "";
+      set("edit_imagesText", galleryText);
+
+      set("edit_externalUrl", ev.externalUrl);
+      set("edit_contactEmail", ev.contactEmail);
+      set("edit_contactPhone", ev.contactPhone);
+
+      if (editModal) editModal.style.display = "flex";
+    }
+
+    if (delBtn) {
+      const id = delBtn.getAttribute("data-id");
+      if (confirm("Eliminare questo evento?")) {
+        await fetchJSON(`/api/events/${id}`, { method: "DELETE" });
+        await loadMine(currentFilters());
+      }
+    }
+  });
+
+  // ---- SALVA EDIT
+  editForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!ensureValidDateRange(val("edit_dateStart"), val("edit_dateEnd"))) return;
+
+    const id = val("edit_id");
+    const body = {
+      title: val("edit_title"),
+      description: val("edit_description"),
+      status: val("edit_status"),
+      visibility: val("edit_visibility"),
+      type: val("edit_type"),
+      category: val("edit_category"),
+      subcategory: val("edit_subcategory"),
+      dateStart: val("edit_dateStart") || undefined,
+      dateEnd: val("edit_dateEnd") || undefined,
+      timezone: val("edit_timezone"),
+      venueName: val("edit_venueName"),
+      address: val("edit_address"),
+      city: val("edit_city"),
+      province: val("edit_province"),
+      region: val("edit_region"),
+      country: val("edit_country"),
+      isFree: !!document.getElementById("edit_isFree")?.checked,
+      priceMin: num("edit_priceMin"),
+      priceMax: num("edit_priceMax"),
+      currency: val("edit_currency"),
+      capacity: num("edit_capacity"),
+      coverImage: val("edit_coverImage"),
+      imagesText: document.getElementById("edit_imagesText")?.value || "",
+      externalUrl: val("edit_externalUrl"),
+      contactEmail: val("edit_contactEmail"),
+      contactPhone: val("edit_contactPhone"),
+    };
+
+    await fetchJSON(`/api/events/${id}`, { method: "PUT", body });
+    if (editModal) editModal.style.display = "none";
+    await loadMine(currentFilters());
+  });
+
+  // ---- CHIUDI MODALE EDIT
+  document.getElementById("edit_cancel")?.addEventListener("click", () => {
+    if (editModal) editModal.style.display = "none";
+  });
+
+  // ---- SWITCH RUOLO (COERENTE) 🔧 (aggiornato: salvo anche data.token)
+  btnSwitch?.addEventListener("click", async () => {
+    try {
       const current = sessRole();
       const next = current === "organizer" ? "participant" : "organizer";
-      const out = await fetchJSON("/api/users/session-role", { method: "PUT", body: { sessionRole: next } });
+      const out = await fetchJSON("/api/users/session-role", {
+        method: "PUT",
+        body: { sessionRole: next }
+      });
       if (out?.token) localStorage.setItem("token", out.token); // <<----
       if (out?.sessionRole) localStorage.setItem("sessionRole", out.sessionRole);
       if (out?.registeredRole) localStorage.setItem("registeredRole", out.registeredRole);
@@ -177,38 +310,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // LOGOUT
+  // ---- LOGOUT
   btnLogout?.addEventListener("click", () => {
     try { localStorage.removeItem("ggw_token"); } catch {}
     ["token","userId","registeredRole","sessionRole"].forEach(k => localStorage.removeItem(k));
     window.location.href = "index.html";
   });
 
-  // carica iniziale
-  load();
+  // ---- AVVIO
+  loadMine();
 
-  // ritorno dal dettaglio: ricarica solo se il dettaglio ha impostato il flag
+  // Ricarica lista se si torna dal dettaglio con flag impostato
   window.addEventListener("pageshow", () => {
     if (sessionStorage.getItem("ggw_list_dirty") === "1") {
       sessionStorage.removeItem("ggw_list_dirty");
-      load();
+      loadMine(currentFilters());
     }
-  });
-
-  // UX filtri: ENTER, CHANGE, e SUBMIT con la lente
-  const filtersBox = document.getElementById("filtersForm");
-  filtersBox?.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      applyFilters();
-    }
-  });
-  filtersBox?.addEventListener("change", () => applyFilters());
-  filtersBox?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    applyFilters();
   });
 });
+
 
 
 
