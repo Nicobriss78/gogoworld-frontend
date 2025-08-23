@@ -1,166 +1,410 @@
-// evento.js — dettaglio evento: cover + galleria + join/leave unificati + range date + link lista dinamico + hide azioni per organizer/owner
-document.addEventListener("DOMContentLoaded", async () => {
-  const params = new URLSearchParams(location.search);
-  const eventId = params.get("id");
+// evento.js — Dettaglio con:
+// - Organizer: Edit/Save/Cancel/Delete SOLO qui
+// - Participant: Partecipa/Annulla in base allo stato reale
+// - Torna alla lista in base a sessionRole
 
-  // Riferimenti DOM
-  const box = document.getElementById("eventDetail");
-  const gallerySection = document.getElementById("gallerySection");
-  const galleryBox = document.getElementById("galleryBox");
-  const actions = document.getElementById("eventActions");
-  const extras = document.getElementById("eventExtras");
-  const welcome = document.getElementById("welcome");
+(function(){
+  // --- DOM
+  const backBtn = document.getElementById("backBtn");
+  const switchRoleBtn = document.getElementById("switchRoleBtn");
   const logoutBtn = document.getElementById("logoutBtn");
-  const listLink = document.getElementById("listLink");
+  const statusEl = document.getElementById("status");
 
-  // Sessione utente
-  const sessionRole = (localStorage.getItem("sessionRole") || "participant");
-  const userId = localStorage.getItem("userId") || "";
-  if (listLink) listLink.href = sessionRole === "organizer" ? "organizzatore.html" : "partecipante.html";
-  if (welcome) welcome.textContent = `Ciao! Sei in sessione come ${sessionRole}`;
+  const evTitle = document.getElementById("evTitle");
+  const evId = document.getElementById("evId");
+  const evDesc = document.getElementById("evDesc");
+  const evDate = document.getElementById("evDate");
+  const evType = document.getElementById("evType");
+  const evLocation = document.getElementById("evLocation");
+  const evPrice = document.getElementById("evPrice");
+  const evCapacity = document.getElementById("evCapacity");
+  const evOwner = document.getElementById("evOwner");
 
-  // Helpers
-  const token = () => localStorage.getItem("token") || "";
-  function authHeaders() {
-    const t = token();
-    return t ? { "Content-Type": "application/json", Authorization: `Bearer ${t}` } : { "Content-Type": "application/json" };
+  const infoId = document.getElementById("infoId");
+  const infoJoinState = document.getElementById("infoJoinState");
+  const infoRole = document.getElementById("infoRole");
+
+  const coverCard = document.getElementById("coverCard");
+  const galleryBox = document.getElementById("gallery");
+  const galleryEmpty = document.getElementById("galleryEmpty");
+
+  const viewMode = document.getElementById("viewMode");
+  const editForm = document.getElementById("editForm");
+
+  const participantActions = document.getElementById("participantActions");
+  const joinBtn = document.getElementById("joinBtn");
+  const leaveBtn = document.getElementById("leaveBtn");
+
+  const organizerActions = document.getElementById("organizerActions");
+  const editBtn = document.getElementById("editBtn");
+  const saveBtn = document.getElementById("saveBtn");
+  const cancelEditBtn = document.getElementById("cancelEditBtn");
+  const deleteBtn = document.getElementById("deleteBtn");
+
+  // Edit fields
+  const fTitle = document.getElementById("fTitle");
+  const fDesc = document.getElementById("fDesc");
+  const fDate = document.getElementById("fDate");
+  const fType = document.getElementById("fType");
+  const fLocation = document.getElementById("fLocation");
+  const fPrice = document.getElementById("fPrice");
+  const fCapacity = document.getElementById("fCapacity");
+
+  // --- Helpers
+  const getToken = () => localStorage.getItem("token") || localStorage.getItem("ggw_token") || "";
+  const getRole = () => localStorage.getItem("sessionRole") || "participant";
+  const setRole = (r) => localStorage.setItem("sessionRole", r);
+  const qs = new URLSearchParams(location.search);
+  const eventId = qs.get("id");
+
+  function fmtDate(val){
+    try { if (!val) return ""; return new Date(val).toLocaleString(); } catch { return String(val||""); }
   }
-  async function fetchJSON(url, opts = {}) {
-    const res = await fetch(url, { method: opts.method || "GET", headers: { ...authHeaders(), ...(opts.headers||{}) }, body: opts.body ? JSON.stringify(opts.body) : undefined });
-    let payload = null;
-    try { payload = await res.json(); } catch {}
-    if (!res.ok) {
-      const msg = (payload && (payload.error || payload.message)) ? (payload.error || payload.message) : `HTTP ${res.status}`;
-      throw new Error(msg);
-    }
-    return payload;
-  }
-  const esc = (s) => String(s||"").replace(/[&<>]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;" }[c]));
-  const fmtDT = (iso) => { try { return new Date(iso).toLocaleString(); } catch { return ""; } };
+  function esc(s){ return String(s ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function setHidden(el, hidden) { if (!el) return; el.classList[hidden ? "add" : "remove"]("hidden"); }
 
-  // Join/leave solo se participant e non owner
-  function canShowActions(ev) {
-    if (sessionRole !== "participant") return false;
-    if (ev && ev.ownerId && userId && String(ev.ownerId) === String(userId)) return false;
-    return true;
-  }
-
-  // Toggle bottoni in base a partecipazione corrente
-  function setActionsUI(ev) {
-    if (!actions) return;
-    if (!canShowActions(ev)) {
-      actions.style.display = "none";
-      actions.innerHTML = "";
-      return;
-    }
-    const participants = Array.isArray(ev.participants) ? ev.participants.map(String) : [];
-    const isIn = userId && participants.includes(String(userId));
-    actions.style.display = "";
-    actions.innerHTML = isIn
-      ? `<button id="leaveBtn" class="btn">Annulla partecipazione</button>`
-      : `<button id="joinBtn" class="btn primary">Partecipa</button>`;
-
-    document.getElementById("joinBtn")?.addEventListener("click", onJoin);
-    document.getElementById("leaveBtn")?.addEventListener("click", onLeave);
-  }
-
-  // --- Azioni
-  async function onJoin() {
-    try {
-      await fetchJSON(`/api/events/${eventId}/join`, { method: "POST" });
-      sessionStorage.setItem("ggw_list_dirty", "1"); // per ricaricare la lista al ritorno
-      await loadAndRender();
-      alert("Sei iscritto a questo evento!");
-    } catch (err) {
-      alert(`Errore: ${err.message}`);
-    }
-  }
-  async function onLeave() {
-    try {
-      await fetchJSON(`/api/events/${eventId}/leave`, { method: "DELETE" });
-      sessionStorage.setItem("ggw_list_dirty", "1");
-      await loadAndRender();
-      alert("Hai annullato la partecipazione.");
-    } catch (err) {
-      alert(`Errore: ${err.message}`);
+  function backToList(){
+    const role = getRole();
+    if (document.referrer && /organizzatore\.html|partecipante\.html/.test(document.referrer)) {
+      history.back();
+    } else {
+      location.href = role === "organizer" ? "/organizzatore.html" : "/partecipante.html";
     }
   }
 
-  // --- Render
-  function render(ev) {
-    if (!ev) return;
-
-    // Cover: coverImage > images[0]
-    const cover = (ev.coverImage && ev.coverImage.trim())
-      ? ev.coverImage.trim()
-      : (Array.isArray(ev.images) && ev.images.length ? String(ev.images[0]).trim() : "");
-
-    // Range date
-    const startStr = ev.dateStart ? fmtDT(ev.dateStart) : "";
-    const endStr = ev.dateEnd ? fmtDT(ev.dateEnd) : "";
-    const when = endStr ? `${startStr} → ${endStr}` : (startStr || fmtDT(ev.createdAt));
-
-    box.innerHTML = `
-      ${cover ? `<div style="margin-bottom:12px"><img src="${esc(cover)}" alt="" style="width:100%;max-height:380px;object-fit:cover;border-radius:12px"/></div>` : ""}
-      <h1>${esc(ev.title)}</h1>
-      <div>${when} — ${(ev.city||"")}${ev.region?`, ${ev.region}`:""}${ev.country?`, ${ev.country}`:""}</div>
-      <p>${esc(ev.description||"").replace(/\n/g,"<br/>")}</p>
-    `;
-
-    // Galleria (no duplicati con cover)
-    if (gallerySection && galleryBox) {
-      const imgs = Array.isArray(ev.images) ? ev.images.map(s => String(s).trim()).filter(Boolean) : [];
-      const unique = new Set();
-      const coverUrl = (ev.coverImage||"").trim();
-      const gallery = imgs.filter(u => {
-        if (!u) return false;
-        if (coverUrl && u === coverUrl) return false;
-        if (unique.has(u)) return false;
-        unique.add(u);
-        return true;
-      });
-      if (gallery.length) {
-        galleryBox.innerHTML = gallery.map(src => `<img src="${esc(src)}" alt=""/>`).join("");
-        gallerySection.style.display = "";
-      } else {
-        galleryBox.innerHTML = "";
-        gallerySection.style.display = "none";
+  async function ensureRole(target){
+    if (getRole() === target) return;
+    const res = await fetch("/api/users/session-role", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({ role: target })
+    });
+    if (res.ok) {
+      setRole(target);
+      const data = await res.json().catch(()=>({}));
+      if (data && data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("ggw_token", data.token);
       }
     }
-
-    // Extra
-    if (extras) {
-      const out = [];
-      if (ev.externalUrl) out.push(`<div><a href="${esc(ev.externalUrl)}" target="_blank">Sito ufficiale</a></div>`);
-      if (ev.contactEmail) out.push(`<div>Email: ${esc(ev.contactEmail)}</div>`);
-      if (ev.contactPhone) out.push(`<div>Tel: ${esc(ev.contactPhone)}</div>`);
-      if (out.length) { extras.innerHTML = out.join(""); extras.style.display = ""; } else { extras.style.display = "none"; }
-    }
-
-    // Azioni
-    setActionsUI(ev);
   }
 
-  // --- Load + Render
-  async function loadAndRender() {
+  async function apiGet(path){
+    const res = await fetch(path, { headers: { "Authorization": `Bearer ${getToken()}` } });
+    if (!res.ok) throw new Error(`GET ${path} failed`);
+    return res.json();
+  }
+  async function apiPost(path, body){
+    const res = await fetch(path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getToken()}` },
+      body: JSON.stringify(body || {})
+    });
+    if (!res.ok) {
+      const t = await res.json().catch(()=>({}));
+      throw new Error(t.message || `POST ${path} failed`);
+    }
+    return res.json();
+  }
+  async function apiPut(path, body){
+    const res = await fetch(path, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getToken()}` },
+      body: JSON.stringify(body || {})
+    });
+    if (!res.ok) {
+      const t = await res.json().catch(()=>({}));
+      throw new Error(t.message || `PUT ${path} failed`);
+    }
+    return res.json();
+  }
+  async function apiDelete(path){
+    const res = await fetch(path, { method: "DELETE", headers: { "Authorization": `Bearer ${getToken()}` } });
+    if (!res.ok) {
+      const t = await res.json().catch(()=>({}));
+      throw new Error(t.message || `DELETE ${path} failed`);
+    }
+    return res.json();
+  }
+
+  // --- State
+  let eventData = null;
+  let joined = false;
+
+  function populateView(ev){
+    if (!ev) return;
+    evTitle.textContent = ev.title || "Evento";
+    evId.textContent = ev._id || "";
+    infoId.textContent = ev._id || "";
+
+    evDesc.innerHTML = esc(ev.description || ev.desc || "");
+    evDate.textContent = fmtDate(ev.date || ev.datetime || ev.startsAt);
+    evType.textContent = esc(ev.type || ev.eventType || "");
+    evLocation.textContent = esc(ev.location || ev.place || ev.address || "");
+    evPrice.textContent = ev.price != null ? String(ev.price) : "";
+    evCapacity.textContent = ev.capacity != null ? String(ev.capacity) : "";
+    evOwner.textContent = ev.ownerName ? `${ev.ownerName} (${ev.owner || ""})` : (ev.owner || ev.organizer || "");
+
+    // Cover
+    coverCard.innerHTML = "";
+    const coverUrl = ev.coverImage || ev.cover || ev.image || null;
+    if (coverUrl) {
+      const img = document.createElement("img");
+      img.src = coverUrl;
+      img.alt = ev.title || "cover";
+      coverCard.appendChild(img);
+    } else {
+      const p = document.createElement("p");
+      p.className = "muted";
+      p.textContent = "Nessuna copertina.";
+      coverCard.appendChild(p);
+    }
+
+    // Gallery
+    galleryBox.innerHTML = "";
+    let gal = ev.gallery || ev.images || ev.photos || [];
+    if (!Array.isArray(gal)) gal = [];
+    if (!gal.length) {
+      galleryEmpty.style.display = "block";
+    } else {
+      galleryEmpty.style.display = "none";
+      for (const url of gal) {
+        if (!url) continue;
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = ev.title || "gallery";
+        galleryBox.appendChild(img);
+      }
+    }
+  }
+
+  function populateEdit(ev){
+    fTitle.value = ev.title || "";
+    fDesc.value = ev.description || ev.desc || "";
+    // fDate: tenta ISO locale
     try {
-      const ev = await fetchJSON(`/api/events/${eventId}`);
-      render(ev);
-    } catch (err) {
-      box.innerHTML = `<p>Errore nel caricamento dell'evento.</p>`;
+      if (ev.date) {
+        const d = new Date(ev.date);
+        fDate.value = new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,16);
+      } else {
+        fDate.value = "";
+      }
+    } catch { fDate.value = ""; }
+    fType.value = (ev.type || "").toLowerCase();
+    fLocation.value = ev.location || ev.place || ev.address || "";
+    fPrice.value = ev.price != null ? String(ev.price) : "";
+    fCapacity.value = ev.capacity != null ? String(ev.capacity) : "";
+  }
+
+  function updateRoleUI(role){
+    infoRole.textContent = role;
+    const isOrganizer = role === "organizer";
+    setHidden(participantActions, isOrganizer);
+    setHidden(organizerActions, !isOrganizer);
+
+    // reset edit mode UI
+    setHidden(viewMode, false);
+    setHidden(editForm, true);
+    setHidden(saveBtn, true);
+    setHidden(cancelEditBtn, true);
+    setHidden(editBtn, !isOrganizer); // edit visibile solo per organizer
+  }
+
+  function updateJoinUI(){
+    infoJoinState.textContent = joined ? "Partecipi" : "Non partecipi";
+    setHidden(joinBtn, joined);
+    setHidden(leaveBtn, !joined);
+  }
+
+  async function fetchJoinStateFromMe(){
+    try {
+      const me = await apiGet("/api/users/me");
+      const arr = me?.joinedEvents || me?.attending || me?.eventsJoined || [];
+      const set = new Set(arr.map(x => (typeof x === "string" ? x : (x?._id || x?.eventId))));
+      joined = set.has(eventId);
+    } catch {
+      // fallback: se non riusciamo a leggere /me, lasciamo lo stato attuale
     }
   }
 
-  // Logout
-  logoutBtn?.addEventListener("click", () => {
-    try { localStorage.removeItem("ggw_token"); } catch {}
-    ["token","userId","registeredRole","sessionRole"].forEach(k => localStorage.removeItem(k));
-    window.location.href = "index.html";
-  });
+  async function loadEvent(){
+    if (!eventId) throw new Error("ID evento mancante");
+    const data = await apiGet(`/api/events/${eventId}`);
+    eventData = data && data._id ? data : (data?.item || data?.event || null);
+    if (!eventData) throw new Error("Evento non trovato");
+    populateView(eventData);
+    populateEdit(eventData);
+  }
 
-  // Avvio
-  await loadAndRender();
-});
+  // --- Actions
+  if (backBtn) backBtn.addEventListener("click", backToList);
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("ggw_token");
+      localStorage.removeItem("sessionRole");
+      location.href = "/index.html";
+    });
+  }
+
+  if (switchRoleBtn) {
+    switchRoleBtn.addEventListener("click", async () => {
+      const newRole = getRole() === "organizer" ? "participant" : "organizer";
+      try {
+        await fetch("/api/users/session-role", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getToken()}` },
+          body: JSON.stringify({ role: newRole })
+        });
+        setRole(newRole);
+        // Aggiorna UI in linea con nuovo ruolo
+        updateRoleUI(newRole);
+        updateJoinUI();
+      } catch {
+        alert("Impossibile cambiare ruolo");
+      }
+    });
+  }
+
+  if (joinBtn) {
+    joinBtn.addEventListener("click", async () => {
+      try {
+        await apiPost(`/api/users/join/${eventId}`);
+        joined = true;
+        updateJoinUI();
+        statusEl.textContent = "Hai aderito all'evento.";
+      } catch (e) {
+        // fallback alias
+        try {
+          await apiPost(`/api/events/${eventId}/join`);
+          joined = true;
+          updateJoinUI();
+          statusEl.textContent = "Hai aderito all'evento.";
+        } catch (err) {
+          alert(err.message || "Impossibile partecipare");
+        }
+      }
+    });
+  }
+
+  if (leaveBtn) {
+    leaveBtn.addEventListener("click", async () => {
+      try {
+        await apiPost(`/api/users/leave/${eventId}`);
+        joined = false;
+        updateJoinUI();
+        statusEl.textContent = "Hai annullato la partecipazione.";
+      } catch (e) {
+        try {
+          await apiPost(`/api/events/${eventId}/leave`);
+          joined = false;
+          updateJoinUI();
+          statusEl.textContent = "Hai annullato la partecipazione.";
+        } catch (err) {
+          alert(err.message || "Impossibile annullare la partecipazione");
+        }
+      }
+    });
+  }
+
+  if (editBtn) {
+    editBtn.addEventListener("click", () => {
+      setHidden(viewMode, true);
+      setHidden(editForm, false);
+      setHidden(editBtn, true);
+      setHidden(saveBtn, false);
+      setHidden(cancelEditBtn, false);
+    });
+  }
+
+  if (cancelEditBtn) {
+    cancelEditBtn.addEventListener("click", () => {
+      setHidden(viewMode, false);
+      setHidden(editForm, true);
+      setHidden(editBtn, false);
+      setHidden(saveBtn, true);
+      setHidden(cancelEditBtn, true);
+      populateEdit(eventData); // ripristina valori
+    });
+  }
+
+  if (saveBtn) {
+    saveBtn.addEventListener("click", async () => {
+      try {
+        const body = {
+          title: fTitle.value.trim(),
+          description: fDesc.value.trim(),
+          // normalizza data in ISO
+          date: fDate.value ? new Date(fDate.value).toISOString() : null,
+          type: fType.value || null,
+          location: fLocation.value.trim(),
+          price: fPrice.value ? Number(fPrice.value) : null,
+          capacity: fCapacity.value ? Number(fCapacity.value) : null,
+        };
+        const updated = await apiPut(`/api/events/${eventId}`, body);
+        eventData = updated && updated._id ? updated : (updated?.item || updated?.event || eventData);
+        populateView(eventData);
+        populateEdit(eventData);
+
+        setHidden(viewMode, false);
+        setHidden(editForm, true);
+        setHidden(editBtn, false);
+        setHidden(saveBtn, true);
+        setHidden(cancelEditBtn, true);
+        statusEl.textContent = "Evento aggiornato.";
+      } catch (err) {
+        alert(err.message || "Impossibile salvare le modifiche");
+      }
+    });
+  }
+
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", async () => {
+      if (!confirm("Confermi l'eliminazione dell'evento?")) return;
+      try {
+        await apiDelete(`/api/events/${eventId}`);
+        alert("Evento eliminato");
+        backToList();
+      } catch (err) {
+        alert(err.message || "Impossibile eliminare l'evento");
+      }
+    });
+  }
+
+  async function init(){
+    if (!eventId) { alert("Evento non trovato"); backToList(); return; }
+
+    // UI in base al ruolo di sessione
+    const role = getRole();
+    updateRoleUI(role);
+
+    try {
+      await loadEvent();
+    } catch (err) {
+      alert(err.message || "Errore nel caricamento evento");
+      return;
+    }
+
+    // Partecipazione (solo se participant in sessione)
+    if (getRole() !== "organizer") {
+      try { await ensureRole("participant"); } catch {}
+      try { await fetchJoinStateFromMe(); } catch {}
+      updateJoinUI();
+    } else {
+      // organizer: niente join UI
+      setHidden(participantActions, true);
+    }
+  }
+
+  init();
+})();
+
+
+
 
 
 
