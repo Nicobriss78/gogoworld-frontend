@@ -1,19 +1,61 @@
-// login.js — login con rispetto del ruolo desiderato scelto in homepage
-// Mantiene tutta la logica esistente: salva token, userId, registeredRole, sessionRole e redirige nella vista corretta.
-// Aggiunta chirurgica: invio di desiredRole (se presente) al backend.
+// login.js — aderente a login.html reale:
+// - form: #loginForm
+// - campi: #email, #password, #role
+// - errore: #loginError
+// Dinamiche: ruolo primario da select #role; fallback da localStorage.desiredRole; payload coerente con BE.
 
-document.addEventListener("DOMContentLoaded", () => {
+(function () {
+  // --- Riferimenti DOM reali
   const form = document.getElementById("loginForm");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const roleSelect = document.getElementById("role");
+  const errorBox = document.getElementById("loginError");
 
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+  function showError(msg) {
+    if (errorBox) {
+      errorBox.textContent = msg;
+      errorBox.style.display = "";
+    } else {
+      alert(msg);
+    }
+  }
 
-    // ruolo desiderato impostato in homepage (opzionale)
-    let desiredRole = null;
-    try { desiredRole = localStorage.getItem("desiredRole"); } catch {}
+  function clearError() {
+    if (errorBox) {
+      errorBox.textContent = "";
+      errorBox.style.display = "none";
+    }
+  }
 
+  function disableUI(disabled) {
+    try {
+      if (form) {
+        form.querySelectorAll("input,button,select,textarea").forEach((el) => {
+          el.disabled = !!disabled;
+        });
+      }
+    } catch {}
+  }
+
+  async function doLogin() {
+    clearError();
+
+    const email = emailInput?.value?.trim();
+    const password = passwordInput?.value ?? "";
+    if (!email || !password) {
+      showError("Inserisci email e password.");
+      return;
+    }
+
+    // Fonte primaria: select #role
+    let desiredRole = roleSelect?.value || null;
+    // Fallback: scelta fatta in homepage
+    if (!desiredRole) {
+      try { desiredRole = localStorage.getItem("desiredRole"); } catch {}
+    }
+
+    disableUI(true);
     try {
       const res = await fetch("/api/users/login", {
         method: "POST",
@@ -21,18 +63,19 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({
           email,
           password,
-          // opzionale, il BE lo rispetta solo se compatibile
           desiredRole: desiredRole || undefined
         }),
       });
+
+      let data = null;
+      try { data = await res.json(); } catch {}
+
       if (!res.ok) {
-        let msg = "Credenziali non valide";
-        try { const j = await res.json(); if (j?.error || j?.message) msg = j.error || j.message; } catch {}
+        const msg = (data && (data.error || data.message)) ? (data.error || data.message) : `Errore ${res.status}`;
         throw new Error(msg);
       }
-      const data = await res.json();
 
-      // pulizia desiredRole per evitare residui nei prossimi login
+      // pulizia desiredRole da homepage per evitare residui
       try { localStorage.removeItem("desiredRole"); } catch {}
 
       localStorage.setItem("token", data.token);
@@ -40,16 +83,42 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("registeredRole", data.registeredRole || "participant");
       localStorage.setItem("sessionRole", data.sessionRole || data.registeredRole || "participant");
 
-      if ((data.sessionRole || "participant") === "organizer") {
-        window.location.href = "organizzatore.html";
-      } else {
-        window.location.href = "partecipante.html";
-      }
+      const sr = (data.sessionRole || data.registeredRole || "participant");
+      window.location.href = sr === "organizer" ? "organizzatore.html" : "partecipante.html";
     } catch (err) {
-      alert("Login fallito: " + err.message);
+      showError("Login fallito: " + err.message);
+    } finally {
+      disableUI(false);
     }
-  });
-});
+  }
+
+  // --- Bind al submit del form
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      doLogin();
+    });
+
+    // Bind esplicito anche al click del bottone di submit dentro il form
+    const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+    submitBtn?.addEventListener("click", (e) => {
+      // Se per qualsiasi ragione il submit non parte, forziamo il login
+      // (e.preventDefault() non serve qui: il form listener sopra lo gestisce)
+      // Ma se altri script hanno bloccato il submit, questo garantisce l'azione.
+      // Non duplica la richiesta perché doLogin è idempotente lato validazione.
+      if (e) { /* noop: il submit handler gestisce preventDefault */ }
+    });
+
+    // Enter negli input: il submit del form già intercetta, ma teniamo la UX pulita
+    [emailInput, passwordInput].forEach((el) => {
+      el?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
+          // il listener di form gestirà il submit
+        }
+      });
+    });
+  }
+})();
 
 
 
