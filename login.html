@@ -21,20 +21,16 @@
         <input id="password" type="password" required autocomplete="current-password" />
       </div>
 
-      <div class="form-row">
-        <label for="role">Accedi come</label>
-        <select id="role">
-          <option value="participant">Partecipante</option>
-          <option value="organizer">Organizzatore</option>
-        </select>
-      </div>
+      <div id="loginError" class="error" style="display:none;"></div>
 
-      <button type="submit">Entra</button>
-      <p id="loginError" class="error" style="display:none;"></p>
+      <div class="form-actions">
+        <button type="button" id="homeBtn" class="btn secondary">Torna alla homepage</button>
+        <button type="submit" class="btn primary">Login</button>
+      </div>
     </form>
 
     <p class="small">
-      Non hai un account? <a href="pages/register.html">Registrati</a>
+      Non hai un account? <a href="pages/register.html" id="toRegister">Registrati</a>
     </p>
   </main>
 
@@ -44,4 +40,5 @@
   <script src="js/login.js"></script>
 </body>
 </html>
+
 
