@@ -6,78 +6,58 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="/style.css" />
   <style>
-    .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:12px 0}
-    .filters input,.filters select{width:100%;padding:8px;border:1px solid #ccc;border-radius:8px}
-    .lists{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    @media (max-width: 900px){.lists{grid-template-columns:1fr}}
-    ul{list-style:none;padding:0;margin:0}
-    li{border:1px solid #eee;border-radius:10px;padding:10px;margin:8px 0;display:flex;align-items:center;justify-content:space-between;gap:8px}
-    .meta{opacity:.8;font-size:.9em}
-    .toolbar{display:flex;gap:8px;margin:8px 0}
-    .badge{display:inline-block;padding:2px 8px;border-radius:12px;background:#eee;margin-left:6px;font-size:.85em}
-    .loading{opacity:.7}
-    .btn-search{background:none;border:1px solid #ccc;border-radius:8px;padding:8px;cursor:pointer;font-size:1.1em}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media (max-width: 1024px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width: 640px){.grid{grid-template-columns:1fr}}
+    .event-card{border:1px solid #eee;border-radius:10px;padding:12px}
+    .actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+    .muted{color:#666;font-size:.9em}
+    .section-title{margin:18px 0 6px;font-size:1.1rem}
   </style>
 </head>
 <body>
   <main class="container">
-    <h1>Area Partecipante <span id="welcome"></span></h1>
+    <header class="toolbar">
+      <button id="switchRoleBtn" class="btn secondary">Cambia ruolo</button>
+      <button id="logoutBtn" class="btn danger">Logout</button>
+      <span id="welcome" class="muted"></span>
+    </header>
 
-    <div class="toolbar">
-      <button id="logoutBtn">Logout</button>
-      <button id="switchRoleBtn">Diventa organizzatore</button>
-    </div>
-
-    <!-- FILTRI -->
     <section>
-      <h2>Filtri</h2>
-      <form class="filters" id="filtersForm">
-        <input type="text" id="q" placeholder="Cerca testo (titolo, descrizione, città)"/>
-        <select id="visibility">
-          <option value="">Visibilità (tutti)</option>
-          <option value="public">Pubblico</option>
-          <option value="private">Privato</option>
-          <option value="unlisted">Non in elenco</option>
+      <h1>Eventi disponibili</h1>
+
+      <div class="toolbar">
+        <!-- Filtri base (estendibili) -->
+        <input id="filterQuery" placeholder="Cerca per titolo, luogo..." />
+        <select id="filterType">
+          <option value="">Tutti i tipi</option>
+          <option value="pubblico">Pubblico</option>
+          <option value="privato">Privato</option>
+          <option value="ibrido">Ibrido</option>
         </select>
-        <select id="isFree">
-          <option value="">Prezzo (tutti)</option>
-          <option value="true">Gratuito</option>
-          <option value="false">A pagamento</option>
-        </select>
-        <input type="date" id="dateFrom" />
-        <input type="date" id="dateTo" />
-        <input type="text" id="city" placeholder="Città"/>
-        <input type="text" id="province" placeholder="Provincia"/>
-        <input type="text" id="region" placeholder="Regione"/>
-        <input type="text" id="country" placeholder="Paese"/>
-        <input type="text" id="category" placeholder="Categoria"/>
-        <input type="text" id="type" placeholder="Tipo evento"/>
-        <select id="status">
-          <option value="published" selected>Solo pubblicati</option>
-          <option value="">Tutti gli stati</option>
-          <option value="draft">Bozza</option>
-          <option value="cancelled">Annullato</option>
-        </select>
-        <!-- 🔍 Bottone ricerca -->
-        <button type="submit" id="searchBtn" class="btn-search">🔍</button>
-      </form>
+        <button id="applyFiltersBtn" class="btn">Filtra</button>
+        <button id="resetFiltersBtn" class="btn secondary">Reset</button>
+      </div>
+
+      <div id="allEventsList" class="grid"></div>
+      <div id="allEmpty" class="muted" style="display:none;">Nessun evento trovato.</div>
     </section>
 
-    <section class="lists">
-      <div>
-        <h2>Eventi disponibili</h2>
-        <ul id="eventi-disponibili"></ul>
-      </div>
-      <div>
-        <h2>I miei eventi (a cui parteciperò)</h2>
-        <ul id="miei-eventi"></ul>
-      </div>
+    <section>
+      <h2 class="section-title">Eventi a cui partecipo</h2>
+      <div id="joinedEventsList" class="grid"></div>
+      <div id="joinedEmpty" class="muted" style="display:none;">Non stai partecipando ad alcun evento.</div>
     </section>
   </main>
 
-  <script src="/js/partecipante.js" defer></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/partecipante.js"></script>
 </body>
 </html>
+
+
 
 
 
