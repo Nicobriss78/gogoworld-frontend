@@ -1,124 +1,125 @@
-// login.js — aderente a login.html reale:
-// - form: #loginForm
-// - campi: #email, #password, #role
-// - errore: #loginError
-// Dinamiche: ruolo primario da select #role; fallback da localStorage.desiredRole; payload coerente con BE.
+// login.js — login con ruolo SOLO di sessione (preso da homepage 0)
+// Flusso:
+// 1) submit email+password -> POST /api/users/login
+// 2) legge desiredRole da storage (default "participant")
+// 3) POST /api/users/session-role { role } -> salva token/ruolo
+// 4) redirect alla pagina del ruolo scelto
 
 (function () {
-  // --- Riferimenti DOM reali
   const form = document.getElementById("loginForm");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
-  const roleSelect = document.getElementById("role");
   const errorBox = document.getElementById("loginError");
+  const homeBtn = document.getElementById("homeBtn");
 
   function showError(msg) {
-    if (errorBox) {
-      errorBox.textContent = msg;
-      errorBox.style.display = "";
-    } else {
-      alert(msg);
-    }
+    if (!errorBox) return;
+    errorBox.textContent = msg || "Errore imprevisto";
+    errorBox.style.display = "block";
   }
-
   function clearError() {
-    if (errorBox) {
-      errorBox.textContent = "";
-      errorBox.style.display = "none";
+    if (!errorBox) return;
+    errorBox.textContent = "";
+    errorBox.style.display = "none";
+  }
+
+  function getDesiredRole() {
+    try {
+      // Preferisci sessionStorage (scelta appena fatta), poi localStorage; default participant
+      return sessionStorage.getItem("desiredRole")
+          || localStorage.getItem("desiredRole")
+          || "participant";
+    } catch {
+      return "participant";
     }
   }
 
-  function disableUI(disabled) {
+  function rememberAuth({ token, user }) {
     try {
-      if (form) {
-        form.querySelectorAll("input,button,select,textarea").forEach((el) => {
-          el.disabled = !!disabled;
-        });
+      if (token) {
+        localStorage.setItem("token", token);
+        localStorage.setItem("ggw_token", token); // compat con api.js
       }
+      if (user && user._id) localStorage.setItem("userId", user._id);
+      if (user && user.email) localStorage.setItem("userEmail", user.email);
     } catch {}
   }
 
-  async function doLogin() {
-    clearError();
-
-    const email = emailInput?.value?.trim();
-    const password = passwordInput?.value ?? "";
-    if (!email || !password) {
-      showError("Inserisci email e password.");
-      return;
-    }
-
-    // Fonte primaria: select #role
-    let desiredRole = roleSelect?.value || null;
-    // Fallback: scelta fatta in homepage
-    if (!desiredRole) {
-      try { desiredRole = localStorage.getItem("desiredRole"); } catch {}
-    }
-
-    disableUI(true);
-    try {
-      const res = await fetch("/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          desiredRole: desiredRole || undefined
-        }),
-      });
-
-      let data = null;
-      try { data = await res.json(); } catch {}
-
+  function setSessionRole(role) {
+    const r = role === "organizer" ? "organizer" : "participant";
+    return fetch("/api/users/session-role", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token") || localStorage.getItem("ggw_token") || ""}`
+      },
+      body: JSON.stringify({ role: r })
+    }).then(async res => {
       if (!res.ok) {
-        const msg = (data && (data.error || data.message)) ? (data.error || data.message) : `Errore ${res.status}`;
-        throw new Error(msg);
+        const t = await res.json().catch(() => ({}));
+        throw new Error(t.message || `Errore session-role (${res.status})`);
       }
-
-      // pulizia desiredRole da homepage per evitare residui
-      try { localStorage.removeItem("desiredRole"); } catch {}
-
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", data.userId);
-      localStorage.setItem("registeredRole", data.registeredRole || "participant");
-      localStorage.setItem("sessionRole", data.sessionRole || data.registeredRole || "participant");
-
-      const sr = (data.sessionRole || data.registeredRole || "participant");
-      window.location.href = sr === "organizer" ? "organizzatore.html" : "partecipante.html";
-    } catch (err) {
-      showError("Login fallito: " + err.message);
-    } finally {
-      disableUI(false);
-    }
+      const data = await res.json().catch(() => ({}));
+      // Se il backend restituisce un nuovo token di sessione, salvalo
+      if (data && data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("ggw_token", data.token);
+      }
+      localStorage.setItem("sessionRole", r);
+      return r;
+    });
   }
 
-  // --- Bind al submit del form
+  function redirectByRole(role) {
+    if (role === "organizer") location.href = "organizzatore.html";
+    else location.href = "partecipante.html";
+  }
+
+  if (homeBtn) {
+    homeBtn.addEventListener("click", () => { location.href = "index.html"; });
+  }
+
   if (form) {
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      doLogin();
-    });
+      clearError();
 
-    // Bind esplicito anche al click del bottone di submit dentro il form
-    const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
-    submitBtn?.addEventListener("click", (e) => {
-      // Se per qualsiasi ragione il submit non parte, forziamo il login
-      // (e.preventDefault() non serve qui: il form listener sopra lo gestisce)
-      // Ma se altri script hanno bloccato il submit, questo garantisce l'azione.
-      // Non duplica la richiesta perché doLogin è idempotente lato validazione.
-      if (e) { /* noop: il submit handler gestisce preventDefault */ }
-    });
+      const email = emailInput?.value?.trim();
+      const password = passwordInput?.value || "";
 
-    // Enter negli input: il submit del form già intercetta, ma teniamo la UX pulita
-    [emailInput, passwordInput].forEach((el) => {
-      el?.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
-          // il listener di form gestirà il submit
+      if (!email || !password) {
+        showError("Inserisci email e password.");
+        return;
+      }
+
+      try {
+        // 1) Login
+        const res = await fetch("/api/users/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        if (!res.ok) {
+          const t = await res.json().catch(() => ({}));
+          throw new Error(t.message || "Credenziali non valide");
         }
-      });
+        const data = await res.json().catch(() => ({}));
+        rememberAuth(data);
+
+        // 2) Imposta ruolo di sessione
+        const desired = getDesiredRole();
+        const sessionRole = await setSessionRole(desired);
+
+        // 3) Redirect
+        redirectByRole(sessionRole);
+      } catch (err) {
+        showError(err.message || "Errore di autenticazione");
+      }
     });
   }
 })();
+
+
 
 
 
