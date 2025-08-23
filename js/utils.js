@@ -1,104 +1,70 @@
-/* GoGo.World – utils.js
- * Utility globali: ID, formattazioni, ruoli, querystring, storage namespaced.
- * Esporta un oggetto globale: window.GGW
- */
+// js/utils.js — GoGo.World — Utility leggere e non invasive
+// Include: escape HTML, querystring helpers, date helpers, DOM helpers, storage helpers.
 
-(function () {
-  const NS = "ggw:";
+(function (global) {
+  const Utils = {};
 
-  // --- Storage sicuro (best effort)
-  const storage = {
-    get(key, fallback = null) {
-      try {
-        const raw = localStorage.getItem(NS + key);
-        return raw === null ? fallback : JSON.parse(raw);
-      } catch { return fallback; }
-    },
-    set(key, value) {
-      try { localStorage.setItem(NS + key, JSON.stringify(value)); } catch {}
-    },
-    del(key) {
-      try { localStorage.removeItem(NS + key); } catch {}
-    }
+  // --- String/HTML
+  Utils.escapeHtml = function (s) {
+    return String(s ?? "").replace(/[&<>"']/g, (m) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
+    }[m]));
   };
 
-  // --- ID helpers
-  function eventId(e) {
-    if (!e) return null;
-    return e._id || e.id || null;
-  }
-
-  // --- Querystring → object
-  function parseQS(search) {
-    const sp = new URLSearchParams(search || window.location.search || "");
-    const obj = {};
-    for (const [k, v] of sp.entries()) {
-      if (obj[k] !== undefined) {
-        if (Array.isArray(obj[k])) obj[k].push(v);
-        else obj[k] = [obj[k], v];
-      } else obj[k] = v;
-    }
-    return obj;
-  }
-
-  // --- Date & money format
-  function formatDate(dateStr, locale = "it-IT", options) {
+  // --- Querystring
+  Utils.qs = new URLSearchParams(global.location ? global.location.search : "");
+  Utils.getQueryParam = function (name, fallback = null) {
     try {
-      const d = (dateStr instanceof Date) ? dateStr : new Date(dateStr);
-      return new Intl.DateTimeFormat(locale, options || { day: "2-digit", month: "2-digit", year: "numeric" }).format(d);
-    } catch { return String(dateStr || ""); }
-  }
-
-  function formatDateTime(dateStr, locale = "it-IT") {
-    try {
-      const d = (dateStr instanceof Date) ? dateStr : new Date(dateStr);
-      return new Intl.DateTimeFormat(locale, {
-        weekday: "short", day: "2-digit", month: "short", year: "numeric",
-        hour: "2-digit", minute: "2-digit"
-      }).format(d);
-    } catch { return String(dateStr || ""); }
-  }
-
-  function formatMoney(amount, currency = "EUR", locale = "it-IT") {
-    if (amount === null || amount === undefined || isNaN(amount)) return "";
-    try {
-      return new Intl.NumberFormat(locale, { style: "currency", currency }).format(Number(amount));
-    } catch {
-      return `${Number(amount).toFixed(2)} ${currency}`;
-    }
-  }
-
-  // --- Ruoli
-  function getAuthInfo() {
-    // NB: il progetto salva già token/user/role nel localStorage nativo (fuori namespace).
-    // Forniamo helper che legge anche chiavi standard già usate.
-    const userId = localStorage.getItem("userId") || null;
-    const role = localStorage.getItem("role") || localStorage.getItem("currentRole") || null;
-    return { userId, role };
-  }
-
-  function hasRole(target) {
-    const { role } = getAuthInfo();
-    return role === target;
-  }
-
-  function requireOrganizer() { return hasRole("organizer"); }
-  function requireParticipant() { return hasRole("participant"); }
-
-  // --- Assert semplice
-  function assert(condition, msg = "Assertion failed") {
-    if (!condition) throw new Error(msg);
-  }
-
-  // Export
-  window.GGW = {
-    storage,
-    eventId,
-    parseQS,
-    formatDate,
-    formatDateTime,
-    formatMoney,
-    roles: { hasRole, requireOrganizer, requireParticipant },
-    assert
+      if (!name) return fallback;
+      return Utils.qs.get(name) ?? fallback;
+    } catch { return fallback; }
   };
-})();
+
+  // --- Date helpers
+  Utils.toLocalDateTimeInputValue = function (iso) {
+    // Converte ISO -> valore per <input type="datetime-local">
+    try {
+      if (!iso) return "";
+      const d = new Date(iso);
+      const adj = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+      return adj.toISOString().slice(0, 16);
+    } catch { return ""; }
+  };
+
+  Utils.formatDateTime = function (val) {
+    try { return val ? new Date(val).toLocaleString() : ""; } catch { return String(val || ""); }
+  };
+
+  // --- DOM helpers
+  Utils.$ = function (sel, root) { return (root || document).querySelector(sel); };
+  Utils.$$ = function (sel, root) { return Array.from((root || document).querySelectorAll(sel)); };
+  Utils.on = function (el, ev, fn, opts) { if (el && el.addEventListener) el.addEventListener(ev, fn, opts); };
+
+  // --- Storage helpers (safe)
+  Utils.safeSet = function (k, v) { try { localStorage.setItem(k, v); } catch {} };
+  Utils.safeGet = function (k, fb = "") { try { return localStorage.getItem(k) ?? fb; } catch { return fb; } };
+  Utils.safeDel = function (k) { try { localStorage.removeItem(k); } catch {} };
+
+  // --- Throttle/Debounce leggeri
+  Utils.debounce = function (fn, ms) {
+    let t = null;
+    return function (...args) {
+      clearTimeout(t);
+      t = setTimeout(() => fn.apply(this, args), ms);
+    };
+  };
+  Utils.throttle = function (fn, ms) {
+    let last = 0;
+    return function (...args) {
+      const now = Date.now();
+      if (now - last >= ms) {
+        last = now;
+        fn.apply(this, args);
+      }
+    };
+  };
+
+  // Espone globalmente
+  global.Utils = Utils;
+})(window);
+
