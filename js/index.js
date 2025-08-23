@@ -1,35 +1,33 @@
-// index.js — landing aderente ai file reali
-// - Se l'utente è loggato: redirect immediato alla vista coerente col sessionRole.
-// - Se NON è loggato: resta in homepage e abilita i due pulsanti reali:
-// #btnParticipant e #btnOrganizer → scrivono desiredRole e portano al login.
+// js/index.js — Homepage 0 senza auto-redirect
+// Mostra sempre i 3 pulsanti. La scelta del ruolo è SOLO di sessione.
+// I pulsanti "Sono un Partecipante"/"Sono un Organizzatore" salvano desiredRole e portano al login.
+// "Registrati" va alla pagina di registrazione.
 
 document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("token");
-  const sessionRole = localStorage.getItem("sessionRole") || "participant";
-
-  if (token) {
-    if (sessionRole === "organizer") {
-      window.location.href = "organizzatore.html";
-    } else {
-      window.location.href = "partecipante.html";
-    }
-    return;
-  }
-
-  // Homepage: pulsanti reali
   const btnParticipant = document.getElementById("btnParticipant");
   const btnOrganizer = document.getElementById("btnOrganizer");
+  const btnRegister = document.getElementById("btnRegister");
+
+  function setDesired(role) {
+    try { sessionStorage.setItem("desiredRole", role); } catch {}
+    try { localStorage.setItem("desiredRole", role); } catch {}
+  }
 
   btnParticipant?.addEventListener("click", (e) => {
     e.preventDefault();
-    try { localStorage.setItem("desiredRole", "participant"); } catch {}
+    setDesired("participant");
     window.location.href = "login.html";
   });
 
   btnOrganizer?.addEventListener("click", (e) => {
     e.preventDefault();
-    try { localStorage.setItem("desiredRole", "organizer"); } catch {}
+    setDesired("organizer");
     window.location.href = "login.html";
+  });
+
+  btnRegister?.addEventListener("click", (e) => {
+    e.preventDefault();
+    window.location.href = "pages/register.html";
   });
 });
 
