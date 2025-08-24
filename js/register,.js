@@ -1,9 +1,4 @@
-// js/register.js — submit registrazione
-//
-// Flusso:
-// - Invio POST /api/users/register
-// - Se ok: salva token e reindirizza a login.html
-// - Pulsante "Torna alla homepage"
+// js/register.js — registrazione (coerenza: niente token salvato qui)
 
 import { apiPost } from "./api.js";
 
@@ -29,9 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const res = await apiPost("/users/register", { name, email, password, role });
         if (!res.ok) throw new Error(res.error || "Registrazione fallita");
 
-        // Salvo token e reindirizzo
-        localStorage.setItem("token", res.token);
-        alert("Registrazione avvenuta con successo! Ora puoi accedere.");
+        // Coerenza scelta: niente auto-login qui.
+        alert("Registrazione avvenuta! Ora effettua il login.");
         window.location.href = "../login.html";
       } catch (err) {
         alert("Errore registrazione: " + err.message);
@@ -39,3 +33,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
