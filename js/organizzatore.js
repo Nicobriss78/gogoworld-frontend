@@ -1,11 +1,14 @@
 // organizzatore.js — lista eventi organizzatore con SOLO "Dettagli" in elenco.
-// Edit/Delete rimangono nella pagina Dettagli (evento.html / evento.js).
+// Fase 6: uniforma la label del bottone a "Cambia ruolo".
 
 document.addEventListener("DOMContentLoaded", () => {
   const myBox = document.getElementById("myEventsContainer");
   const btnLogout = document.getElementById("logoutBtn");
   const btnSwitch = document.getElementById("switchRoleBtn");
   const welcome = document.getElementById("welcome");
+
+  // Uniforma etichetta bottone
+  if (btnSwitch) btnSwitch.textContent = "Cambia ruolo";
 
   const token = () => localStorage.getItem("token") || localStorage.getItem("ggw_token") || "";
   const getRole = () => localStorage.getItem("sessionRole") || "organizer";
@@ -39,8 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function loadMine() {
-    // endpoint montato nella Fase 1: GET /api/events/mine or /mine/list
-    // usiamo /mine e fallback su /mine/list per compat
     try {
       let res = await fetch("/api/events/mine", { headers: { "Authorization": `Bearer ${token()}` } });
       if (res.status === 404 || res.status === 501) {
@@ -118,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderMine(mine);
   })();
 });
+
 
 
 
