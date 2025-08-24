@@ -1,63 +1,45 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <title>Area Partecipante – GoGo.World</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="/style.css" />
-  <style>
-    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    @media (max-width: 1024px){.grid{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width: 640px){.grid{grid-template-columns:1fr}}
-    .event-card{border:1px solid #eee;border-radius:10px;padding:12px}
-    .actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-    .muted{color:#666;font-size:.9em}
-    .section-title{margin:18px 0 6px;font-size:1.1rem}
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GoGo.World – Area Partecipante</title>
+  <link rel="stylesheet" href="../style.css" />
+  <meta name="robots" content="noindex" />
 </head>
 <body>
-  <main class="container">
-    <header class="toolbar">
-      <button id="switchRoleBtn" class="btn secondary">Cambia ruolo</button>
-      <button id="logoutBtn" class="btn danger">Logout</button>
-      <span id="welcome" class="muted"></span>
+  <main class="container participant">
+    <header class="app-header">
+      <h1>Eventi disponibili</h1>
+      <nav class="toolbar">
+        <button id="btnSwitchRole" class="btn">Cambia ruolo</button>
+        <button id="btnLogout" class="btn btn-secondary">Logout</button>
+      </nav>
     </header>
 
-    <section>
-      <h1>Eventi disponibili</h1>
-
-      <div class="toolbar">
-        <!-- Filtri base (estendibili) -->
-        <input id="filterQuery" placeholder="Cerca per titolo, luogo..." />
-        <select id="filterType">
-          <option value="">Tutti i tipi</option>
-          <option value="pubblico">Pubblico</option>
-          <option value="privato">Privato</option>
-          <option value="ibrido">Ibrido</option>
-        </select>
-        <button id="applyFiltersBtn" class="btn">Filtra</button>
-        <button id="resetFiltersBtn" class="btn secondary">Reset</button>
-      </div>
-
-      <div id="allEventsList" class="grid"></div>
-      <div id="allEmpty" class="muted" style="display:none;">Nessun evento trovato.</div>
+    <section class="filters">
+      <input id="filterTitle" type="text" placeholder="Titolo" />
+      <input id="filterCity" type="text" placeholder="Città" />
+      <input id="filterCategory" type="text" placeholder="Categoria" />
+      <button id="btnApplyFilters" class="btn">Filtra</button>
     </section>
 
-    <section>
-      <h2 class="section-title">Eventi a cui partecipo</h2>
-      <div id="joinedEventsList" class="grid"></div>
-      <div id="joinedEmpty" class="muted" style="display:none;">Non stai partecipando ad alcun evento.</div>
+    <h2>Tutti gli eventi</h2>
+    <section id="allEventsList" class="events-list">
+      <!-- Popolato da js/partecipante.js -->
     </section>
+
+    <h2>Eventi a cui partecipo</h2>
+    <section id="myParticipationsList" class="events-list">
+      <!-- Popolato da js/partecipante.js -->
+    </section>
+
+    <footer class="app-footer">
+      <small>© GoGo.World</small>
+    </footer>
   </main>
 
-  <script src="/js/api.js"></script>
-  <script src="/js/utils.js"></script>
-  <script src="/js/partecipante.js"></script>
+  <script src="../js/partecipante.js" defer></script>
 </body>
 </html>
-
-
-
-
 
