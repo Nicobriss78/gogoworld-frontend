@@ -1,16 +1,10 @@
-// js/evento.js — pagina Dettaglio Evento
-//
-// Comportamenti secondo Dinamiche:
-// - Se arrivo come PARTECIPANTE: mostra "Torna alla lista" e bottone contestuale
-// "Partecipa" / "Annulla partecipazione" (nessun altro bottone).
-// - Se arrivo come ORGANIZZATORE: mostra "Torna alla lista" e pulsanti "Modifica" e "Elimina"
-// (niente partecipa/annulla). La modifica è placeholder (form non richiesto adesso).
-//
-// Scelte di navigazione:
-// - Torna alla lista: se desiredRole === "organizer" → organizzatore.html
-// altrimenti → partecipante.html
+// js/evento.js — dettaglio evento (versione allineata)
+// Correzioni:
+// - UI admin visibile SOLO se l'utente è il proprietario dell'evento
+// - Usa escapeHtml da utils.js (rimosso duplicato locale)
 
 import { apiGet, apiPost, apiDelete } from "./api.js";
+import { escapeHtml } from "./utils.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
@@ -34,7 +28,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const desiredRole = sessionStorage.getItem("desiredRole") || "participant";
 
-  // Carico dettagli evento + mio profilo per capire partecipazione
   try {
     const [detail, me] = await Promise.all([
       apiGet(`/events/${eventId}`, token),
@@ -45,13 +38,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ev = detail.event;
     const myId = me?.user?._id || me?.user?.id;
 
-    // Render base dettagli
     elTitle.textContent = ev.title || "Evento";
     elDetails.innerHTML = renderDetails(ev);
 
-    // Logica bottoni
-    if (desiredRole === "organizer") {
-      // ORGANIZZATORE: mostra Modifica/Elimina; nascondi toggle partecipazione
+    // Determina proprietà reale dell'evento
+    const evOrganizerId = (ev.organizer && typeof ev.organizer === "object" && ev.organizer._id)
+      ? ev.organizer._id
+      : ev.organizer;
+    const isOwner = String(evOrganizerId || "") === String(myId || "");
+
+    // Logica bottoni:
+    // - Se owner → admin bar (Modifica/Elimina)
+    // - Altrimenti → flusso partecipante (toggle partecipazione)
+    if (isOwner) {
       btnToggle.style.display = "none";
 
       const adminBar = document.createElement("div");
@@ -73,15 +72,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       btnDel.addEventListener("click", async () => {
         if (confirm("Sei sicuro di voler eliminare questo evento?")) {
-          await apiDelete(`/events/${eventId}`, token);
-          // Ritorno all'area organizzatore; la lista si ricarica automaticamente
+          const res = await apiDelete(`/events/${eventId}`, token);
+          if (res?.ok === false) {
+            alert(res.error || "Eliminazione fallita");
+            return;
+          }
           window.location.href = "organizzatore.html";
         }
       });
     } else {
-      // PARTECIPANTE: bottone contestuale Partecipa/Annulla
+      // PARTECIPANTE (o non owner)
       const isJoined = !!ev.participants?.some((pid) => String(pid) === String(myId));
       btnToggle.textContent = isJoined ? "Annulla partecipazione" : "Partecipa";
+      btnToggle.style.display = "inline-block";
+
       btnToggle.addEventListener("click", async () => {
         if (btnToggle.disabled) return;
         btnToggle.disabled = true;
@@ -91,7 +95,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           } else {
             await apiPost(`/events/${eventId}/join`, {}, token);
           }
-          // Ricarica pagina per riflettere lo stato aggiornato
           window.location.reload();
         } finally {
           btnToggle.disabled = false;
@@ -99,10 +102,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
   } catch (err) {
-    elDetails.innerHTML = `<p class="error">Errore: ${err.message}</p>`;
+    elDetails.innerHTML = `<p class="error">Errore: ${escapeHtml(err.message)}</p>`;
   }
 
-  // Back
   btnBack.addEventListener("click", () => {
     const role = sessionStorage.getItem("desiredRole");
     window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
@@ -111,19 +113,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function renderDetails(ev) {
   const lines = [];
-  // Cover image
   if (ev.coverImage) {
     lines.push(`<div class="cover"><img src="${escapeHtml(ev.coverImage)}" alt="Locandina" /></div>`);
   }
-  // Campi principali
   lines.push(`<p><strong>Descrizione:</strong> ${escapeHtml(ev.description || "")}</p>`);
   lines.push(`<p><strong>Città/Regione/Paese:</strong> ${escapeHtml(ev.city || "")} / ${escapeHtml(ev.region || "")} / ${escapeHtml(ev.country || "")}</p>`);
   lines.push(`<p><strong>Categoria:</strong> ${escapeHtml(ev.category || "")} — <strong>Sub:</strong> ${escapeHtml(ev.subcategory || "")}</p>`);
   lines.push(`<p><strong>Tipo:</strong> ${escapeHtml(ev.type || "")} — <strong>Visibilità:</strong> ${escapeHtml(ev.visibility || "")}</p>`);
   lines.push(`<p><strong>Data:</strong> ${ev.date ? new Date(ev.date).toLocaleString() : "-"}</p>`);
   if (ev.endDate) lines.push(`<p><strong>Fine:</strong> ${new Date(ev.endDate).toLocaleString()}</p>`);
-  lines.push(`<p><strong>Prezzo:</strong> ${ev.isFree ? "Gratuito" : (ev.price != null ? ev.price + "€" : "-")}</p>`);
-  // Galleria
+  lines.push(`<p><strong>Prezzo:</strong> ${ev.isFree ? "Gratuito" : (ev.price != null ? escapeHtml(ev.price) + "€" : "-")}</p>`);
   if (Array.isArray(ev.images) && ev.images.length) {
     lines.push(`<div class="gallery">${ev.images.map((url) =>
       `<img src="${escapeHtml(url)}" alt="Immagine evento" />`
@@ -132,10 +131,3 @@ function renderDetails(ev) {
   return lines.join("\n");
 }
 
-function escapeHtml(s) {
-  return String(s || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
