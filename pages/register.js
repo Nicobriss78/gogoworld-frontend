@@ -1,121 +1,143 @@
-// register.js — campi estesi + profilo opzionale + auto-populate categorie da eventi
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("registerForm");
-  const favSel = document.getElementById("favoriteCategories");
+// pages/register.js — GoGo.World — Fase 6
+// Allinea il flow della registrazione a quello del login:
+// 1) POST /api/users/register -> salva token
+// 2) set sessionRole in base a desiredRole (homepage 0) -> POST /api/users/session-role
+// 3) redirect nell’area corretta
 
-  // --- util retry (per 502/503/504/timeout) ---
-  async function fetchWithRetry(url, opts = {}, { retries = 2, delayMs = 800 } = {}) {
-    let lastErr;
-    for (let i = 0; i <= retries; i++) {
-      try {
-        const resp = await fetch(url, opts);
-        if (resp.ok) return resp;
-        if (![502, 503, 504].includes(resp.status)) return resp; // errori “logici” non si ritentano
-        lastErr = new Error(`HTTP_${resp.status}`);
-      } catch (e) {
-        lastErr = e; // errori rete
-      }
-      if (i < retries) await new Promise(r => setTimeout(r, delayMs * Math.pow(1.5, i)));
-    }
-    throw lastErr || new Error("RETRY_FAILED");
-  }
-
-  // --- warm‑up backend (non blocca la pagina) ---
-  (async () => {
-    try { await fetchWithRetry("/api/health", { method: "GET" }, { retries: 3, delayMs: 600 }); }
-    catch { /* ignoriamo: la submit farà retry comunque */ }
-  })();
-
-  // Auto-popola categorie leggendo gli eventi pubblicati (fallback lista base)
-  async function loadCategories() {
-    const fallback = ["Sagre", "Concerti", "Mostre", "Teatro", "Sport", "Workshop", "Fiere", "Festival"];
+(function () {
+  // --- helpers
+  const $ = (sel, root) => (root || document).querySelector(sel);
+  function getDesiredRole() {
     try {
-      const resp = await fetchWithRetry("/api/events?status=published", { method: "GET" }, { retries: 2, delayMs: 700 });
-      if (!resp.ok) throw new Error();
-      const events = await resp.json();
-      const set = new Set(fallback);
-      (events || []).forEach(ev => {
-        if (ev?.category) set.add(ev.category);
-      });
-      const cats = Array.from(set).sort((a,b)=>a.localeCompare(b));
-      favSel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join("");
-    } catch {
-      favSel.innerHTML = fallback.map(c => `<option value="${c}">${c}</option>`).join("");
-    }
+      return sessionStorage.getItem("desiredRole") ||
+             localStorage.getItem("desiredRole") ||
+             "participant";
+    } catch { return "participant"; }
   }
-  loadCategories();
+  function showError(msg) {
+    const box = $("#registerError");
+    if (!box) { alert(msg || "Errore di registrazione"); return; }
+    box.textContent = msg || "Errore di registrazione";
+    box.style.display = "block";
+  }
+  function clearError() {
+    const box = $("#registerError");
+    if (box) { box.textContent = ""; box.style.display = "none"; }
+  }
+  function redirectByRole(role) {
+    if (role === "organizer") location.href = "/organizzatore.html";
+    else location.href = "/partecipante.html";
+  }
 
-  form?.addEventListener("submit", async (e) => {
+  // Campo robusto: prova id comuni e name=*
+  function pickInput(candidates) {
+    for (const sel of candidates) {
+      const el = $(sel);
+      if (el) return el;
+    }
+    return null;
+  }
+
+  // --- DOM
+  const form = $("#registerForm") || $("form");
+  const nameInput = pickInput(["#name", "#nome", "#displayName", "#username", "[name='name']", "[name='nome']", "[name='displayName']", "[name='username']"]);
+  const emailInput = pickInput(["#email", "[name='email']"]);
+  const pwdInput = pickInput(["#password", "#pwd", "[name='password']"]);
+  const roleSelect = pickInput(["#role", "#ruolo", "[name='role']", "[name='ruolo']"]);
+
+  if (!form) {
+    // Se il form non c'è, non facciamo nulla per evitare errori runtime
+    console.warn("register.js: form non trovato");
+    return;
+  }
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    clearError();
 
-    const name = document.getElementById("name")?.value?.trim();
-    const email = document.getElementById("email")?.value?.trim();
-    const password = document.getElementById("password")?.value?.trim();
-    const role = document.getElementById("role")?.value || "participant";
+    const name = (nameInput?.value || "").trim();
+    const email = (emailInput?.value || "").trim().toLowerCase();
+    const password = pwdInput?.value || "";
+    const registeredRole = (roleSelect?.value || "").toLowerCase();
+    const desired = getDesiredRole(); // preso da homepage 0 (solo sessione)
 
-    // Profilo opzionale
-    const phone = document.getElementById("phone")?.value?.trim();
-    const city = document.getElementById("city")?.value?.trim();
-    const province = document.getElementById("province")?.value?.trim();
-    const region = document.getElementById("region")?.value?.trim();
-    const country = document.getElementById("country")?.value?.trim();
-
-    const travelWillingness = document.getElementById("travelWillingness")?.value || "";
-    const availability = Array.from(document.getElementById("availability")?.selectedOptions || []).map(o => o.value);
-
-    const ig = document.getElementById("ig")?.value?.trim();
-    const fb = document.getElementById("fb")?.value?.trim();
-    const website = document.getElementById("website")?.value?.trim();
-
-    const languages = (document.getElementById("languages")?.value || "").split(",").map(s => s.trim()).filter(Boolean);
-    const bio = document.getElementById("bio")?.value?.trim();
-    const newsletterOptIn = document.getElementById("newsletterOptIn")?.checked === true;
-
-    const favoriteCategories = Array.from(favSel?.selectedOptions || []).map(o => o.value);
+    if (!name || !email || !password) {
+      showError("Nome, email e password sono obbligatori.");
+      return;
+    }
 
     try {
-      // Registrazione (crea User + UserProfile) — con retry
-      const resp = await fetchWithRetry("/api/users/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name, email, password, role,
-          profile: {
-            phone, city, province, region, country,
-            favoriteCategories,
-            availability,
-            travelWillingness,
-            social: { instagram: ig, facebook: fb, website },
-            bio, languages,
-            newsletterOptIn
+      // 1) Registrazione
+      const payload = { name, email, password };
+      if (registeredRole) payload.role = registeredRole;
+
+      let data;
+      if (window.API?.post) {
+        data = await window.API.post("/api/users/register", { body: payload, auth: false });
+      } else {
+        const res = await fetch("/api/users/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const t = await res.json().catch(() => ({}));
+          throw new Error(t.message || `Registrazione fallita (${res.status})`);
+        }
+        data = await res.json();
+      }
+
+      // salva token + info utente
+      try {
+        const token = data?.token || "";
+        if (window.API?.setToken && token) window.API.setToken(token);
+        if (token) {
+          localStorage.setItem("token", token);
+          localStorage.setItem("ggw_token", token);
+        }
+        if (data?.user?._id) localStorage.setItem("userId", data.user._id);
+        if (data?.user?.email) localStorage.setItem("userEmail", data.user.email);
+      } catch {}
+
+      // 2) Session role (solo di sessione)
+      const sessionRole = desired === "organizer" ? "organizer" : "participant";
+      try {
+        let sr;
+        if (window.API?.post) {
+          sr = await window.API.post("/api/users/session-role", { body: { role: sessionRole }, auth: true });
+        } else {
+          const res2 = await fetch("/api/users/session-role", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem("token") || localStorage.getItem("ggw_token") || ""}`
+            },
+            body: JSON.stringify({ role: sessionRole }),
+          });
+          if (!res2.ok) {
+            const t2 = await res2.json().catch(() => ({}));
+            throw new Error(t2.message || `Errore session-role (${res2.status})`);
           }
-        })
-      }, { retries: 2, delayMs: 900 });
-      if (!resp.ok) throw new Error(await resp.text());
+          sr = await res2.json();
+        }
+        if (sr?.token) {
+          localStorage.setItem("token", sr.token);
+          localStorage.setItem("ggw_token", sr.token);
+        }
+        localStorage.setItem("sessionRole", sessionRole);
+      } catch (err) {
+        // Anche se fallisse, proviamo comunque a proseguire: il resto del FE tenterà di rimediare
+        console.warn("Impostazione sessionRole non riuscita:", err?.message || err);
+      }
 
-      // Login automatico con desiredRole coerente con scelta in home (o con role) — con retry
-      const desiredRole = localStorage.getItem("desiredRole") || role || "participant";
-      const login = await fetchWithRetry("/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, desiredRole })
-      }, { retries: 2, delayMs: 900 });
-      if (!login.ok) throw new Error("AUTO_LOGIN_FAILED");
-      const data = await login.json();
-
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", data.userId);
-      localStorage.setItem("registeredRole", data.registeredRole);
-      localStorage.setItem("sessionRole", data.sessionRole);
-
-      if (data.sessionRole === "organizer") window.location.href = "../organizzatore.html";
-      else window.location.href = "../partecipante.html";
+      // 3) Redirect area corretta
+      redirectByRole(sessionRole);
     } catch (err) {
-      console.error(err);
-      alert("Registrazione non riuscita. Verifica i dati o riprova più tardi.");
+      showError(err.message || "Errore di registrazione");
     }
   });
-});
+})();
+
 
 
 
