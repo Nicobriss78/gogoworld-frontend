@@ -2,43 +2,45 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login – GoGo.World</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GoGo.World – Login</title>
+  <link rel="stylesheet" href="../style.css" />
+  <meta name="robots" content="noindex" />
 </head>
 <body>
-  <main class="container">
-    <h1>Accedi</h1>
+  <main class="container auth">
+    <header class="app-header">
+      <h1 class="app-title">Accedi</h1>
+      <p class="subtitle">Inserisci email e password</p>
+    </header>
 
     <form id="loginForm" class="form">
       <div class="form-row">
         <label for="email">Email</label>
-        <input id="email" type="email" required autocomplete="email" />
+        <input id="email" name="email" type="email" autocomplete="email" required />
       </div>
 
       <div class="form-row">
         <label for="password">Password</label>
-        <input id="password" type="password" required autocomplete="current-password" />
+        <input id="password" name="password" type="password" autocomplete="current-password" required />
       </div>
 
-      <div id="loginError" class="error" style="display:none;"></div>
-
       <div class="form-actions">
-        <button type="button" id="homeBtn" class="btn secondary">Torna alla homepage</button>
-        <button type="submit" class="btn primary">Login</button>
+        <button type="submit" class="btn btn-primary">Login</button>
       </div>
     </form>
 
-    <p class="small">
-      Non hai un account? <a href="pages/register.html" id="toRegister">Registrati</a>
-    </p>
+    <nav class="auth-nav">
+      <button id="goRegister" class="linklike">Registrati</button>
+      <button id="goHome" class="linklike">Torna alla homepage</button>
+    </nav>
+
+    <footer class="app-footer">
+      <small>© GoGo.World</small>
+    </footer>
   </main>
 
-  <!-- Import ordine corretto -->
-  <script src="js/api.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/login.js"></script>
+  <script src="../js/login.js" defer></script>
 </body>
 </html>
-
 
