@@ -1,118 +1,68 @@
-// js/api.js — GoGo.World — API client unificato
-// Obiettivi: gestione token coerente, headers uniformi, error handling consistente.
-// Compatibilità: espone window.API.{get,post,put,delete,del} + helpers getToken/setToken/clearToken.
+// js/api.js — wrapper Fetch per le API GoGo.World
+//
+// Base URL risolto in modo flessibile (ordine di priorità):
+// 1) localStorage.API_BASE (es. "https://gogoworld-api.onrender.com/api")
+// 2) window.__API_BASE (iniettato a build se presente)
+// 3) stessa origin + "/api" (se usi reverse proxy sullo stesso dominio)
+// 4) fallback: "https://gogoworld-api.onrender.com/api"
+//
+// Nota: CORS deve permettere l'origin del frontend (ENV su backend: CORS_ORIGIN_FRONTEND o ALLOWED_ORIGINS)
 
-(function (global) {
-  const API = {};
+function resolveApiBase() {
+  const fromStorage = (typeof localStorage !== "undefined") ? localStorage.getItem("API_BASE") : null;
+  if (fromStorage && /^https?:\/\//i.test(fromStorage)) return fromStorage.replace(/\/$/, "");
 
-  // --- Token helpers (coerenti con codice esistente)
-  function getToken() {
-    try {
-      return localStorage.getItem("token") || localStorage.getItem("ggw_token") || "";
-    } catch {
-      return "";
-    }
-  }
-  function setToken(tok) {
-    try {
-      if (!tok) return;
-      localStorage.setItem("token", tok);
-      localStorage.setItem("ggw_token", tok);
-    } catch {}
-  }
-  function clearToken() {
-    try {
-      localStorage.removeItem("token");
-      localStorage.removeItem("ggw_token");
-    } catch {}
+  if (typeof window !== "undefined" && window.__API_BASE) {
+    return String(window.__API_BASE).replace(/\/$/, "");
   }
 
-  // --- Session role helpers (usati da alcune pagine)
-  function getSessionRole() {
-    try { return localStorage.getItem("sessionRole") || ""; } catch { return ""; }
-  }
-  function setSessionRole(role) {
-    try { if (role) localStorage.setItem("sessionRole", role); } catch {}
+  if (typeof window !== "undefined" && window.location && window.location.origin) {
+    return (window.location.origin.replace(/\/$/, "")) + "/api";
   }
 
-  // --- Utility interna
-  function buildUrl(path, params) {
-    const base = typeof path === "string" ? path : String(path || "");
-    if (!params || Object.keys(params).length === 0) return base;
-    const qs = new URLSearchParams(params);
-    return `${base}${base.includes("?") ? "&" : "?"}${qs.toString()}`;
+  // Fallback sicuro per Netlify → Render
+  return "https://gogoworld-api.onrender.com/api";
+}
+
+const API_BASE = resolveApiBase();
+
+async function apiFetch(path, { method = "GET", body, token } = {}) {
+  const url = `${API_BASE}${path.startsWith("/") ? path : "/" + path}`;
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(url, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  let data = null;
+  try { data = await res.json(); } catch {
+    data = { ok: res.ok };
   }
 
-  async function parseJsonSafe(res) {
-    try { return await res.json(); } catch { return null; }
+  if (!res.ok) {
+    return {
+      ok: false,
+      status: res.status,
+      error: data?.error || `HTTP_${res.status}`,
+      message: data?.message || null,
+    };
   }
+  return data;
+}
 
-  function isApiPath(p) {
-    return typeof p === "string" && p.startsWith("/api/");
-  }
+export async function apiGet(path, token) {
+  return apiFetch(path, { method: "GET", token });
+}
 
-  function normalizeError(status, data, fallbackMessage) {
-    const err = new Error(
-      (data && (data.message || data.error || data.msg)) ||
-      fallbackMessage ||
-      "Richiesta non riuscita"
-    );
-    err.status = status || 0;
-    err.code = (data && (data.error || data.code)) || "HTTP_ERROR";
-    err.details = data || null;
-    return err;
-  }
+export async function apiPost(path, body = {}, token) {
+  return apiFetch(path, { method: "POST", body, token });
+}
 
-  async function request(method, path, { params, body, auth } = {}) {
-    const url = buildUrl(path, params);
-    const headers = { "Accept": "application/json" };
-    const isJson = body !== undefined;
+export async function apiDelete(path, token) {
+  return apiFetch(path, { method: "DELETE", token });
+}
 
-    if (isJson) headers["Content-Type"] = "application/json";
-
-    // Auth: di default abilita per /api/*; può essere forzato con {auth:true/false}
-    const shouldAuth = typeof auth === "boolean" ? auth : isApiPath(path);
-    if (shouldAuth) {
-      const tok = getToken();
-      if (tok) headers["Authorization"] = `Bearer ${tok}`;
-    }
-
-    const res = await fetch(url, {
-      method: method.toUpperCase(),
-      headers,
-      body: isJson ? JSON.stringify(body) : undefined,
-    });
-
-    // 204 No Content
-    if (res.status === 204) return null;
-
-    const data = await parseJsonSafe(res);
-
-    if (!res.ok) {
-      throw normalizeError(res.status, data, `${method.toUpperCase()} ${path} failed`);
-    }
-
-    // Se il backend ritorna un token aggiornato, persistilo
-    if (data && data.token) setToken(data.token);
-
-    return data;
-  }
-
-  // --- API public surface
-  API.get = (path, opts = {}) => request("GET", path, opts);
-  API.post = (path, opts = {}) => request("POST", path, opts);
-  API.put = (path, opts = {}) => request("PUT", path, opts);
-  API.delete = (path, opts = {}) => request("DELETE", path, opts);
-  API.del = API.delete; // alias
-
-  API.getToken = getToken;
-  API.setToken = setToken;
-  API.clearToken = clearToken;
-
-  API.getSessionRole = getSessionRole;
-  API.setSessionRole = setSessionRole;
-
-  // Esponi globalmente
-  global.API = API;
-})(window);
 
