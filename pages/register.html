@@ -1,83 +1,57 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <title>Registrazione — GoGo.World</title>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GoGo.World – Registrazione</title>
   <link rel="stylesheet" href="../style.css" />
-  <style>
-    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-    @media (max-width: 900px){.grid{grid-template-columns:1fr}}
-    input,select,textarea{width:100%;padding:8px;border:1px solid #ccc;border-radius:8px}
-    textarea{min-height:100px}
-    .col-2{grid-column:span 2}
-    .hint{font-size:.9em;opacity:.8}
-  </style>
+  <meta name="robots" content="noindex" />
 </head>
 <body>
-  <main class="container">
-    <h1>Crea il tuo account</h1>
+  <main class="container register">
+    <header class="app-header">
+      <h1>Registrati</h1>
+      <p class="subtitle">Compila i campi per creare un nuovo account</p>
+    </header>
 
-    <form id="registerForm" class="grid">
-      <!-- Base obbligatori -->
-      <input id="name" class="col-2" type="text" placeholder="Nome *" required autocomplete="name" />
-      <input id="email" type="email" placeholder="Email *" required autocomplete="email" />
-      <input id="password" type="password" placeholder="Password *" required autocomplete="new-password" />
-      <select id="role" required>
-        <option value="participant">Partecipante</option>
-        <option value="organizer">Organizzatore</option>
-      </select>
-
-      <!-- Contatti -->
-      <input id="phone" type="tel" placeholder="Telefono" />
-      <input id="city" type="text" placeholder="Città" />
-      <input id="province" type="text" placeholder="Provincia" />
-      <input id="region" type="text" placeholder="Regione" />
-      <input id="country" type="text" placeholder="Paese" />
-
-      <!-- Preferenze -->
-      <div class="col-2">
-        <label for="favoriteCategories">Categorie preferite (multi-selezione)</label>
-        <select id="favoriteCategories" multiple size="6"></select>
-        <div class="hint">Tieni premuto Ctrl (o ⌘ su Mac) per selezionare più voci.</div>
+    <form id="registerForm" class="form">
+      <div class="form-row">
+        <label for="name">Nome</label>
+        <input id="name" name="name" type="text" autocomplete="name" />
       </div>
 
-      <select id="travelWillingness">
-        <option value="">Disponibilità a spostarsi (opzionale)</option>
-        <option value="city">Solo città</option>
-        <option value="province">Provincia</option>
-        <option value="region">Regione</option>
-        <option value="national">Nazionale</option>
-      </select>
+      <div class="form-row">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required />
+      </div>
 
-      <select id="availability" multiple size="4">
-        <option value="weekday">Infrasettimanale</option>
-        <option value="weekend">Weekend</option>
-        <option value="evening">Sera</option>
-        <option value="morning">Mattina</option>
-      </select>
+      <div class="form-row">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="new-password" required />
+      </div>
 
-      <!-- Social -->
-      <input id="ig" type="url" placeholder="Instagram (URL profilo)" />
-      <input id="fb" type="url" placeholder="Facebook (URL profilo)" />
-      <input id="website" type="url" placeholder="Sito personale" />
+      <div class="form-row">
+        <label for="role">Ruolo (statistico)</label>
+        <select id="role" name="role">
+          <option value="participant">Partecipante</option>
+          <option value="organizer">Organizzatore</option>
+        </select>
+      </div>
 
-      <!-- Lingue / Bio -->
-      <input id="languages" class="col-2" type="text" placeholder="Lingue (es. it,en,fr)" />
-      <textarea id="bio" class="col-2" placeholder="Breve bio (max 500 caratteri)"></textarea>
-
-      <!-- Opzioni -->
-      <label class="col-2"><input id="newsletterOptIn" type="checkbox" /> Voglio ricevere aggiornamenti e newsletter</label>
-
-      <button type="submit" class="col-2">Registrati</button>
-      <p class="col-2">
-        Hai già un account? <a href="../login.html">Accedi</a>
-      </p>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Crea account</button>
+      </div>
     </form>
+
+    <nav class="auth-nav">
+      <button id="goHome" class="linklike">Torna alla homepage</button>
+    </nav>
+
+    <footer class="app-footer">
+      <small>© GoGo.World</small>
+    </footer>
   </main>
 
-  <script src="register.js"></script>
+  <script src="../js/register.js" defer></script>
 </body>
 </html>
-
-
