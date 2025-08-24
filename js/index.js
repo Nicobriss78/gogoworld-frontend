@@ -1,37 +1,30 @@
-// js/index.js — Homepage 0 senza auto-redirect
-// Mostra sempre i 3 pulsanti. La scelta del ruolo è SOLO di sessione.
-// I pulsanti "Sono un Partecipante"/"Sono un Organizzatore" salvano desiredRole e portano al login.
-// "Registrati" va alla pagina di registrazione.
+// js/index.js — gestione Homepage 0
+//
+// Funzioni principali:
+// - Scelta ruolo iniziale (organizzatore/partecipante)
+// - Salvataggio in sessionStorage
+// - Redirect a login.html
+// - Pulsante "Registrati" -> pages/register.html
 
 document.addEventListener("DOMContentLoaded", () => {
-  const btnParticipant = document.getElementById("btnParticipant");
   const btnOrganizer = document.getElementById("btnOrganizer");
+  const btnParticipant = document.getElementById("btnParticipant");
   const btnRegister = document.getElementById("btnRegister");
 
-  function setDesired(role) {
-    try { sessionStorage.setItem("desiredRole", role); } catch {}
-    try { localStorage.setItem("desiredRole", role); } catch {}
+  function selectRole(role) {
+    sessionStorage.setItem("desiredRole", role);
+    window.location.href = "login.html";
   }
 
-  btnParticipant?.addEventListener("click", (e) => {
-    e.preventDefault();
-    setDesired("participant");
-    window.location.href = "login.html";
-  });
-
-  btnOrganizer?.addEventListener("click", (e) => {
-    e.preventDefault();
-    setDesired("organizer");
-    window.location.href = "login.html";
-  });
-
-  btnRegister?.addEventListener("click", (e) => {
-    e.preventDefault();
-    window.location.href = "pages/register.html";
-  });
+  if (btnOrganizer) {
+    btnOrganizer.addEventListener("click", () => selectRole("organizer"));
+  }
+  if (btnParticipant) {
+    btnParticipant.addEventListener("click", () => selectRole("participant"));
+  }
+  if (btnRegister) {
+    btnRegister.addEventListener("click", () => {
+      window.location.href = "pages/register.html";
+    });
+  }
 });
-
-
-
-
-
