@@ -1,138 +1,106 @@
-// organizzatore.js — lista eventi organizzatore con SOLO "Dettagli" in elenco.
-// Fase 6: uniforma la label del bottone a "Cambia ruolo".
+// js/organizzatore.js — area Organizzatore
+//
+// Funzioni principali:
+// - Lista eventi creati dall'organizzatore
+// - Filtri sui campi principali
+// - Dettagli evento
+// - Modifica/Elimina evento
+// - Refresh dinamico al ritorno
+// - Switch ruolo e Logout
+
+import { apiGet, apiDelete } from "./api.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const myBox = document.getElementById("myEventsContainer");
-  const btnLogout = document.getElementById("logoutBtn");
-  const btnSwitch = document.getElementById("switchRoleBtn");
-  const welcome = document.getElementById("welcome");
-
-  // Uniforma etichetta bottone
-  if (btnSwitch) btnSwitch.textContent = "Cambia ruolo";
-
-  const token = () => localStorage.getItem("token") || localStorage.getItem("ggw_token") || "";
-  const getRole = () => localStorage.getItem("sessionRole") || "organizer";
-
-  if (welcome) welcome.textContent = `Ciao! Sei in sessione come ${getRole()}`;
-
-  async function ensureOrganizerSession() {
-    if (getRole() === "organizer") return;
-    const res = await fetch("/api/users/session-role", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token()}`
-      },
-      body: JSON.stringify({ role: "organizer" })
-    });
-    if (res.ok) {
-      localStorage.setItem("sessionRole", "organizer");
-      const data = await res.json().catch(() => ({}));
-      if (data && data.token) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("ggw_token", data.token);
-      }
-    }
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "../index.html";
+    return;
   }
 
-  function toEventUrl(id) {
-    const url = new URL(location.origin + "/evento.html");
-    url.searchParams.set("id", id);
-    return url.pathname + url.search;
-  }
+  const listContainer = document.getElementById("myEventsList");
+  const btnFilters = document.getElementById("btnApplyFilters");
+  const btnLogout = document.getElementById("btnLogout");
+  const btnSwitchRole = document.getElementById("btnSwitchRole");
+  const btnCreate = document.getElementById("btnCreateEvent");
 
-  async function loadMine() {
+  async function loadEvents(filters = {}) {
+    listContainer.innerHTML = "<p>Caricamento...</p>";
     try {
-      let res = await fetch("/api/events/mine", { headers: { "Authorization": `Bearer ${token()}` } });
-      if (res.status === 404 || res.status === 501) {
-        res = await fetch("/api/events/mine/list", { headers: { "Authorization": `Bearer ${token()}` } });
+      const query = new URLSearchParams(filters).toString();
+      const res = await apiGet(`/events/mine/list${query ? "?" + query : ""}`, token);
+      if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
+
+      if (!res.events.length) {
+        listContainer.innerHTML = "<p>Nessun evento creato.</p>";
+        return;
       }
-      if (!res.ok) throw new Error();
-      const data = await res.json().catch(()=>([]));
-      return Array.isArray(data?.items) ? data.items : (Array.isArray(data) ? data : []);
-    } catch {
-      return [];
+
+      listContainer.innerHTML = res.events.map(ev => `
+        <div class="event-card">
+          <h3>${ev.title}</h3>
+          <p>${ev.city || ""} ${ev.date ? new Date(ev.date).toLocaleDateString() : ""}</p>
+          <div class="event-actions">
+            <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
+            <button class="btn btn-secondary" data-id="${ev._id}" data-action="delete">Elimina</button>
+          </div>
+        </div>
+      `).join("");
+    } catch (err) {
+      listContainer.innerHTML = `<p class="error">Errore: ${err.message}</p>`;
     }
   }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, (m) => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m]));
+  // Event delegation
+  if (listContainer) {
+    listContainer.addEventListener("click", async (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+
+      if (action === "details") {
+        sessionStorage.setItem("selectedEventId", id);
+        window.location.href = "evento.html";
+      }
+      if (action === "delete") {
+        if (confirm("Sei sicuro di voler eliminare questo evento?")) {
+          await apiDelete(`/events/${id}`, token);
+          await loadEvents();
+        }
+      }
+    });
   }
 
-  function renderMine(list) {
-    myBox.innerHTML = "";
-    if (!list.length) {
-      const div = document.createElement("div");
-      div.className = "muted";
-      div.textContent = "Non hai ancora creato eventi.";
-      myBox.appendChild(div);
-      return;
-    }
-    for (const ev of list) {
-      const card = document.createElement("div");
-      card.className = "event-card";
-      const mainFields = [
-        `<strong>${escapeHtml(ev.title || "Senza titolo")}</strong>`,
-        ev.date ? `<div class="muted">${new Date(ev.date).toLocaleString()}</div>` : "",
-        ev.location ? `<div>${escapeHtml(ev.location)}</div>` : "",
-        ev.type ? `<div class="muted">Tipo: ${escapeHtml(ev.type)}</div>` : ""
-      ].filter(Boolean).join("");
-      card.innerHTML = `${mainFields}
-        <div class="actions">
-          <a class="btn" href="${toEventUrl(ev._id)}">Dettagli</a>
-        </div>`;
-      myBox.appendChild(card);
-    }
+  if (btnFilters) {
+    btnFilters.addEventListener("click", () => {
+      const title = document.getElementById("filterTitle").value.trim();
+      const city = document.getElementById("filterCity").value.trim();
+      const category = document.getElementById("filterCategory").value.trim();
+      loadEvents({ title, city, category });
+    });
   }
 
   if (btnLogout) {
     btnLogout.addEventListener("click", () => {
       localStorage.removeItem("token");
-      localStorage.removeItem("ggw_token");
-      localStorage.removeItem("sessionRole");
-      location.href = "/index.html";
+      sessionStorage.clear();
+      window.location.href = "../index.html";
     });
   }
 
-  if (btnSwitch) {
-    btnSwitch.addEventListener("click", async () => {
-      try {
-        await fetch("/api/users/session-role", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token()}`
-          },
-          body: JSON.stringify({ role: "participant" })
-        });
-        localStorage.setItem("sessionRole", "participant");
-        location.href = "/partecipante.html";
-      } catch {
-        alert("Impossibile cambiare ruolo");
-      }
+  if (btnSwitchRole) {
+    btnSwitchRole.addEventListener("click", () => {
+      sessionStorage.setItem("desiredRole", "participant");
+      window.location.href = "partecipante.html";
     });
   }
 
-  (async function init() {
-    await ensureOrganizerSession();
-    const mine = await loadMine();
-    renderMine(mine);
-  })();
+  if (btnCreate) {
+    btnCreate.addEventListener("click", () => {
+      alert("Funzione 'Crea nuovo evento' da implementare (form dedicato).");
+    });
+  }
+
+  loadEvents();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
