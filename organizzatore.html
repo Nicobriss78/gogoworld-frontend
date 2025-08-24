@@ -1,233 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <title>Area Organizzatore – GoGo.World</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="/style.css" />
-  <style>
-    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-    @media (max-width: 1100px){.grid{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width: 640px){.grid{grid-template-columns:1fr}}
-    .grid .col-2{grid-column:span 2}
-    .grid .col-3{grid-column:span 3}
-    .grid .col-4{grid-column:span 4}
-    input,select,textarea{width:100%;padding:8px;border:1px solid #ccc;border-radius:8px}
-    textarea{min-height:90px}
-    .toolbar{display:flex;gap:8px;margin:8px 0}
-    .event-card{border:1px solid #eee;border-radius:10px;padding:12px;margin:10px 0}
-    .actions{display:flex;gap:8px;margin-top:6px}
-    .badge{display:inline-block;padding:2px 8px;border-radius:12px;background:#eee;margin-left:6px;font-size:.85em}
-    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:16px;z-index:30}
-    .modal{background:#fff;max-width:880px;width:100%;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12);padding:16px}
-    header h1{margin:0}
-    .btn{padding:8px 12px;border-radius:8px;border:1px solid #ccc;background:#f7f7f7;cursor:pointer}
-    .btn.primary{background:#2563eb;color:#fff;border-color:#2563eb}
-    .btn.ghost{background:transparent}
-    .card{border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin:8px 0}
-    .badge-draft{background:#fee2e2}
-    .badge-published{background:#dcfce7}
-    .badge-cancelled{background:#ffe4e6}
-    footer{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GoGo.World – Area Organizzatore</title>
+  <link rel="stylesheet" href="../style.css" />
+  <meta name="robots" content="noindex" />
 </head>
 <body>
-  <header class="toolbar">
-    <a href="index.html" class="btn">← Home</a>
-    <button id="switchRoleBtn" class="btn">Switch ruolo</button>
-    <div style="flex:1"></div>
-    <span id="welcome"></span>
-    <button id="logoutBtn" class="btn">Logout</button>
-  </header>
+  <main class="container organizer">
+    <header class="app-header">
+      <h1>I miei Eventi</h1>
+      <nav class="toolbar">
+        <button id="btnSwitchRole" class="btn">Cambia ruolo</button>
+        <button id="btnLogout" class="btn btn-secondary">Logout</button>
+      </nav>
+    </header>
 
-  <main class="content">
-    <h1>Organizzatore</h1>
-
-    <section>
-      <h2>Crea un nuovo evento</h2>
-      <form id="createEventForm" class="grid">
-        <input id="title" class="col-2" type="text" placeholder="Titolo *" required />
-        <input id="category" list="categoryOptions" placeholder="Categoria" />
-        <input id="subcategory" type="text" placeholder="Sottocategoria" />
-        <input id="type" list="typeOptions" placeholder="Tipo evento" />
-
-        <textarea id="description" class="col-4" placeholder="Descrizione"></textarea>
-
-        <input id="dateStart" type="datetime-local" placeholder="Inizio" />
-        <input id="dateEnd" type="datetime-local" placeholder="Fine" />
-        <input id="timezone" type="text" placeholder="Timezone (es. Europe/Rome)" />
-
-        <select id="status">
-          <option value="draft" selected>Bozza</option>
-          <option value="published">Pubblicato</option>
-          <option value="cancelled">Annullato</option>
-        </select>
-
-        <input id="venueName" type="text" placeholder="Luogo (nome venue)" />
-        <input id="address" type="text" placeholder="Indirizzo" />
-        <input id="city" type="text" placeholder="Città" />
-        <input id="province" type="text" placeholder="Provincia" />
-        <input id="region" type="text" placeholder="Regione" />
-        <input id="country" type="text" placeholder="Paese" />
-
-        <select id="visibility">
-          <option value="public" selected>Pubblico</option>
-          <option value="private">Privato</option>
-          <option value="unlisted">Non in elenco</option>
-        </select>
-
-        <label class="col-2"><input id="isFree" type="checkbox" /> Gratuito</label>
-        <input id="priceMin" type="number" step="0.01" placeholder="Prezzo min" />
-        <input id="priceMax" type="number" step="0.01" placeholder="Prezzo max" />
-        <input id="currency" list="currencyOptions" placeholder="Valuta (es. EUR)" />
-
-        <input id="capacity" type="number" step="1" placeholder="Capienza" />
-
-        <!-- 🔹 Immagini -->
-        <input id="coverImage" type="url" placeholder="Cover (URL)" class="col-2" />
-        <textarea id="imagesText" class="col-2" placeholder="Galleria: una URL per riga"></textarea>
-
-        <input id="externalUrl" type="url" placeholder="Sito/Registrazione esterna" class="col-2" />
-        <input id="contactEmail" type="email" placeholder="Email contatto" />
-        <input id="contactPhone" type="tel" placeholder="Telefono contatto" />
-
-        <footer class="col-4">
-          <button type="submit" class="btn primary">Crea evento</button>
-        </footer>
-      </form>
+    <section class="filters">
+      <input id="filterTitle" type="text" placeholder="Titolo" />
+      <input id="filterCity" type="text" placeholder="Città" />
+      <input id="filterCategory" type="text" placeholder="Categoria" />
+      <button id="btnApplyFilters" class="btn">Filtra</button>
     </section>
 
-    <!-- Filtri "I miei eventi" (già presenti dalla Fase 2) -->
-    <section class="card">
-      <h3>Filtra i miei eventi</h3>
-      <form id="filtersForm" class="grid" style="margin-top:6px">
-        <input id="f_q" class="col-2" type="text" placeholder="Cerca (titolo/descrizione/luogo)" />
-        <input id="f_city" type="text" placeholder="Città" />
-        <input id="f_region" type="text" placeholder="Regione" />
-        <input id="f_country" type="text" placeholder="Paese" />
-        <input id="f_dateFrom" type="date" placeholder="Dal" />
-        <input id="f_dateTo" type="date" placeholder="Al" />
-        <select id="f_status">
-          <option value="">Stato (tutti)</option>
-          <option value="draft">Bozza</option>
-          <option value="published">Pubblicato</option>
-          <option value="cancelled">Annullato</option>
-        </select>
-        <select id="f_visibility">
-          <option value="">Visibilità (tutte)</option>
-          <option value="public">Pubblico</option>
-          <option value="private">Privato</option>
-          <option value="unlisted">Non in elenco</option>
-        </select>
-        <input id="f_category" list="categoryOptions" placeholder="Categoria" />
-        <input id="f_type" list="typeOptions" placeholder="Tipo evento" />
-        <label><input id="f_isFree" type="checkbox" /> Solo gratuiti</label>
-        <div class="col-4" style="display:flex;gap:8px;justify-content:flex-end">
-          <button type="submit" class="btn">Applica filtri</button>
-          <button type="button" id="filtersReset" class="btn ghost">Reset</button>
-        </div>
-      </form>
+    <section id="myEventsList" class="events-list">
+      <!-- Popolato da js/organizzatore.js -->
     </section>
 
-    <section>
-      <h2>I miei eventi</h2>
-      <div id="myEventsContainer"></div>
-    </section>
+    <footer class="app-footer">
+      <button id="btnCreateEvent" class="btn btn-primary">Crea nuovo evento</button>
+    </footer>
   </main>
 
-  <!-- Modal Edit -->
-  <div id="editModal" class="modal-backdrop">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-title">
-      <header id="edit-title">Modifica evento</header>
-      <form id="editEventForm" class="content">
-        <div class="grid">
-          <input id="edit_id" type="hidden" />
-          <input id="edit_title" class="col-2" type="text" placeholder="Titolo *" required />
-          <input id="edit_category" list="categoryOptions" placeholder="Categoria" />
-          <input id="edit_subcategory" type="text" placeholder="Sottocategoria" />
-          <input id="edit_type" list="typeOptions" placeholder="Tipo evento" />
-
-          <textarea id="edit_description" class="col-4" placeholder="Descrizione"></textarea>
-
-          <input id="edit_dateStart" type="datetime-local" placeholder="Inizio" />
-          <input id="edit_dateEnd" type="datetime-local" placeholder="Fine" />
-          <input id="edit_timezone" type="text" placeholder="Timezone (es. Europe/Rome)" />
-
-          <select id="edit_status">
-            <option value="draft">Bozza</option>
-            <option value="published">Pubblicato</option>
-            <option value="cancelled">Annullato</option>
-          </select>
-
-          <input id="edit_venueName" type="text" placeholder="Luogo (nome venue)" />
-          <input id="edit_address" type="text" placeholder="Indirizzo" />
-          <input id="edit_city" type="text" placeholder="Città" />
-          <input id="edit_province" type="text" placeholder="Provincia" />
-          <input id="edit_region" type="text" placeholder="Regione" />
-          <input id="edit_country" type="text" placeholder="Paese" />
-
-          <select id="edit_visibility">
-            <option value="public">Pubblico</option>
-            <option value="private">Privato</option>
-            <option value="unlisted">Non in elenco</option>
-          </select>
-
-          <label class="col-2"><input id="edit_isFree" type="checkbox" /> Gratuito</label>
-          <input id="edit_priceMin" type="number" step="0.01" placeholder="Prezzo min" />
-          <input id="edit_priceMax" type="number" step="0.01" placeholder="Prezzo max" />
-          <input id="edit_currency" list="currencyOptions" placeholder="Valuta (es. EUR)" />
-
-          <input id="edit_capacity" type="number" step="1" placeholder="Capienza" />
-
-          <!-- 🔹 Immagini -->
-          <input id="edit_coverImage" type="url" placeholder="Cover (URL)" class="col-2" />
-          <textarea id="edit_imagesText" class="col-2" placeholder="Galleria: una URL per riga"></textarea>
-
-          <input id="edit_externalUrl" type="url" placeholder="Sito/Registrazione esterna" class="col-2" />
-          <input id="edit_contactEmail" type="email" placeholder="Email contatto" />
-          <input id="edit_contactPhone" type="tel" placeholder="Telefono contatto" />
-        </div>
-        <footer>
-          <button type="button" id="edit_cancel" class="btn ghost">Annulla</button>
-          <button type="submit" id="edit_save" class="btn primary">Salva</button>
-        </footer>
-      </form>
-    </div>
-  </div>
-
-  <!-- vocabolari suggeriti -->
-  <datalist id="categoryOptions">
-    <option value="musica">Musica</option>
-    <option value="cibo_bevande">Cibo &amp; Bevande</option>
-    <option value="sport">Sport</option>
-    <option value="arte_cultura">Arte &amp; Cultura</option>
-    <option value="festival">Festival</option>
-    <option value="workshop">Workshop</option>
-    <option value="conferenza">Conferenza</option>
-    <option value="teatro">Teatro</option>
-    <option value="famiglia">Famiglia</option>
-    <option value="nightlife">Nightlife</option>
-    <option value="altro">Altro</option>
-  </datalist>
-  <datalist id="typeOptions">
-    <option value="singolo">Evento singolo</option>
-    <option value="ricorrente">Evento ricorrente</option>
-    <option value="online">Online</option>
-    <option value="in_presenza">In presenza</option>
-    <option value="ibrido">Ibrido</option>
-  </datalist>
-  <datalist id="currencyOptions">
-    <option value="EUR">EUR</option>
-    <option value="USD">USD</option>
-    <option value="GBP">GBP</option>
-    <option value="CHF">CHF</option>
-  </datalist>
-
-  <script src="/js/organizzatore.js" defer></script>
+  <script src="../js/organizzatore.js" defer></script>
 </body>
 </html>
-
-
-
-
 
