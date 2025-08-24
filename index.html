@@ -1,30 +1,34 @@
-// js/index.js — gestione Homepage 0
-//
-// Funzioni principali:
-// - Scelta ruolo iniziale (organizzatore/partecipante)
-// - Salvataggio in sessionStorage
-// - Redirect a login.html
-// - Pulsante "Registrati" -> pages/register.html
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GoGo.World – Homepage 0</title>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="robots" content="noindex" />
+</head>
+<body>
+  <main class="container home0">
+    <header class="app-header">
+      <h1 class="app-title">GoGo.World</h1>
+      <p class="subtitle">Scegli come entrare</p>
+    </header>
 
-document.addEventListener("DOMContentLoaded", () => {
-  const btnOrganizer = document.getElementById("btnOrganizer");
-  const btnParticipant = document.getElementById("btnParticipant");
-  const btnRegister = document.getElementById("btnRegister");
+    <section class="role-grid">
+      <button id="btnOrganizer" class="btn role-btn left">Sono un Organizzatore</button>
+      <button id="btnParticipant" class="btn role-btn right">Sono un Partecipante</button>
+    </section>
 
-  function selectRole(role) {
-    sessionStorage.setItem("desiredRole", role);
-    window.location.href = "login.html";
-  }
+    <section class="register-cta">
+      <button id="btnRegister" class="btn btn-secondary">Registrati</button>
+    </section>
 
-  if (btnOrganizer) {
-    btnOrganizer.addEventListener("click", () => selectRole("organizer"));
-  }
-  if (btnParticipant) {
-    btnParticipant.addEventListener("click", () => selectRole("participant"));
-  }
-  if (btnRegister) {
-    btnRegister.addEventListener("click", () => {
-      window.location.href = "pages/register.html";
-    });
-  }
-});
+    <footer class="app-footer">
+      <small>© GoGo.World</small>
+    </footer>
+  </main>
+
+  <script src="js/index.js" defer></script>
+</body>
+</html>
+
