@@ -1,64 +1,150 @@
+/* style.css — Stile base GoGo.World */
+
+:root {
+  --color-primary: #2a7ae2;
+  --color-secondary: #555;
+  --color-bg: #f9f9f9;
+  --color-text: #222;
+  --color-danger: #d33;
+}
+
 body {
+  margin: 0;
   font-family: Arial, sans-serif;
-  padding: 2rem;
-  background-color: #f4f4f4;
-  color: #2c3e50;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
-h1, h2 {
-  color: #34495e;
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
-ul {
-  list-style: none;
-  padding-left: 0;
+.app-header {
+  margin-bottom: 1.5rem;
 }
 
-li {
-  margin: 0.5rem 0;
-  background: white;
+.app-title {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--color-secondary);
+}
+
+.app-footer {
+  margin-top: 2rem;
+  text-align: center;
+  color: var(--color-secondary);
+  font-size: 0.85rem;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row label {
+  margin-bottom: 0.25rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Bottoni */
+.btn {
   padding: 0.5rem 1rem;
-  border-radius: 5px;
+  border: none;
+  background: var(--color-primary);
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.btn:hover {
+  background: #195db7;
+}
+.btn-secondary {
+  background: var(--color-secondary);
+}
+.btn-secondary:hover {
+  background: #333;
+}
+
+/* Link stile pulsante */
+.linklike {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+/* Liste eventi */
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.event-card {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 0.75rem;
+  border-radius: 4px;
+}
+
+.event-card h3 {
+  margin: 0 0 0.25rem;
+}
+
+.event-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.filters input {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.25rem;
+}
+
+/* Specifiche home0 */
+.home0 .role-grid {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin: 2rem 0;
+}
+.role-btn {
+  flex: 1;
+  margin: 0 0.5rem;
+}
+.register-cta {
+  text-align: center;
+  margin-top: 2rem;
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-/* Bottone Partecipa */
-.partecipa-btn {
-  background-color: #2ecc71;
-  color: white;
-}
-
-.partecipa-btn:hover {
-  background-color: #27ae60;
-}
-
-/* Bottone Annulla */
-.annulla-btn {
-  background-color: #e67e22;
-  color: white;
-}
-
-.annulla-btn:hover {
-  background-color: #d35400;
-}
-
-/* Bottone Link Copiato */
-.copiato-btn {
-  background-color: #3498db;
-  color: white;
-}
-
-.copiato-btn:hover {
-  background-color: #2980b9;
-}
