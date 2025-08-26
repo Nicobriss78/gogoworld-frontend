@@ -14,8 +14,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
   if (!token) {
     window.location.href = "../index.html";
-    return;
   }
+
+  // Messaggio di benvenuto (solo FE, senza nuove rotte)
+  (async () => {
+    try {
+      const me = await apiGet("/users/me", token);
+      const name = me?.user?.name || me?.user?.email || "utente";
+      const role = "Organizzatore";
+      const main = document.querySelector("main") || document.body;
+      const p = document.createElement("p");
+      p.id = "welcomeMsg";
+      p.className = "welcome";
+      p.textContent = `Benvenuto, ${name}! Sei nella tua area ${role}.`;
+      if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
+    } catch {}
+  })();
 
   const listContainer = document.getElementById("myEventsList");
   const btnFilters = document.getElementById("btnApplyFilters");
@@ -53,41 +67,48 @@ document.addEventListener("DOMContentLoaded", () => {
   // Event delegation
   if (listContainer) {
     listContainer.addEventListener("click", async (e) => {
-      const btn = e.target.closest("button");
+      const btn = e.target.closest("button[data-action]");
       if (!btn) return;
-      const id = btn.dataset.id;
-      const action = btn.dataset.action;
+      const id = btn.getAttribute("data-id");
+      const action = btn.getAttribute("data-action");
 
       if (action === "details") {
         sessionStorage.setItem("selectedEventId", id);
         window.location.href = "evento.html";
+        return;
       }
+
       if (action === "delete") {
-        if (confirm("Sei sicuro di voler eliminare questo evento?")) {
-          await apiDelete(`/events/${id}`, token);
-          await loadEvents();
+        if (!confirm("Eliminare questo evento?")) return;
+        const res = await apiDelete(`/events/${id}`, token);
+        if (!res.ok) {
+          alert(res.error || "Errore eliminazione");
+          return;
         }
+        await loadEvents();
       }
     });
   }
 
+  // Filtri
   if (btnFilters) {
-    btnFilters.addEventListener("click", () => {
-      const title = document.getElementById("filterTitle").value.trim();
-      const city = document.getElementById("filterCity").value.trim();
-      const category = document.getElementById("filterCategory").value.trim();
-      loadEvents({ title, city, category });
+    btnFilters.addEventListener("click", async () => {
+      const filters = {};
+      const title = document.getElementById("filterTitle")?.value?.trim();
+      const city = document.getElementById("filterCity")?.value?.trim();
+      const region = document.getElementById("filterRegion")?.value?.trim();
+      const dateStart = document.getElementById("filterDateStart")?.value?.trim();
+      const dateEnd = document.getElementById("filterDateEnd")?.value?.trim();
+      if (title) filters.title = title;
+      if (city) filters.city = city;
+      if (region) filters.region = region;
+      if (dateStart) filters.dateStart = dateStart;
+      if (dateEnd) filters.dateEnd = dateEnd;
+      await loadEvents(filters);
     });
   }
 
-  if (btnLogout) {
-    btnLogout.addEventListener("click", () => {
-      localStorage.removeItem("token");
-      sessionStorage.clear();
-      window.location.href = "../index.html";
-    });
-  }
-
+  // Switch ruolo
   if (btnSwitchRole) {
     btnSwitchRole.addEventListener("click", () => {
       sessionStorage.setItem("desiredRole", "participant");
@@ -95,12 +116,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (btnCreate) {
-    btnCreate.addEventListener("click", () => {
-      alert("Funzione 'Crea nuovo evento' da implementare (form dedicato).");
+  // Logout
+  if (btnLogout) {
+    btnLogout.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("desiredRole");
+      window.location.href = "../index.html";
     });
   }
 
+  // Create (placeholder)
+  if (btnCreate) {
+    btnCreate.addEventListener("click", () => {
+      alert("Funzione Crea evento: in arrivo.");
+    });
+  }
+
+  // Prima lista
   loadEvents();
 });
+
 
