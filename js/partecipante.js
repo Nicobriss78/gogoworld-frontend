@@ -1,94 +1,127 @@
-// js/organizzatore.js — area Organizzatore
+// js/partecipante.js — area Partecipante
 //
 // Funzioni principali:
-// - Lista eventi creati dall'organizzatore
-// - Filtri sui campi principali
+// - Lista di tutti gli eventi (filtri)
+// - Lista eventi a cui partecipo
+// - Partecipa / Annulla
 // - Dettagli evento
-// - Modifica/Elimina evento
-// - Refresh dinamico al ritorno
 // - Switch ruolo e Logout
 
-import { apiGet, apiDelete } from "./api.js";
+import { apiGet, apiPost } from "./api.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
   if (!token) {
     window.location.href = "../index.html";
+    return;
   }
 
-  // Messaggio di benvenuto (solo FE, senza nuove rotte)
-  (async () => {
-    try {
-      const me = await apiGet("/users/me", token);
-      const name = me?.user?.name || me?.user?.email || "utente";
-      const role = "Organizzatore";
-      const main = document.querySelector("main") || document.body;
-      const p = document.createElement("p");
-      p.id = "welcomeMsg";
-      p.className = "welcome";
-      p.textContent = `Benvenuto, ${name}! Sei nella tua area ${role}.`;
-      if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
-    } catch {}
-  })();
-
-  const listContainer = document.getElementById("myEventsList");
+  const allList = document.getElementById("allEventsList");
+  const myList = document.getElementById("myEventsList");
   const btnFilters = document.getElementById("btnApplyFilters");
   const btnLogout = document.getElementById("btnLogout");
   const btnSwitchRole = document.getElementById("btnSwitchRole");
-  const btnCreate = document.getElementById("btnCreateEvent");
 
   async function loadEvents(filters = {}) {
-    listContainer.innerHTML = "<p>Caricamento...</p>";
+    allList.innerHTML = "<p>Caricamento...</p>";
+    myList.innerHTML = "";
+
     try {
       const query = new URLSearchParams(filters).toString();
-      const res = await apiGet(`/events/mine/list${query ? "?" + query : ""}`, token);
+      const res = await apiGet(`/events${query ? "?" + query : ""}`, token);
       if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
 
-      if (!res.events.length) {
-        listContainer.innerHTML = "<p>Nessun evento creato.</p>";
-        return;
-      }
+      const me = await apiGet("/users/me", token);
+      const myId = me?.user?._id || me?.user?.id;
 
-      listContainer.innerHTML = res.events.map(ev => `
+      // Messaggio di benvenuto (solo FE, senza nuove rotte)
+      try {
+        const name = me?.user?.name || me?.user?.email || "utente";
+        const role = "Partecipante";
+        const main = document.querySelector("main") || document.body;
+        const p = document.createElement("p");
+        p.id = "welcomeMsg";
+        p.className = "welcome";
+        p.textContent = `Benvenuto, ${name}! Sei nella tua area ${role}.`;
+        if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
+      } catch {}
+
+      const joinedIds = new Set();
+      // estrai da eventi quelli con partecipazione
+      res.events.forEach(ev => {
+        if (ev.participants?.some(pid => String(pid) === String(myId))) {
+          joinedIds.add(ev._id);
+        }
+      });
+
+      // Popola lista eventi totali
+      allList.innerHTML = res.events.map(ev => `
         <div class="event-card">
           <h3>${ev.title}</h3>
           <p>${ev.city || ""} ${ev.date ? new Date(ev.date).toLocaleDateString() : ""}</p>
           <div class="event-actions">
             <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
-            <button class="btn btn-secondary" data-id="${ev._id}" data-action="delete">Elimina</button>
+            ${joinedIds.has(ev._id)
+              ? `<button class="btn btn-secondary" data-id="${ev._id}" data-action="leave">Annulla</button>`
+              : `<button class="btn btn-primary" data-id="${ev._id}" data-action="join">Partecipa</button>`}
           </div>
         </div>
       `).join("");
+
+      // Popola lista "a cui partecipo"
+      const joined = res.events.filter(ev => joinedIds.has(ev._id));
+      myList.innerHTML = joined.length
+        ? joined.map(ev => `
+          <div class="event-card">
+            <h3>${ev.title}</h3>
+            <p>${ev.city || ""} ${ev.date ? new Date(ev.date).toLocaleDateString() : ""}</p>
+            <div class="event-actions">
+              <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
+              <button class="btn btn-secondary" data-id="${ev._id}" data-action="leave">Annulla</button>
+            </div>
+          </div>
+        `).join("")
+        : "<p>Nessun evento a cui partecipi.</p>";
+
     } catch (err) {
-      listContainer.innerHTML = `<p class="error">Errore: ${err.message}</p>`;
+      allList.innerHTML = `<p class="error">Errore: ${err.message}</p>`;
+      myList.innerHTML = "";
     }
   }
 
   // Event delegation
-  if (listContainer) {
-    listContainer.addEventListener("click", async (e) => {
-      const btn = e.target.closest("button[data-action]");
-      if (!btn) return;
-      const id = btn.getAttribute("data-id");
-      const action = btn.getAttribute("data-action");
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    const id = btn.getAttribute("data-id");
+    const action = btn.getAttribute("data-action");
 
-      if (action === "details") {
-        sessionStorage.setItem("selectedEventId", id);
-        window.location.href = "evento.html";
+    if (action === "details") {
+      sessionStorage.setItem("selectedEventId", id);
+      window.location.href = "evento.html";
+      return;
+    }
+
+    if (action === "join") {
+      const res = await apiPost(`/events/${id}/join`, {}, token);
+      if (!res.ok) {
+        alert(res.error || "Errore partecipazione");
         return;
       }
+      await loadEvents();
+      return;
+    }
 
-      if (action === "delete") {
-        if (!confirm("Eliminare questo evento?")) return;
-        const res = await apiDelete(`/events/${id}`, token);
-        if (!res.ok) {
-          alert(res.error || "Errore eliminazione");
-          return;
-        }
-        await loadEvents();
+    if (action === "leave") {
+      const res = await apiPost(`/events/${id}/leave`, {}, token);
+      if (!res.ok) {
+        alert(res.error || "Errore annullamento");
+        return;
       }
-    });
-  }
+      await loadEvents();
+      return;
+    }
+  });
 
   // Filtri
   if (btnFilters) {
@@ -111,8 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Switch ruolo
   if (btnSwitchRole) {
     btnSwitchRole.addEventListener("click", () => {
-      sessionStorage.setItem("desiredRole", "participant");
-      window.location.href = "partecipante.html";
+      sessionStorage.setItem("desiredRole", "organizer");
+      window.location.href = "organizzatore.html";
     });
   }
 
@@ -125,14 +158,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Create (placeholder)
-  if (btnCreate) {
-    btnCreate.addEventListener("click", () => {
-      alert("Funzione Crea evento: in arrivo.");
-    });
-  }
-
   // Prima lista
   loadEvents();
 });
+
 
