@@ -1,13 +1,9 @@
 // js/login.js — gestione Login
-//
-// Flusso:
-// - Legge ruolo desiderato da sessionStorage
-// - Invia POST /api/users/login
-// - Se ok, salva token in localStorage
-// - Se non c'è desiredRole, chiede il ruolo reale a /api/users/me
-// - In ogni caso notifica backend del ruolo di sessione
-// - Redirect a organizzatore.html o partecipante.html
-// - Pulsanti "Registrati" e "Torna alla homepage"
+// TODO UI/UX Overhaul:
+// - Sostituire showAlert() con componente notifiche standard (gwNotify)
+// - Validazione form con messaggi inline sotto i campi (accessibile, aria-live)
+// - Pulsante con stato "loading" e spinner coerente
+
 
 import { apiPost, apiGet } from "./api.js";
 
@@ -87,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
 
 
