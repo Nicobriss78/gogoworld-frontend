@@ -10,6 +10,18 @@
 
 import { apiGet, apiDelete } from "./api.js";
 
+function showAlert(message, type = "error") {
+  const main = document.querySelector("main") || document.body;
+  let box = document.getElementById("alertBox");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "alertBox";
+    main.prepend(box);
+  }
+  box.className = `alert ${type}`;
+  box.textContent = message;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -61,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `).join("");
     } catch (err) {
       listContainer.innerHTML = `<p class="error">Errore: ${err.message}</p>`;
+      showAlert(err?.message || "Errore caricamento eventi", "error");
     }
   }
 
@@ -82,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!confirm("Eliminare questo evento?")) return;
         const res = await apiDelete(`/events/${id}`, token);
         if (!res.ok) {
-          alert(res.error || "Errore eliminazione");
+          showAlert(res.error || "Errore eliminazione", "error");
           return;
         }
         await loadEvents();
@@ -135,6 +148,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Prima lista
   loadEvents();
 });
+
+
 
 
 
