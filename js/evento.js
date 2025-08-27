@@ -131,6 +131,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
+// TODO UI/UX Overhaul:
+// Spostare la logica di rendering in template/componenti modulari (es. gw-event-details)
+// per semplificare il redesign e ridurre duplicazioni HTML.
+
 function renderDetails(ev) {
   const lines = [];
   if (ev.coverImage) {
@@ -150,6 +154,7 @@ function renderDetails(ev) {
   }
   return lines.join("\n");
 }
+
 
 
 
