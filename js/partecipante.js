@@ -9,6 +9,18 @@
 
 import { apiGet, apiPost } from "./api.js";
 
+function showAlert(message, type = "error") {
+  const main = document.querySelector("main") || document.body;
+  let box = document.getElementById("alertBox");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "alertBox";
+    main.prepend(box);
+  }
+  box.className = `alert ${type}`;
+  box.textContent = message;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -84,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
         : "<p>Nessun evento a cui partecipi.</p>";
 
     } catch (err) {
+      showAlert(err?.message || "Si è verificato un errore", "error");
       allList.innerHTML = `<p class="error">Errore: ${err.message}</p>`;
       myList.innerHTML = "";
     }
@@ -105,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (action === "join") {
       const res = await apiPost(`/events/${id}/join`, {}, token);
       if (!res.ok) {
-        alert(res.error || "Errore partecipazione");
+        showAlert(res.error || "Errore partecipazione", "error");
         return;
       }
       await loadEvents();
@@ -115,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (action === "leave") {
       const res = await apiPost(`/events/${id}/leave`, {}, token);
       if (!res.ok) {
-        alert(res.error || "Errore annullamento");
+        showAlert(res.error || "Errore annullamento", "error");
         return;
       }
       await loadEvents();
@@ -161,6 +174,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Prima lista
   loadEvents();
 });
+
+
 
 
 
