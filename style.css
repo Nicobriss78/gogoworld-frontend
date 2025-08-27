@@ -147,4 +147,8 @@ body {
   text-align: center;
   margin-top: 2rem;
 }
+/* Messaggio di benvenuto */
+.welcome { 
+  margin: 0 0 1rem; font-weight: 600;
+}
 
