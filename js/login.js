@@ -11,6 +11,18 @@
 
 import { apiPost, apiGet } from "./api.js";
 
+function showAlert(message, type = "error") {
+  const main = document.querySelector("main") || document.body;
+  let box = document.getElementById("alertBox");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "alertBox";
+    main.prepend(box);
+  }
+  box.className = `alert ${type}`;
+  box.textContent = message;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
   const btnRegister = document.getElementById("goRegister");
@@ -18,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (btnRegister) {
     btnRegister.addEventListener("click", () => {
-      // NOTE: percorso invariato come da versione attuale
+      // percorso invariato come da versione attuale
       window.location.href = "register.html";
     });
   }
@@ -44,16 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
       // 1) Login
       const loginRes = await apiPost("/users/login", { email, password });
       if (!loginRes?.ok || !loginRes?.token) {
-        throw new Error(loginRes?.error || "Errore login");
+        throw new Error(loginRes?.error || "Credenziali non valide");
       }
 
       // 2) Salva token
       const token = loginRes.token;
       localStorage.setItem("token", token);
 
-      // 3) Determina il ruolo da usare:
-      // - se l'utente ha scelto dalla Home 0, rispettiamo quella scelta per la sessione
-      // - altrimenti usiamo il ruolo reale dal backend (/users/me)
+      // 3) Determina il ruolo da usare
       let roleToUse = desiredRole;
       if (!roleToUse) {
         const me = await apiGet("/users/me", token);
@@ -71,10 +81,12 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "partecipante.html";
       }
     } catch (err) {
-      alert("Login fallito: " + (err?.message || "Operazione non riuscita"));
+      showAlert("Login fallito: " + (err?.message || "Operazione non riuscita"), "error");
     } finally {
       if (submitBtn) submitBtn.disabled = false;
     }
   });
 });
+
+
 
