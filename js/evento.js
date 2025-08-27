@@ -1,7 +1,9 @@
-// js/evento.js — dettaglio evento (versione allineata)
-// Correzioni:
-// - UI admin visibile SOLO se l'utente è il proprietario dell'evento
-// - Usa escapeHtml da utils.js (rimosso duplicato locale)
+// TODO UI/UX Overhaul:
+// - Layout dettaglio evento (cover, meta grid, azioni) con componenti standard
+// - Distinguere chiaramente UI owner vs participant con banner/toolbar dedicata
+// - Pulsante “Partecipa/Annulla” con stato loading e toast di esito
+
+
 
 import { apiGet, apiPost, apiDelete } from "./api.js";
 import { escapeHtml } from "./utils.js";
@@ -148,5 +150,6 @@ function renderDetails(ev) {
   }
   return lines.join("\n");
 }
+
 
 
