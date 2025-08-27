@@ -1,4 +1,13 @@
-/* style.css — Stile base GoGoWorld.life */
+/* ==========================================================================
+   TODO UI/UX Overhaul (GoGoWorld.life)
+   - Definire palette definitiva (primary, secondary, danger, success, background, surface)
+   - Definire tipografia (font family, scale, weight map)
+   - Spaziature standard (8pt grid)
+   - Componenti base (Button, Input, Card, Alert, Toolbar, Tag)
+   - Stati (hover, focus, disabled) + tema dark (se previsto)
+   - Token CSS (custom properties) → sostituire gradualmente le variabili attuali
+   ========================================================================== */
+
 
 :root {
   --color-primary: #2a7ae2;
@@ -51,7 +60,10 @@ body {
 .form-row label { margin-bottom: 0.25rem; }
 .form-actions { display: flex; gap: 1rem; }
 
-/* Bottoni */
+/* TODO UI/UX Overhaul:
+   Rimpiazzare le classi .btn / .btn-secondary con componenti standardizzati
+   (es. .gw-button[data-variant="primary|secondary|ghost"] con scale e stati uniformi). */
+
 .btn {
   padding: 0.5rem 1rem;
   border: none;
@@ -118,7 +130,10 @@ body {
 .role-btn { flex: 1; margin: 0 0.5rem; }
 .register-cta { text-align: center; margin-top: 2rem; }
 
-/* Messaggio di benvenuto — più evidente */
+/* TODO UI/UX Overhaul:
+   Valutare hero/banner di benvenuto con layout consistente fra aree.
+   Esempio: .gw-banner[data-variant="welcome"] con icona, titolo, sottotitolo, azioni. */
+
 .welcome {
   margin: 0 0 24px;
   font-weight: 700;
@@ -139,11 +154,15 @@ body {
   color: var(--color-error-text);
   border: 1px solid #f5c6cb;
 }
-.alert.success {
+/* TODO UI/UX Overhaul:
+   Unificare sistema di alert/notifiche (success, error, warning, info) con icone,
+   ruoli ARIA, e posizione fissa nell’area contenuto. */
+
   background: var(--color-success-bg);
   color: var(--color-success-text);
   border: 1px solid #c8e6c9;
 }
+
 
 
 
