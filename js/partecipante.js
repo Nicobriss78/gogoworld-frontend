@@ -1,11 +1,10 @@
 // js/partecipante.js — area Partecipante
 //
-// Funzioni principali:
-// - Lista di tutti gli eventi (filtri)
-// - Lista eventi a cui partecipo
-// - Partecipa / Annulla
-// - Dettagli evento
-// - Switch ruolo e Logout
+// TODO UI/UX Overhaul:
+// - Card evento con layout consistente (immagine, meta, azioni)
+// - Stati dei bottoni (join/leave) uniformi e con feedback visivo
+// - Filtri con componenti input standard (date, select, tag)
+// - Notifiche errori/successo tramite componente centralizzato
 
 import { apiGet, apiPost } from "./api.js";
 
@@ -67,6 +66,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       // Popola lista eventi totali
+      // TODO UI/UX Overhaul:
+// Estrarre la renderizzazione card evento in un renderer dedicato (renderEventCard(ev, { joined }))
+// per separare logica/markup e facilitare il restyling.
+
+
       allList.innerHTML = res.events.map(ev => `
         <div class="event-card">
           <h3>${ev.title}</h3>
@@ -174,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Prima lista
   loadEvents();
 });
+
 
 
 
