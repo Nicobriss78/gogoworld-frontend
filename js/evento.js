@@ -6,6 +6,18 @@
 import { apiGet, apiPost, apiDelete } from "./api.js";
 import { escapeHtml } from "./utils.js";
 
+function showAlert(message, type = "error") {
+  const main = document.querySelector("main") || document.body;
+  let box = document.getElementById("alertBox");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "alertBox";
+    main.prepend(box);
+  }
+  box.className = `alert ${type}`;
+  box.textContent = message;
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -15,7 +27,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const eventId = sessionStorage.getItem("selectedEventId");
   if (!eventId) {
-    alert("Nessun evento selezionato");
+    // errore di contesto: non abbiamo l'ID per il dettaglio
+    showAlert("Nessun evento selezionato", "error");
     const desiredRole = sessionStorage.getItem("desiredRole");
     window.location.href = desiredRole === "organizer" ? "organizzatore.html" : "partecipante.html";
     return;
@@ -67,14 +80,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       elDetails.appendChild(adminBar);
 
       btnEdit.addEventListener("click", () => {
-        alert("Form di modifica non ancora implementato in questa fase.");
+        showAlert("Form di modifica non ancora implementato in questa fase.", "error");
       });
 
       btnDel.addEventListener("click", async () => {
         if (confirm("Sei sicuro di voler eliminare questo evento?")) {
           const res = await apiDelete(`/events/${eventId}`, token);
           if (res?.ok === false) {
-            alert(res.error || "Eliminazione fallita");
+            showAlert(res.error || "Eliminazione fallita", "error");
             return;
           }
           window.location.href = "organizzatore.html";
@@ -91,11 +104,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         btnToggle.disabled = true;
         try {
           if (isJoined) {
-            await apiPost(`/events/${eventId}/leave`, {}, token);
+            const res = await apiPost(`/events/${eventId}/leave`, {}, token);
+            if (!res?.ok) throw new Error(res?.error || "Errore annullamento");
           } else {
-            await apiPost(`/events/${eventId}/join`, {}, token);
+            const res = await apiPost(`/events/${eventId}/join`, {}, token);
+            if (!res?.ok) throw new Error(res?.error || "Errore partecipazione");
           }
           window.location.reload();
+        } catch (err) {
+          showAlert(err?.message || "Operazione non riuscita", "error");
         } finally {
           btnToggle.disabled = false;
         }
@@ -103,6 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   } catch (err) {
     elDetails.innerHTML = `<p class="error">Errore: ${escapeHtml(err.message)}</p>`;
+    showAlert(err?.message || "Si è verificato un errore", "error");
   }
 
   btnBack.addEventListener("click", () => {
@@ -130,4 +148,5 @@ function renderDetails(ev) {
   }
   return lines.join("\n");
 }
+
 
