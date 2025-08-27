@@ -1,5 +1,9 @@
 // js/register.js — registrazione (coerenza: niente auto-login)
-// build-bump: 003
+// TODO UI/UX Overhaul:
+// - Validazione client-side con messaggi inline per ciascun campo
+// - Feedback di successo con redirect temporizzato e toast informativo
+// - Accessibilità: aria-invalid, aria-describedby, focus management
+
 
 import { apiPost } from "./api.js";
 
