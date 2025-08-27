@@ -1,7 +1,19 @@
 // js/register.js — registrazione (coerenza: niente auto-login)
-// build-bump: 002
+// build-bump: 003
 
 import { apiPost } from "./api.js";
+
+function showAlert(message, type = "error") {
+  const main = document.querySelector("main") || document.body;
+  let box = document.getElementById("alertBox");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "alertBox";
+    main.prepend(box);
+  }
+  box.className = `alert ${type}`;
+  box.textContent = message;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("registerForm");
@@ -32,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const role = document.getElementById("role")?.value || "participant";
 
     if (!email || !password) {
-      alert("Inserisci email e password.");
+      showAlert("Inserisci email e password.", "error");
       if (submitBtn) submitBtn.disabled = false;
       return;
     }
@@ -44,13 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Nota: nessun token salvato qui. Flusso: registrazione → login.
-      alert("Registrazione avvenuta! Ora effettua il login.");
+      showAlert("Registrazione avvenuta! Ora effettua il login.", "success");
       window.location.href = "../login.html";
     } catch (err) {
       console.error("[register] errore:", err);
-      alert("Errore registrazione: " + (err?.message || "Operazione non riuscita"));
+      showAlert("Errore registrazione: " + (err?.message || "Operazione non riuscita"), "error");
     } finally {
       if (submitBtn) submitBtn.disabled = false;
     }
   });
 });
+
