@@ -1,3 +1,4 @@
+// js/evento.js — dettaglio evento
 // TODO UI/UX Overhaul:
 // - Layout dettaglio evento (cover, meta grid, azioni) con componenti standard
 // - Distinguere chiaramente UI owner vs participant con banner/toolbar dedicata
@@ -16,7 +17,8 @@ function showAlert(message, type = "error", opts = {}) {
     box.id = "alertBox";
     main.prepend(box);
   }
-  box.className = `alert ${type}`;
+  const t = type === "success" ? "success" : type === "error" ? "error" : "info";
+  box.className = `alert ${t}`;
   box.textContent = message;
 
   if (autoHideMs > 0) {
@@ -36,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const eventId = sessionStorage.getItem("selectedEventId");
   if (!eventId) {
-    // errore di contesto: non abbiamo l'ID per il dettaglio
     showAlert("Nessun evento selezionato", "error", { autoHideMs: 4000 });
     const desiredRole = sessionStorage.getItem("desiredRole");
     window.location.href = desiredRole === "organizer" ? "organizzatore.html" : "partecipante.html";
@@ -69,9 +70,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       : ev.organizer;
     const isOwner = String(evOrganizerId || "") === String(myId || "");
 
-    // Logica bottoni:
-    // - Se owner → admin bar (Modifica/Elimina)
-    // - Altrimenti → flusso partecipante (toggle partecipazione)
     if (isOwner) {
       btnToggle.style.display = "none";
 
