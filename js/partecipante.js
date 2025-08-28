@@ -18,7 +18,8 @@ function showAlert(message, type = "error", opts = {}) {
     box.id = "alertBox";
     main.prepend(box);
   }
-  box.className = `alert ${type}`;
+  const t = type === "success" ? "success" : type === "error" ? "error" : "info";
+  box.className = `alert ${t}`;
   box.textContent = message;
 
   if (autoHideMs > 0) {
@@ -29,7 +30,7 @@ function showAlert(message, type = "error", opts = {}) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (!token) {
     window.location.href = "../index.html";
@@ -42,6 +43,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnLogout = document.getElementById("btnLogout");
   const btnSwitchRole = document.getElementById("btnSwitchRole");
 
+  // 👉 Benvenuto: creato UNA sola volta qui (non dentro loadEvents)
+  try {
+    const me = await apiGet("/users/me", token);
+    const name = me?.user?.name || me?.user?.email || "utente";
+    if (!document.getElementById("welcomeMsg")) {
+      const main = document.querySelector("main") || document.body;
+      const p = document.createElement("p");
+      p.id = "welcomeMsg";
+      p.className = "welcome";
+      p.textContent = `Benvenuto, ${name}! Sei nella tua area Partecipante.`;
+      if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
+    }
+  } catch {
+    // nessun blocco della UI se /users/me fallisce: lo gestirà loadEvents()
+  }
+
   async function loadEvents(filters = {}) {
     allList.innerHTML = "<p>Caricamento...</p>";
     myList.innerHTML = "";
@@ -51,34 +68,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await apiGet(`/events${query ? "?" + query : ""}`, token);
       if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
 
+      // prendo di nuovo me, ma SOLO per id — qui niente welcome
       const me = await apiGet("/users/me", token);
       const myId = me?.user?._id || me?.user?.id;
 
-      // Messaggio di benvenuto (solo FE, senza nuove rotte)
-      try {
-        const name = me?.user?.name || me?.user?.email || "utente";
-        const role = "Partecipante";
-        const main = document.querySelector("main") || document.body;
-        const p = document.createElement("p");
-        p.id = "welcomeMsg";
-        p.className = "welcome";
-        p.textContent = `Benvenuto, ${name}! Sei nella tua area ${role}.`;
-        if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
-      } catch {}
-
       const joinedIds = new Set();
-      // estrai da eventi quelli con partecipazione
       res.events.forEach(ev => {
         if (ev.participants?.some(pid => String(pid) === String(myId))) {
           joinedIds.add(ev._id);
         }
       });
 
-      // Popola lista eventi totali
       // TODO UI/UX Overhaul:
       // Estrarre la renderizzazione card evento in un renderer dedicato (renderEventCard(ev, { joined }))
       // per separare logica/markup e facilitare il restyling.
 
+      // Popola lista eventi totali
       allList.innerHTML = res.events.map(ev => `
         <div class="event-card">
           <h3>${ev.title}</h3>
@@ -151,7 +156,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Filtri
-  if (btnFilters) {
+  const hookFilters = () => {
+    if (!btnFilters) return;
     btnFilters.addEventListener("click", async () => {
       const filters = {};
       const title = document.getElementById("filterTitle")?.value?.trim();
@@ -166,7 +172,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (dateEnd) filters.dateEnd = dateEnd;
       await loadEvents(filters);
     });
-  }
+  };
+
+  hookFilters();
 
   // Switch ruolo
   if (btnSwitchRole) {
@@ -188,6 +196,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Prima lista
   loadEvents();
 });
+
+
 
 
 
