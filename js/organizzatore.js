@@ -1,12 +1,9 @@
 // js/organizzatore.js — area Organizzatore
 //
-// Funzioni principali:
-// - Lista eventi creati dall'organizzatore
-// - Filtri sui campi principali
-// - Dettagli evento
-// - Modifica/Elimina evento
-// - Refresh dinamico al ritorno
-// - Switch ruolo e Logout
+// TODO UI/UX Overhaul:
+// - Lista "I miei eventi" con card/table responsive e azioni visibili
+// - Conferme modali standard per delete (invece di confirm())
+// - Banner “welcome” con micro-CTA (es. “Crea nuovo evento”)
 
 import { apiGet, apiDelete } from "./api.js";
 
@@ -20,7 +17,8 @@ function showAlert(message, type = "error", opts = {}) {
     box.id = "alertBox";
     main.prepend(box);
   }
-  box.className = `alert ${type}`;
+  const t = type === "success" ? "success" : type === "error" ? "error" : "info";
+  box.className = `alert ${t}`;
   box.textContent = message;
 
   if (autoHideMs > 0) {
@@ -37,19 +35,22 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "../index.html";
   }
 
-  // Messaggio di benvenuto (solo FE, senza nuove rotte)
+  // Benvenuto: eseguito una sola volta e con guardia anti-duplicazione
   (async () => {
     try {
       const me = await apiGet("/users/me", token);
       const name = me?.user?.name || me?.user?.email || "utente";
-      const role = "Organizzatore";
-      const main = document.querySelector("main") || document.body;
-      const p = document.createElement("p");
-      p.id = "welcomeMsg";
-      p.className = "welcome";
-      p.textContent = `Benvenuto, ${name}! Sei nella tua area ${role}.`;
-      if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
-    } catch {}
+      if (!document.getElementById("welcomeMsg")) {
+        const main = document.querySelector("main") || document.body;
+        const p = document.createElement("p");
+        p.id = "welcomeMsg";
+        p.className = "welcome";
+        p.textContent = `Benvenuto, ${name}! Sei nella tua area Organizzatore.`;
+        if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
+      }
+    } catch {
+      /* silente */
+    }
   })();
 
   const listContainer = document.getElementById("myEventsList");
@@ -158,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Prima lista
   loadEvents();
 });
+
 
 
 
