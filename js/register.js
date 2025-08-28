@@ -16,7 +16,8 @@ function showAlert(message, type = "error", opts = {}) {
     box.id = "alertBox";
     main.prepend(box);
   }
-  box.className = `alert ${type}`;
+  const t = type === "success" ? "success" : type === "error" ? "error" : "info";
+  box.className = `alert ${t}`;
   box.textContent = message;
 
   if (autoHideMs > 0) {
@@ -34,7 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnHome) {
     btnHome.addEventListener("click", (e) => {
       e.preventDefault();
-      // torna alla Home 0
       window.location.href = "../index.html";
     });
   }
@@ -67,7 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(res?.error || "Registrazione fallita");
       }
 
-      // Nota: nessun token salvato qui. Flusso: registrazione → login.
       showAlert("Registrazione avvenuta! Reindirizzamento al login…", "success", { autoHideMs: 2000 });
       setTimeout(() => { window.location.href = "../login.html"; }, 1600);
     } catch (err) {
