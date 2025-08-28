@@ -16,7 +16,8 @@ function showAlert(message, type = "error", opts = {}) {
     box.id = "alertBox";
     main.prepend(box);
   }
-  box.className = `alert ${type}`;
+  const t = type === "success" ? "success" : type === "error" ? "error" : "info";
+  box.className = `alert ${t}`;
   box.textContent = message;
 
   if (autoHideMs > 0) {
@@ -34,7 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (btnRegister) {
     btnRegister.addEventListener("click", () => {
-      // percorso invariato come da versione attuale
       window.location.href = "register.html";
     });
   }
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
-    const desiredRole = sessionStorage.getItem("desiredRole"); // scelto in Home 0, può essere null
+    const desiredRole = sessionStorage.getItem("desiredRole"); // può essere null
 
     try {
       // 1) Login
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const token = loginRes.token;
       localStorage.setItem("token", token);
 
-      // 3) Determina il ruolo da usare
+      // 3) Determina ruolo da usare
       let roleToUse = desiredRole;
       if (!roleToUse) {
         const me = await apiGet("/users/me", token);
@@ -75,10 +75,10 @@ document.addEventListener("DOMContentLoaded", () => {
         roleToUse = roleFromDb;
       }
 
-      // 4) Notifica ruolo di sessione al backend (coerenza server)
+      // 4) Notifica ruolo di sessione al backend
       await apiPost("/users/session-role", { role: roleToUse }, token);
 
-      // 5) Redirect coerente con il ruolo effettivo
+      // 5) Redirect coerente
       if (roleToUse === "organizer") {
         window.location.href = "organizzatore.html";
       } else {
@@ -91,6 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
 
 
 
