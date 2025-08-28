@@ -8,7 +8,9 @@
 
 import { apiGet, apiPost } from "./api.js";
 
-function showAlert(message, type = "error") {
+// Banner messaggi (error/success) con auto-hide opzionale
+function showAlert(message, type = "error", opts = {}) {
+  const { autoHideMs = 0 } = opts;
   const main = document.querySelector("main") || document.body;
   let box = document.getElementById("alertBox");
   if (!box) {
@@ -18,6 +20,13 @@ function showAlert(message, type = "error") {
   }
   box.className = `alert ${type}`;
   box.textContent = message;
+
+  if (autoHideMs > 0) {
+    if (box._hideTimer) clearTimeout(box._hideTimer);
+    box._hideTimer = setTimeout(() => {
+      if (box && box.parentNode) box.parentNode.removeChild(box);
+    }, autoHideMs);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -67,9 +76,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Popola lista eventi totali
       // TODO UI/UX Overhaul:
-// Estrarre la renderizzazione card evento in un renderer dedicato (renderEventCard(ev, { joined }))
-// per separare logica/markup e facilitare il restyling.
-
+      // Estrarre la renderizzazione card evento in un renderer dedicato (renderEventCard(ev, { joined }))
+      // per separare logica/markup e facilitare il restyling.
 
       allList.innerHTML = res.events.map(ev => `
         <div class="event-card">
@@ -100,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         : "<p>Nessun evento a cui partecipi.</p>";
 
     } catch (err) {
-      showAlert(err?.message || "Si è verificato un errore", "error");
+      showAlert(err?.message || "Si è verificato un errore", "error", { autoHideMs: 4000 });
       allList.innerHTML = `<p class="error">Errore: ${err.message}</p>`;
       myList.innerHTML = "";
     }
@@ -122,9 +130,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (action === "join") {
       const res = await apiPost(`/events/${id}/join`, {}, token);
       if (!res.ok) {
-        showAlert(res.error || "Errore partecipazione", "error");
+        showAlert(res.error || "Errore partecipazione", "error", { autoHideMs: 4000 });
         return;
       }
+      showAlert("Iscrizione effettuata", "success", { autoHideMs: 2500 });
       await loadEvents();
       return;
     }
@@ -132,9 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (action === "leave") {
       const res = await apiPost(`/events/${id}/leave`, {}, token);
       if (!res.ok) {
-        showAlert(res.error || "Errore annullamento", "error");
+        showAlert(res.error || "Errore annullamento", "error", { autoHideMs: 4000 });
         return;
       }
+      showAlert("Partecipazione annullata", "success", { autoHideMs: 2500 });
       await loadEvents();
       return;
     }
@@ -178,6 +188,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Prima lista
   loadEvents();
 });
+
+
 
 
 
