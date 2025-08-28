@@ -4,10 +4,11 @@
 // - Feedback di successo con redirect temporizzato e toast informativo
 // - Accessibilità: aria-invalid, aria-describedby, focus management
 
-
 import { apiPost } from "./api.js";
 
-function showAlert(message, type = "error") {
+// Banner messaggi (error/success) con auto-hide opzionale
+function showAlert(message, type = "error", opts = {}) {
+  const { autoHideMs = 0 } = opts;
   const main = document.querySelector("main") || document.body;
   let box = document.getElementById("alertBox");
   if (!box) {
@@ -17,6 +18,13 @@ function showAlert(message, type = "error") {
   }
   box.className = `alert ${type}`;
   box.textContent = message;
+
+  if (autoHideMs > 0) {
+    if (box._hideTimer) clearTimeout(box._hideTimer);
+    box._hideTimer = setTimeout(() => {
+      if (box && box.parentNode) box.parentNode.removeChild(box);
+    }, autoHideMs);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -48,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const role = document.getElementById("role")?.value || "participant";
 
     if (!email || !password) {
-      showAlert("Inserisci email e password.", "error");
+      showAlert("Inserisci email e password.", "error", { autoHideMs: 3500 });
       if (submitBtn) submitBtn.disabled = false;
       return;
     }
@@ -60,14 +68,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Nota: nessun token salvato qui. Flusso: registrazione → login.
-      showAlert("Registrazione avvenuta! Ora effettua il login.", "success");
-      window.location.href = "../login.html";
+      showAlert("Registrazione avvenuta! Reindirizzamento al login…", "success", { autoHideMs: 2000 });
+      setTimeout(() => { window.location.href = "../login.html"; }, 1600);
     } catch (err) {
       console.error("[register] errore:", err);
-      showAlert("Errore registrazione: " + (err?.message || "Operazione non riuscita"), "error");
+      showAlert("Errore registrazione: " + (err?.message || "Operazione non riuscita"), "error", { autoHideMs: 4000 });
     } finally {
       if (submitBtn) submitBtn.disabled = false;
     }
   });
 });
+
 
