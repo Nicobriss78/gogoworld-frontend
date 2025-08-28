@@ -10,7 +10,9 @@
 
 import { apiGet, apiDelete } from "./api.js";
 
-function showAlert(message, type = "error") {
+// Banner messaggi (error/success) con auto-hide opzionale
+function showAlert(message, type = "error", opts = {}) {
+  const { autoHideMs = 0 } = opts;
   const main = document.querySelector("main") || document.body;
   let box = document.getElementById("alertBox");
   if (!box) {
@@ -20,6 +22,13 @@ function showAlert(message, type = "error") {
   }
   box.className = `alert ${type}`;
   box.textContent = message;
+
+  if (autoHideMs > 0) {
+    if (box._hideTimer) clearTimeout(box._hideTimer);
+    box._hideTimer = setTimeout(() => {
+      if (box && box.parentNode) box.parentNode.removeChild(box);
+    }, autoHideMs);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -73,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `).join("");
     } catch (err) {
       listContainer.innerHTML = `<p class="error">Errore: ${err.message}</p>`;
-      showAlert(err?.message || "Errore caricamento eventi", "error");
+      showAlert(err?.message || "Errore caricamento eventi", "error", { autoHideMs: 4000 });
     }
   }
 
@@ -95,9 +104,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!confirm("Eliminare questo evento?")) return;
         const res = await apiDelete(`/events/${id}`, token);
         if (!res.ok) {
-          showAlert(res.error || "Errore eliminazione", "error");
+          showAlert(res.error || "Errore eliminazione", "error", { autoHideMs: 4000 });
           return;
         }
+        showAlert("Evento eliminato", "success", { autoHideMs: 2500 });
         await loadEvents();
       }
     });
@@ -148,6 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Prima lista
   loadEvents();
 });
+
 
 
 
