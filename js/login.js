@@ -4,10 +4,11 @@
 // - Validazione form con messaggi inline sotto i campi (accessibile, aria-live)
 // - Pulsante con stato "loading" e spinner coerente
 
-
 import { apiPost, apiGet } from "./api.js";
 
-function showAlert(message, type = "error") {
+// Banner messaggi (error/success) con auto-hide opzionale
+function showAlert(message, type = "error", opts = {}) {
+  const { autoHideMs = 0 } = opts;
   const main = document.querySelector("main") || document.body;
   let box = document.getElementById("alertBox");
   if (!box) {
@@ -17,6 +18,13 @@ function showAlert(message, type = "error") {
   }
   box.className = `alert ${type}`;
   box.textContent = message;
+
+  if (autoHideMs > 0) {
+    if (box._hideTimer) clearTimeout(box._hideTimer);
+    box._hideTimer = setTimeout(() => {
+      if (box && box.parentNode) box.parentNode.removeChild(box);
+    }, autoHideMs);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -77,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "partecipante.html";
       }
     } catch (err) {
-      showAlert("Login fallito: " + (err?.message || "Operazione non riuscita"), "error");
+      showAlert("Login fallito: " + (err?.message || "Operazione non riuscita"), "error", { autoHideMs: 3500 });
     } finally {
       if (submitBtn) submitBtn.disabled = false;
     }
