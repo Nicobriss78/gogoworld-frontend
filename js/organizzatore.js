@@ -156,11 +156,82 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // --- Dashboard KPI (organizzatore) --- [AGGIUNTA: funzione e chiamata, nessuna riga rimossa]
+  async function renderKpiFromMyEvents() {
+    // Usa un container esistente o creane uno prima della lista
+    let container = document.getElementById("dashboardKPI");
+    if (!container) {
+      const myEventsList = document.getElementById("myEventsList");
+      const section = document.createElement("section");
+      section.id = "dashboardKPI";
+      section.className = "kpi-grid";
+      if (myEventsList && myEventsList.parentNode) {
+        myEventsList.parentNode.insertBefore(section, myEventsList);
+      } else {
+        const main = document.querySelector("main") || document.body;
+        main.insertBefore(section, main.firstChild);
+      }
+      container = section;
+    }
+
+    // Placeholder per evitare layout shift
+    container.innerHTML = `
+      <div class="kpi-card"><div class="kpi-label">Totale Eventi</div><div class="kpi-value">—</div></div>
+      <div class="kpi-card"><div class="kpi-label">Partecipanti Totali</div><div class="kpi-value">—</div></div>
+      <div class="kpi-card"><div class="kpi-label">Media Partecipanti</div><div class="kpi-value">—</div></div>
+      <div class="kpi-card"><div class="kpi-label">Top Evento</div><div class="kpi-value">—</div></div>
+    `;
+
+    try {
+      const res = await apiGet("/events/mine/list", token);
+      if (!res?.ok || !Array.isArray(res.events)) return;
+
+      const events = res.events;
+      const totalEvents = events.length;
+
+      let totalParticipants = 0;
+      let top = null;
+      for (const ev of events) {
+        const count = Array.isArray(ev?.participants) ? ev.participants.length : 0;
+        totalParticipants += count;
+        if (!top || count > (Array.isArray(top.participants) ? top.participants.length : 0)) {
+          top = ev;
+        }
+      }
+
+      const avgParticipants = totalEvents > 0 ? Math.round((totalParticipants / totalEvents) * 10) / 10 : 0;
+      const topLabel = top ? (top.title || top.name || top._id || "—") : "—";
+      const topCount = top ? (Array.isArray(top.participants) ? top.participants.length : 0) : "—";
+
+      container.innerHTML = `
+        <div class="kpi-card">
+          <div class="kpi-label">Totale Eventi</div>
+          <div class="kpi-value">${totalEvents}</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Partecipanti Totali</div>
+          <div class="kpi-value">${totalParticipants}</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Media Partecipanti</div>
+          <div class="kpi-value">${avgParticipants}</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Top Evento</div>
+          <div class="kpi-value">${topLabel} <span class="kpi-sub">(${topCount})</span></div>
+        </div>
+      `;
+    } catch {
+      // silente: i KPI non devono bloccare la pagina
+    }
+  }
+
   // Prima lista
   loadEvents();
+
+  // KPI (aggiunta)
+  renderKpiFromMyEvents();
 });
-
-
 
 
 
