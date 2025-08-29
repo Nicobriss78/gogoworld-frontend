@@ -14,15 +14,13 @@ function showAlert(message, type = "error", opts = {}) {
   if (!box) {
     box = document.createElement("div");
     box.id = "alertBox";
+    box.className = "alert";
     main.prepend(box);
   }
-  const t = type === "success" ? "success" : type === "error" ? "error" : "info";
-  box.className = `alert ${t}`;
   box.textContent = message;
-
+  box.dataset.type = type; // "error" | "success"
   if (autoHideMs > 0) {
-    if (box._hideTimer) clearTimeout(box._hideTimer);
-    box._hideTimer = setTimeout(() => {
+    setTimeout(() => {
       if (box && box.parentNode) box.parentNode.removeChild(box);
     }, autoHideMs);
   }
@@ -30,12 +28,13 @@ function showAlert(message, type = "error", opts = {}) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
-  const btnRegister = document.getElementById("goRegister");
-  const btnHome = document.getElementById("goHome");
+  const btnRegister = document.getElementById("btnRegister");
+  const btnHome = document.getElementById("btnHome");
 
   if (btnRegister) {
     btnRegister.addEventListener("click", () => {
-      window.location.href = "register.html";
+      // FIX: percorso corretto della pagina di registrazione
+      window.location.href = "pages/register.html";
     });
   }
   if (btnHome) {
@@ -44,53 +43,56 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (!form) return;
+  // Ricava ruolo desiderato (scelto in index.html)
+  function getDesiredRole() {
+    const r = sessionStorage.getItem("desiredRole");
+    return r === "organizzatore" ? "organizzatore" : "partecipante";
+  }
 
-  form.addEventListener("submit", async (e) => {
+  // Login submit
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const email = (document.getElementById("email")?.value || "").trim();
+    const password = document.getElementById("password")?.value || "";
 
-    const submitBtn = form.querySelector('button[type="submit"]');
-    if (submitBtn) submitBtn.disabled = true;
-
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const desiredRole = sessionStorage.getItem("desiredRole"); // può essere null
+    if (!email || !password) {
+      showAlert("Inserisci email e password", "error", { autoHideMs: 3000 });
+      return;
+    }
 
     try {
-      // 1) Login
-      const loginRes = await apiPost("/users/login", { email, password });
-      if (!loginRes?.ok || !loginRes?.token) {
-        throw new Error(loginRes?.error || "Credenziali non valide");
+      const res = await apiPost("/users/login", { email, password });
+      if (!res.ok || !res.token) {
+        showAlert(res.error || "Credenziali non valide", "error", { autoHideMs: 4000 });
+        return;
       }
 
-      // 2) Salva token
-      const token = loginRes.token;
-      localStorage.setItem("token", token);
+      // Salva token
+      localStorage.setItem("token", res.token);
 
-      // 3) Determina ruolo da usare
-      let roleToUse = desiredRole;
-      if (!roleToUse) {
-        const me = await apiGet("/users/me", token);
-        const roleFromDb = me?.user?.role || "participant";
-        roleToUse = roleFromDb;
+      // Imposta ruolo di sessione lato FE e notifica BE (eco, nessuna persistenza)
+      const role = getDesiredRole();
+      await apiPost("/users/session-role", { role });
+
+      // Verifica chi sono
+      const me = await apiGet("/users/me", res.token);
+      if (!me || !me.ok) {
+        showAlert("Errore nel recupero profilo", "error", { autoHideMs: 4000 });
+        return;
       }
 
-      // 4) Notifica ruolo di sessione al backend
-      await apiPost("/users/session-role", { role: roleToUse }, token);
-
-      // 5) Redirect coerente
-      if (roleToUse === "organizer") {
+      // Redirect in base al ruolo richiesto
+      if (role === "organizzatore") {
         window.location.href = "organizzatore.html";
       } else {
         window.location.href = "partecipante.html";
       }
     } catch (err) {
-      showAlert("Login fallito: " + (err?.message || "Operazione non riuscita"), "error", { autoHideMs: 3500 });
-    } finally {
-      if (submitBtn) submitBtn.disabled = false;
+      showAlert("Errore di rete o server non raggiungibile", "error", { autoHideMs: 4000 });
     }
   });
 });
+
 
 
 
