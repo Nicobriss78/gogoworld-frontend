@@ -33,12 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (btnRegister) {
     btnRegister.addEventListener("click", () => {
-      window.location.href = "register.html";
+      window.location.href = "pages/register.html";
     });
   }
   if (btnHome) {
     btnHome.addEventListener("click", () => {
-      window.location.href = "../index.html";
+      window.location.href = "index.html";
     });
   }
 
@@ -91,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
 
 
