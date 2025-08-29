@@ -28,13 +28,12 @@ function showAlert(message, type = "error", opts = {}) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
-  const btnRegister = document.getElementById("btnRegister");
-  const btnHome = document.getElementById("btnHome");
+  const btnRegister = document.getElementById("goRegister");
+  const btnHome = document.getElementById("goHome");
 
   if (btnRegister) {
     btnRegister.addEventListener("click", () => {
-      // FIX: percorso corretto della pagina di registrazione
-      window.location.href = "pages/register.html";
+      window.location.href = "register.html";
     });
   }
   if (btnHome) {
@@ -92,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
 
 
