@@ -18,27 +18,29 @@
       </nav>
     </header>
 
+    <!-- Filtri (base + aggiunte chirurgiche) -->
     <section class="filters">
       <input id="filterTitle" type="text" placeholder="Titolo" />
       <input id="filterCity" type="text" placeholder="Città" />
-      <input id="filterCategory" type="text" placeholder="Categoria" />
+      <!-- AGGIUNTE per coerenza con partecipante.js -->
+      <input id="filterRegion" type="text" placeholder="Regione" />
+      <input id="filterDateStart" type="date" placeholder="Data inizio" />
+      <input id="filterDateEnd" type="date" placeholder="Data fine" />
       <button id="btnApplyFilters" class="btn">Filtra</button>
     </section>
 
-    <h2>Tutti gli eventi</h2>
-    <section id="allEventsList" class="events-list"></section>
-
-    <h2>Eventi a cui partecipo</h2>
-    <section id="myEventsList" class="events-list"></section>
+    <section id="eventsList" class="events-list"></section>
 
     <footer class="app-footer">
-      <small>© GoGoWorld.life</small>
+      GoGoWorld.life – Area Partecipante
     </footer>
   </main>
 
   <script type="module" src="js/partecipante.js"></script>
 </body>
 </html>
+
+
 
 
 
