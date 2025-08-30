@@ -7,6 +7,15 @@
 import { apiGet, apiPost, apiDelete } from "./api.js";
 import { escapeHtml } from "./utils.js";
 
+// Helper: format event start datetime using available fields (date | dateStart)
+function formatEventStart(ev) {
+  try {
+    const start = ev?.date || ev?.dateStart;
+    if (!start) return "-";
+    return new Date(start).toLocaleString();
+  } catch { return "-"; }
+}
+
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
   const { autoHideMs = 0 } = opts;
@@ -152,7 +161,7 @@ function renderDetails(ev) {
   lines.push(`<p><strong>Città/Regione/Paese:</strong> ${escapeHtml(ev.city || "")} / ${escapeHtml(ev.region || "")} / ${escapeHtml(ev.country || "")}</p>`);
   lines.push(`<p><strong>Categoria:</strong> ${escapeHtml(ev.category || "")} — <strong>Sub:</strong> ${escapeHtml(ev.subcategory || "")}</p>`);
   lines.push(`<p><strong>Tipo:</strong> ${escapeHtml(ev.type || "")} — <strong>Visibilità:</strong> ${escapeHtml(ev.visibility || "")}</p>`);
-  lines.push(`<p><strong>Data:</strong> ${ev.date ? new Date(ev.date).toLocaleString() : "-"}</p>`);
+  lines.push(`<p><strong>Data:</strong> ${formatEventStart(ev)}</p>`);
   if (ev.endDate) lines.push(`<p><strong>Fine:</strong> ${new Date(ev.endDate).toLocaleString()}</p>`);
   lines.push(`<p><strong>Prezzo:</strong> ${ev.isFree ? "Gratuito" : (ev.price != null ? escapeHtml(ev.price) + "€" : "-")}</p>`);
   if (Array.isArray(ev.images) && ev.images.length) {
@@ -162,8 +171,3 @@ function renderDetails(ev) {
   }
   return lines.join("\n");
 }
-
-
-
-
-
