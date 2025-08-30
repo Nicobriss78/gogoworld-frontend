@@ -29,6 +29,23 @@ function showAlert(message, type = "error", opts = {}) {
   }
 }
 
+// Helper: format event date using available fields (date | dateStart [– endDate/dateEnd])
+function formatEventDate(ev) {
+  try {
+    const start = ev?.date || ev?.dateStart;
+    const end = ev?.endDate || ev?.dateEnd;
+    if (!start && !end) return "";
+    const startStr = start ? new Date(start).toLocaleDateString() : "";
+    if (end) {
+      const endStr = new Date(end).toLocaleDateString();
+      if (startStr && endStr && startStr !== endStr) {
+        return `${startStr} – ${endStr}`;
+      }
+    }
+    return startStr;
+  } catch { return ""; }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -66,14 +83,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await apiGet(`/events/mine/list${query ? "?" + query : ""}`, token);
       if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
 
-      // Aggiorno lista
       if (!res.events.length) {
         listContainer.innerHTML = "<p>Nessun evento creato.</p>";
       } else {
         listContainer.innerHTML = res.events.map(ev => `
           <div class="event-card">
             <h3>${ev.title}</h3>
-            <p>${ev.city || ""} ${ev.date ? new Date(ev.date).toLocaleDateString() : ""}</p>
+            <p>${ev.city || ""} ${formatEventDate(ev)}</p>
             <div class="event-actions">
               <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
               <button class="btn btn-secondary" data-id="${ev._id}" data-action="delete">Elimina</button>
@@ -128,13 +144,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const filters = {};
       const title = document.getElementById("filterTitle")?.value?.trim();
       const city = document.getElementById("filterCity")?.value?.trim();
-      const category = document.getElementById("filterCategory")?.value?.trim(); // <-- AGGIUNTO: categoria effettiva
+      const category = document.getElementById("filterCategory")?.value?.trim(); // categoria effettiva
       const region = document.getElementById("filterRegion")?.value?.trim();
       const dateStart = document.getElementById("filterDateStart")?.value?.trim();
       const dateEnd = document.getElementById("filterDateEnd")?.value?.trim();
       if (title) filters.title = title;
       if (city) filters.city = city;
-      if (category) filters.category = category; // <-- passa in query come singolo valore
+      if (category) filters.category = category; // passa in query come singolo valore
       if (region) filters.region = region;
       if (dateStart) filters.dateStart = dateStart;
       if (dateEnd) filters.dateEnd = dateEnd;
