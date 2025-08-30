@@ -30,6 +30,23 @@ function showAlert(message, type = "error", opts = {}) {
   }
 }
 
+// Helper: format event date using available fields (date | dateStart [– endDate/dateEnd])
+function formatEventDate(ev) {
+  try {
+    const start = ev?.date || ev?.dateStart;
+    const end = ev?.endDate || ev?.dateEnd;
+    if (!start && !end) return "";
+    const startStr = start ? new Date(start).toLocaleDateString() : "";
+    if (end) {
+      const endStr = new Date(end).toLocaleDateString();
+      if (startStr && endStr && startStr !== endStr) {
+        return `${startStr} – ${endStr}`;
+      }
+    }
+    return startStr;
+  } catch { return ""; }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -68,26 +85,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       const res = await apiGet(`/events${query ? "?" + query : ""}`, token);
       if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
 
-      // prendo di nuovo me, ma SOLO per id — qui niente welcome
+      // Recupera anche i miei per marcare join/leave
       const me = await apiGet("/users/me", token);
-      const myId = me?.user?._id || me?.user?.id;
-
+      const myId = me?.user?._id;
       const joinedIds = new Set();
-      res.events.forEach(ev => {
-        if (ev.participants?.some(pid => String(pid) === String(myId))) {
-          joinedIds.add(ev._id);
+      if (Array.isArray(res?.events)) {
+        for (const ev of res.events) {
+          if (Array.isArray(ev?.participants) && myId) {
+            if (ev.participants.some(p => (p?._id || p) === myId)) {
+              joinedIds.add(ev._id);
+            }
+          }
         }
-      });
+      }
 
-      // TODO UI/UX Overhaul:
-      // Estrarre la renderizzazione card evento in un renderer dedicato (renderEventCard(ev, { joined }))
-      // per separare logica/markup e facilitare il restyling.
-
-      // Popola lista eventi totali
-      allList.innerHTML = res.events.map(ev => `
+      // Popola lista "tutti"
+      allList.innerHTML = res.events.length
+        ? res.events.map(ev => `
         <div class="event-card">
           <h3>${ev.title}</h3>
-          <p>${ev.city || ""} ${ev.date ? new Date(ev.date).toLocaleDateString() : ""}</p>
+          <p>${ev.city || ""} ${formatEventDate(ev)}</p>
           <div class="event-actions">
             <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
             ${joinedIds.has(ev._id)
@@ -95,7 +112,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               : `<button class="btn btn-primary" data-id="${ev._id}" data-action="join">Partecipa</button>`}
           </div>
         </div>
-      `).join("");
+      `).join("")
+        : "<p>Nessun evento disponibile.</p>";
 
       // Popola lista "a cui partecipo"
       const joined = res.events.filter(ev => joinedIds.has(ev._id));
@@ -103,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? joined.map(ev => `
           <div class="event-card">
             <h3>${ev.title}</h3>
-            <p>${ev.city || ""} ${ev.date ? new Date(ev.date).toLocaleDateString() : ""}</p>
+            <p>${ev.city || ""} ${formatEventDate(ev)}</p>
             <div class="event-actions">
               <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
               <button class="btn btn-secondary" data-id="${ev._id}" data-action="leave">Annulla</button>
@@ -119,7 +137,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Event delegation
+  // Delegation click (tutti / miei)
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest("button[data-action]");
     if (!btn) return;
@@ -135,7 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (action === "join") {
       const res = await apiPost(`/events/${id}/join`, {}, token);
       if (!res.ok) {
-        showAlert(res.error || "Errore partecipazione", "error", { autoHideMs: 4000 });
+        showAlert(res.error || "Errore iscrizione", "error", { autoHideMs: 4000 });
         return;
       }
       showAlert("Iscrizione effettuata", "success", { autoHideMs: 2500 });
@@ -174,8 +192,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   };
 
-  hookFilters();
-
   // Switch ruolo
   if (btnSwitchRole) {
     btnSwitchRole.addEventListener("click", () => {
@@ -193,11 +209,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // Inizializza
+  hookFilters();
+
   // Prima lista
   loadEvents();
 });
-
-
 
 
 
