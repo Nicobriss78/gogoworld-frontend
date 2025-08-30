@@ -77,7 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Imposta ruolo di sessione lato FE e notifica BE (eco, nessuna persistenza)
       const role = getDesiredRole();
-      await apiPost("/users/session-role", { role });
+      // MODIFICA CHIRURGICA: passo il token alla chiamata, per avere Authorization
+      await apiPost("/users/session-role", { role }, res.token);
 
       // Verifica chi sono
       const me = await apiGet("/users/me", res.token);
