@@ -18,16 +18,22 @@
       </nav>
     </header>
 
+    <!-- Filtri (base + aggiunte chirurgiche per Filtri avanzati) -->
     <section class="filters">
       <input id="filterTitle" type="text" placeholder="Titolo" />
       <input id="filterCity" type="text" placeholder="Città" />
       <input id="filterCategory" type="text" placeholder="Categoria" />
+      <!-- AGGIUNTE: filtri avanzati -->
+      <input id="filterRegion" type="text" placeholder="Regione" />
+      <input id="filterDateStart" type="date" placeholder="Data inizio" />
+      <input id="filterDateEnd" type="date" placeholder="Data fine" />
       <button id="btnApplyFilters" class="btn">Filtra</button>
     </section>
 
-    <!-- KPI Dashboard (aggiunta chirurgica, nessuna rimozione) -->
+    <!-- KPI Dashboard (preservata) -->
     <section id="dashboardKPI" class="kpi-grid"></section>
 
+    <!-- Lista eventi dell'organizzatore (preservata) -->
     <section id="myEventsList" class="events-list"></section>
 
     <footer class="app-footer">
@@ -38,6 +44,7 @@
   <script type="module" src="js/organizzatore.js"></script>
 </body>
 </html>
+
 
 
 
