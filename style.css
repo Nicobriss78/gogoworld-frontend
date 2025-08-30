@@ -173,6 +173,8 @@ body {
    Unificare sistema di alert/notifiche (success, error, warning, info) con icone,
    ruoli ARIA, e posizione fissa nell’area contenuto. */
 
+/* FIX frammento orfano: incapsulato nella regola corretta */
+.alert.success {
   background: var(--color-success-bg);
   color: var(--color-success-text);
   border: 1px solid #c8e6c9;
@@ -211,12 +213,28 @@ body {
   margin-left: 0.25rem;
 }
 
-
-
-
-
-
-
-
-
+/* --- Tabelle semplici (dashboard) --- */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+.simple-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  background: #fff;
+}
+.simple-table th,
+.simple-table td {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+  vertical-align: top;
+}
+.simple-table thead th {
+  background: #f3f4f6;
+  color: var(--color-secondary);
+  font-weight: 600;
+}
 
