@@ -66,21 +66,29 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await apiGet(`/events/mine/list${query ? "?" + query : ""}`, token);
       if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
 
+      // Aggiorno lista
       if (!res.events.length) {
         listContainer.innerHTML = "<p>Nessun evento creato.</p>";
-        return;
+      } else {
+        listContainer.innerHTML = res.events.map(ev => `
+          <div class="event-card">
+            <h3>${ev.title}</h3>
+            <p>${ev.city || ""} ${ev.date ? new Date(ev.date).toLocaleDateString() : ""}</p>
+            <div class="event-actions">
+              <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
+              <button class="btn btn-secondary" data-id="${ev._id}" data-action="delete">Elimina</button>
+            </div>
+          </div>
+        `).join("");
       }
 
-      listContainer.innerHTML = res.events.map(ev => `
-        <div class="event-card">
-          <h3>${ev.title}</h3>
-          <p>${ev.city || ""} ${ev.date ? new Date(ev.date).toLocaleDateString() : ""}</p>
-          <div class="event-actions">
-            <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
-            <button class="btn btn-secondary" data-id="${ev._id}" data-action="delete">Elimina</button>
-          </div>
-        </div>
-      `).join("");
+      // --- SINCRONIZZAZIONE DASHBOARD ---
+      // Cache locale per KPI/Tabella
+      window.__myEventsCache = Array.isArray(res.events) ? res.events : [];
+      // Re-render KPI e Tabella con i dati correnti
+      try { renderKpiFromMyEvents(); } catch {}
+      try { renderParticipantsTableFromMyEvents(); } catch {}
+
     } catch (err) {
       listContainer.innerHTML = `<p class="error">Errore: ${err.message}</p>`;
       showAlert(err?.message || "Errore caricamento eventi", "error", { autoHideMs: 4000 });
@@ -109,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
         showAlert("Evento eliminato", "success", { autoHideMs: 2500 });
-        await loadEvents();
+        await loadEvents(); // KPI/Tabella si aggiornano dentro loadEvents
       }
     });
   }
@@ -120,15 +128,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const filters = {};
       const title = document.getElementById("filterTitle")?.value?.trim();
       const city = document.getElementById("filterCity")?.value?.trim();
+      const category = document.getElementById("filterCategory")?.value?.trim(); // <-- AGGIUNTO: categoria effettiva
       const region = document.getElementById("filterRegion")?.value?.trim();
       const dateStart = document.getElementById("filterDateStart")?.value?.trim();
       const dateEnd = document.getElementById("filterDateEnd")?.value?.trim();
       if (title) filters.title = title;
       if (city) filters.city = city;
+      if (category) filters.category = category; // <-- passa in query come singolo valore
       if (region) filters.region = region;
       if (dateStart) filters.dateStart = dateStart;
       if (dateEnd) filters.dateEnd = dateEnd;
-      await loadEvents(filters);
+      await loadEvents(filters); // KPI/Tabella si aggiornano dentro loadEvents
     });
   }
 
@@ -171,8 +181,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const main = document.querySelector("main") || document.body;
         main.insertBefore(section, main.firstChild);
       }
+      container = section;
     }
-    container = document.getElementById("dashboardKPI");
 
     // Placeholder per evitare layout shift
     container.innerHTML = `
@@ -183,12 +193,15 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     try {
-      const res = await apiGet("/events/mine/list", token);
-      if (!res?.ok || !Array.isArray(res.events)) return;
+      // Usa cache se presente per evitare una seconda fetch
+      let events = Array.isArray(window.__myEventsCache) ? window.__myEventsCache : null;
 
-      const events = res.events;
-      // Cache locale per riuso da parte della tabellina (evita una fetch in più)
-      window.__myEventsCache = events;
+      if (!events) {
+        const res = await apiGet("/events/mine/list", token);
+        if (!res?.ok || !Array.isArray(res.events)) return;
+        events = res.events;
+        window.__myEventsCache = events; // popola cache
+      }
 
       const totalEvents = events.length;
 
@@ -229,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- Tabellina "Partecipanti per evento" (aggiunta, non invasiva) ---
+  // --- Tabellina "Partecipanti per evento" (non invasiva) ---
   async function renderParticipantsTableFromMyEvents() {
     // Crea o recupera il container subito sotto i KPI e sopra la lista
     let container = document.getElementById("participantsByEvent");
@@ -311,4 +324,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
+
 
