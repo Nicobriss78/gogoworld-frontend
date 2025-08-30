@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Switch ruolo
+  // Switch ruolo (codice in inglese)
   if (btnSwitchRole) {
     btnSwitchRole.addEventListener("click", () => {
       sessionStorage.setItem("desiredRole", "participant");
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- Dashboard KPI (organizzatore) --- [AGGIUNTA: funzione e chiamata, nessuna riga rimossa]
+  // --- Dashboard KPI (organizzatore) ---
   async function renderKpiFromMyEvents() {
     // Usa un container esistente o creane uno prima della lista
     let container = document.getElementById("dashboardKPI");
@@ -171,8 +171,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const main = document.querySelector("main") || document.body;
         main.insertBefore(section, main.firstChild);
       }
-      container = section;
     }
+    container = document.getElementById("dashboardKPI");
 
     // Placeholder per evitare layout shift
     container.innerHTML = `
@@ -187,6 +187,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!res?.ok || !Array.isArray(res.events)) return;
 
       const events = res.events;
+      // Cache locale per riuso da parte della tabellina (evita una fetch in più)
+      window.__myEventsCache = events;
+
       const totalEvents = events.length;
 
       let totalParticipants = 0;
@@ -226,14 +229,86 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // --- Tabellina "Partecipanti per evento" (aggiunta, non invasiva) ---
+  async function renderParticipantsTableFromMyEvents() {
+    // Crea o recupera il container subito sotto i KPI e sopra la lista
+    let container = document.getElementById("participantsByEvent");
+    if (!container) {
+      const kpi = document.getElementById("dashboardKPI");
+      const myEventsList = document.getElementById("myEventsList");
+      const section = document.createElement("section");
+      section.id = "participantsByEvent";
+      // Posiziona la tabella: dopo i KPI, prima della lista
+      if (kpi && kpi.parentNode) {
+        kpi.parentNode.insertBefore(section, myEventsList || kpi.nextSibling);
+      } else if (myEventsList && myEventsList.parentNode) {
+        myEventsList.parentNode.insertBefore(section, myEventsList);
+      } else {
+        const main = document.querySelector("main") || document.body;
+        main.appendChild(section);
+      }
+      container = section;
+    }
+
+    // Stato iniziale
+    container.innerHTML = `<div class="table-wrap"><table class="simple-table">
+      <thead><tr><th>Evento</th><th>Partecipanti</th></tr></thead>
+      <tbody><tr><td colspan="2">Caricamento…</td></tr></tbody>
+    </table></div>`;
+
+    try {
+      // Usa la cache se presente, altrimenti recupera
+      let events = Array.isArray(window.__myEventsCache) ? window.__myEventsCache : null;
+      if (!events) {
+        const res = await apiGet("/events/mine/list", token);
+        if (!res?.ok || !Array.isArray(res.events)) {
+          container.innerHTML = `<div class="table-wrap"><table class="simple-table">
+            <thead><tr><th>Evento</th><th>Partecipanti</th></tr></thead>
+            <tbody><tr><td colspan="2">Nessun dato disponibile</td></tr></tbody>
+          </table></div>`;
+          return;
+        }
+        events = res.events;
+      }
+
+      if (!events.length) {
+        container.innerHTML = `<div class="table-wrap"><table class="simple-table">
+          <thead><tr><th>Evento</th><th>Partecipanti</th></tr></thead>
+          <tbody><tr><td colspan="2">Nessun evento creato</td></tr></tbody>
+        </table></div>`;
+        return;
+      }
+
+      // Costruzione righe ordinate per n. partecipanti (desc)
+      const rows = events
+        .map(ev => ({
+          id: ev._id,
+          label: ev.title || ev.name || ev._id || "—",
+          count: Array.isArray(ev?.participants) ? ev.participants.length : 0
+        }))
+        .sort((a, b) => b.count - a.count)
+        .map(r => `<tr><td>${r.label}</td><td>${r.count}</td></tr>`)
+        .join("");
+
+      container.innerHTML = `<div class="table-wrap"><table class="simple-table">
+        <thead><tr><th>Evento</th><th>Partecipanti</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;
+    } catch {
+      container.innerHTML = `<div class="table-wrap"><table class="simple-table">
+        <thead><tr><th>Evento</th><th>Partecipanti</th></tr></thead>
+        <tbody><tr><td colspan="2">Errore di caricamento</td></tr></tbody>
+      </table></div>`;
+    }
+  }
+
   // Prima lista
   loadEvents();
 
   // KPI (aggiunta)
   renderKpiFromMyEvents();
+
+  // Tabellina partecipanti per evento (aggiunta)
+  renderParticipantsTableFromMyEvents();
 });
-
-
-
-
 
