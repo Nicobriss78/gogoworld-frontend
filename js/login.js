@@ -17,8 +17,11 @@ function showAlert(message, type = "error", opts = {}) {
     box.className = "alert";
     main.prepend(box);
   }
+  // Allineamento con style.css: usa classi .alert.error / .alert.success / .alert.info
+  const t = type === "success" ? "success" : type === "error" ? "error" : "info";
+  box.className = `alert ${t}`;
   box.textContent = message;
-  box.dataset.type = type; // "error" | "success"
+
   if (autoHideMs > 0) {
     setTimeout(() => {
       if (box && box.parentNode) box.parentNode.removeChild(box);
@@ -42,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Ricava ruolo desiderato (tollerante: IT/EN) e restituisce sempre EN
+  // Ricava ruolo desiderato (tollerante IT/EN) e restituisce sempre EN
   function getDesiredRole() {
     const r = sessionStorage.getItem("desiredRole");
     // Normalize: accept both IT and EN, return EN only
@@ -94,4 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
 
