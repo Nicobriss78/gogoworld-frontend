@@ -42,10 +42,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Ricava ruolo desiderato (scelto in index.html)
+  // Ricava ruolo desiderato (tollerante: IT/EN) e restituisce sempre EN
   function getDesiredRole() {
     const r = sessionStorage.getItem("desiredRole");
-    return r === "organizzatore" ? "organizzatore" : "partecipante";
+    // Normalize: accept both IT and EN, return EN only
+    if (r === "organizzatore" || r === "organizer") return "organizer";
+    if (r === "partecipante" || r === "participant") return "participant";
+    return "participant";
   }
 
   // Login submit
@@ -80,8 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Redirect in base al ruolo richiesto
-      if (role === "organizzatore") {
+      // Redirect in base al ruolo richiesto (EN)
+      if (role === "organizer") {
         window.location.href = "organizzatore.html";
       } else {
         window.location.href = "partecipante.html";
@@ -91,14 +94,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
-
-
-
-
-
-
-
-
-
 
