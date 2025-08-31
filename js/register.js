@@ -26,6 +26,7 @@ function showAlert(message, type = "error", opts = {}) {
       if (box && box.parentNode) box.parentNode.removeChild(box);
     }, autoHideMs);
   }
+  try { box.scrollIntoView({ block: "start", behavior: "smooth" }); } catch {}
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -48,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const name = document.getElementById("name")?.value?.trim();
     const email = document.getElementById("email")?.value?.trim();
     const password = document.getElementById("password")?.value?.trim();
-    const role = document.getElementById("role")?.value?.trim() || "participant"; // valori: participant|organizer
+    const role = document.getElementById("role")?.value?.trim() || "participant"; // participant|organizer
 
     if (!email || !password) {
       showAlert("Inserisci email e password.", "error", { autoHideMs: 3500 });
@@ -60,22 +61,30 @@ document.addEventListener("DOMContentLoaded", () => {
       // Endpoint corretto: POST /api/users
       const res = await apiPost("/users", { name, email, password, role });
 
-      // ✅ L’API wrapper torna { ok:false,... } SOLO in errore.
+      // L’API wrapper ritorna { ok:false,... } SOLO in errore.
       // In successo ritorna il payload puro (senza 'ok').
-      if (res?.ok === false) {
+      // Consideriamo "successo" anche se troviamo campi attesi (_id/token).
+      const isBackendError = res?.ok === false;
+      const seemsSuccessPayload = !!(res && (res._id || res.token || res.email));
+
+      if (isBackendError && !seemsSuccessPayload) {
         throw new Error(res?.error || "Registrazione fallita");
       }
 
+      // Successo: blocca doppio click, mostra banner, resetta form e fai redirect
       showAlert("Registrazione avvenuta! Reindirizzamento al login…", "success", { autoHideMs: 2000 });
-      setTimeout(() => { window.location.href = "../login.html"; }, 1600);
+      try { form.reset(); } catch {}
+      if (submitBtn) submitBtn.disabled = true;
+
+      setTimeout(() => {
+        window.location.href = "../login.html";
+      }, 1200);
     } catch (err) {
       console.error("[register] errore:", err);
       showAlert("Errore registrazione: " + (err?.message || "Operazione non riuscita"), "error", { autoHideMs: 4000 });
-    } finally {
       if (submitBtn) submitBtn.disabled = false;
     }
   });
 });
-
 
 
