@@ -63,7 +63,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 👉 Benvenuto: creato UNA sola volta qui (non dentro loadEvents)
   try {
     const me = await apiGet("/users/me", token);
-    const name = me?.user?.name || me?.user?.email || "utente";
+    // FIX CHIRURGICO: supporta sia payload “piatto” {name,email} sia {user:{name,email}}
+    const name =
+      me?.name ||
+      me?.user?.name ||
+      me?.email ||
+      me?.user?.email ||
+      "utente";
+
     if (!document.getElementById("welcomeMsg")) {
       const main = document.querySelector("main") || document.body;
       const p = document.createElement("p");
@@ -71,6 +78,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       p.className = "welcome";
       p.textContent = `Benvenuto, ${name}! Sei nella tua area Partecipante.`;
       if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
+    } else {
+      // se esiste già, aggiorna il testo per coerenza
+      document.getElementById("welcomeMsg").textContent =
+        `Benvenuto, ${name}! Sei nella tua area Partecipante.`;
     }
   } catch {
     // nessun blocco della UI se /users/me fallisce: lo gestirà loadEvents()
@@ -87,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Recupera anche i miei per marcare join/leave
       const me = await apiGet("/users/me", token);
-      const myId = me?.user?._id;
+      const myId = me?.user?._id || me?._id;
       const joinedIds = new Set();
       if (Array.isArray(res?.events)) {
         for (const ev of res.events) {
@@ -215,12 +226,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Prima lista
   loadEvents();
 });
-
-
-
-
-
-
-
-
-
