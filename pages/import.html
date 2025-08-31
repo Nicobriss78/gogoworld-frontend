@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GoGoWorld.life – Importa Eventi (CSV)</title>
+  <link rel="stylesheet" href="../style.css" />
+  <meta name="robots" content="noindex" />
+  <!-- Rispetta la stessa api-base usata nelle altre pagine -->
+  <meta name="api-base" content="https://gogoworld-api.onrender.com/api">
+</head>
+<body>
+  <main class="container">
+    <header class="app-header">
+      <h1>Importa Eventi da CSV</h1>
+      <nav class="toolbar">
+        <button id="btnBack" class="btn btn-secondary">← Torna all'Area Organizzatore</button>
+      </nav>
+    </header>
+
+    <!-- Alert dinamico -->
+    <div id="alertBox" class="alert" style="display:none;"></div>
+
+    <section class="card" style="padding:1rem; background:#fff; border:1px solid #ddd; border-radius:4px;">
+      <div class="form" style="gap:0.75rem;">
+        <div class="form-row">
+          <label for="csvFile"><strong>File CSV</strong></label>
+          <input type="file" id="csvFile" accept=".csv" />
+          <small>Formati supportati: <code>title,city,region,date,endDate,category,description,price,tags,coverImage,images</code><br/>
+          <em>Note:</em> <code>tags</code> e <code>images</code> accettano valori separati da <code>|</code>. <code>date</code>/<code>endDate</code>: <code>YYYY-MM-DD</code> o <code>DD/MM/YYYY</code>.</small>
+        </div>
+
+        <div class="form-row" style="display:flex; align-items:center; gap:0.5rem;">
+          <input type="checkbox" id="dryRun" checked />
+          <label for="dryRun">Dry-run (solo validazione, non salva)</label>
+        </div>
+
+        <div class="form-actions">
+          <button id="btnValidate" class="btn">Valida</button>
+          <button id="btnImport" class="btn btn-primary" disabled>Importa</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="previewSection" style="margin-top:1rem; display:none;">
+      <h2 class="subtitle">Anteprima risultati</h2>
+      <div class="table-wrap">
+        <table id="previewTable" class="simple-table">
+          <thead>
+            <tr>
+              <th># Riga (CSV)</th>
+              <th>Stato</th>
+              <th>Dettagli</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="3">Nessun dato</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      Solo gli utenti autorizzati possono eseguire l’import effettivo. Gli altri vedranno un errore 403.
+    </footer>
+  </main>
+
+  <script type="module" src="../js/import.js"></script>
+</body>
+</html>
