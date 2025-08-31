@@ -56,7 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
   (async () => {
     try {
       const me = await apiGet("/users/me", token);
-      const name = me?.user?.name || me?.user?.email || "utente";
+      // FIX CHIRURGICO: supporta payload piatto {name,email} e annidato {user:{...}}
+      const name =
+        me?.name ||
+        me?.user?.name ||
+        me?.email ||
+        me?.user?.email ||
+        "utente";
+
       if (!document.getElementById("welcomeMsg")) {
         const main = document.querySelector("main") || document.body;
         const p = document.createElement("p");
@@ -64,6 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
         p.className = "welcome";
         p.textContent = `Benvenuto, ${name}! Sei nella tua area Organizzatore.`;
         if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
+      } else {
+        document.getElementById("welcomeMsg").textContent =
+          `Benvenuto, ${name}! Sei nella tua area Organizzatore.`;
       }
     } catch {
       /* silente */
@@ -340,6 +350,3 @@ document.addEventListener("DOMContentLoaded", () => {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
-
-
-
