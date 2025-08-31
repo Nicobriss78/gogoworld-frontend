@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const res = await apiPost("/users/register", { name, email, password, role });
+      const res = await apiPost("/users", { name, email, password, role });
       if (!res?.ok) {
         throw new Error(res?.error || "Registrazione fallita");
       }
