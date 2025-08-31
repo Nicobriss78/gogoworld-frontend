@@ -30,30 +30,25 @@ function showAlert(message, type = "error", opts = {}) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("registerForm");
-  const btnHome = document.getElementById("goHome");
+  const goHome = document.getElementById("goHome");
 
-  if (btnHome) {
-    btnHome.addEventListener("click", (e) => {
-      e.preventDefault();
+  if (goHome) {
+    goHome.addEventListener("click", () => {
       window.location.href = "../index.html";
     });
   }
 
-  if (!form) {
-    console.error("[register] Form #registerForm non trovato");
-    return;
-  }
+  if (!form) return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const submitBtn = form.querySelector('button[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;
 
-    const name = (document.getElementById("name")?.value || "").trim();
-    const email = (document.getElementById("email")?.value || "").trim();
-    const password = (document.getElementById("password")?.value || "").trim();
-    const role = document.getElementById("role")?.value || "participant";
+    const name = document.getElementById("name")?.value?.trim();
+    const email = document.getElementById("email")?.value?.trim();
+    const password = document.getElementById("password")?.value?.trim();
+    const role = document.getElementById("role")?.value?.trim() || "participant"; // valori: participant|organizer
 
     if (!email || !password) {
       showAlert("Inserisci email e password.", "error", { autoHideMs: 3500 });
@@ -62,8 +57,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
+      // Endpoint corretto: POST /api/users
       const res = await apiPost("/users", { name, email, password, role });
-      if (!res?.ok) {
+
+      // ✅ L’API wrapper torna { ok:false,... } SOLO in errore.
+      // In successo ritorna il payload puro (senza 'ok').
+      if (res?.ok === false) {
         throw new Error(res?.error || "Registrazione fallita");
       }
 
