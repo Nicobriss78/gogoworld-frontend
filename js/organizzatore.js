@@ -86,6 +86,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnSwitchRole = document.getElementById("btnSwitchRole");
   const btnCreate = document.getElementById("btnCreateEvent");
 
+  // 👉 AGGIUNTA CHIRURGICA: handler per Importa CSV (Opzione A)
+  const btnImportCsv = document.getElementById("btnImportCsv");
+  if (btnImportCsv) {
+    btnImportCsv.addEventListener("click", () => {
+      window.location.href = "pages/import.html";
+    });
+  }
+
   async function loadEvents(filters = {}) {
     listContainer.innerHTML = "<p>Caricamento...</p>";
     try {
