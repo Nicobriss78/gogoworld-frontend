@@ -67,22 +67,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const res = await apiPost("/users/login", { email, password });
-      if (!res.ok || !res.token) {
-        showAlert(res.error || "Credenziali non valide", "error", { autoHideMs: 4000 });
+
+      // FIX CHIRURGICO:
+      // Il wrapper API ritorna { ok:false, error } SOLO in caso di errore.
+      // In successo ritorna il payload puro (senza 'ok').
+      // Consideriamo errore SOLO se ok === false oppure se manca il token.
+      if ((res?.ok === false) || !res?.token) {
+        showAlert(res?.error || "Credenziali non valide", "error", { autoHideMs: 4000 });
         return;
       }
 
       // Salva token
       localStorage.setItem("token", res.token);
 
-      // Imposta ruolo di sessione lato FE e notifica BE (eco, nessuna persistenza)
+      // Imposta ruolo di sessione lato FE e notifica BE (ora persistente e protetto)
       const role = getDesiredRole();
-      // MODIFICA CHIRURGICA: passo il token alla chiamata, per avere Authorization
       await apiPost("/users/session-role", { role }, res.token);
 
       // Verifica chi sono
       const me = await apiGet("/users/me", res.token);
-      if (!me || !me.ok) {
+      if (!me || me.ok === false) {
         showAlert("Errore nel recupero profilo", "error", { autoHideMs: 4000 });
         return;
       }
