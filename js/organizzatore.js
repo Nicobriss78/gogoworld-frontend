@@ -46,6 +46,19 @@ function formatEventDate(ev) {
   } catch { return ""; }
 }
 
+// Renderizza un’etichetta stato compatta (ongoing/imminent/future/concluded)
+function renderStatus(status) {
+  if (!status) return "";
+  const labelMap = {
+    ongoing: "In corso",
+    imminent: "Imminente",
+    future: "Futuro",
+    concluded: "Concluso"
+  };
+  const text = labelMap[status] || status;
+  return `<p class="status ${status}">${text}</p>`;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -86,14 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnSwitchRole = document.getElementById("btnSwitchRole");
   const btnCreate = document.getElementById("btnCreateEvent");
 
-  // 👉 AGGIUNTA CHIRURGICA: handler per Importa CSV (Opzione A)
-  const btnImportCsv = document.getElementById("btnImportCsv");
-  if (btnImportCsv) {
-    btnImportCsv.addEventListener("click", () => {
-      window.location.href = "pages/import.html";
-    });
-  }
-
   async function loadEvents(filters = {}) {
     listContainer.innerHTML = "<p>Caricamento...</p>";
     try {
@@ -107,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         listContainer.innerHTML = res.events.map(ev => `
           <div class="event-card">
             <h3>${ev.title}</h3>
+            ${renderStatus(ev.status)}
             <p>${ev.city || ""} ${formatEventDate(ev)}</p>
             <div class="event-actions">
               <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
@@ -176,19 +182,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
- // Switch ruolo: Organizer -> Participant (persisto lato server)
-if (btnSwitchRole) {
-  btnSwitchRole.addEventListener("click", async () => {
-    try {
-      sessionStorage.setItem("desiredRole", "participant"); // hint UX locale
-      await apiPost("/users/session-role", { role: "participant" }, token);
-    } catch (e) {
-      showAlert("Cambio ruolo lato server non riuscito: procedo in locale.", "info", { autoHideMs: 2500 });
-    } finally {
+  // Switch ruolo (codice in inglese)
+  if (btnSwitchRole) {
+    btnSwitchRole.addEventListener("click", () => {
+      sessionStorage.setItem("desiredRole", "participant");
       window.location.href = "partecipante.html";
-    }
-  });
-}
+    });
+  }
 
   // Logout
   if (btnLogout) {
@@ -364,4 +364,5 @@ if (btnSwitchRole) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
