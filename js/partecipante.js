@@ -47,6 +47,19 @@ function formatEventDate(ev) {
   } catch { return ""; }
 }
 
+// >>> PATCH: helper per badge di stato (aggiunta, nessuna riga rimossa)
+function renderStatus(status) {
+  if (!status) return "";
+  const labelMap = {
+    ongoing: "In corso",
+    imminent: "Imminente",
+    future: "Futuro",
+    concluded: "Concluso"
+  };
+  const text = labelMap[status] || status;
+  return `<p class="status ${status}">${text}</p>`;
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -63,14 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 👉 Benvenuto: creato UNA sola volta qui (non dentro loadEvents)
   try {
     const me = await apiGet("/users/me", token);
-    // FIX CHIRURGICO: supporta sia payload “piatto” {name,email} sia {user:{name,email}}
-    const name =
-      me?.name ||
-      me?.user?.name ||
-      me?.email ||
-      me?.user?.email ||
-      "utente";
-
+    const name = me?.user?.name || me?.user?.email || "utente";
     if (!document.getElementById("welcomeMsg")) {
       const main = document.querySelector("main") || document.body;
       const p = document.createElement("p");
@@ -78,10 +84,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       p.className = "welcome";
       p.textContent = `Benvenuto, ${name}! Sei nella tua area Partecipante.`;
       if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
-    } else {
-      // se esiste già, aggiorna il testo per coerenza
-      document.getElementById("welcomeMsg").textContent =
-        `Benvenuto, ${name}! Sei nella tua area Partecipante.`;
     }
   } catch {
     // nessun blocco della UI se /users/me fallisce: lo gestirà loadEvents()
@@ -98,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Recupera anche i miei per marcare join/leave
       const me = await apiGet("/users/me", token);
-      const myId = me?.user?._id || me?._id;
+      const myId = me?.user?._id;
       const joinedIds = new Set();
       if (Array.isArray(res?.events)) {
         for (const ev of res.events) {
@@ -115,6 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? res.events.map(ev => `
         <div class="event-card">
           <h3>${ev.title}</h3>
+          ${renderStatus(ev.status)}
           <p>${ev.city || ""} ${formatEventDate(ev)}</p>
           <div class="event-actions">
             <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
@@ -132,6 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? joined.map(ev => `
           <div class="event-card">
             <h3>${ev.title}</h3>
+            ${renderStatus(ev.status)}
             <p>${ev.city || ""} ${formatEventDate(ev)}</p>
             <div class="event-actions">
               <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
@@ -203,20 +207,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   };
 
-// Switch ruolo: Participant -> Organizer (persisto lato server)
-if (btnSwitchRole) {
-  btnSwitchRole.addEventListener("click", async () => {
-    try {
-      sessionStorage.setItem("desiredRole", "organizer"); // hint UX locale
-      await apiPost("/users/session-role", { role: "organizer" }, token);
-    } catch (e) {
-      // non bloccare il flusso: messaggio informativo e redirect comunque
-      showAlert("Cambio ruolo lato server non riuscito: procedo in locale.", "info", { autoHideMs: 2500 });
-    } finally {
+  // Switch ruolo
+  if (btnSwitchRole) {
+    btnSwitchRole.addEventListener("click", () => {
+      sessionStorage.setItem("desiredRole", "organizer");
       window.location.href = "organizzatore.html";
-    }
-  });
-}
+    });
+  }
 
   // Logout
   if (btnLogout) {
