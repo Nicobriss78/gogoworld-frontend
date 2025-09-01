@@ -238,3 +238,44 @@ body {
   font-weight: 600;
 }
 
+/* --- Status badge (evento) --- */
+.status {
+  display: inline-block;
+  margin: 4px 0 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  border: 1px solid #ddd;
+  background: #f7f7f7;
+  color: var(--color-text);
+}
+
+/* In corso = verde (success) */
+.status.ongoing {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  border-color: #c8e6c9;
+}
+
+/* Imminente = arancione tenue */
+.status.imminent {
+  background: #fff7ed;
+  color: #b45309;
+  border-color: #fed7aa;
+}
+
+/* Futuro = blu tenue (coerente con primary) */
+.status.future {
+  background: #e8f0fe;
+  color: #1a237e;
+  border-color: #c5cae9;
+}
+
+/* Concluso = grigio */
+.status.concluded {
+  background: #f4f4f5;
+  color: #52525b;
+  border-color: #e4e4e7;
+}
+
