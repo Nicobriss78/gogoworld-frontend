@@ -74,9 +74,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnSwitchRole = document.getElementById("btnSwitchRole");
 
   // 👉 Benvenuto: creato UNA sola volta qui (non dentro loadEvents)
-  try {
-    const me = await apiGet("/users/me", token);
-    const name = me?.user?.name || me?.user?.email || "utente";
+ try {
+  const me = await apiGet("/users/me", token);
+  // Fallback doppio: supporta payload piatto {name,email} e annidato {user:{…}}
+  const name =
+    me?.name ||
+    me?.user?.name ||
+    me?.email ||
+    me?.user?.email ||
+    "utente";
     if (!document.getElementById("welcomeMsg")) {
       const main = document.querySelector("main") || document.body;
       const p = document.createElement("p");
@@ -230,4 +236,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Prima lista
   loadEvents();
 });
+
 
