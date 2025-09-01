@@ -176,13 +176,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Switch ruolo (codice in inglese)
-  if (btnSwitchRole) {
-    btnSwitchRole.addEventListener("click", () => {
-      sessionStorage.setItem("desiredRole", "participant");
+ // Switch ruolo: Organizer -> Participant (persisto lato server)
+if (btnSwitchRole) {
+  btnSwitchRole.addEventListener("click", async () => {
+    try {
+      sessionStorage.setItem("desiredRole", "participant"); // hint UX locale
+      await apiPost("/users/session-role", { role: "participant" }, token);
+    } catch (e) {
+      showAlert("Cambio ruolo lato server non riuscito: procedo in locale.", "info", { autoHideMs: 2500 });
+    } finally {
       window.location.href = "partecipante.html";
-    });
-  }
+    }
+  });
+}
 
   // Logout
   if (btnLogout) {
@@ -358,3 +364,4 @@ document.addEventListener("DOMContentLoaded", () => {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
