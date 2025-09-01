@@ -173,15 +173,6 @@ body {
    Unificare sistema di alert/notifiche (success, error, warning, info) con icone,
    ruoli ARIA, e posizione fissa nell’area contenuto. */
 
-/* FIX frammento orfano: incapsulato nella regola corretta */
-.alert.success {
-  background: var(--color-success-bg);
-  color: var(--color-success-text);
-  border: 1px solid #c8e6c9;
-}
-
-
-
 /* --- Dashboard KPI (organizzatore) --- */
 .kpi-grid {
   display: grid;
@@ -278,4 +269,5 @@ body {
   color: #52525b;
   border-color: #e4e4e7;
 }
+
 
