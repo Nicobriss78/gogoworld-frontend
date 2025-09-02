@@ -329,6 +329,23 @@ function resolveApiBaseLite() {
     }
   }
 
+// PATCH: crea (una tantum) il pannello risultati import, sopra la lista
+function ensureImportResultsPanel() {
+  let panel = document.getElementById("importResults");
+  if (panel) return panel;
+  panel = document.createElement("section");
+  panel.id = "importResults";
+  panel.className = "table-wrap";
+  const mainList = document.getElementById("myEventsList");
+  if (mainList && mainList.parentNode) {
+    mainList.parentNode.insertBefore(panel, mainList);
+  } else {
+    (document.querySelector("main") || document.body).appendChild(panel);
+  }
+  return panel;
+}
+
+  
   // PATCH: upload CSV → /events/import (dryRun true/false)
 async function importCsvFile(file, { dryRun = true } = {}) {
   const base = resolveApiBaseLite();
@@ -702,6 +719,7 @@ if (btnImportCsv) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
