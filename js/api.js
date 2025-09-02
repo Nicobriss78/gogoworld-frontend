@@ -1,44 +1,54 @@
 // js/api.js — wrapper Fetch (aggiunto supporto <meta name="api-base">)
 
+// --- PATCH: helper per risolvere la base URL API ---
 function resolveApiBase() {
-  // 1) Forzatura locale (debug/ambiente)
-  const fromStorage = (typeof localStorage !== "undefined") ? localStorage.getItem("API_BASE") : null;
-  if (fromStorage && /^https?:\/\//i.test(fromStorage)) return fromStorage.replace(/\/$/, "");
-
-  // 2) Meta tag in index.html (config centralizzata)
-  if (typeof document !== "undefined") {
-    const meta = document.querySelector('meta[name="api-base"]');
-    if (meta && meta.content && /^https?:\/\//i.test(meta.content)) {
-      return String(meta.content).replace(/\/$/, "");
+  try {
+    const override = (typeof localStorage !== "undefined") ? localStorage.getItem("apiBase") : null;
+    if (override && /^https?:\/\//i.test(override)) return override.replace(/\/+$/, "");
+    if (typeof document !== "undefined") {
+      const meta = document.querySelector('meta[name="api-base"]');
+      if (meta && meta.content) return meta.content.replace(/\/+$/, "");
     }
-  }
-
-  // 3) Variabile globale (iniettabile a build)
-  if (typeof window !== "undefined" && window.__API_BASE) {
-    return String(window.__API_BASE).replace(/\/$/, "");
-  }
-
-  // 4) Fallback: backend su Render
-  return "https://gogoworld-api.onrender.com/api";
+  } catch {}
+  return "http://localhost:5000/api";
 }
 
 const API_BASE = resolveApiBase();
 
+// --- PATCH: fetch uniforme con auth, body JSON e gestione errori ---
 async function apiFetch(path, { method = "GET", body, token } = {}) {
   const url = `${API_BASE}${path.startsWith("/") ? path : "/" + path}`;
-  const headers = { "Content-Type": "application/json" };
-  if (token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(url, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  let fetchBody;
+  if (method.toUpperCase() !== "GET" && body !== undefined) {
+    headers["Content-Type"] = "application/json";
+    fetchBody = typeof body === "string" ? body : JSON.stringify(body);
+  }
+
+  let res;
+  try {
+    res = await fetch(url, { method, headers, body: fetchBody });
+  } catch (networkErr) {
+    return { ok: false, status: 0, error: "NETWORK_ERROR", message: networkErr?.message || "Errore di rete" };
+  }
 
   let data = null;
-  try { data = await res.json(); } catch {
-    return { ok: false, status: res.status, error: `HTTP_${res.status}`, message: "Invalid JSON response" };
+  let text = "";
+  const status = res.status;
+  try {
+    data = await res.json();
+  } catch {
+    try { text = await res.text(); } catch {}
   }
-  if (!res.ok || data?.ok === false) {
-    return { ok: false, status: res.status, error: data?.error || `HTTP_${res.status}`, message: data?.message || null };
+
+  if (!res.ok) {
+    const message = (data && (data.error || data.message)) || (text || `HTTP ${status}`);
+    return { ok: false, status, error: data?.error || `HTTP_${status}`, message, data: data || null };
   }
-  return data;
+
+  return { ok: true, status, ...(data != null ? data : { data: text }) };
 }
 
 export async function apiGet(path, token) { return apiFetch(path, { method: "GET", token }); }
