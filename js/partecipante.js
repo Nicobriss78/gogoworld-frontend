@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Recupera anche i miei per marcare join/leave
       const me = await apiGet("/users/me", token);
-      const myId = me?.user?._id;
+     const myId = me?._id;
       const joinedIds = new Set();
       if (Array.isArray(res?.events)) {
         for (const ev of res.events) {
@@ -236,5 +236,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Prima lista
   loadEvents();
 });
+
 
 
