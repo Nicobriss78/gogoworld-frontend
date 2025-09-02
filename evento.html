@@ -14,7 +14,15 @@
       <h1 id="eventTitle">Evento</h1>
     </header>
 
-    <section id="eventDetails" class="event-details"></section>
+    <section id="eventDetails" class="event-details">
+      <!-- PATCH: contenitori semantici per i nuovi campi -->
+      <div id="eventMeta"></div> <!-- visibilità, lingua, target -->
+      <div id="eventSchedule"></div> <!-- dateStart / dateEnd -->
+      <div id="eventLocation"></div> <!-- venueName, street, city, province, region, country, lat/lon -->
+      <div id="eventPricing"></div> <!-- isFree, price, currency -->
+      <div id="eventTaxonomy"></div> <!-- category, subcategory, tags -->
+      <div id="eventMedia"></div> <!-- coverImage, images -->
+    </section>
 
     <nav class="event-actions">
       <button id="btnBackToList" class="btn">Torna alla lista</button>
@@ -29,6 +37,7 @@
   <script type="module" src="js/evento.js"></script>
 </body>
 </html>
+
 
 
 
