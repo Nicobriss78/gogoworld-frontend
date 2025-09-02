@@ -281,6 +281,18 @@ const btnImportCsv = document.getElementById("btnImportCsv");
     return errors;
   }
 
+// PATCH FIX: base URL API (se manca)
+function resolveApiBaseLite() {
+  try {
+    const override = localStorage.getItem("apiBase");
+    if (override && /^https?:\/\//i.test(override)) return override.replace(/\/+$/, "");
+    const meta = document.querySelector('meta[name="api-base"]');
+    if (meta && meta.content) return meta.content.replace(/\/+$/, "");
+  } catch {}
+  return "https://gogoworld-api.onrender.com/api"; // fallback
+}
+
+  
   async function loadEvents(filters = {}) {
     listContainer.innerHTML = "<p>Caricamento...</p>";
     try {
@@ -690,6 +702,7 @@ if (btnImportCsv) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
