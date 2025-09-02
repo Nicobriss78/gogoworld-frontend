@@ -511,22 +511,72 @@ async function importCsvFile(file, { dryRun = true } = {}) {
     });
   }
 
- // PATCH: click su "Importa CSV" → selezione file → anteprima → conferma
+// PATCH: pannello import CSV con bottoni "Valida" / "Importa"
 if (btnImportCsv) {
   btnImportCsv.addEventListener("click", () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".csv,text/csv";
-    input.onchange = async () => {
-      const file = input.files && input.files[0];
-      if (!file) return;
-      await importCsvFile(file, { dryRun: true });
-    };
-    input.click();
+    let panel = document.getElementById("importCsvPanel");
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "importCsvPanel";
+      panel.className = "table-wrap";
+      const myList = document.getElementById("myEventsList");
+      if (myList && myList.parentNode) {
+        myList.parentNode.insertBefore(panel, myList); // sopra la lista
+      } else {
+        (document.querySelector("main") || document.body).appendChild(panel);
+      }
+      panel.innerHTML = `
+        <div class="form">
+          <div class="form-row">
+            <label><strong>Importa eventi da CSV</strong></label>
+            <input id="csvFileInput" type="file" accept=".csv,text/csv" />
+          </div>
+          <div class="form-actions">
+            <button id="btnValidateCsv" class="btn">Valida</button>
+            <button id="btnDoImportCsv" class="btn btn-primary" disabled>Importa</button>
+          </div>
+        </div>
+        <div id="importResults" class="table-wrap"></div>
+      `;
+
+      const input = panel.querySelector("#csvFileInput");
+      const btnValidate = panel.querySelector("#btnValidateCsv");
+      const btnDoImport = panel.querySelector("#btnDoImportCsv");
+
+      let lastFile = null;
+
+      input.addEventListener("change", () => {
+        lastFile = input.files && input.files[0] ? input.files[0] : null;
+        btnDoImport.disabled = !lastFile;
+      });
+
+      btnValidate.addEventListener("click", async () => {
+        if (!lastFile) {
+          showAlert("Seleziona un file CSV prima di validare.", "error", { autoHideMs: 3000 });
+          return;
+        }
+        await importCsvFile(lastFile, { dryRun: true });
+      });
+
+      btnDoImport.addEventListener("click", async () => {
+        if (!lastFile) {
+          showAlert("Seleziona un file CSV prima di importare.", "error", { autoHideMs: 3000 });
+          return;
+        }
+        btnDoImport.disabled = true;
+        try {
+          await importCsvFile(lastFile, { dryRun: false });
+          input.value = "";
+          lastFile = null;
+          btnDoImport.disabled = true;
+        } finally {}
+      });
+    }
+
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 }
 
-  
   // PATCH: annulla creazione
   if (btnCancelCreate && panel) {
     btnCancelCreate.addEventListener("click", () => {
@@ -719,6 +769,7 @@ if (btnImportCsv) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
