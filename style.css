@@ -270,4 +270,66 @@ body {
   border-color: #e4e4e7;
 }
 
+/* ===========================
+   PATCH: aggiunte minime UI
+   =========================== */
+
+/* Pannello creazione evento (inline) */
+#createEventPanel {
+  margin: 1em 0;
+  padding: 1em;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+}
+#createEventPanel label { display: block; margin: 0.4rem 0; }
+#createEventPanel input,
+#createEventPanel select,
+#createEventPanel textarea {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Meta nelle card evento */
+.event-card .meta {
+  margin: 0.25rem 0;
+  color: var(--color-secondary);
+  font-size: 0.92rem;
+}
+
+/* Galleria immagini nel dettaglio */
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.gallery img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  object-fit: cover;
+}
+
+/* Filtri: select coerenti con input */
+.filters select {
+  min-width: 140px;
+  padding: 0.25rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+}
+
+/* Placeholder pannello codice invito */
+#invitePanel input {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+
 
