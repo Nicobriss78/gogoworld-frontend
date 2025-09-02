@@ -5,7 +5,7 @@
 // - Conferme modali standard per delete (invece di confirm())
 // - Banner “welcome” con micro-CTA (es. “Crea nuovo evento”)
 
-import { apiGet, apiDelete } from "./api.js";
+import { apiGet, apiDelete, apiPost } from "./api.js"; // PATCH: aggiunto apiPost
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -98,6 +98,185 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnLogout = document.getElementById("btnLogout");
   const btnSwitchRole = document.getElementById("btnSwitchRole");
   const btnCreate = document.getElementById("btnCreateEvent");
+
+  // PATCH: riferimenti al pannello di creazione e form
+  const panel = document.getElementById("createEventPanel");
+  const form = document.getElementById("createEventForm");
+  const btnCancelCreate = document.getElementById("btnCancelCreate");
+
+  // PATCH: tassonomia e liste (minimo necessario per popolare le tendine)
+  const TAXONOMY = {
+    categories: {
+      "Musica": ["Concerto","Festival","DJ set","Live acustico","Jam session","Rassegna","Karaoke","Open mic"],
+      "Cibo & Sagre": ["Sagra","Street food","Degustazione vini","Degustazione birre","Cena tematica","Food market","Show cooking"],
+      "Sport": ["Torneo","Gara","Corsa","Raduno","Lezione aperta","Esibizione","Partita amichevole","E-sport LAN"],
+      "Arte & Cultura": ["Mostra","Vernissage","Teatro","Opera","Danza","Performance","Presentazione libro","Incontro con autore","Proiezione"],
+      "Formazione & Workshop": ["Corso","Seminario","Workshop","Masterclass","Laboratorio per bambini","Mentoring","Meetup tematico"],
+      "Notte & Club": ["Party","Serata a tema","Opening party","Closing party","Special guest","Silent disco"],
+      "Mercati & Fiere": ["Mercatino","Fiera","Expo","Vintage market","Artigianato","Antiquariato","Auto/Moto d’epoca"],
+      "Volontariato & Comunità": ["Raccolta fondi","Pulizia parco","Pulizia spiaggia","Donazioni","Raccolta alimentare","Evento solidale"],
+      "Tecnologia & Startup": ["Conferenza","Hackathon","Demo day","Pitch night","Community meetup","Retrospettiva tech"],
+      "Benessere & Outdoor": ["Yoga","Meditazione","Trekking","Escursione","Bike tour","Fitness all’aperto","Ritiro"],
+      "Famiglia & Bambini": ["Festa bambini","Spettacolo famiglie","Laboratorio creativo","Letture animate"],
+      "Motori": ["Raduno auto","Raduno moto","Track day","Esposizione","Drift"],
+      "Tradizioni & Folklore": ["Corteo storico","Palio","Rievocazione","Festa patronale"],
+      "Business & Networking": ["Networking night","Colazione d’affari","Tavola rotonda","Presentazione aziendale"],
+      "Moda & Beauty": ["Sfilata","Shooting aperto","Fiera moda","Lancio prodotto"],
+      "Eventi Privati": ["Compleanno","Laurea","Anniversario","Addio al celibato","Addio al nubilato","House party","Matrimonio","Battesimo","Comunione","Cresima","Team building","Kick-off","Riunione interna","Cena aziendale","Family day","Party in villa","Evento con lista","Club privato","Evento segreto"],
+      "Altro": ["Generico","Sperimentale","Pop-up","Flash mob"]
+    },
+    regionsIT: ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"],
+    languages: ["it","en","fr","de","es","other"],
+    targets: ["tutti","famiglie","18+","professionisti"],
+    currencies: ["EUR","USD","GBP","CHF","RON","other"]
+  };
+
+  function populateCreateFormOptions() {
+    if (!form) return;
+    const selCategory = form.querySelector('select[name="category"]');
+    const selSub = form.querySelector('select[name="subcategory"]');
+    const selRegion = form.querySelector('select[name="region"]');
+    const selLanguage = form.querySelector('select[name="language"]');
+    const selTarget = form.querySelector('select[name="target"]');
+    const selCurrency = form.querySelector('select[name="currency"]');
+
+    // Categoria
+    if (selCategory) {
+      selCategory.innerHTML = `<option value="" disabled selected>Seleziona</option>` +
+        Object.keys(TAXONOMY.categories).map(c => `<option value="${c}">${c}</option>`).join("");
+    }
+    // Sottocategoria (dipendente)
+    function refreshSub() {
+      const cat = selCategory?.value || "";
+      const list = TAXONOMY.categories[cat] || [];
+      selSub.innerHTML = `<option value="">—</option>` + list.map(s => `<option value="${s}">${s}</option>`).join("");
+    }
+    selCategory?.addEventListener("change", refreshSub);
+    if (selSub) refreshSub();
+
+    // Regioni (Italia)
+    if (selRegion) {
+      selRegion.innerHTML = `<option value="" disabled selected>Seleziona</option>` +
+        TAXONOMY.regionsIT.map(r => `<option value="${r}">${r}</option>`).join("");
+    }
+
+    // Lingue
+    if (selLanguage) {
+      // già in HTML con default; sincronizza lista
+      selLanguage.innerHTML = TAXONOMY.languages.map(l => {
+        const label = ({it:"Italiano", en:"Inglese", fr:"Francese", de:"Tedesco", es:"Spagnolo", other:"Altro"})[l] || l;
+        return `<option value="${l}">${label}</option>`;
+      }).join("");
+      selLanguage.value = "it";
+    }
+
+    // Target
+    if (selTarget) {
+      selTarget.innerHTML = TAXONOMY.targets.map(t => {
+        const label = ({tutti:"Tutti", famiglie:"Famiglie", "18+":"18+", professionisti:"Professionisti"})[t] || t;
+        return `<option value="${t}">${label}</option>`;
+      }).join("");
+      selTarget.value = "tutti";
+    }
+
+    // Currency
+    if (selCurrency) {
+      selCurrency.innerHTML = TAXONOMY.currencies.map(c => `<option value="${c}">${c}</option>`).join("");
+      selCurrency.value = "EUR";
+    }
+  }
+
+  function getFormDataCreateEvent() {
+    if (!form) return null;
+    const fd = new FormData(form);
+    const get = (k) => (fd.get(k) ?? "").toString().trim();
+
+    const isFree = fd.get("isFree") === "on";
+    const priceStr = get("price");
+    const hasPrice = priceStr !== "";
+    const price = hasPrice ? Number(priceStr.replace(",", ".")) : 0;
+    const currency = get("currency").toUpperCase();
+
+    // split helper
+    const splitPipe = (s) => s ? s.split("|").map(x => x.trim()).filter(Boolean) : [];
+
+    const payload = {
+      // Base
+      title: get("title"),
+      description: get("description"),
+
+      // Tassonomia
+      category: get("category"),
+      subcategory: get("subcategory"),
+
+      // Visibilità / lingua / target
+      visibility: get("visibility") || "public",
+      language: get("language") || "it",
+      target: get("target") || "tutti",
+
+      // Localizzazione separata
+      venueName: get("venueName"),
+      street: get("street"),
+      streetNumber: get("streetNumber"),
+      postalCode: get("postalCode"),
+      city: get("city"),
+      province: get("province"),
+      region: get("region"),
+      country: get("country") || "IT",
+      lat: get("lat"),
+      lon: get("lon"),
+
+      // Date (form fornisce YYYY-MM-DD)
+      dateStart: get("dateStart"),
+      dateEnd: get("dateEnd"),
+
+      // Prezzo/valuta
+      isFree,
+      // price + currency solo se non gratuito
+      ...(isFree ? {} : { price: isNaN(price) ? 0 : Math.max(0, price), currency: currency || "EUR" }),
+
+      // Media & tag
+      tags: splitPipe(get("tags")),
+      images: splitPipe(get("images")),
+      coverImage: get("coverImage"),
+    };
+
+    // lat/lon numerici (se valorizzati)
+    if (payload.lat === "") delete payload.lat;
+    else payload.lat = Number(String(payload.lat).replace(",", "."));
+    if (payload.lon === "") delete payload.lon;
+    else payload.lon = Number(String(payload.lon).replace(",", "."));
+
+    // Se gratuito, non inviare price/currency
+    if (payload.isFree) {
+      delete payload.price;
+      delete payload.currency;
+    }
+
+    return payload;
+  }
+
+  function validateCreateEventPayload(p) {
+    const errors = [];
+    if (!p.title) errors.push("Titolo obbligatorio");
+    if (!p.category) errors.push("Categoria obbligatoria");
+    if (!p.visibility) errors.push("Visibilità obbligatoria");
+    if (!p.region) errors.push("Regione obbligatoria");
+    if (!p.country) errors.push("Paese obbligatorio");
+    if (!p.dateStart) errors.push("Data inizio obbligatoria");
+    if (p.dateEnd && p.dateStart && new Date(p.dateEnd) < new Date(p.dateStart)) {
+      errors.push("Data fine precedente alla data inizio");
+    }
+    if (!p.isFree && typeof p.price === "number" && p.price < 0) {
+      errors.push("Prezzo non valido");
+    }
+    if (!p.isFree && p.price !== undefined && !p.currency) {
+      errors.push("Valuta mancante");
+    }
+    if (p.lat !== undefined && Number.isNaN(p.lat)) errors.push("Latitudine non valida");
+    if (p.lon !== undefined && Number.isNaN(p.lon)) errors.push("Longitudine non valida");
+    return errors;
+  }
 
   async function loadEvents(filters = {}) {
     listContainer.innerHTML = "<p>Caricamento...</p>";
@@ -199,10 +378,52 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Create (placeholder)
+  // Create (PATCH: attiva pannello + submit)
   if (btnCreate) {
     btnCreate.addEventListener("click", () => {
-      alert("Funzione Crea evento: in arrivo.");
+      if (!panel) return;
+      if (panel.style.display === "none" || !panel.style.display) {
+        populateCreateFormOptions();
+        panel.style.display = "block";
+        const first = form?.querySelector('input[name="title"]');
+        first && first.focus();
+      } else {
+        panel.style.display = "none";
+      }
+    });
+  }
+
+  // PATCH: annulla creazione
+  if (btnCancelCreate && panel) {
+    btnCancelCreate.addEventListener("click", () => {
+      form?.reset();
+      panel.style.display = "none";
+    });
+  }
+
+  // PATCH: submit creazione evento
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = getFormDataCreateEvent();
+      const errors = validateCreateEventPayload(payload);
+      if (errors.length) {
+        showAlert(errors.join(" • "), "error", { autoHideMs: 5000 });
+        return;
+      }
+      try {
+        const res = await apiPost("/events", payload, token);
+        if (!res?.ok) {
+          showAlert(res?.error || res?.message || "Creazione fallita", "error", { autoHideMs: 5000 });
+          return;
+        }
+        showAlert("Evento creato con successo", "success", { autoHideMs: 2500 });
+        form.reset();
+        panel.style.display = "none";
+        await loadEvents(); // KPI/Tabella si aggiornano dentro loadEvents
+      } catch (err) {
+        showAlert(err?.message || "Errore di rete in creazione", "error", { autoHideMs: 5000 });
+      }
     });
   }
 
@@ -364,5 +585,4 @@ document.addEventListener("DOMContentLoaded", () => {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
-
 
