@@ -60,6 +60,93 @@ function renderStatus(status) {
   return `<p class="status ${status}">${text}</p>`;
 }
 
+// >>> PATCH: tassonomia e liste per tendine filtri
+const TAXONOMY = {
+  categories: {
+    "Musica": ["Concerto","Festival","DJ set","Live acustico","Jam session","Rassegna","Karaoke","Open mic"],
+    "Cibo & Sagre": ["Sagra","Street food","Degustazione vini","Degustazione birre","Cena tematica","Food market","Show cooking"],
+    "Sport": ["Torneo","Gara","Corsa","Raduno","Lezione aperta","Esibizione","Partita amichevole","E-sport LAN"],
+    "Arte & Cultura": ["Mostra","Vernissage","Teatro","Opera","Danza","Performance","Presentazione libro","Incontro con autore","Proiezione"],
+    "Formazione & Workshop": ["Corso","Seminario","Workshop","Masterclass","Laboratorio per bambini","Mentoring","Meetup tematico"],
+    "Notte & Club": ["Party","Serata a tema","Opening party","Closing party","Special guest","Silent disco"],
+    "Mercati & Fiere": ["Mercatino","Fiera","Expo","Vintage market","Artigianato","Antiquariato","Auto/Moto d’epoca"],
+    "Volontariato & Comunità": ["Raccolta fondi","Pulizia parco","Pulizia spiaggia","Donazioni","Raccolta alimentare","Evento solidale"],
+    "Tecnologia & Startup": ["Conferenza","Hackathon","Demo day","Pitch night","Community meetup","Retrospettiva tech"],
+    "Benessere & Outdoor": ["Yoga","Meditazione","Trekking","Escursione","Bike tour","Fitness all’aperto","Ritiro"],
+    "Famiglia & Bambini": ["Festa bambini","Spettacolo famiglie","Laboratorio creativo","Letture animate"],
+    "Motori": ["Raduno auto","Raduno moto","Track day","Esposizione","Drift"],
+    "Tradizioni & Folklore": ["Corteo storico","Palio","Rievocazione","Festa patronale"],
+    "Business & Networking": ["Networking night","Colazione d’affari","Tavola rotonda","Presentazione aziendale"],
+    "Moda & Beauty": ["Sfilata","Shooting aperto","Fiera moda","Lancio prodotto"],
+    "Eventi Privati": ["Compleanno","Laurea","Anniversario","Addio al celibato","Addio al nubilato","House party","Matrimonio","Battesimo","Comunione","Cresima","Team building","Kick-off","Riunione interna","Cena aziendale","Family day","Party in villa","Evento con lista","Club privato","Evento segreto"],
+    "Altro": ["Generico","Sperimentale","Pop-up","Flash mob"]
+  },
+  regionsIT: ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"],
+  languages: ["it","en","fr","de","es","other"],
+  targets: ["tutti","famiglie","18+","professionisti"],
+  countries: ["IT","FR","DE","ES","GB","US","other"]
+};
+
+function populateFilterOptions() {
+  // Selects
+  const selCat = document.getElementById("filterCategory");
+  const selSub = document.getElementById("filterSubcategory");
+  const selLang = document.getElementById("filterLanguage");
+  const selTarget = document.getElementById("filterTarget");
+  const selCountry = document.getElementById("filterCountry");
+  const selRegionIT = document.getElementById("filterRegionSelect");
+
+  // Categoria
+  if (selCat) {
+    selCat.innerHTML = `<option value="">Categoria</option>` +
+      Object.keys(TAXONOMY.categories).map(c => `<option value="${c}">${c}</option>`).join("");
+  }
+  // Sottocategoria dipendente
+  function refreshSub() {
+    const cat = selCat?.value || "";
+    const list = TAXONOMY.categories[cat] || [];
+    if (selSub) {
+      selSub.innerHTML = `<option value="">Sottocategoria</option>` +
+        list.map(s => `<option value="${s}">${s}</option>`).join("");
+    }
+  }
+  selCat?.addEventListener("change", refreshSub);
+  refreshSub();
+
+  // Lingue (se già presenti in HTML non sovrascriviamo le opzioni aggiuntive)
+  if (selLang && selLang.options.length <= 1) {
+    selLang.innerHTML = `<option value="">Lingua</option>` +
+      TAXONOMY.languages.map(l => {
+        const label = ({it:"Italiano", en:"Inglese", fr:"Francese", de:"Tedesco", es:"Spagnolo", other:"Altro"})[l] || l;
+        return `<option value="${l}">${label}</option>`;
+      }).join("");
+  }
+
+  // Target
+  if (selTarget && selTarget.options.length <= 1) {
+    selTarget.innerHTML = `<option value="">Target</option>` +
+      TAXONOMY.targets.map(t => {
+        const label = ({tutti:"Tutti", famiglie:"Famiglie", "18+":"18+", professionisti:"Professionisti"})[t] || t;
+        return `<option value="${t}">${label}</option>`;
+      }).join("");
+  }
+
+  // Country
+  if (selCountry && selCountry.options.length <= 1) {
+    selCountry.innerHTML = `<option value="">Paese</option>` +
+      TAXONOMY.countries.map(c => {
+        const label = ({IT:"Italia", FR:"Francia", DE:"Germania", ES:"Spagna", GB:"Regno Unito", US:"USA", other:"Altro"})[c] || c;
+        return `<option value="${c}">${label}</option>`;
+      }).join("");
+  }
+
+  // Regioni IT
+  if (selRegionIT) {
+    selRegionIT.innerHTML = `<option value="">Regione (IT)</option>` +
+      TAXONOMY.regionsIT.map(r => `<option value="${r}">${r}</option>`).join("");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -95,6 +182,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     // nessun blocco della UI se /users/me fallisce: lo gestirà loadEvents()
   }
 
+  // >>> PATCH: popola tendine filtri
+  populateFilterOptions();
+
   async function loadEvents(filters = {}) {
     allList.innerHTML = "<p>Caricamento...</p>";
     myList.innerHTML = "";
@@ -106,7 +196,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Recupera anche i miei per marcare join/leave
       const me = await apiGet("/users/me", token);
-     const myId = me?._id;
+      const myId = me?._id;
       const joinedIds = new Set();
       if (Array.isArray(res?.events)) {
         for (const ev of res.events) {
@@ -117,38 +207,39 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         }
       }
-const notJoined = res.events.filter(ev => !joinedIds.has(ev._id));
-      // Popola lista "tutti"
-     allList.innerHTML = notJoined.length
-     ? notJoined.map(ev => `
-        <div class="event-card">
-          <h3>${ev.title}</h3>
-          ${renderStatus(ev.status)}
-          <p>${ev.city || ""} ${formatEventDate(ev)}</p>
-          <div class="event-actions">
-            <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
-            ${joinedIds.has(ev._id)
-              ? `<button class="btn btn-secondary" data-id="${ev._id}" data-action="leave">Annulla</button>`
-              : `<button class="btn btn-primary" data-id="${ev._id}" data-action="join">Partecipa</button>`}
+      const notJoined = res.events.filter(ev => !joinedIds.has(ev._id));
+
+      // >>> PATCH: funzione di rendering card arricchita (region/country, prezzo+currency)
+      const renderCard = (ev, includeLeave) => {
+        const priceStr = ev.isFree ? "Gratuito" : (ev.price != null ? `${ev.price} ${ev.currency || "EUR"}` : "-");
+        const whereLine = `${ev.city || ""}${ev.region ? " • " + ev.region : ""}${ev.country ? " • " + ev.country : ""}`;
+        return `
+          <div class="event-card">
+            <h3>${ev.title}</h3>
+            ${renderStatus(ev.status)}
+            <p>${whereLine} ${formatEventDate(ev)}</p>
+            <p class="meta"><strong>Categoria:</strong> ${ev.category || ""}${ev.subcategory ? " • " + ev.subcategory : ""}</p>
+            <p class="meta"><strong>Lingua/Target:</strong> ${ev.language || ""}${ev.target ? " • " + ev.target : ""}</p>
+            <p class="meta"><strong>Prezzo:</strong> ${priceStr}</p>
+            <div class="event-actions">
+              <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
+              ${includeLeave
+                ? `<button class="btn btn-secondary" data-id="${ev._id}" data-action="leave">Annulla</button>`
+                : `<button class="btn btn-primary" data-id="${ev._id}" data-action="join">Partecipa</button>`}
+            </div>
           </div>
-        </div>
-      `).join("")
+        `;
+      };
+
+      // Popola lista "tutti"
+      allList.innerHTML = notJoined.length
+        ? notJoined.map(ev => renderCard(ev, false)).join("")
         : "<p>Nessun evento disponibile.</p>";
 
       // Popola lista "a cui partecipo"
       const joined = res.events.filter(ev => joinedIds.has(ev._id));
       myList.innerHTML = joined.length
-        ? joined.map(ev => `
-          <div class="event-card">
-            <h3>${ev.title}</h3>
-            ${renderStatus(ev.status)}
-            <p>${ev.city || ""} ${formatEventDate(ev)}</p>
-            <div class="event-actions">
-              <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
-              <button class="btn btn-secondary" data-id="${ev._id}" data-action="leave">Annulla</button>
-            </div>
-          </div>
-        `).join("")
+        ? joined.map(ev => renderCard(ev, true)).join("")
         : "<p>Nessun evento a cui partecipi.</p>";
 
     } catch (err) {
@@ -199,6 +290,7 @@ const notJoined = res.events.filter(ev => !joinedIds.has(ev._id));
     if (!btnFilters) return;
     btnFilters.addEventListener("click", async () => {
       const filters = {};
+      // esistenti (testuali/date)
       const title = document.getElementById("filterTitle")?.value?.trim();
       const city = document.getElementById("filterCity")?.value?.trim();
       const region = document.getElementById("filterRegion")?.value?.trim();
@@ -209,6 +301,21 @@ const notJoined = res.events.filter(ev => !joinedIds.has(ev._id));
       if (region) filters.region = region;
       if (dateStart) filters.dateStart = dateStart;
       if (dateEnd) filters.dateEnd = dateEnd;
+
+      // >>> PATCH: nuovi filtri da tendine
+      const cat = document.getElementById("filterCategory")?.value || "";
+      const sub = document.getElementById("filterSubcategory")?.value || "";
+      const lang = document.getElementById("filterLanguage")?.value || "";
+      const tgt = document.getElementById("filterTarget")?.value || "";
+      const country = document.getElementById("filterCountry")?.value || "";
+      const regionSel = document.getElementById("filterRegionSelect")?.value || "";
+      if (cat) filters.category = cat;
+      if (sub) filters.subcategory = sub;
+      if (lang) filters.language = lang;
+      if (tgt) filters.target = tgt;
+      if (country) filters.country = country;
+      if (regionSel) filters.region = regionSel; // prevale sul campo testo se valorizzato
+
       await loadEvents(filters);
     });
   };
@@ -236,7 +343,6 @@ const notJoined = res.events.filter(ev => !joinedIds.has(ev._id));
   // Prima lista
   loadEvents();
 });
-
 
 
 
