@@ -321,7 +321,8 @@ const btnImportCsv = document.getElementById("btnImportCsv");
 async function importCsvFile(file, { dryRun = true } = {}) {
   const base = resolveApiBaseLite();
   // ATTENZIONE: se la route lato BE è diversa, cambia qui:
-  const url = `${base}/events/import?dryRun=${dryRun ? "true" : "false"}`;
+ const url = `${base}/events/import-csv?dryRun=${dryRun ? "true" : "false"}`;
+
 
   const form = new FormData();
   form.append("file", file);
@@ -689,5 +690,6 @@ if (btnImportCsv) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
