@@ -117,10 +117,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         }
       }
-
+const notJoined = res.events.filter(ev => !joinedIds.has(ev._id));
       // Popola lista "tutti"
-      allList.innerHTML = res.events.length
-        ? res.events.map(ev => `
+     allList.innerHTML = notJoined.length
+     ? notJoined.map(ev => `
         <div class="event-card">
           <h3>${ev.title}</h3>
           ${renderStatus(ev.status)}
@@ -236,6 +236,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Prima lista
   loadEvents();
 });
+
 
 
 
