@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!detail.ok) throw new Error(detail.error || "Errore dettaglio evento");
 
     const ev = detail.event;
-  const myId = me?._id;
+    const myId = me?._id;
 
     elTitle.textContent = ev.title || "Evento";
     elDetails.innerHTML = renderDetails(ev);
@@ -158,12 +158,22 @@ function renderDetails(ev) {
     lines.push(`<div class="cover"><img src="${escapeHtml(ev.coverImage)}" alt="Locandina" /></div>`);
   }
   lines.push(`<p><strong>Descrizione:</strong> ${escapeHtml(ev.description || "")}</p>`);
-  lines.push(`<p><strong>Città/Regione/Paese:</strong> ${escapeHtml(ev.city || "")} / ${escapeHtml(ev.region || "")} / ${escapeHtml(ev.country || "")}</p>`);
+  // PATCH: localizzazione separata
+  lines.push(`<p><strong>Luogo:</strong> ${escapeHtml(ev.venueName || "")}</p>`);
+  lines.push(`<p><strong>Indirizzo:</strong> ${escapeHtml(ev.street || "")} ${escapeHtml(ev.streetNumber || "")}, ${escapeHtml(ev.postalCode || "")}</p>`);
+  lines.push(`<p><strong>Città/Provincia/Regione/Paese:</strong> ${escapeHtml(ev.city || "")} / ${escapeHtml(ev.province || "")} / ${escapeHtml(ev.region || "")} / ${escapeHtml(ev.country || "")}</p>`);
+  // PATCH: tassonomia & meta
   lines.push(`<p><strong>Categoria:</strong> ${escapeHtml(ev.category || "")} — <strong>Sub:</strong> ${escapeHtml(ev.subcategory || "")}</p>`);
-  lines.push(`<p><strong>Tipo:</strong> ${escapeHtml(ev.type || "")} — <strong>Visibilità:</strong> ${escapeHtml(ev.visibility || "")}</p>`);
-  lines.push(`<p><strong>Data:</strong> ${formatEventStart(ev)}</p>`);
-  if (ev.endDate) lines.push(`<p><strong>Fine:</strong> ${new Date(ev.endDate).toLocaleString()}</p>`);
-  lines.push(`<p><strong>Prezzo:</strong> ${ev.isFree ? "Gratuito" : (ev.price != null ? escapeHtml(ev.price) + "€" : "-")}</p>`);
+  lines.push(`<p><strong>Visibilità:</strong> ${escapeHtml(ev.visibility || "")} — <strong>Lingua:</strong> ${escapeHtml(ev.language || "")} — <strong>Target:</strong> ${escapeHtml(ev.target || "")}</p>`);
+  // PATCH: dateStart/dateEnd
+  lines.push(`<p><strong>Inizio:</strong> ${formatEventStart(ev)}</p>`);
+  if (ev.dateEnd) lines.push(`<p><strong>Fine:</strong> ${new Date(ev.dateEnd).toLocaleString()}</p>`);
+  // PATCH: prezzo + currency
+  lines.push(`<p><strong>Prezzo:</strong> ${ev.isFree ? "Gratuito" : (ev.price != null ? `${escapeHtml(ev.price)} ${escapeHtml(ev.currency || "EUR")}` : "-")}</p>`);
+  // PATCH: tags e immagini
+  if (Array.isArray(ev.tags) && ev.tags.length) {
+    lines.push(`<p><strong>Tag:</strong> ${ev.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join(" ")}</p>`);
+  }
   if (Array.isArray(ev.images) && ev.images.length) {
     lines.push(`<div class="gallery">${ev.images.map((url) =>
       `<img src="${escapeHtml(url)}" alt="Immagine evento" />`
