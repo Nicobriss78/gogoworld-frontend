@@ -27,6 +27,104 @@
       <button id="btnApplyFilters" class="btn">Filtra</button>
     </section>
 
+    <!-- PATCH: pannello creazione evento inline -->
+    <section id="createEventPanel" style="display:none; margin:1em 0; padding:1em; border:1px solid #ccc; border-radius:8px;">
+      <h2>Crea nuovo evento</h2>
+      <form id="createEventForm">
+        <!-- Base -->
+        <label>Titolo* <input type="text" name="title" required /></label><br/>
+        <label>Descrizione <textarea name="description"></textarea></label><br/>
+
+        <!-- Tassonomia -->
+        <label>Categoria* 
+          <select name="category" required></select>
+        </label><br/>
+        <label>Sottocategoria 
+          <select name="subcategory"></select>
+        </label><br/>
+
+        <!-- Visibilità / lingua / target -->
+        <label>Visibilità* 
+          <select name="visibility" required>
+            <option value="public">Pubblico</option>
+            <option value="draft">Bozza</option>
+            <option value="private">Privato</option>
+          </select>
+        </label><br/>
+        <label>Lingua* 
+          <select name="language" required>
+            <option value="it">Italiano</option>
+            <option value="en">Inglese</option>
+            <option value="fr">Francese</option>
+            <option value="de">Tedesco</option>
+            <option value="es">Spagnolo</option>
+            <option value="other">Altro</option>
+          </select>
+        </label><br/>
+        <label>Target* 
+          <select name="target" required>
+            <option value="tutti">Tutti</option>
+            <option value="famiglie">Famiglie</option>
+            <option value="18+">18+</option>
+            <option value="professionisti">Professionisti</option>
+          </select>
+        </label><br/>
+
+        <!-- Localizzazione -->
+        <label>Nome luogo <input type="text" name="venueName" /></label><br/>
+        <label>Via <input type="text" name="street" /></label><br/>
+        <label>Civico <input type="text" name="streetNumber" /></label><br/>
+        <label>CAP <input type="text" name="postalCode" /></label><br/>
+        <label>Città <input type="text" name="city" /></label><br/>
+        <label>Provincia <input type="text" name="province" /></label><br/>
+        <label>Regione* 
+          <select name="region" required></select>
+        </label><br/>
+        <label>Paese* 
+          <select name="country" required>
+            <option value="IT">Italia</option>
+            <option value="FR">Francia</option>
+            <option value="DE">Germania</option>
+            <option value="ES">Spagna</option>
+            <option value="GB">Regno Unito</option>
+            <option value="US">USA</option>
+            <option value="other">Altro</option>
+          </select>
+        </label><br/>
+        <label>Latitudine <input type="number" step="any" name="lat" /></label><br/>
+        <label>Longitudine <input type="number" step="any" name="lon" /></label><br/>
+
+        <!-- Date -->
+        <label>Data inizio* <input type="date" name="dateStart" required /></label><br/>
+        <label>Data fine <input type="date" name="dateEnd" /></label><br/>
+
+        <!-- Prezzo -->
+        <label><input type="checkbox" name="isFree" /> Evento gratuito</label><br/>
+        <label>Prezzo <input type="number" step="0.01" name="price" /></label><br/>
+        <label>Valuta 
+          <select name="currency">
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+            <option value="CHF">CHF</option>
+            <option value="RON">RON</option>
+            <option value="other">Altro</option>
+          </select>
+        </label><br/>
+
+        <!-- Media & tag -->
+        <label>Tags (separa con |) <input type="text" name="tags" /></label><br/>
+        <label>Immagini (URL separati da |) <input type="text" name="images" /></label><br/>
+        <label>Immagine di copertina (URL) <input type="text" name="coverImage" /></label><br/>
+
+        <div style="margin-top:1em;">
+          <button type="submit" class="btn btn-primary">Crea</button>
+          <button type="button" id="btnCancelCreate" class="btn btn-secondary">Annulla</button>
+        </div>
+      </form>
+    </section>
+    <!-- FINE PATCH -->
+
     <section id="myEventsList" class="events-list"></section>
 
     <footer class="app-footer">
