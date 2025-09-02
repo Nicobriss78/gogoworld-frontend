@@ -26,8 +26,53 @@
       <input id="filterRegion" type="text" placeholder="Regione" />
       <input id="filterDateStart" type="date" placeholder="Data inizio" />
       <input id="filterDateEnd" type="date" placeholder="Data fine" />
+
+      <!-- PATCH: filtri a tendina coerenti con nuovo schema -->
+      <select id="filterCategory" title="Categoria">
+        <option value="">Categoria</option>
+      </select>
+      <select id="filterSubcategory" title="Sottocategoria">
+        <option value="">Sottocategoria</option>
+      </select>
+      <select id="filterLanguage" title="Lingua">
+        <option value="">Lingua</option>
+        <option value="it">Italiano</option>
+        <option value="en">Inglese</option>
+        <option value="fr">Francese</option>
+        <option value="de">Tedesco</option>
+        <option value="es">Spagnolo</option>
+        <option value="other">Altro</option>
+      </select>
+      <select id="filterTarget" title="Target">
+        <option value="">Target</option>
+        <option value="tutti">Tutti</option>
+        <option value="famiglie">Famiglie</option>
+        <option value="18+">18+</option>
+        <option value="professionisti">Professionisti</option>
+      </select>
+      <select id="filterCountry" title="Paese">
+        <option value="">Paese</option>
+        <option value="IT">Italia</option>
+        <option value="FR">Francia</option>
+        <option value="DE">Germania</option>
+        <option value="ES">Spagna</option>
+        <option value="GB">Regno Unito</option>
+        <option value="US">USA</option>
+        <option value="other">Altro</option>
+      </select>
+      <select id="filterRegionSelect" title="Regione (Italia)">
+        <option value="">Regione (IT)</option>
+      </select>
+
       <button id="btnApplyFilters" class="btn">Filtra</button>
     </section>
+
+    <!-- PATCH (placeholder, non attivo): codice invito per eventi privati -->
+    <section id="invitePanel" style="display:none; margin:0.5rem 0;">
+      <input id="inviteCodeInput" type="text" placeholder="Hai un codice invito?" />
+      <button id="btnApplyInvite" class="btn">Mostra eventi privati</button>
+    </section>
+    <!-- /PATCH -->
 
     <!-- Container non utilizzato ma lasciato per non rimuovere codice -->
     <section id="eventsList" class="events-list"></section>
