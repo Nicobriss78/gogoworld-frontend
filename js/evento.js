@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!detail.ok) throw new Error(detail.error || "Errore dettaglio evento");
 
     const ev = detail.event;
-    const myId = me?.user?._id || me?.user?.id;
+  const myId = me?._id;
 
     elTitle.textContent = ev.title || "Evento";
     elDetails.innerHTML = renderDetails(ev);
@@ -171,3 +171,4 @@ function renderDetails(ev) {
   }
   return lines.join("\n");
 }
+
