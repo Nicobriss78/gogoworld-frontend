@@ -46,6 +46,19 @@ function formatEventDate(ev) {
   } catch { return ""; }
 }
 
+// --- PATCH orari: unisce "YYYY-MM-DD" + "HH:MM" in ISO ---
+function combineDateAndTime(dateStr, timeStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (timeStr && /^\d{2}:\d{2}$/.test(timeStr)) {
+    const [hh, mm] = timeStr.split(":").map(Number);
+    d.setHours(hh, mm, 0, 0);
+  } else {
+    d.setHours(0, 0, 0, 0);
+  }
+  return d.toISOString();
+}
+
 // --- PATCH Prezzo/Gratuito (organizzatore) ---
 function hookFreePrice(form) {
   if (!form) return;
@@ -229,7 +242,10 @@ const btnImportCsv = document.getElementById("btnImportCsv");
 
     // split helper
     const splitPipe = (s) => s ? s.split("|").map(x => x.trim()).filter(Boolean) : [];
-
+// PATCH orari → unisci data (YYYY-MM-DD) + ora (HH:mm) in ISO
+const dateStartStr = combineDateAndTime(get("dateStart"), get("timeStart"));
+const rawDateEnd = get("dateEnd");
+const dateEndStr = rawDateEnd ? combineDateAndTime(rawDateEnd, get("timeEnd")) : "";
     const payload = {
       // Base
       title: get("title"),
@@ -256,9 +272,9 @@ const btnImportCsv = document.getElementById("btnImportCsv");
       lat: get("lat"),
       lon: get("lon"),
 
-      // Date (form fornisce YYYY-MM-DD)
-      dateStart: get("dateStart"),
-      dateEnd: get("dateEnd"),
+     // Date (+ ora) in ISO
+dateStart: dateStartStr,
+...(dateEndStr ? { dateEnd: dateEndStr } : {}),
 
       // Prezzo/valuta
       isFree,
@@ -806,12 +822,3 @@ if (btnImportCsv) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
-
-
-
-
-
-
-
-
-
