@@ -96,7 +96,12 @@
 
         <!-- Date -->
         <label>Data inizio* <input type="date" name="dateStart" required /></label><br/>
+        <!-- PATCH: Ora inizio (aggiunta chirurgica) -->
+        <label>Ora inizio <input type="time" name="timeStart" /></label><br/>
+
         <label>Data fine <input type="date" name="dateEnd" /></label><br/>
+        <!-- PATCH: Ora fine (aggiunta chirurgica) -->
+        <label>Ora fine <input type="time" name="timeEnd" /></label><br/>
 
         <!-- Prezzo -->
         <label><input type="checkbox" name="isFree" /> Evento gratuito</label><br/>
@@ -135,7 +140,6 @@
   <script type="module" src="js/organizzatore.js"></script>
 </body>
 </html>
-
 
 
 
