@@ -7,13 +7,40 @@
 import { apiGet, apiPost, apiDelete } from "./api.js";
 import { escapeHtml } from "./utils.js";
 
-// Helper: format event start datetime using available fields (date | dateStart)
+// --- PATCH E1: helper data/ora "smart" ---
+// Mostra solo la data quando l'orario è 00:00:00, altrimenti data + ora.
+function formatDateSmart(input) {
+  if (!input) return "-";
+  try {
+    const d = new Date(input);
+    if (isNaN(d.getTime())) return "-";
+    const hasTime =
+      d.getHours() !== 0 || d.getMinutes() !== 0 || d.getSeconds() !== 0;
+    return hasTime
+      ? d.toLocaleString("it-IT") // es: 10/09/2025, 14:30:00
+      : d.toLocaleDateString("it-IT"); // es: 10/09/2025
+  } catch {
+    return "-";
+  }
+}
+
+// Intervallo "start – end" con logica smart
+function formatRangeSmart(start, end) {
+  const s = formatDateSmart(start);
+  if (!end) return s;
+  const e = formatDateSmart(end);
+  return (s && e) ? `${s} – ${e}` : s || e || "-";
+}
+
+
+// Helper: start (date | dateStart) con fallback e visualizzazione smart
 function formatEventStart(ev) {
   try {
     const start = ev?.date || ev?.dateStart;
-    if (!start) return "-";
-    return new Date(start).toLocaleString();
-  } catch { return "-"; }
+    return formatDateSmart(start);
+  } catch {
+    return "-";
+  }
 }
 
 // Banner messaggi (error/success) con auto-hide opzionale
@@ -187,9 +214,12 @@ function renderDetails(ev) {
   lines.push(
     `<p><strong>Tipo:</strong> ${escapeHtml(ev.type || "")} — <strong>Visibilità:</strong> ${escapeHtml(ev.visibility || "")}</p>`
   );
-  lines.push(`<p><strong>Data:</strong> ${formatEventStart(ev)}</p>`);
-  if (ev.endDate) lines.push(`<p><strong>Fine:</strong> ${new Date(ev.endDate).toLocaleString()}</p>`);
-  // PATCH: prezzo + currency (fallback EUR)
+// PATCH E3: "Quando" con intervallo smart (usa date/dateStart e endDate/dateEnd)
+{
+  const start = ev?.date || ev?.dateStart;
+  const end = ev?.endDate || ev?.dateEnd;
+  lines.push(`<p><strong>Quando:</strong> ${formatRangeSmart(start, end)}</p>`);
+}  // PATCH: prezzo + currency (fallback EUR)
   lines.push(
     `<p><strong>Prezzo:</strong> ${
       ev.isFree ? "Gratuito" : (ev.price != null ? `${escapeHtml(ev.price)} ${escapeHtml(ev.currency || "EUR")}` : "-")
@@ -288,4 +318,5 @@ function renderMedia(ev) {
   }
   return parts.join("\n");
 }
+
 
