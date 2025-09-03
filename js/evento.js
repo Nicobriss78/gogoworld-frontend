@@ -7,23 +7,6 @@
 import { apiGet, apiPost, apiDelete } from "./api.js";
 import { escapeHtml } from "./utils.js";
 
-// --- PATCH E1: helper data/ora "smart" ---
-// Mostra solo la data quando l'orario è 00:00:00, altrimenti data + ora.
-function formatDateSmart(input) {
-  if (!input) return "-";
-  try {
-    const d = new Date(input);
-    if (isNaN(d.getTime())) return "-";
-    const hasTime =
-      d.getHours() !== 0 || d.getMinutes() !== 0 || d.getSeconds() !== 0;
-    return hasTime
-      ? d.toLocaleString("it-IT") // es: 10/09/2025, 14:30:00
-      : d.toLocaleDateString("it-IT"); // es: 10/09/2025
-  } catch {
-    return "-";
-  }
-}
-
 // Intervallo "start – end" con logica smart
 function formatRangeSmart(start, end) {
   const s = formatDateSmart(start);
@@ -270,15 +253,11 @@ function renderMeta(ev) {
   return parts.join("\n");
 }
 
-function renderSchedule(ev) {
-  const lines = [];
-  lines.push(`<p><strong>Inizio:</strong> ${formatEventStart(ev)}</p>`);
-  const end = ev.endDate || ev.dateEnd;
-  if (end) {
-    try {
-      lines.push(`<p><strong>Fine:</strong> ${new Date(end).toLocaleString()}</p>`);
-    } catch {}
-  }
+lines.push(`<p><strong>Inizio:</strong> ${formatEventStart(ev)}</p>`);
+const end = ev.endDate || ev.dateEnd;
+if (end) {
+  lines.push(`<p><strong>Fine:</strong> ${formatDateSmart(end)}</p>`);
+}
   return lines.join("\n");
 }
 
@@ -334,6 +313,7 @@ function renderMedia(ev) {
   }
   return parts.join("\n");
 }
+
 
 
 
