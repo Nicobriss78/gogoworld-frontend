@@ -354,12 +354,13 @@ async function importCsvFile(file, { dryRun = true } = {}) {
 
 
 const form = new FormData();
-// passiamo anche il nome file: Multer lo espone come .originalname
-form.append("file", file, file.name);
+// difesa: assicurati di avere UN SOLO campo "file"
+if (typeof form.delete === "function") form.delete("file");
+form.set("file", file);
 
 // log diagnostico non invasivo
 console.log("[CSV] file selezionato:", { name: file?.name, size: file?.size });
-  form.append("file", file);
+
 
   let res;
   try {
@@ -777,6 +778,7 @@ if (btnImportCsv) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
