@@ -71,7 +71,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     const myId = me?._id;
 
     elTitle.textContent = ev.title || "Evento";
-    elDetails.innerHTML = renderDetails(ev);
+
+    // Render modular: se sono presenti i contenitori semantici, popola per sezione; altrimenti fallback al render monolitico
+    const sMeta = document.getElementById("eventMeta");
+    const sSched = document.getElementById("eventSchedule");
+    const sLoc = document.getElementById("eventLocation");
+    const sPrice = document.getElementById("eventPricing");
+    const sTax = document.getElementById("eventTaxonomy");
+    const sMedia = document.getElementById("eventMedia");
+
+    if (sMeta || sSched || sLoc || sPrice || sTax || sMedia) {
+      if (sMeta) sMeta.innerHTML = renderMeta(ev);
+      if (sSched) sSched.innerHTML = renderSchedule(ev);
+      if (sLoc) sLoc.innerHTML = renderLocation(ev);
+      if (sPrice) sPrice.innerHTML = renderPricing(ev);
+      if (sTax) sTax.innerHTML = renderTaxonomy(ev);
+      if (sMedia) sMedia.innerHTML = renderMedia(ev);
+    } else {
+      elDetails.innerHTML = renderDetails(ev);
+    }
 
     // Determina proprietà reale dell'evento
     const evOrganizerId = (ev.organizer && typeof ev.organizer === "object" && ev.organizer._id)
@@ -160,11 +178,11 @@ function renderDetails(ev) {
   lines.push(`<p><strong>Descrizione:</strong> ${escapeHtml(ev.description || "")}</p>`);
   // PATCH: localizzazione separata
   lines.push(`<p><strong>Luogo:</strong> ${escapeHtml(ev.venueName || "")}</p>`);
-  lines.push(`<p><strong>Indirizzo:</strong> ${escapeHtml(ev.street || "")} ${escapeHtml(ev.streetNumber || "")}, ${escapeHtml(ev.postalCode || "")}</p>`);
-  lines.push(`<p><strong>Città/Provincia/Regione/Paese:</strong> ${escapeHtml(ev.city || "")} / ${escapeHtml(ev.province || "")} / ${escapeHtml(ev.region || "")} / ${escapeHtml(ev.country || "")}</p>`);
+  lines.push(`<p><strong>Indirizzo:</strong> ${escapeHtml(ev.str....streetNumber || "")}, ${escapeHtml(ev.postalCode || "")}</p>`);
+  lines.push(`<p><strong>Città/Provincia/Regione/Paese:</strong>...eHtml(ev.region || "")} / ${escapeHtml(ev.country || "")}</p>`);
   // PATCH: tassonomia & meta
-  lines.push(`<p><strong>Categoria:</strong> ${escapeHtml(ev.category || "")} — <strong>Sub:</strong> ${escapeHtml(ev.subcategory || "")}</p>`);
-  lines.push(`<p><strong>Visibilità:</strong> ${escapeHtml(ev.visibility || "")} — <strong>Lingua:</strong> ${escapeHtml(ev.language || "")} — <strong>Target:</strong> ${escapeHtml(ev.target || "")}</p>`);
+  lines.push(`<p><strong>Categoria:</strong> ${escapeHtml(ev.cat...<strong>Sub:</strong> ${escapeHtml(ev.subcategory || "")}</p>`);
+  lines.push(`<p><strong>Visibilità:</strong> ${escapeHtml(ev.vi...— <strong>Target:</strong> ${escapeHtml(ev.target || "")}</p>`);
   // PATCH: dateStart/dateEnd
   lines.push(`<p><strong>Inizio:</strong> ${formatEventStart(ev)}</p>`);
   if (ev.dateEnd) lines.push(`<p><strong>Fine:</strong> ${new Date(ev.dateEnd).toLocaleString()}</p>`);
@@ -180,5 +198,79 @@ function renderDetails(ev) {
     ).join("")}</div>`);
   }
   return lines.join("\n");
+}
+
+// --- Modular rendering (aggiunto) ---
+function renderMeta(ev) {
+  const vis = escapeHtml(ev.visibility || "");
+  const lang = escapeHtml(ev.language || "");
+  const tgt = escapeHtml(ev.target || "");
+  const org = ev.organizer && typeof ev.organizer === "object" ? (ev.organizer.name || ev.organizer.email || ev.organizer._id || "") : "";
+  const orgEsc = escapeHtml(org || "");
+  const parts = [
+    vis ? `<p><strong>Visibilità:</strong> ${vis}</p>` : "",
+    lang ? `<p><strong>Lingua:</strong> ${lang}</p>` : "",
+    tgt ? `<p><strong>Target:</strong> ${tgt}</p>` : "",
+    orgEsc ? `<p><strong>Organizzatore:</strong> ${orgEsc}</p>` : "",
+  ].filter(Boolean);
+  return parts.join("\n");
+}
+
+function renderSchedule(ev) {
+  const lines = [];
+  lines.push(`<p><strong>Inizio:</strong> ${formatEventStart(ev)}</p>`);
+  if (ev.endDate || ev.dateEnd) {
+    const end = ev.endDate || ev.dateEnd;
+    try { lines.push(`<p><strong>Fine:</strong> ${new Date(end).toLocaleString()}</p>`); } catch {}
+  }
+  return lines.join("\n");
+}
+
+function renderLocation(ev) {
+  const parts = [];
+  if (ev.venueName) parts.push(`<p><strong>Luogo:</strong> ${escapeHtml(ev.venueName)}</p>`);
+  const addrBits = [
+    ev.street ? escapeHtml(ev.street) : "",
+    ev.streetNumber ? escapeHtml(ev.streetNumber) : "",
+    ev.postalCode ? escapeHtml(ev.postalCode) : ""
+  ].filter(Boolean).join(", ");
+  if (addrBits) parts.push(`<p><strong>Indirizzo:</strong> ${addrBits}</p>`);
+  const locBits = [
+    ev.city ? escapeHtml(ev.city) : "",
+    ev.province ? escapeHtml(ev.province) : "",
+    ev.region ? escapeHtml(ev.region) : "",
+    ev.country ? escapeHtml(ev.country) : ""
+  ].filter(Boolean).join(" / ");
+  if (locBits) parts.push(`<p><strong>Città/Provincia/Regione/Paese:</strong> ${locBits}</p>`);
+  return parts.join("\n");
+}
+
+function renderPricing(ev) {
+  if (ev.isFree) return `<p><strong>Prezzo:</strong> Gratuito</p>`;
+  const price = (ev.price != null) ? String(ev.price) : null;
+  const curr = ev.currency || "EUR";
+  return `<p><strong>Prezzo:</strong> ${price ? `${escapeHtml(price)} ${escapeHtml(curr)}` : "-"}</p>`;
+}
+
+function renderTaxonomy(ev) {
+  const parts = [];
+  const cat = ev.category ? escapeHtml(ev.category) : "";
+  const sub = ev.subcategory ? escapeHtml(ev.subcategory) : "";
+  if (cat || sub) parts.push(`<p><strong>Categoria:</strong> ${cat}${sub ? ` — <strong>Sub:</strong> ${sub}` : ""}</p>`);
+  if (Array.isArray(ev.tags) && ev.tags.length) {
+    parts.push(`<p><strong>Tag:</strong> ${ev.tags.map(t => `<span class="tag">${escapeHtml(String(t))}</span>`).join(" ")}</p>`);
+  }
+  return parts.join("\n");
+}
+
+function renderMedia(ev) {
+  const parts = [];
+  if (ev.coverImage) {
+    parts.push(`<div class="cover"><img src="${escapeHtml(ev.coverImage)}" alt="Locandina" /></div>`);
+  }
+  if (Array.isArray(ev.images) && ev.images.length) {
+    parts.push(`<div class="gallery">${ev.images.map((u) => `<img src="${escapeHtml(u)}" alt="Immagine evento" />`).join("")}</div>`);
+  }
+  return parts.join("\n");
 }
 
