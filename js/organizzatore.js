@@ -644,21 +644,15 @@ if (btnImportCsv) {
       e.preventDefault();
       const payload = getFormDataCreateEvent();
       const errors = validateCreateEventPayload(payload);
-      // PATCH validazioni su data/ora (date + time)
-const dateStartOnly = get("dateStart");
-const dateEndOnly = get("dateEnd");
-const timeStartOnly = get("timeStart");
-const timeEndOnly = get("timeEnd");
-
-if (!dateStartOnly) {
+// PATCH validazioni su data/ora (date + time) — usa il payload già composto
+if (!payload.dateStart) {
   errors.push("Data inizio mancante");
-}
-
-const __composedStart = combineDateAndTime(dateStartOnly, timeStartOnly);
-const __composedEnd = dateEndOnly ? combineDateAndTime(dateEndOnly, timeEndOnly) : null;
-
-if (__composedEnd && new Date(__composedEnd) < new Date(__composedStart)) {
-  errors.push("La fine è precedente all'inizio");
+} else {
+  const _start = new Date(payload.dateStart);
+  const _end = payload.dateEnd ? new Date(payload.dateEnd) : null;
+  if (_end && !isNaN(_start.getTime()) && !isNaN(_end.getTime()) && _end < _start) {
+    errors.push("La fine è precedente all'inizio");
+  }
 }
       if (errors.length) {
         showAlert(errors.join(" • "), "error", { autoHideMs: 5000 });
@@ -838,4 +832,5 @@ if (__composedEnd && new Date(__composedEnd) < new Date(__composedStart)) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
