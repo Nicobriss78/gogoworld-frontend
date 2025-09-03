@@ -19,8 +19,7 @@ function formatDateSmart(date) {
   if (!date) return "-";
   try {
     const d = new Date(date);
-    if (isNaN(d)) return "-";
-
+if (isNaN(d.getTime())) return "-";
     // Se l’orario è 00:00:00 → mostra solo la data
     if (d.getHours() === 0 && d.getMinutes() === 0 && d.getSeconds() === 0) {
       return d.toLocaleDateString("it-IT");
@@ -265,12 +264,13 @@ function renderMeta(ev) {
   return parts.join("\n");
 }
 
-lines.push(`<p><strong>Inizio:</strong> ${formatEventStart(ev)}</p>`);
-const end = ev.endDate || ev.dateEnd;
-if (end) {
-  lines.push(`<p><strong>Fine:</strong> ${formatDateSmart(end)}</p>`);
-}
-  return lines.join("\n");
+function renderSchedule(ev) {
+  const start = ev?.date || ev?.dateStart;
+  const end = ev?.endDate || ev?.dateEnd;
+  const parts = [];
+  parts.push(`<p><strong>Inizio:</strong> ${formatDateSmart(start)}</p>`);
+  if (end) parts.push(`<p><strong>Fine:</strong> ${formatDateSmart(end)}</p>`);
+  return parts.join("\n");
 }
 
 function renderLocation(ev) {
@@ -325,6 +325,7 @@ function renderMedia(ev) {
   }
   return parts.join("\n");
 }
+
 
 
 
