@@ -116,6 +116,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
       elDetails.innerHTML = renderDetails(ev);
     }
+    // PATCH E4: render "Inizio/Fine" nel contenitore #eventSchedule usando il formatter "smart"
+const secSchedule = document.getElementById("eventSchedule");
+if (secSchedule) {
+  const start = ev?.dateStart || ev?.date; // fallback: usa dateStart, se assente usa date
+  const end = ev?.dateEnd || ev?.endDate; // compat: supporta endDate se presente
+
+  // usa formatDateSmart già definita in alto
+  const startHtml = `<p><strong>Inizio:</strong> ${formatDateSmart(start)}</p>`;
+  const endHtml = end ? `<p><strong>Fine:</strong> ${formatDateSmart(end)}</p>` : "";
+
+  secSchedule.innerHTML = `${startHtml}${endHtml}`;
+}
     // -----------------------------------------------------------------------
 
     // Determina proprietà reale dell'evento
@@ -313,6 +325,7 @@ function renderMedia(ev) {
   }
   return parts.join("\n");
 }
+
 
 
 
