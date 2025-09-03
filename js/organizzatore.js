@@ -353,7 +353,12 @@ async function importCsvFile(file, { dryRun = true } = {}) {
  const url = `${base}/events/import-csv?dryRun=${dryRun ? "true" : "false"}`;
 
 
-  const form = new FormData();
+const form = new FormData();
+// passiamo anche il nome file: Multer lo espone come .originalname
+form.append("file", file, file.name);
+
+// log diagnostico non invasivo
+console.log("[CSV] file selezionato:", { name: file?.name, size: file?.size });
   form.append("file", file);
 
   let res;
@@ -376,10 +381,13 @@ async function importCsvFile(file, { dryRun = true } = {}) {
     return;
   }
 
-  if (!res.ok || data?.ok === false) {
-    showAlert(data?.error || data?.message || `HTTP ${res.status}`, "error", { autoHideMs: 5000 });
-    return;
-  }
+if (!res.ok || data?.ok === false) {
+  console.error("Import CSV error:", { status: res.status, data });
+  const msg = data?.error || data?.message || `HTTP ${res.status}`;
+  showAlert(msg, "error", { autoHideMs: 6000 });
+  return;
+}
+
 
   const panel = ensureImportResultsPanel();
   if (dryRun) {
@@ -769,6 +777,7 @@ if (btnImportCsv) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
