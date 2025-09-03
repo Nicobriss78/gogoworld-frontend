@@ -31,7 +31,23 @@ function formatRangeSmart(start, end) {
   const e = formatDateSmart(end);
   return (s && e) ? `${s} – ${e}` : s || e || "-";
 }
+// PATCH E4: visualizzazione smart di date/ora
+function formatDateSmart(date) {
+  if (!date) return "-";
+  try {
+    const d = new Date(date);
+    if (isNaN(d)) return "-";
 
+    // Se l’orario è 00:00:00 → mostra solo la data
+    if (d.getHours() === 0 && d.getMinutes() === 0 && d.getSeconds() === 0) {
+      return d.toLocaleDateString("it-IT");
+    }
+    // Altrimenti data + ora
+    return d.toLocaleString("it-IT", { dateStyle: "short", timeStyle: "short" });
+  } catch {
+    return "-";
+  }
+}
 
 // Helper: start (date | dateStart) con fallback e visualizzazione smart
 function formatEventStart(ev) {
@@ -318,5 +334,6 @@ function renderMedia(ev) {
   }
   return parts.join("\n");
 }
+
 
 
