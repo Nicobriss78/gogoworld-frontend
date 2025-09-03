@@ -46,6 +46,33 @@ function formatEventDate(ev) {
   } catch { return ""; }
 }
 
+// --- PATCH Prezzo/Gratuito (organizzatore) ---
+function hookFreePrice(form) {
+  if (!form) return;
+  const chkFree = form.querySelector('input[name="isFree"]');
+  const inputPrice = form.querySelector('input[name="price"]');
+  const inputCurr = form.querySelector('select[name="currency"], input[name="currency"]');
+
+  function applyFreeState() {
+    const free = !!chkFree?.checked;
+    if (!inputPrice || !inputCurr) return;
+
+    if (free) {
+      inputPrice.value = "0";
+      inputCurr.value = ""; // oppure "EUR" se preferisci vedere la default
+      inputPrice.disabled = true;
+      inputCurr.disabled = true;
+    } else {
+      inputPrice.disabled = false;
+      inputCurr.disabled = false;
+    }
+  }
+
+  chkFree?.addEventListener("change", applyFreeState);
+  applyFreeState(); // inizializza stato UI
+}
+
+
 // Renderizza un’etichetta stato compatta (ongoing/imminent/future/concluded)
 function renderStatus(status) {
   if (!status) return "";
@@ -514,6 +541,7 @@ if (!res.ok || data?.ok === false) {
         panel.style.display = "block";
         const first = form?.querySelector('input[name="title"]');
         first && first.focus();
+        hookFreePrice(form);
       } else {
         panel.style.display = "none";
       }
@@ -778,6 +806,7 @@ if (btnImportCsv) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
