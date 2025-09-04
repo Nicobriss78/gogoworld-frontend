@@ -506,9 +506,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const id = btn.getAttribute("data-id");
       const action = btn.getAttribute("data-action");
 if (action === "edit") {
-    window.location.href = `evento.html?id=${encodeURIComponent(id)}#edit`;
-    return;
-  }
+  try { sessionStorage.setItem("selectedEventId", id); } catch {}
+  const href = `evento.html?id=${encodeURIComponent(id)}#edit`;
+  window.location.href = href;
+  return;
+}
+
 
       if (action === "details") {
         sessionStorage.setItem("selectedEventId", id);
@@ -850,6 +853,7 @@ if (action === "edit") {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
