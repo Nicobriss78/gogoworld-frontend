@@ -369,10 +369,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <h3>${ev.title}</h3>
             ${renderStatus(ev.status)}
             <p>${ev.city || ""} ${formatEventDate(ev)}</p>
-            <div class="event-actions">
-              <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
-              <button class="btn btn-secondary" data-id="${ev._id}" data-action="delete">Elimina</button>
-            </div>
+           <div class="actions">
+  <button class="btn" data-action="edit" data-id="${ev._id}">Modifica</button>
+  <button class="btn btn-secondary" data-action="details" data-id="${ev._id}">Dettagli</button>
+  <button class="btn btn-danger" data-action="delete" data-id="${ev._id}">Elimina</button>
+</div>
           </div>
         `).join("");
       }
@@ -504,6 +505,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!btn) return;
       const id = btn.getAttribute("data-id");
       const action = btn.getAttribute("data-action");
+if (action === "edit") {
+    window.location.href = `evento.html?id=${encodeURIComponent(id)}#edit`;
+    return;
+  }
 
       if (action === "details") {
         sessionStorage.setItem("selectedEventId", id);
@@ -845,6 +850,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
