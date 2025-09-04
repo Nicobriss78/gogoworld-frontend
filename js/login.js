@@ -80,19 +80,42 @@ document.addEventListener("DOMContentLoaded", () => {
       // Salva token
       localStorage.setItem("token", res.token);
 
-      // Imposta ruolo di sessione lato FE e notifica BE (ora persistente e protetto)
-      const role = getDesiredRole();
-      await apiPost("/users/session-role", { role }, res.token);
+      // Ruolo richiesto dalla sessione (se presente)
+      const hadDesired = !!sessionStorage.getItem("desiredRole");
+      const roleRequested = getDesiredRole();
 
-      // Verifica chi sono
+      // Notifica BE del ruolo richiesto (persistente)
+      await apiPost("/users/session-role", { role: roleRequested }, res.token);
+
+      // Recupera profilo per conoscere canOrganize
       const me = await apiGet("/users/me", res.token);
       if (!me || me.ok === false) {
         showAlert("Errore nel recupero profilo", "error", { autoHideMs: 4000 });
         return;
       }
 
-      // Redirect in base al ruolo richiesto (EN)
-      if (role === "organizer") {
+      // Se non c'è un desiredRole già scelto prima (homepage 0),
+      // imposta automaticamente il default in base a canOrganize
+      let redirectRole = roleRequested;
+      if (!hadDesired) {
+        const defaultRole = me?.canOrganize ? "organizer" : "participant";
+        sessionStorage.setItem("desiredRole", defaultRole);
+        // Allinea il BE al default dedotto
+        await apiPost("/users/session-role", { role: defaultRole }, res.token);
+        redirectRole = defaultRole;
+      }
+
+      // Se vogliamo entrare in organizer ma l'utente non è ancora abilitato, abilitalo adesso (Opzione B)
+      if (redirectRole === "organizer" && me?.canOrganize !== true) {
+        const en = await apiPost("/users/me/enable-organizer", {}, res.token);
+        if (en?.ok === false) {
+          showAlert(en?.error || "Impossibile abilitare la modalità organizzatore", "error", { autoHideMs: 5000 });
+          return;
+        }
+      }
+
+      // Redirect finale
+      if (redirectRole === "organizer") {
         window.location.href = "organizzatore.html";
       } else {
         window.location.href = "partecipante.html";
