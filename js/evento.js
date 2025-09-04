@@ -4,7 +4,8 @@
 // - Distinguere chiaramente UI owner vs participant con banner/toolbar dedicata
 // - Pulsante “Partecipa/Annulla” con stato loading e toast di esito
 
-import { apiGet, apiPost, apiDelete } from "./api.js";
+import { apiGet, apiPost, apiDelete, apiPut } from "./api.js";
+
 import { escapeHtml } from "./utils.js";
 
 // Intervallo "start – end" con logica smart
@@ -151,9 +152,37 @@ if (secSchedule) {
       adminBar.appendChild(btnDel);
       elDetails.appendChild(adminBar);
 
-      btnEdit.addEventListener("click", () => {
-        showAlert("Form di modifica non ancora implementato in questa fase.", "error", { autoHideMs: 3500 });
-      });
+ btnEdit.addEventListener("click", () => {
+  // Render form di modifica
+  elDetails.innerHTML = renderEditForm(ev);
+  const form = document.getElementById("editEventForm");
+  const btnCancel = document.getElementById("btnCancelEdit");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const payload = buildUpdatePayloadFromForm(form);
+    // Validazioni minime client
+    if (!payload.title || !payload.category || !payload.region || !payload.country || !payload.dateStart) {
+      showAlert("Compila i campi obbligatori (titolo, categoria, regione, paese, inizio).", "error", { autoHideMs: 4000 });
+      return;
+    }
+    if (payload.dateEnd && payload.dateEnd <= payload.dateStart) {
+      showAlert("La data di fine deve essere successiva all’inizio.", "error", { autoHideMs: 4000 });
+      return;
+    }
+    try {
+      const res = await apiPut(`/events/${eventId}`, payload, token);
+      if (!res?.ok) throw new Error(res?.error || "Aggiornamento non riuscito");
+      showAlert("Evento aggiornato", "success", { autoHideMs: 2000 });
+      setTimeout(() => window.location.reload(), 600);
+    } catch (err) {
+      showAlert(err?.message || "Errore di rete", "error", { autoHideMs: 4000 });
+    }
+  });
+  btnCancel.addEventListener("click", () => {
+    window.location.reload();
+  });
+});
+
 
       btnDel.addEventListener("click", async () => {
         if (confirm("Sei sicuro di voler eliminare questo evento?")) {
@@ -324,6 +353,158 @@ function renderMedia(ev) {
     );
   }
   return parts.join("\n");
+}
+
+// --- Edit Form (Modifica Evento) ---
+function renderEditForm(ev) {
+  const startISO = ev.dateStart ? new Date(ev.dateStart) : (ev.date ? new Date(ev.date) : null);
+  const endISO = ev.dateEnd ? new Date(ev.dateEnd) : (ev.endDate ? new Date(ev.endDate) : null);
+  // to 'YYYY-MM-DDTHH:MM' for datetime-local
+  const toLocalInput = (d) => {
+    try {
+      if (!d || isNaN(d.getTime())) return "";
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    } catch { return ""; }
+  };
+  const isFree = !!ev.isFree || Number(ev.price) === 0;
+
+  return `
+  <section class="edit-event">
+    <h2>Modifica evento</h2>
+    <form id="editEventForm" class="form">
+      <div class="form-row">
+        <label for="fTitle">Titolo *</label>
+        <input id="fTitle" type="text" required value="${escapeHtml(ev.title || "")}">
+      </div>
+
+      <div class="form-row">
+        <label for="fDescription">Descrizione</label>
+        <textarea id="fDescription" rows="5">${escapeHtml(ev.description || "")}</textarea>
+      </div>
+
+      <div class="form-row">
+        <label for="fCategory">Categoria *</label>
+        <input id="fCategory" type="text" required value="${escapeHtml(ev.category || "")}">
+      </div>
+      <div class="form-row">
+        <label for="fSubcategory">Sottocategoria</label>
+        <input id="fSubcategory" type="text" value="${escapeHtml(ev.subcategory || "")}">
+      </div>
+
+      <div class="form-row grid-2">
+        <div>
+          <label for="fDateStart">Inizio *</label>
+          <input id="fDateStart" type="datetime-local" required value="${toLocalInput(startISO)}">
+        </div>
+        <div>
+          <label for="fDateEnd">Fine</label>
+          <input id="fDateEnd" type="datetime-local" value="${toLocalInput(endISO)}">
+        </div>
+      </div>
+
+      <div class="form-row grid-3">
+        <div>
+          <label for="fCity">Città</label>
+          <input id="fCity" type="text" value="${escapeHtml(ev.city || "")}">
+        </div>
+        <div>
+          <label for="fRegion">Regione *</label>
+          <input id="fRegion" type="text" required value="${escapeHtml(ev.region || "")}">
+        </div>
+        <div>
+          <label for="fCountry">Paese *</label>
+          <input id="fCountry" type="text" required value="${escapeHtml(ev.country || "")}">
+        </div>
+      </div>
+
+      <div class="form-row grid-3">
+        <div>
+          <label for="fLanguage">Lingua</label>
+          <input id="fLanguage" type="text" value="${escapeHtml(ev.language || "")}">
+        </div>
+        <div>
+          <label for="fTarget">Target</label>
+          <input id="fTarget" type="text" value="${escapeHtml(ev.target || "")}">
+        </div>
+        <div>
+          <label for="fVisibility">Visibilità</label>
+          <select id="fVisibility">
+            <option value="public" ${ev.visibility === "public" ? "selected" : ""}>Pubblico</option>
+            <option value="draft" ${ev.visibility === "draft" ? "selected" : ""}>Bozza</option>
+            <option value="private" ${ev.visibility === "private" ? "selected" : ""}>Privato</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row grid-3">
+        <div>
+          <label><input id="fIsFree" type="checkbox" ${isFree ? "checked" : ""}> Gratuito</label>
+        </div>
+        <div>
+          <label for="fPrice">Prezzo</label>
+          <input id="fPrice" type="number" min="0" step="0.01" value="${Number(ev.price) || 0}">
+        </div>
+        <div>
+          <label for="fCurrency">Valuta</label>
+          <input id="fCurrency" type="text" maxlength="3" value="${escapeHtml(ev.currency || "EUR")}">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="fTicketUrl">Link biglietti</label>
+        <input id="fTicketUrl" type="url" value="${escapeHtml(ev.ticketUrl || "")}">
+      </div>
+
+      <div class="form-row actions">
+        <button type="button" id="btnCancelEdit" class="btn">Annulla</button>
+        <button type="submit" id="btnSaveEdit" class="btn btn-primary">Salva modifiche</button>
+      </div>
+    </form>
+  </section>`;
+}
+
+// Costruisce payload coerente con BE
+function buildUpdatePayloadFromForm(form) {
+  const v = (id) => form.querySelector(id);
+  const parseDateLocal = (input) => {
+    const v = (input?.value || "").trim();
+    if (!v) return null;
+    // interpret as local time (Europe/Rome) and convert to ISO (UTC)
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d.toISOString();
+  };
+
+  const isFree = v("#fIsFree")?.checked === true;
+  let price = Number(v("#fPrice")?.value || 0);
+  if (Number.isNaN(price) || price < 0) price = 0;
+
+  let currency = (v("#fCurrency")?.value || "").trim().toUpperCase();
+  if (!currency) currency = "EUR";
+
+  const payload = {
+    title: (v("#fTitle")?.value || "").trim(),
+    description: (v("#fDescription")?.value || "").trim(),
+    category: (v("#fCategory")?.value || "").trim(),
+    subcategory: (v("#fSubcategory")?.value || "").trim(),
+    city: (v("#fCity")?.value || "").trim(),
+    region: (v("#fRegion")?.value || "").trim(),
+    country: (v("#fCountry")?.value || "").trim(),
+    language: (v("#fLanguage")?.value || "").trim(),
+    target: (v("#fTarget")?.value || "").trim(),
+    visibility: (v("#fVisibility")?.value || "").trim() || "public",
+    isFree,
+    price,
+    currency,
+    ticketUrl: (v("#fTicketUrl")?.value || "").trim(),
+  };
+
+  const ds = parseDateLocal(v("#fDateStart"));
+  const de = parseDateLocal(v("#fDateEnd"));
+  if (ds) payload.dateStart = ds;
+  if (de) payload.dateEnd = de;
+
+  return payload;
 }
 
 
