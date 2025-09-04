@@ -59,7 +59,15 @@ body {
 .form-row { display: flex; flex-direction: column; }
 .form-row label { margin-bottom: 0.25rem; }
 .form-actions { display: flex; gap: 1rem; }
+/* Grid utilities for edit form */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media (max-width: 640px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
 
+/* Spacing sezione modifica */
+.edit-event { margin-top: 1.25rem; }
 /* TODO UI/UX Overhaul:
    Rimpiazzare le classi .btn / .btn-secondary con componenti standardizzati
    (es. .gw-button[data-variant="primary|secondary|ghost"] con scale e stati uniformi). */
@@ -330,6 +338,7 @@ body {
   border: 1px solid #ddd;
   border-radius: 4px;
 }
+
 
 
 
