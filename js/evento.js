@@ -5,6 +5,17 @@
 // - Pulsante “Partecipa/Annulla” con stato loading e toast di esito
 
 import { apiGet, apiPost, apiDelete, apiPut } from "./api.js";
+// --- helper: risolve l'ID evento sia da query (?id=) sia da sessionStorage ---
+function resolveEventId() {
+  const url = new URL(window.location.href);
+  const qId = url.searchParams.get("id");
+  if (qId) return qId;
+  try {
+    const sid = sessionStorage.getItem("selectedEventId");
+    if (sid) return sid;
+  } catch {}
+  return null;
+}
 
 import { escapeHtml } from "./utils.js";
 
@@ -183,7 +194,9 @@ if (secSchedule) {
   });
 });
 
+if (window.location.hash === "#edit") { btnEdit.click(); }
 
+      
       btnDel.addEventListener("click", async () => {
         if (confirm("Sei sicuro di voler eliminare questo evento?")) {
           const res = await apiDelete(`/events/${eventId}`, token);
@@ -506,6 +519,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
