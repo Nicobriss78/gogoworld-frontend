@@ -7,12 +7,21 @@
 // - Pulsante "Registrati" -> pages/register.html
 
 document.addEventListener("DOMContentLoaded", () => {
+  // PATCH: se già loggato → redirect automatico nell’area coerente
+  const token = localStorage.getItem("token");
+  if (token) {
+    const role = (sessionStorage.getItem("desiredRole") || "participant");
+    window.location.href = role === "organizer" ? "pages/organizzatore.html" : "pages/partecipante.html";
+    return;
+  }
+
   const btnOrganizer = document.getElementById("btnOrganizer");
   const btnParticipant = document.getElementById("btnParticipant");
   const btnRegister = document.getElementById("btnRegister");
 
   function selectRole(role) {
-    sessionStorage.setItem("desiredRole", role);
+    // PATCH: protezione su sessionStorage
+    try { sessionStorage.setItem("desiredRole", role); } catch {}
     window.location.href = "login.html";
   }
 
@@ -28,3 +37,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
