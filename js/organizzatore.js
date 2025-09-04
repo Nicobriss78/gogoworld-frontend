@@ -85,7 +85,6 @@ function hookFreePrice(form) {
   applyFreeState(); // inizializza stato UI
 }
 
-
 // Renderizza un’etichetta stato compatta (ongoing/imminent/future/concluded)
 function renderStatus(status) {
   if (!status) return "";
@@ -117,6 +116,15 @@ document.addEventListener("DOMContentLoaded", () => {
         me?.user?.email ||
         "utente";
 
+      // PATCH B: se l’utente è in area Organizzatore ma non è abilitato, abilitalo in modo trasparente
+      try {
+        if (me && me.canOrganize !== true) {
+          await apiPost("/users/me/enable-organizer", {}, token);
+        }
+      } catch {
+        // silente: se fallisce, verrà gestito da loadEvents col retry 403
+      }
+
       if (!document.getElementById("welcomeMsg")) {
         const main = document.querySelector("main") || document.body;
         const p = document.createElement("p");
@@ -140,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnCreate = document.getElementById("btnCreateEvent");
   
   // PATCH: bottone Importa CSV
-const btnImportCsv = document.getElementById("btnImportCsv");
+  const btnImportCsv = document.getElementById("btnImportCsv");
   
   // PATCH: riferimenti al pannello di creazione e form
   const panel = document.getElementById("createEventPanel");
@@ -242,10 +250,10 @@ const btnImportCsv = document.getElementById("btnImportCsv");
 
     // split helper
     const splitPipe = (s) => s ? s.split("|").map(x => x.trim()).filter(Boolean) : [];
-// PATCH orari → unisci data (YYYY-MM-DD) + ora (HH:mm) in ISO
-const dateStartStr = combineDateAndTime(get("dateStart"), get("timeStart"));
-const rawDateEnd = get("dateEnd");
-const dateEndStr = rawDateEnd ? combineDateAndTime(rawDateEnd, get("timeEnd")) : "";
+    // PATCH orari → unisci data (YYYY-MM-DD) + ora (HH:mm) in ISO
+    const dateStartStr = combineDateAndTime(get("dateStart"), get("timeStart"));
+    const rawDateEnd = get("dateEnd");
+    const dateEndStr = rawDateEnd ? combineDateAndTime(rawDateEnd, get("timeEnd")) : "";
     const payload = {
       // Base
       title: get("title"),
@@ -272,9 +280,9 @@ const dateEndStr = rawDateEnd ? combineDateAndTime(rawDateEnd, get("timeEnd")) :
       lat: get("lat"),
       lon: get("lon"),
 
-     // Date (+ ora) in ISO
-dateStart: dateStartStr,
-...(dateEndStr ? { dateEnd: dateEndStr } : {}),
+      // Date (+ ora) in ISO
+      dateStart: dateStartStr,
+      ...(dateEndStr ? { dateEnd: dateEndStr } : {}),
 
       // Prezzo/valuta
       isFree,
@@ -324,23 +332,33 @@ dateStart: dateStartStr,
     return errors;
   }
 
-// PATCH FIX: base URL API (se manca)
-function resolveApiBaseLite() {
-  try {
-    const override = localStorage.getItem("apiBase");
-    if (override && /^https?:\/\//i.test(override)) return override.replace(/\/+$/, "");
-    const meta = document.querySelector('meta[name="api-base"]');
-    if (meta && meta.content) return meta.content.replace(/\/+$/, "");
-  } catch {}
-  return "https://gogoworld-api.onrender.com/api"; // fallback
-}
+  // PATCH FIX: base URL API (se manca)
+  function resolveApiBaseLite() {
+    try {
+      const override = localStorage.getItem("apiBase");
+      if (override && /^https?:\/\//i.test(override)) return override.replace(/\/+$/, "");
+      const meta = document.querySelector('meta[name="api-base"]');
+      if (meta && meta.content) return meta.content.replace(/\/+$/, "");
+    } catch {}
+    return "https://gogoworld-api.onrender.com/api"; // fallback
+  }
 
-  
   async function loadEvents(filters = {}) {
     listContainer.innerHTML = "<p>Caricamento...</p>";
     try {
       const query = new URLSearchParams(filters).toString();
-      const res = await apiGet(`/events/mine/list${query ? "?" + query : ""}`, token);
+      let res = await apiGet(`/events/mine/list${query ? "?" + query : ""}`, token);
+
+      // PATCH B: se 403, abilita canOrganize e ritenta UNA volta
+      if (res?.ok === false && res?.status === 403) {
+        try {
+          await apiPost("/users/me/enable-organizer", {}, token);
+          res = await apiGet(`/events/mine/list${query ? "?" + query : ""}`, token);
+        } catch (e) {
+          // continuerà col branch di errore sotto
+        }
+      }
+
       if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
 
       if (!res.events.length) {
@@ -372,118 +390,113 @@ function resolveApiBaseLite() {
     }
   }
 
-// PATCH: crea (una tantum) il pannello risultati import, sopra la lista
-function ensureImportResultsPanel() {
-  let panel = document.getElementById("importResults");
-  if (panel) return panel;
-  panel = document.createElement("section");
-  panel.id = "importResults";
-  panel.className = "table-wrap";
-  const mainList = document.getElementById("myEventsList");
-  if (mainList && mainList.parentNode) {
-    mainList.parentNode.insertBefore(panel, mainList);
-  } else {
-    (document.querySelector("main") || document.body).appendChild(panel);
-  }
-  return panel;
-}
-
-  
-  // PATCH: upload CSV → /events/import (dryRun true/false)
-async function importCsvFile(file, { dryRun = true } = {}) {
-  const base = resolveApiBaseLite();
-  // ATTENZIONE: se la route lato BE è diversa, cambia qui:
- const url = `${base}/events/import-csv?dryRun=${dryRun ? "true" : "false"}`;
-
-
-const form = new FormData();
-// difesa: assicurati di avere UN SOLO campo "file"
-if (typeof form.delete === "function") form.delete("file");
-form.set("file", file);
-
-// log diagnostico non invasivo
-console.log("[CSV] file selezionato:", { name: file?.name, size: file?.size });
-
-
-  let res;
-  try {
-    res = await fetch(url, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` }, // niente content-type: lo setta il browser
-      body: form
-    });
-  } catch (e) {
-    showAlert(e?.message || "Errore di rete durante l'upload", "error", { autoHideMs: 4000 });
-    return;
-  }
-
-  let data = null;
-  try {
-    data = await res.json();
-  } catch {
-    showAlert(`Risposta non valida (HTTP ${res.status})`, "error", { autoHideMs: 4000 });
-    return;
-  }
-
-if (!res.ok || data?.ok === false) {
-  console.error("Import CSV error:", { status: res.status, data });
-  const msg = data?.error || data?.message || `HTTP ${res.status}`;
-  showAlert(msg, "error", { autoHideMs: 6000 });
-  return;
-}
-
-
-  const panel = ensureImportResultsPanel();
-  if (dryRun) {
-    const rows = Array.isArray(data.rows) ? data.rows : [];
-    const stats = data.stats || {
-      total: rows.length,
-      valid: rows.filter(r => r.status === "ok").length,
-      invalid: rows.filter(r => r.status === "error").length
-    };
-    panel.innerHTML = `
-      <div class="simple-table">
-        <div style="padding:8px 0;"><strong>Anteprima import CSV</strong> — Totali: ${stats.total} • Validi: ${stats.valid} • Invalidi: ${stats.invalid}</div>
-        <table class="simple-table">
-          <thead><tr><th>#</th><th>Stato</th><th>Dettagli</th></tr></thead>
-          <tbody>
-            ${rows.slice(0, 200).map(r => `
-              <tr>
-                <td>${r.line ?? ""}</td>
-                <td>${r.status}</td>
-                <td>${r.errors ? r.errors.join("; ") : (r.preview ? (r.preview.title || "") : (r.id || ""))}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-        <div class="form-actions" style="margin-top:10px">
-          <button id="btnConfirmImport" class="btn btn-primary">Conferma import</button>
-        </div>
-      </div>
-    `;
-    const btnConfirm = document.getElementById("btnConfirmImport");
-    if (btnConfirm) {
-      btnConfirm.onclick = async () => {
-        btnConfirm.disabled = true;
-        await importCsvFile(file, { dryRun: false });
-        btnConfirm.disabled = false;
-      };
+  // PATCH: crea (una tantum) il pannello risultati import, sopra la lista
+  function ensureImportResultsPanel() {
+    let panel = document.getElementById("importResults");
+    if (panel) return panel;
+    panel = document.createElement("section");
+    panel.id = "importResults";
+    panel.className = "table-wrap";
+    const mainList = document.getElementById("myEventsList");
+    if (mainList && mainList.parentNode) {
+      mainList.parentNode.insertBefore(panel, mainList);
+    } else {
+      (document.querySelector("main") || document.body).appendChild(panel);
     }
-    showAlert("Anteprima pronta. Controlla gli errori, poi premi 'Conferma import'.", "info", { autoHideMs: 4000 });
-  } else {
-    const created = data.created ?? 0;
-    const skipped = data.skipped ?? 0;
-    panel.innerHTML = `
-      <div class="simple-table">
-        <div style="padding:8px 0;"><strong>Import completato</strong> — Creati: ${created} • Skippati: ${skipped}</div>
-      </div>
-    `;
-    showAlert(`Import completato. Creati: ${created}, Skippati: ${skipped}`, "success", { autoHideMs: 4000 });
-    try { await loadEvents(); } catch {}
+    return panel;
   }
-}
 
-  
+  // PATCH: upload CSV → /events/import (dryRun true/false)
+  async function importCsvFile(file, { dryRun = true } = {}) {
+    const base = resolveApiBaseLite();
+    // ATTENZIONE: se la route lato BE è diversa, cambia qui:
+    const url = `${base}/events/import-csv?dryRun=${dryRun ? "true" : "false"}`;
+
+    const form = new FormData();
+    // difesa: assicurati di avere UN SOLO campo "file"
+    if (typeof form.delete === "function") form.delete("file");
+    form.set("file", file);
+
+    // log diagnostico non invasivo
+    console.log("[CSV] file selezionato:", { name: file?.name, size: file?.size });
+
+    let res;
+    try {
+      res = await fetch(url, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` }, // niente content-type: lo setta il browser
+        body: form
+      });
+    } catch (e) {
+      showAlert(e?.message || "Errore di rete durante l'upload", "error", { autoHideMs: 4000 });
+      return;
+    }
+
+    let data = null;
+    try {
+      data = await res.json();
+    } catch {
+      showAlert(`Risposta non valida (HTTP ${res.status})`, "error", { autoHideMs: 4000 });
+      return;
+    }
+
+    if (!res.ok || data?.ok === false) {
+      console.error("Import CSV error:", { status: res.status, data });
+      const msg = data?.error || data?.message || `HTTP ${res.status}`;
+      showAlert(msg, "error", { autoHideMs: 6000 });
+      return;
+    }
+
+    const panel = ensureImportResultsPanel();
+    if (dryRun) {
+      const rows = Array.isArray(data.rows) ? data.rows : [];
+      const stats = data.stats || {
+        total: rows.length,
+        valid: rows.filter(r => r.status === "ok").length,
+        invalid: rows.filter(r => r.status === "error").length
+      };
+      panel.innerHTML = `
+        <div class="simple-table">
+          <div style="padding:8px 0;"><strong>Anteprima import CSV</strong> — Totali: ${stats.total} • Validi: ${stats.valid} • Invalidi: ${stats.invalid}</div>
+          <table class="simple-table">
+            <thead><tr><th>#</th><th>Stato</th><th>Dettagli</th></tr></thead>
+            <tbody>
+              ${rows.slice(0, 200).map(r => `
+                <tr>
+                  <td>${r.line ?? ""}</td>
+                  <td>${r.status}</td>
+                  <td>${r.errors ? r.errors.join("; ") : (r.preview ? (r.preview.title || "") : (r.id || ""))}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+          <div class="form-actions" style="margin-top:10px">
+            <button id="btnConfirmImport" class="btn btn-primary">Conferma import</button>
+          </div>
+        </div>
+      `;
+      const btnConfirm = document.getElementById("btnConfirmImport");
+      if (btnConfirm) {
+        btnConfirm.onclick = async () => {
+          btnConfirm.disabled = true;
+          await importCsvFile(file, { dryRun: false });
+          btnConfirm.disabled = false;
+        };
+      }
+      showAlert("Anteprima pronta. Controlla gli errori, poi premi 'Conferma import'.", "info", { autoHideMs: 4000 });
+    } else {
+      const created = data.created ?? 0;
+      const skipped = data.skipped ?? 0;
+      panel.innerHTML = `
+        <div class="simple-table">
+          <div style="padding:8px 0;"><strong>Import completato</strong> — Creati: ${created} • Skippati: ${skipped}</div>
+        </div>
+      `;
+      showAlert(`Import completato. Creati: ${created}, Skippati: ${skipped}`, "success", { autoHideMs: 4000 });
+      try { await loadEvents(); } catch {}
+    }
+  }
+
   // Event delegation
   if (listContainer) {
     listContainer.addEventListener("click", async (e) => {
@@ -564,71 +577,71 @@ if (!res.ok || data?.ok === false) {
     });
   }
 
-// PATCH: pannello import CSV con bottoni "Valida" / "Importa"
-if (btnImportCsv) {
-  btnImportCsv.addEventListener("click", () => {
-    let panel = document.getElementById("importCsvPanel");
-    if (!panel) {
-      panel = document.createElement("section");
-      panel.id = "importCsvPanel";
-      panel.className = "table-wrap";
-      const myList = document.getElementById("myEventsList");
-      if (myList && myList.parentNode) {
-        myList.parentNode.insertBefore(panel, myList); // sopra la lista
-      } else {
-        (document.querySelector("main") || document.body).appendChild(panel);
-      }
-      panel.innerHTML = `
-        <div class="form">
-          <div class="form-row">
-            <label><strong>Importa eventi da CSV</strong></label>
-            <input id="csvFileInput" type="file" accept=".csv,text/csv" />
-          </div>
-          <div class="form-actions">
-            <button id="btnValidateCsv" class="btn">Valida</button>
-            <button id="btnDoImportCsv" class="btn btn-primary" disabled>Importa</button>
-          </div>
-        </div>
-        <div id="importResults" class="table-wrap"></div>
-      `;
-
-      const input = panel.querySelector("#csvFileInput");
-      const btnValidate = panel.querySelector("#btnValidateCsv");
-      const btnDoImport = panel.querySelector("#btnDoImportCsv");
-
-      let lastFile = null;
-
-      input.addEventListener("change", () => {
-        lastFile = input.files && input.files[0] ? input.files[0] : null;
-        btnDoImport.disabled = !lastFile;
-      });
-
-      btnValidate.addEventListener("click", async () => {
-        if (!lastFile) {
-          showAlert("Seleziona un file CSV prima di validare.", "error", { autoHideMs: 3000 });
-          return;
+  // PATCH: pannello import CSV con bottoni "Valida" / "Importa"
+  if (btnImportCsv) {
+    btnImportCsv.addEventListener("click", () => {
+      let panel = document.getElementById("importCsvPanel");
+      if (!panel) {
+        panel = document.createElement("section");
+        panel.id = "importCsvPanel";
+        panel.className = "table-wrap";
+        const myList = document.getElementById("myEventsList");
+        if (myList && myList.parentNode) {
+          myList.parentNode.insertBefore(panel, myList); // sopra la lista
+        } else {
+          (document.querySelector("main") || document.body).appendChild(panel);
         }
-        await importCsvFile(lastFile, { dryRun: true });
-      });
+        panel.innerHTML = `
+          <div class="form">
+            <div class="form-row">
+              <label><strong>Importa eventi da CSV</strong></label>
+              <input id="csvFileInput" type="file" accept=".csv,text/csv" />
+            </div>
+            <div class="form-actions">
+              <button id="btnValidateCsv" class="btn">Valida</button>
+              <button id="btnDoImportCsv" class="btn btn-primary" disabled>Importa</button>
+            </div>
+          </div>
+          <div id="importResults" class="table-wrap"></div>
+        `;
 
-      btnDoImport.addEventListener("click", async () => {
-        if (!lastFile) {
-          showAlert("Seleziona un file CSV prima di importare.", "error", { autoHideMs: 3000 });
-          return;
-        }
-        btnDoImport.disabled = true;
-        try {
-          await importCsvFile(lastFile, { dryRun: false });
-          input.value = "";
-          lastFile = null;
+        const input = panel.querySelector("#csvFileInput");
+        const btnValidate = panel.querySelector("#btnValidateCsv");
+        const btnDoImport = panel.querySelector("#btnDoImportCsv");
+
+        let lastFile = null;
+
+        input.addEventListener("change", () => {
+          lastFile = input.files && input.files[0] ? input.files[0] : null;
+          btnDoImport.disabled = !lastFile;
+        });
+
+        btnValidate.addEventListener("click", async () => {
+          if (!lastFile) {
+            showAlert("Seleziona un file CSV prima di validare.", "error", { autoHideMs: 3000 });
+            return;
+          }
+          await importCsvFile(lastFile, { dryRun: true });
+        });
+
+        btnDoImport.addEventListener("click", async () => {
+          if (!lastFile) {
+            showAlert("Seleziona un file CSV prima di importare.", "error", { autoHideMs: 3000 });
+            return;
+          }
           btnDoImport.disabled = true;
-        } finally {}
-      });
-    }
+          try {
+            await importCsvFile(lastFile, { dryRun: false });
+            input.value = "";
+            lastFile = null;
+            btnDoImport.disabled = true;
+          } finally {}
+        });
+      }
 
-    panel.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-}
+      panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 
   // PATCH: annulla creazione
   if (btnCancelCreate && panel) {
@@ -644,16 +657,16 @@ if (btnImportCsv) {
       e.preventDefault();
       const payload = getFormDataCreateEvent();
       const errors = validateCreateEventPayload(payload);
-// PATCH validazioni su data/ora (date + time) — usa il payload già composto
-if (!payload.dateStart) {
-  errors.push("Data inizio mancante");
-} else {
-  const _start = new Date(payload.dateStart);
-  const _end = payload.dateEnd ? new Date(payload.dateEnd) : null;
-  if (_end && !isNaN(_start.getTime()) && !isNaN(_end.getTime()) && _end < _start) {
-    errors.push("La fine è precedente all'inizio");
-  }
-}
+      // PATCH validazioni su data/ora (date + time) — usa il payload già composto
+      if (!payload.dateStart) {
+        errors.push("Data inizio mancante");
+      } else {
+        const _start = new Date(payload.dateStart);
+        const _end = payload.dateEnd ? new Date(payload.dateEnd) : null;
+        if (_end && !isNaN(_start.getTime()) && !isNaN(_end.getTime()) && _end < _start) {
+          errors.push("La fine è precedente all'inizio");
+        }
+      }
       if (errors.length) {
         showAlert(errors.join(" • "), "error", { autoHideMs: 5000 });
         return;
@@ -832,5 +845,6 @@ if (!payload.dateStart) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
