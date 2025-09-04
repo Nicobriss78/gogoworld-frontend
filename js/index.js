@@ -4,14 +4,14 @@
 // - Scelta ruolo iniziale (organizzatore/partecipante)
 // - Salvataggio in sessionStorage
 // - Redirect a login.html
-// - Pulsante "Registrati" -> pages/register.html
+// - Pulsante "Registrati" -> register.html
 
 document.addEventListener("DOMContentLoaded", () => {
   // PATCH: se già loggato → redirect automatico nell’area coerente
   const token = localStorage.getItem("token");
   if (token) {
     const role = (sessionStorage.getItem("desiredRole") || "participant");
-    window.location.href = role === "organizer" ? "pages/organizzatore.html" : "pages/partecipante.html";
+    window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
     return;
   }
 
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   if (btnRegister) {
     btnRegister.addEventListener("click", () => {
-      window.location.href = "pages/register.html";
+      window.location.href = "register.html";
     });
   }
 });
