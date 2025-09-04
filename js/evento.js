@@ -82,13 +82,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const eventId = sessionStorage.getItem("selectedEventId");
-  if (!eventId) {
-    showAlert("Nessun evento selezionato", "error", { autoHideMs: 4000 });
-    const desiredRole = sessionStorage.getItem("desiredRole");
-    window.location.href = desiredRole === "organizer" ? "organizzatore.html" : "partecipante.html";
-    return;
-  }
+ const eventId = resolveEventId();
+if (!eventId) {
+  showAlert("Evento non trovato (manca l'ID).", "error", { autoHideMs: 4000 });
+  const desiredRole = sessionStorage.getItem("desiredRole");
+  window.location.href = desiredRole === "organizer" ? "organizzatore.html" : "partecipante.html";
+  return;
+}
+
 
   const elTitle = document.getElementById("eventTitle");
   const elDetails = document.getElementById("eventDetails");
@@ -519,6 +520,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
