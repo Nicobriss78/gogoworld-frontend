@@ -10,7 +10,65 @@ function apiBase() {
   return (meta?.content || "").replace(/\/+$/, "");
 }
 function getToken() {
-  try { return sessionStorage.getItem("token") || ""; } catch { return ""; }
+  // 1) sessionStorage: nomi più comuni
+  try {
+    const direct =
+      sessionStorage.getItem("token") ||
+      sessionStorage.getItem("authToken") ||
+      sessionStorage.getItem("jwt") ||
+      sessionStorage.getItem("accessToken");
+    if (direct) return direct;
+  } catch {}
+
+  // 2) localStorage fallback: stessi nomi
+  try {
+    const directLocal =
+      localStorage.getItem("token") ||
+      localStorage.getItem("authToken") ||
+      localStorage.getItem("jwt") ||
+      localStorage.getItem("accessToken");
+    if (directLocal) return directLocal;
+  } catch {}
+
+  // 3) session/local: oggetti noti (user/access)
+  const tryParse = (raw) => { try { return JSON.parse(raw); } catch { return null; } };
+  try {
+    const userSS = tryParse(sessionStorage.getItem("user"));
+    if (userSS?.token) return userSS.token;
+    if (userSS?.accessToken) return userSS.accessToken;
+  } catch {}
+  try {
+    const userLS = tryParse(localStorage.getItem("user"));
+    if (userLS?.token) return userLS.token;
+    if (userLS?.accessToken) return userLS.accessToken;
+  } catch {}
+
+  // 4) Scansione chiavi: se troviamo qualcosa che "sembra" un JWT, usalo
+  const looksLikeJwt = (v) => typeof v === "string" && v.split(".").length === 3 && v.length > 20;
+  try {
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const k = sessionStorage.key(i);
+      const v = sessionStorage.getItem(k);
+      if (looksLikeJwt(v)) return v;
+      const parsed = tryParse(v);
+      if (looksLikeJwt(parsed?.token)) return parsed.token;
+      if (looksLikeJwt(parsed?.accessToken)) return parsed.accessToken;
+    }
+  } catch {}
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      const v = localStorage.getItem(k);
+      if (looksLikeJwt(v)) return v;
+      const parsed = tryParse(v);
+      if (looksLikeJwt(parsed?.token)) return parsed.token;
+      if (looksLikeJwt(parsed?.accessToken)) return parsed.accessToken;
+    }
+  } catch {}
+
+  return "";
+}
+
 }
 function authHeaders() {
   const t = getToken();
