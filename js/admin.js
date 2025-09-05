@@ -9,6 +9,7 @@ function apiBase() {
   const meta = document.querySelector('meta[name="api-base"]');
   return (meta?.content || "").replace(/\/+$/, "");
 }
+
 function getToken() {
   // 1) sessionStorage: nomi più comuni
   try {
@@ -69,11 +70,11 @@ function getToken() {
   return "";
 }
 
-}
 function authHeaders() {
   const t = getToken();
   return t ? { Authorization: `Bearer ${t}` } : {};
 }
+
 function h(tag, attrs = {}, children = []) {
   const el = document.createElement(tag);
   Object.entries(attrs).forEach(([k, v]) => {
@@ -363,21 +364,21 @@ const elImpRun = document.getElementById("impRun");
 const elImpLog = document.getElementById("importLog");
 
 elImpRun?.addEventListener("click", async () => {
-const simulate = !!elImpSim?.checked;
-const url = `${apiBase()}/admin/import/events`;
-try {
-const res = await fetch(url, {
-method: "POST",
-headers: { ...authHeaders(), "Content-Type": "application/json" },
-body: JSON.stringify({ simulate }),
-});
-const out = await res.json().catch(() => ({}));
-if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore import");
-elImpLog.textContent = JSON.stringify(out, null, 2);
-showAlert("Import eseguito", "success");
-} catch (err) {
-showAlert(err?.message || "Errore import", "error");
-}
+  const simulate = !!elImpSim?.checked;
+  const url = `${apiBase()}/admin/import/events`;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { ...authHeaders(), "Content-Type": "application/json" },
+      body: JSON.stringify({ simulate }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore import");
+    elImpLog.textContent = JSON.stringify(out, null, 2);
+    showAlert("Import eseguito", "success");
+  } catch (err) {
+    showAlert(err?.message || "Errore import", "error");
+  }
 });
 
 // -------------------- Boot --------------------
