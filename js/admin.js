@@ -9,11 +9,6 @@ function apiBase() {
   const meta = document.querySelector('meta[name="api-base"]');
   return (meta?.content || "").replace(/\/+$/, "");
 }
-function internalBase() {
-  // Deriva il root (senza /api) per chiamare /internal/*
-  const base = apiBase();
-  return base.replace(/\/api$/, "") + "/internal";
-}
 function getToken() {
   try { return sessionStorage.getItem("token") || ""; } catch { return ""; }
 }
@@ -310,21 +305,21 @@ const elImpRun = document.getElementById("impRun");
 const elImpLog = document.getElementById("importLog");
 
 elImpRun?.addEventListener("click", async () => {
-  const simulate = !!elImpSim?.checked;
-  const url = `${internalBase()}/import/events`;
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { ...authHeaders(), "Content-Type": "application/json", "x-internal-api-key": (window.INTERNAL_API_KEY || "") },
-      body: JSON.stringify({ simulate }),
-    });
-    const out = await res.json().catch(() => ({}));
-    if (!res.ok || !out) throw new Error("Errore import");
-    elImpLog.textContent = JSON.stringify(out, null, 2);
-    showAlert("Import eseguito", "success");
-  } catch (err) {
-    showAlert(err?.message || "Errore import", "error");
-  }
+const simulate = !!elImpSim?.checked;
+const url = `${apiBase()}/admin/import/events`;
+try {
+const res = await fetch(url, {
+method: "POST",
+headers: { ...authHeaders(), "Content-Type": "application/json" },
+body: JSON.stringify({ simulate }),
+});
+const out = await res.json().catch(() => ({}));
+if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore import");
+elImpLog.textContent = JSON.stringify(out, null, 2);
+showAlert("Import eseguito", "success");
+} catch (err) {
+showAlert(err?.message || "Errore import", "error");
+}
 });
 
 // -------------------- Boot --------------------
