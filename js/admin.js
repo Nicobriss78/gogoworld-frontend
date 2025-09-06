@@ -158,11 +158,11 @@ function qParams(obj) {
 
 async function fetchEvents() {
   const base = apiBase();
-  const q = {
-    q: elEvSearch?.value?.trim() || "",
-    approvalStatus: elEvStatus?.value || "",
-    visibility: elEvVisibility?.value || "",
-  };
+const q = {
+  q: elEvSearch?.value?.trim() || "",
+  approvalStatus: (elEvStatus?.value || "").toLowerCase(),
+  visibility: (elEvVisibility?.value || "").toLowerCase(),
+};
   const url = `${base}/admin/events?${qParams(q)}&_=${Date.now()}`;
   const res = await fetch(url, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
