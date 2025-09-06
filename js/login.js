@@ -54,11 +54,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return "participant";
   }
 
-  // Login submit
-  form?.addEventListener("submit", async (e) => {
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = (document.getElementById("email")?.value || "").trim();
-    const password = document.getElementById("password")?.value || "";
+
+    const fd = new FormData(form);
+    const email = (fd.get("email") || "").toString().trim();
+    const password = (fd.get("password") || "").toString().trim();
 
     if (!email || !password) {
       showAlert("Inserisci email e password", "error", { autoHideMs: 3000 });
@@ -91,6 +94,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const me = await apiGet("/users/me", res.token);
       if (!me || me.ok === false) {
         showAlert("Errore nel recupero profilo", "error", { autoHideMs: 4000 });
+        return;
+      }
+
+      // PATCH: redirect amministratore diretto dopo login
+      if (String(me?.role || me?.user?.role || "").toLowerCase() === "admin") {
+        window.location.href = "admin.html";
         return;
       }
 
