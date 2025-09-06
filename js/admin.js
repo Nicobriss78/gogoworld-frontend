@@ -93,8 +93,11 @@ function fmtDate(d) {
   try { return new Date(d).toLocaleString("it-IT"); } catch { return String(d); }
 }
 function badge(status) {
-  const cls = ["badge", status].join(" ");
-  return `<span class="${cls}">${status || "-"}</span>`;
+  const s = String(status || "").toLowerCase();
+  const known = new Set(["approved", "pending", "rejected", "blocked", "-"]);
+  const label = s && known.has(s) ? s : "-";
+  const cls = ["badge", label].join(" ");
+  return `<span class="${cls}">${label}</span>`;
 }
 function showAlert(msg, type = "info", { autoHideMs = 2500 } = {}) {
   let box = document.getElementById("adminAlert");
@@ -172,10 +175,15 @@ const q = {
 
 function renderEventCard(ev) {
   const card = h("div", { class: "admin-card" });
+
+  // PATCH: normalizza status/visibility, niente default a "approved"
+  const st = (ev.approvalStatus ?? ev.status ?? "").toLowerCase() || "-";
+  const vis = (ev.visibility ?? "").toLowerCase() || "-";
+
   card.innerHTML = `
     <h3>${ev.title || "-"}</h3>
     <div class="muted">${ev.city || "-"}, ${ev.region || "-"}, ${ev.country || "-"}</div>
-    <div>${badge(ev.approvalStatus || "approved")} <span class="muted">•</span> ${ev.visibility || "public"} <span class="muted">•</span> ${fmtDate(ev.dateStart)} → ${fmtDate(ev.dateEnd)}</div>
+    <div>${badge(st)} <span class="muted">•</span> ${vis} <span class="muted">•</span> ${fmtDate(ev.dateStart)} → ${fmtDate(ev.dateEnd)}</div>
     <div class="actions">
       <button class="btn" data-action="approve" data-id="${ev._id}">Approve</button>
       <button class="btn" data-action="reject" data-id="${ev._id}">Reject</button>
