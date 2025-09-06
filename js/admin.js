@@ -430,3 +430,4 @@ async function boot() {
   await Promise.all([loadKpis(), loadEvents()]);
 }
 document.addEventListener("DOMContentLoaded", boot);
+
