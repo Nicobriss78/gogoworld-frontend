@@ -87,8 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const hadDesired = !!sessionStorage.getItem("desiredRole");
       const roleRequested = getDesiredRole();
 
-      // Notifica BE del ruolo richiesto (persistente)
-      await apiPost("/users/session-role", { role: roleRequested }, res.token);
+      // (RIMOSSO) Notifica persistente al BE del ruolo richiesto
+      // await apiPost("/users/session-role", { role: roleRequested }, res.token);
 
       // Recupera profilo per conoscere canOrganize
       const me = await apiGet("/users/me", res.token);
@@ -109,8 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!hadDesired) {
         const defaultRole = me?.canOrganize ? "organizer" : "participant";
         sessionStorage.setItem("desiredRole", defaultRole);
-        // Allinea il BE al default dedotto
-        await apiPost("/users/session-role", { role: defaultRole }, res.token);
+        // (RIMOSSO) Allinea il BE al default dedotto
+        // await apiPost("/users/session-role", { role: defaultRole }, res.token);
         redirectRole = defaultRole;
       }
 
