@@ -2,7 +2,7 @@
 // Admin Dashboard (Eventi, Utenti, Import Massivo)
 // Requisiti: utente loggato con ruolo admin (JWT nel sessionStorage)
 
-import { apiGet, apiPost, apiDelete, apiPut } from "./api.js";
+import { apiGet, apiPost, apiDelete, apiPut, whoami } from "./api.js"; // PATCH: aggiunto whoami
 
 // -------------------- Helpers base --------------------
 function apiBase() {
@@ -384,11 +384,27 @@ elImpRun?.addEventListener("click", async () => {
 // -------------------- Boot --------------------
 async function boot() {
   // check token
-  if (!getToken()) {
+  const t = getToken();
+  if (!t) {
     showAlert("Sessione non valida. Effettua login come admin.", "error", { autoHideMs: 4000 });
     setTimeout(() => (window.location.href = "login.html"), 800);
     return;
   }
+
+  // PATCH: verifica ruolo lato server (whoami) prima di caricare la dashboard
+  try {
+    const me = await whoami(t);
+    if (!me?.ok || !me?.user || String(me.user.role).toLowerCase() !== "admin") {
+      showAlert("Accesso riservato agli amministratori.", "error", { autoHideMs: 4000 });
+      setTimeout(() => (window.location.href = "login.html"), 800);
+      return;
+    }
+  } catch {
+    showAlert("Verifica permessi non riuscita. Effettua nuovamente il login.", "error", { autoHideMs: 4000 });
+    setTimeout(() => (window.location.href = "login.html"), 800);
+    return;
+  }
+
   // default tab events
   await Promise.all([loadKpis(), loadEvents()]);
 }
