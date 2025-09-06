@@ -114,14 +114,15 @@ document.addEventListener("DOMContentLoaded", () => {
         redirectRole = defaultRole;
       }
 
-      // Se vogliamo entrare in organizer ma l'utente non è ancora abilitato, abilitalo adesso (Opzione B)
-      if (redirectRole === "organizer" && me?.canOrganize !== true) {
-        const en = await apiPost("/users/me/enable-organizer", {}, res.token);
-        if (en?.ok === false) {
-          showAlert(en?.error || "Impossibile abilitare la modalità organizzatore", "error", { autoHideMs: 5000 });
-          return;
-        }
-      }
+    // Se vogliamo entrare in organizer ma l'utente non è ancora abilitato, abilitalo adesso (Opzione B)
+if (redirectRole === "organizer" && me?.canOrganize !== true) {
+  const en = await apiPost("/users/me/enable-organizer", {}, res.token);
+  if (en?.ok === false) {
+    showAlert(en?.error || "Impossibile abilitare la modalità organizzatore", "error", { autoHideMs: 5000 });
+    return;
+  }
+}
+
 
       // Redirect finale
       if (redirectRole === "organizer") {
@@ -134,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
 
 
