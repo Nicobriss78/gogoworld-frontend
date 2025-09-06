@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const canOrg = me?.user?.canOrganize === true;
       if (!(role === "organizer" || role === "admin" || canOrg)) {
         showAlert("Accesso riservato agli organizzatori.", "error", { autoHideMs: 3500 });
-        setTimeout(() => (window.location.href = "login.html"), 600);
+        setTimeout(() => (window.location.href = "partecipante.html"), 600);
         return;
       }
     } catch {
@@ -146,14 +146,10 @@ document.addEventListener("DOMContentLoaded", () => {
         me?.user?.email ||
         "utente";
 
-      // PATCH B: se l’utente è in area Organizzatore ma non è abilitato, abilitalo in modo trasparente
-      try {
-        if (me && me.canOrganize !== true) {
-          await apiPost("/users/me/enable-organizer", {}, token);
-        }
-      } catch {
-        // silente: se fallisce, verrà gestito da loadEvents col retry 403
-      }
+    // PATCH: non auto-abilitare più; se non abilitato mostra solo un avviso discreto (no enable)
+if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").toLowerCase() !== "admin") {
+  showAlert("Non sei abilitato come organizzatore. Contatta un amministratore se ti serve l’accesso.", "info", { autoHideMs: 4000 });
+}
 
       if (!document.getElementById("welcomeMsg")) {
         const main = document.querySelector("main") || document.body;
@@ -379,14 +375,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const query = new URLSearchParams(filters).toString();
       let res = await apiGet(`/events/mine/list${query ? "?" + query : ""}`, token);
 
-      // PATCH B: se 403, abilita canOrganize e ritenta UNA volta
+    // PATCH: se 403, blocca l’accesso area organizzatore (no auto-enable)
       if (res?.ok === false && res?.status === 403) {
-        try {
-          await apiPost("/users/me/enable-organizer", {}, token);
-          res = await apiGet(`/events/mine/list${query ? "?" + query : ""}`, token);
-        } catch (e) {
-          // continuerà col branch di errore sotto
-        }
+        throw new Error("Accesso area organizzatore non consentito.");
       }
 
       if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
@@ -882,6 +873,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
