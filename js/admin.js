@@ -161,11 +161,11 @@ function qParams(obj) {
 
 async function fetchEvents() {
   const base = apiBase();
-const q = {
-  q: elEvSearch?.value?.trim() || "",
-  approvalStatus: (elEvStatus?.value || "").toLowerCase(),
-  visibility: (elEvVisibility?.value || "").toLowerCase(),
-};
+  const q = {
+    q: elEvSearch?.value?.trim() || "",
+    approvalStatus: (elEvStatus?.value || "").toLowerCase(),
+    visibility: (elEvVisibility?.value || "").toLowerCase(),
+  };
   const url = `${base}/admin/events?${qParams(q)}&_=${Date.now()}`;
   const res = await fetch(url, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
@@ -367,7 +367,7 @@ elUsList?.addEventListener("click", async (e) => {
 });
 
 // -------------------- Import Massivo (tab) --------------------
-const elImpFile = document.getElementById("impFile");
+const elImpFile = document.getElementById("impFile"); // PATCH: nuovo
 const elImpSim = document.getElementById("impSimulate");
 const elImpRun = document.getElementById("impRun");
 const elImpLog = document.getElementById("importLog");
@@ -380,6 +380,7 @@ elImpRun?.addEventListener("click", async () => {
     return;
   }
 
+  // PATCH: usa FormData (niente Content-Type manuale)
   const form = new FormData();
   form.append("file", file);
   form.append("simulate", simulate ? "true" : "false");
