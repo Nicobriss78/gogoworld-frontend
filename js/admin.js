@@ -367,19 +367,31 @@ elUsList?.addEventListener("click", async (e) => {
 });
 
 // -------------------- Import Massivo (tab) --------------------
+const elImpFile = document.getElementById("impFile");
 const elImpSim = document.getElementById("impSimulate");
 const elImpRun = document.getElementById("impRun");
 const elImpLog = document.getElementById("importLog");
 
 elImpRun?.addEventListener("click", async () => {
   const simulate = !!elImpSim?.checked;
+  const file = elImpFile?.files?.[0];
+  if (!file) {
+    showAlert("Seleziona un file CSV", "error");
+    return;
+  }
+
+  const form = new FormData();
+  form.append("file", file);
+  form.append("simulate", simulate ? "true" : "false");
+
   const url = `${apiBase()}/admin/import/events`;
   try {
     const res = await fetch(url, {
       method: "POST",
-      headers: { ...authHeaders(), "Content-Type": "application/json" },
-      body: JSON.stringify({ simulate }),
+      headers: { ...authHeaders() }, // niente Content-Type manuale con FormData
+      body: form,
     });
+
     const out = await res.json().catch(() => ({}));
     if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore import");
     elImpLog.textContent = JSON.stringify(out, null, 2);
