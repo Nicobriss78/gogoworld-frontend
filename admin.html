@@ -122,6 +122,15 @@
           <span class="right muted">L’import usa l’endpoint /api/admin/import/events</span>
         </div>
 
+        <!-- PATCH INSERITA: campo per il file CSV -->
+        <div class="form">
+          <div class="form-row">
+            <label for="impFile">Seleziona file CSV</label>
+            <input id="impFile" type="file" accept=".csv,text/csv" />
+          </div>
+        </div>
+        <!-- FINE PATCH -->
+
         <div id="importResults" class="admin-card">
           <h3>Risultati import</h3>
           <pre id="importLog" class="muted">Nessun import eseguito.</pre>
