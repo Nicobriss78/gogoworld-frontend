@@ -339,6 +339,12 @@ body {
   border-radius: 4px;
 }
 
+/* PATCH Admin: mostra sempre il testo dei bottoni azione nelle card */
+.admin-card .actions .btn {
+  color: #111 !important;
+  font-size: 14px !important;
+}
+
 
 
 
