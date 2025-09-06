@@ -209,12 +209,41 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       });
     } else {
-      // PARTECIPANTE (o non owner)
-      const isJoined = !!ev.participants?.some((pid) => String(pid) === String(myId));
-      btnToggle.textContent = isJoined ? "Annulla partecipazione" : "Partecipa";
-      btnToggle.style.display = "inline-block";
+// PARTECIPANTE (o non owner)
+let isJoined = Array.isArray(ev.participants)
+  && ev.participants.some((pid) => String(pid) === String(myId));
 
-      btnToggle.addEventListener("click", async () => {
+const setToggleLabel = () => {
+  // testo compatto e coerente ovunque
+  btnToggle.textContent = isJoined ? "Annulla" : "Partecipa";
+};
+
+btnToggle.style.display = "inline-block";
+setToggleLabel();
+
+btnToggle.addEventListener("click", async () => {
+  if (btnToggle.disabled) return;
+  btnToggle.disabled = true;
+  try {
+    if (isJoined) {
+      const res = await apiPost(`/events/${eventId}/leave`, {}, token);
+      if (!res?.ok) throw new Error(res?.error || "Errore annullamento");
+      isJoined = false; // aggiorna stato locale
+      showAlert("Partecipazione annullata", "success", { autoHideMs: 2500 });
+    } else {
+      const res = await apiPost(`/events/${eventId}/join`, {}, token);
+      if (!res?.ok) throw new Error(res?.error || "Errore partecipazione");
+      isJoined = true; // aggiorna stato locale
+      showAlert("Iscrizione effettuata", "success", { autoHideMs: 2500 });
+    }
+    setToggleLabel(); // aggiorna il testo SENZA ricaricare la pagina
+  } catch (err) {
+    showAlert(err?.message || "Operazione non riuscita", "error", { autoHideMs: 4000 });
+  } finally {
+    btnToggle.disabled = false;
+  }
+});
+
         if (btnToggle.disabled) return;
         btnToggle.disabled = true;
         try {
@@ -520,6 +549,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
