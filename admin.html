@@ -117,19 +117,15 @@
       <!-- Tab: Import Massivo -->
       <section data-tab-panel="imports" hidden>
         <div class="admin-toolbar">
-          <input id="impSimulate" type="checkbox" checked /> <label for="impSimulate">Simulazione</label>
-          <button id="impRun" class="btn">Esegui import (CSV già configurato)</button>
-          <span class="right muted">L’import usa l’endpoint /api/admin/import/events</span>
+          <!-- PATCH 1: rinominato Simulazione in Validazione -->
+          <input id="impSimulate" type="checkbox" checked /> <label for="impSimulate">Validazione</label>
+          
+          <!-- PATCH 2: eliminato testo tra parentesi -->
+          <button id="impRun" class="btn">Esegui import CSV</button>
+          
+          <!-- PATCH 3: eliminata scritta a destra -->
+          <!-- <span class="right muted">L’import usa l’endpoint /api/admin/import/events</span> -->
         </div>
-
-        <!-- PATCH INSERITA: campo per il file CSV -->
-        <div class="form">
-          <div class="form-row">
-            <label for="impFile">Seleziona file CSV</label>
-            <input id="impFile" type="file" accept=".csv,text/csv" />
-          </div>
-        </div>
-        <!-- FINE PATCH -->
 
         <div id="importResults" class="admin-card">
           <h3>Risultati import</h3>
