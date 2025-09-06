@@ -58,3 +58,7 @@ export async function apiPut(path, body = {}, token) {
   return apiFetch(path, { method: "PUT", body, token });
 }
 
+// --- PATCH MINIMA: helper diagnostico ruoli/token ---
+export async function whoami(token) {
+  return apiGet("/users/whoami", token);
+}
