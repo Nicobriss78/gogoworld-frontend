@@ -5,7 +5,7 @@
 // - Conferme modali standard per delete (invece di confirm())
 // - Banner “welcome” con micro-CTA (es. “Crea nuovo evento”)
 
-import { apiGet, apiDelete, apiPost } from "./api.js"; // PATCH: aggiunto apiPost
+import { apiGet, apiDelete, apiPost, whoami } from "./api.js"; // PATCH: aggiunto whoami
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -99,10 +99,40 @@ function renderStatus(status) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("token");
+  // Token base (come da tua logica attuale)
+  const token =
+    localStorage.getItem("token") ||
+    sessionStorage.getItem("token") ||
+    sessionStorage.getItem("authToken") ||
+    localStorage.getItem("authToken") ||
+    sessionStorage.getItem("jwt") ||
+    localStorage.getItem("jwt") ||
+    sessionStorage.getItem("accessToken") ||
+    localStorage.getItem("accessToken");
+
   if (!token) {
     window.location.href = "../index.html";
+    return;
   }
+
+  // PATCH: verifica permessi lato server prima di procedere
+  (async () => {
+    try {
+      const me = await whoami(token);
+      // accetta organizer/admin o chi ha canOrganize === true
+      const role = String(me?.user?.role || "").toLowerCase();
+      const canOrg = me?.user?.canOrganize === true;
+      if (!(role === "organizer" || role === "admin" || canOrg)) {
+        showAlert("Accesso riservato agli organizzatori.", "error", { autoHideMs: 3500 });
+        setTimeout(() => (window.location.href = "login.html"), 600);
+        return;
+      }
+    } catch {
+      showAlert("Verifica permessi non riuscita. Effettua di nuovo il login.", "error", { autoHideMs: 3500 });
+      setTimeout(() => (window.location.href = "login.html"), 600);
+      return;
+    }
+  })();
 
   // Benvenuto: eseguito una sola volta e con guardia anti-duplicazione
   (async () => {
@@ -505,13 +535,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!btn) return;
       const id = btn.getAttribute("data-id");
       const action = btn.getAttribute("data-action");
-if (action === "edit") {
-  try { sessionStorage.setItem("selectedEventId", id); } catch {}
-  const href = `evento.html?id=${encodeURIComponent(id)}#edit`;
-  window.location.href = href;
-  return;
-}
-
+      if (action === "edit") {
+        try { sessionStorage.setItem("selectedEventId", id); } catch {}
+        const href = `evento.html?id=${encodeURIComponent(id)}#edit`;
+        window.location.href = href;
+        return;
+      }
 
       if (action === "details") {
         sessionStorage.setItem("selectedEventId", id);
@@ -853,7 +882,6 @@ if (action === "edit") {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
-
 
 
 
