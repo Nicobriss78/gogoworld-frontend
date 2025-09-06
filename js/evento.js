@@ -31,7 +31,7 @@ function formatDateSmart(date) {
   if (!date) return "-";
   try {
     const d = new Date(date);
-if (isNaN(d.getTime())) return "-";
+    if (isNaN(d.getTime())) return "-";
     // Se l’orario è 00:00:00 → mostra solo la data
     if (d.getHours() === 0 && d.getMinutes() === 0 && d.getSeconds() === 0) {
       return d.toLocaleDateString("it-IT");
@@ -82,14 +82,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
- const eventId = resolveEventId();
-if (!eventId) {
-  showAlert("Evento non trovato (manca l'ID).", "error", { autoHideMs: 4000 });
-  const desiredRole = sessionStorage.getItem("desiredRole");
-  window.location.href = desiredRole === "organizer" ? "organizzatore.html" : "partecipante.html";
-  return;
-}
-
+  const eventId = resolveEventId();
+  if (!eventId) {
+    showAlert("Evento non trovato (manca l'ID).", "error", { autoHideMs: 4000 });
+    const desiredRole = sessionStorage.getItem("desiredRole");
+    window.location.href = desiredRole === "organizer" ? "organizzatore.html" : "partecipante.html";
+    return;
+  }
 
   const elTitle = document.getElementById("eventTitle");
   const elDetails = document.getElementById("eventDetails");
@@ -106,7 +105,8 @@ if (!eventId) {
     if (!detail.ok) throw new Error(detail.error || "Errore dettaglio evento");
 
     const ev = detail.event;
-    const myId = me?._id;
+    // PATCH: myId corretto dentro me.user
+    const myId = me?.user?._id;
 
     elTitle.textContent = ev.title || "Evento";
 
@@ -129,17 +129,17 @@ if (!eventId) {
       elDetails.innerHTML = renderDetails(ev);
     }
     // PATCH E4: render "Inizio/Fine" nel contenitore #eventSchedule usando il formatter "smart"
-const secSchedule = document.getElementById("eventSchedule");
-if (secSchedule) {
-  const start = ev?.dateStart || ev?.date; // fallback: usa dateStart, se assente usa date
-  const end = ev?.dateEnd || ev?.endDate; // compat: supporta endDate se presente
+    const secSchedule = document.getElementById("eventSchedule");
+    if (secSchedule) {
+      const start = ev?.dateStart || ev?.date; // fallback: usa dateStart, se assente usa date
+      const end = ev?.dateEnd || ev?.endDate; // compat: supporta endDate se presente
 
-  // usa formatDateSmart già definita in alto
-  const startHtml = `<p><strong>Inizio:</strong> ${formatDateSmart(start)}</p>`;
-  const endHtml = end ? `<p><strong>Fine:</strong> ${formatDateSmart(end)}</p>` : "";
+      // usa formatDateSmart già definita in alto
+      const startHtml = `<p><strong>Inizio:</strong> ${formatDateSmart(start)}</p>`;
+      const endHtml = end ? `<p><strong>Fine:</strong> ${formatDateSmart(end)}</p>` : "";
 
-  secSchedule.innerHTML = `${startHtml}${endHtml}`;
-}
+      secSchedule.innerHTML = `${startHtml}${endHtml}`;
+    }
     // -----------------------------------------------------------------------
 
     // Determina proprietà reale dell'evento
@@ -164,40 +164,39 @@ if (secSchedule) {
       adminBar.appendChild(btnDel);
       elDetails.appendChild(adminBar);
 
- btnEdit.addEventListener("click", () => {
-  // Render form di modifica
-  elDetails.innerHTML = renderEditForm(ev);
-  const form = document.getElementById("editEventForm");
-  const btnCancel = document.getElementById("btnCancelEdit");
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const payload = buildUpdatePayloadFromForm(form);
-    // Validazioni minime client
-    if (!payload.title || !payload.category || !payload.region || !payload.country || !payload.dateStart) {
-      showAlert("Compila i campi obbligatori (titolo, categoria, regione, paese, inizio).", "error", { autoHideMs: 4000 });
-      return;
-    }
-    if (payload.dateEnd && payload.dateEnd <= payload.dateStart) {
-      showAlert("La data di fine deve essere successiva all’inizio.", "error", { autoHideMs: 4000 });
-      return;
-    }
-    try {
-      const res = await apiPut(`/events/${eventId}`, payload, token);
-      if (!res?.ok) throw new Error(res?.error || "Aggiornamento non riuscito");
-      showAlert("Evento aggiornato", "success", { autoHideMs: 2000 });
-      setTimeout(() => window.location.reload(), 600);
-    } catch (err) {
-      showAlert(err?.message || "Errore di rete", "error", { autoHideMs: 4000 });
-    }
-  });
-  btnCancel.addEventListener("click", () => {
-    window.location.reload();
-  });
-});
+      btnEdit.addEventListener("click", () => {
+        // Render form di modifica
+        elDetails.innerHTML = renderEditForm(ev);
+        const form = document.getElementById("editEventForm");
+        const btnCancel = document.getElementById("btnCancelEdit");
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const payload = buildUpdatePayloadFromForm(form);
+          // Validazioni minime client
+          if (!payload.title || !payload.category || !payload.region || !payload.country || !payload.dateStart) {
+            showAlert("Compila i campi obbligatori (titolo, categoria, regione, paese, inizio).", "error", { autoHideMs: 4000 });
+            return;
+          }
+          if (payload.dateEnd && payload.dateEnd <= payload.dateStart) {
+            showAlert("La data di fine deve essere successiva all’inizio.", "error", { autoHideMs: 4000 });
+            return;
+          }
+          try {
+            const res = await apiPut(`/events/${eventId}`, payload, token);
+            if (!res?.ok) throw new Error(res?.error || "Aggiornamento non riuscito");
+            showAlert("Evento aggiornato", "success", { autoHideMs: 2000 });
+            setTimeout(() => window.location.reload(), 600);
+          } catch (err) {
+            showAlert(err?.message || "Errore di rete", "error", { autoHideMs: 4000 });
+          }
+        });
+        btnCancel.addEventListener("click", () => {
+          window.location.reload();
+        });
+      });
 
-if (window.location.hash === "#edit") { btnEdit.click(); }
+      if (window.location.hash === "#edit") { btnEdit.click(); }
 
-      
       btnDel.addEventListener("click", async () => {
         if (confirm("Sei sicuro di voler eliminare questo evento?")) {
           const res = await apiDelete(`/events/${eventId}`, token);
@@ -267,12 +266,13 @@ function renderDetails(ev) {
   lines.push(
     `<p><strong>Tipo:</strong> ${escapeHtml(ev.type || "")} — <strong>Visibilità:</strong> ${escapeHtml(ev.visibility || "")}</p>`
   );
-// PATCH E3: "Quando" con intervallo smart (usa date/dateStart e endDate/dateEnd)
-{
-  const start = ev?.date || ev?.dateStart;
-  const end = ev?.endDate || ev?.dateEnd;
-  lines.push(`<p><strong>Quando:</strong> ${formatRangeSmart(start, end)}</p>`);
-}  // PATCH: prezzo + currency (fallback EUR)
+  // PATCH E3: "Quando" con intervallo smart (usa date/dateStart e endDate/dateEnd)
+  {
+    const start = ev?.date || ev?.dateStart;
+    const end = ev?.endDate || ev?.dateEnd;
+    lines.push(`<p><strong>Quando:</strong> ${formatRangeSmart(start, end)}</p>`);
+  }
+  // PATCH: prezzo + currency (fallback EUR)
   lines.push(
     `<p><strong>Prezzo:</strong> ${
       ev.isFree ? "Gratuito" : (ev.price != null ? `${escapeHtml(ev.price)} ${escapeHtml(ev.currency || "EUR")}` : "-")
@@ -520,6 +520,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
