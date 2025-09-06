@@ -122,9 +122,8 @@
           
           <!-- PATCH 2: eliminato testo tra parentesi -->
           <button id="impRun" class="btn">Esegui import CSV</button>
-          
-          <!-- PATCH 3: eliminata scritta a destra -->
-          <!-- <span class="right muted">L’import usa l’endpoint /api/admin/import/events</span> -->
+          <input id="impFile" type="file" accept=".csv,text/csv" />
+          <span id="impFileName" class="muted">Nessun file selezionato</span>
         </div>
 
         <div id="importResults" class="admin-card">
