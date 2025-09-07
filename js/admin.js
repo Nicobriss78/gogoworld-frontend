@@ -244,6 +244,17 @@ elEvList?.addEventListener("click", async (e) => {
         if (!reason || !reason.trim()) { showAlert("Motivo obbligatorio", "error"); return; }
         body.reason = reason.trim();
       }
+      if (action === "block") {
+        const reason = prompt("Motivo del blocco:");
+        if (!reason || !reason.trim()) { showAlert("Motivo obbligatorio", "error"); return; }
+        body.reason = reason.trim();
+}
+// su approve / unblock azzeri motivo/notes per evitare che rimanga quello precedente
+if (action === "approve" || action === "unblock") {
+body.reason = "";
+body.notes = "";
+}
+
       const res = await fetch(`${base}${pathMap[action]}`, {
         method: "POST",
         headers: { ...authHeaders(), "Content-Type": "application/json" },
