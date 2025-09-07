@@ -233,8 +233,7 @@ try {
         });
       });
 
-      if (window.location.hash === "#edit") { btnEdit.click(); }
-
+if (String(location.hash || "").toLowerCase() === "#edit") { btnEdit.click(); }      
       btnDel.addEventListener("click", async () => {
         if (confirm("Sei sicuro di voler eliminare questo evento?")) {
           const res = await apiDelete(`/events/${eventId}`, token);
@@ -592,6 +591,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
