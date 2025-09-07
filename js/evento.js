@@ -156,6 +156,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       const btnEdit = document.createElement("button");
       btnEdit.className = "btn btn-primary";
       btnEdit.textContent = "Modifica";
+      const appr = String(ev?.approvalStatus || "").toLowerCase();
+        if (appr === "blocked") {
+          btnEdit.disabled = true;
+          btnEdit.title = "Evento bloccato — contatta l’amministratore";
+        } else if (appr === "approved") {
+          btnEdit.title = "Modificando, l’evento tornerà in revisione (pending) al salvataggio";
+        } else if (appr === "rejected") {
+          btnEdit.title = ev?.moderation?.reason
+            ? ("Rifiutato: " + ev.moderation.reason + " — Correggi e ripresenta")
+            : "Rifiutato — Correggi e ripresenta";
+        }
       const btnDel = document.createElement("button");
       btnDel.className = "btn btn-secondary";
       btnDel.textContent = "Elimina";
@@ -167,6 +178,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       btnEdit.addEventListener("click", () => {
         // Render form di modifica
         elDetails.innerHTML = renderEditForm(ev);
+        // Guard UX in base allo stato (policy)
+          const apprNow = String(ev?.approvalStatus || "").toLowerCase();
+          if (apprNow === "blocked") {
+            showAlert("Evento bloccato dall’amministratore: modifica non consentita.", "error", { autoHideMs: 4000 });
+            // Non entra in edit: torna ai dettagli
+            elDetails.innerHTML = renderDetails(ev);
+            return;
+          }
+          if (apprNow === "approved") {
+            showAlert("Attenzione: salvando l’evento tornerà in revisione (pending).", "info");
+          }
+          if (apprNow === "rejected") {
+            const r = ev?.moderation?.reason ? (" — Motivo: " + ev.moderation.reason) : "";
+            showAlert("Evento rifiutato. Correggi e ripresenta" + r, "info");
+          }
         const form = document.getElementById("editEventForm");
         const btnCancel = document.getElementById("btnCancelEdit");
         form.addEventListener("submit", async (e) => {
@@ -554,6 +580,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
