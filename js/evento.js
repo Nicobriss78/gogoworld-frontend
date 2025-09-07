@@ -276,6 +276,18 @@ function renderDetails(ev) {
   lines.push(
     `<p><strong>Tipo:</strong> ${escapeHtml(ev.type || "")} — <strong>Visibilità:</strong> ${escapeHtml(ev.visibility || "")}</p>`
   );
+  // Stato approvazione + motivo moderazione (se rejected/blocked)
+  {
+    const appr = ev?.approvalStatus ? escapeHtml(ev.approvalStatus) : "";
+    if (appr) {
+      const reason = (ev?.moderation
+        && (ev.approvalStatus === "rejected" || ev.approvalStatus === "blocked")
+        && ev.moderation.reason)
+        ? (' — <em>Motivo: ' + escapeHtml(ev.moderation.reason) + '</em>')
+        : '';
+      lines.push(`<p><strong>Stato:</strong> ${appr}${reason}</p>`);
+    }
+  }
   // PATCH E3: "Quando" con intervallo smart (usa date/dateStart e endDate/dateEnd)
   {
     const start = ev?.date || ev?.dateStart;
@@ -314,6 +326,18 @@ function renderMeta(ev) {
     tgt ? `<p><strong>Target:</strong> ${tgt}</p>` : "",
     orgEsc ? `<p><strong>Organizzatore:</strong> ${orgEsc}</p>` : "",
   ].filter(Boolean);
+  // Stato approvazione + motivo moderazione (se rejected/blocked)
+  {
+    const appr = ev?.approvalStatus ? escapeHtml(ev.approvalStatus) : "";
+    if (appr) {
+      const reason = (ev?.moderation
+        && (ev.approvalStatus === "rejected" || ev.approvalStatus === "blocked")
+        && ev.moderation.reason)
+        ? (' — <em>Motivo: ' + escapeHtml(ev.moderation.reason) + '</em>')
+        : '';
+      parts.push(`<p><strong>Stato:</strong> ${appr}${reason}</p>`);
+    }
+  }
   return parts.join("\n");
 }
 
@@ -530,6 +554,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
