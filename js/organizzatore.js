@@ -389,6 +389,9 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
           <div class="event-card">
             <h3>${ev.title}</h3>
             ${renderStatus(ev.status)}
+            <div class="muted">
+              <span class="badge ${ev.approvalStatus || 'pending'}">${ev.approvalStatus || '-'}</span>
+            </div>
             <p>${ev.city || ""} ${formatEventDate(ev)}</p>
            <div class="actions">
   <button class="btn" data-action="edit" data-id="${ev._id}">Modifica</button>
@@ -873,6 +876,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
