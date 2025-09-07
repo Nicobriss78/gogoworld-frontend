@@ -243,26 +243,7 @@ btnToggle.addEventListener("click", async () => {
     btnToggle.disabled = false;
   }
 });
-
-        if (btnToggle.disabled) return;
-        btnToggle.disabled = true;
-        try {
-          if (isJoined) {
-            const res = await apiPost(`/events/${eventId}/leave`, {}, token);
-            if (!res?.ok) throw new Error(res?.error || "Errore annullamento");
-            showAlert("Partecipazione annullata", "success", { autoHideMs: 2500 });
-          } else {
-            const res = await apiPost(`/events/${eventId}/join`, {}, token);
-            if (!res?.ok) throw new Error(res?.error || "Errore partecipazione");
-            showAlert("Iscrizione effettuata", "success", { autoHideMs: 2500 });
-          }
-          setTimeout(() => window.location.reload(), 400);
-        } catch (err) {
-          showAlert(err?.message || "Operazione non riuscita", "error", { autoHideMs: 4000 });
-        } finally {
-          btnToggle.disabled = false;
-        }
-      });
+      
     }
   } catch (err) {
     elDetails.innerHTML = `<p class="error">Errore: ${escapeHtml(err.message)}</p>`;
@@ -549,6 +530,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
