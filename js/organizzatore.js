@@ -394,7 +394,27 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
             </div>
             <p>${ev.city || ""} ${formatEventDate(ev)}</p>
            <div class="actions">
-  <button class="btn" data-action="edit" data-id="${ev._id}">Modifica</button>
+<button class="btn" data-action="edit" data-id="${ev._id}"
+                ${
+                  (String(ev.approvalStatus||'').toLowerCase()==='blocked')
+                    ? 'disabled title="Evento bloccato — contatta l’amministratore"'
+                    : (String(ev.approvalStatus||'').toLowerCase()==='approved')
+                      ? 'title="Modificando, l’evento tornerà in revisione (pending)"'
+                      : (String(ev.approvalStatus||'').toLowerCase()==='rejected')
+                        ? ('title="' + (ev.moderation && ev.moderation.reason
+                            ? ('Rifiutato: ' + ev.moderation.reason + ' — Correggi e ripresenta')
+                            : 'Rifiutato — Correggi e ripresenta') + '"')
+                        : ''
+                }
+              >${
+                (String(ev.approvalStatus||'').toLowerCase()==='rejected')
+                  ? 'Correggi e ripresenta'
+                  : (String(ev.approvalStatus||'').toLowerCase()==='approved')
+                    ? 'Modifica (torna in revisione)'
+                    : (String(ev.approvalStatus||'').toLowerCase()==='blocked')
+                      ? 'Bloccato'
+                      : 'Modifica'
+              }</button>
   <button class="btn btn-secondary" data-action="details" data-id="${ev._id}">Dettagli</button>
   <button class="btn btn-danger" data-action="delete" data-id="${ev._id}">Elimina</button>
 </div>
@@ -530,6 +550,15 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
       const id = btn.getAttribute("data-id");
       const action = btn.getAttribute("data-action");
       if (action === "edit") {
+        // Guard: non permettere edit se lo stato è 'blocked'
+        try {
+          const evCached = (window.__myEventsCache || []).find(ev => ev && ev._id === id);
+          if (evCached && String(evCached.approvalStatus || '').toLowerCase() === 'blocked') {
+            showAlert("Evento bloccato dall’amministratore: modifica non consentita.", "error", { autoHideMs: 3500 });
+            return;
+          }
+        } catch {}
+
         try { sessionStorage.setItem("selectedEventId", id); } catch {}
         const href = `evento.html?id=${encodeURIComponent(id)}#edit`;
         window.location.href = href;
@@ -876,6 +905,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
