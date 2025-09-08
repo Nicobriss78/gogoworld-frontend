@@ -127,18 +127,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (sMedia) sMedia.innerHTML = renderMedia(ev);
     } else {
       elDetails.innerHTML = renderDetails(ev);
-      // --- rispetta l'hash #edit: se presente, passa alla modalità Modifica
-      try {
-        if (String(location.hash || "").toLowerCase() === "#edit") {
-          const apprNow = String(ev?.approvalStatus || "").toLowerCase();
-          if (apprNow === "blocked") {
-            showAlert("Evento bloccato dall’amministratore: modifica non consentita.", "error", { autoHideMs: 4000 });
-            // resta in dettagli
-          } else {
-            elDetails.innerHTML = renderEditForm(ev);
-          }
-        }
-      } catch {}
+
     }
     // PATCH E4: render "Inizio/Fine" nel contenitore #eventSchedule usando il formatter "smart"
     const secSchedule = document.getElementById("eventSchedule");
@@ -625,5 +614,6 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
