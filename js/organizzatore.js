@@ -560,14 +560,14 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
         } catch {}
 
         try { sessionStorage.setItem("selectedEventId", id); } catch {}
-        const href = `evento.html?id=${encodeURIComponent(id)}';
+       const href = `evento.html?id=${encodeURIComponent(id)}#edit`;
         window.location.href = href;
         return;
       }
 
       if (action === "details") {
         sessionStorage.setItem("selectedEventId", id);
-        window.location.href = "evento.html";
+       window.location.href = `evento.html?id=${encodeURIComponent(id)}`;
         return;
       }
 
@@ -905,6 +905,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
