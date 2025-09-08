@@ -128,17 +128,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
       elDetails.innerHTML = renderDetails(ev);
       // --- rispetta l'hash #edit: se presente, passa alla modalità Modifica
-try {
-  if (String(location.hash || "").toLowerCase() === "#edit") {
-    const apprNow = String(ev?.approvalStatus || "").toLowerCase();
-    if (apprNow === "blocked") {
-      showAlert("Evento bloccato dall’amministratore: modifica non consentita.", "error", { autoHideMs: 4000 });
-      // resta in dettagli
-    } else {
-      elDetails.innerHTML = renderEditForm(ev);
-    }
-  }
-} catch {}
+      try {
+        if (String(location.hash || "").toLowerCase() === "#edit") {
+          const apprNow = String(ev?.approvalStatus || "").toLowerCase();
+          if (apprNow === "blocked") {
+            showAlert("Evento bloccato dall’amministratore: modifica non consentita.", "error", { autoHideMs: 4000 });
+            // resta in dettagli
+          } else {
+            elDetails.innerHTML = renderEditForm(ev);
+          }
+        }
+      } catch {}
     }
     // PATCH E4: render "Inizio/Fine" nel contenitore #eventSchedule usando il formatter "smart"
     const secSchedule = document.getElementById("eventSchedule");
@@ -169,16 +169,16 @@ try {
       btnEdit.className = "btn btn-primary";
       btnEdit.textContent = "Modifica";
       const appr = String(ev?.approvalStatus || "").toLowerCase();
-        if (appr === "blocked") {
-          btnEdit.disabled = true;
-          btnEdit.title = "Evento bloccato — contatta l’amministratore";
-        } else if (appr === "approved") {
-          btnEdit.title = "Modificando, l’evento tornerà in revisione (pending) al salvataggio";
-        } else if (appr === "rejected") {
-          btnEdit.title = ev?.moderation?.reason
-            ? ("Rifiutato: " + ev.moderation.reason + " — Correggi e ripresenta")
-            : "Rifiutato — Correggi e ripresenta";
-        }
+      if (appr === "blocked") {
+        btnEdit.disabled = true;
+        btnEdit.title = "Evento bloccato — contatta l’amministratore";
+      } else if (appr === "approved") {
+        btnEdit.title = "Modificando, l’evento tornerà in revisione (pending) al salvataggio";
+      } else if (appr === "rejected") {
+        btnEdit.title = ev?.moderation?.reason
+          ? ("Rifiutato: " + ev.moderation.reason + " — Correggi e ripresenta")
+          : "Rifiutato — Correggi e ripresenta";
+      }
       const btnDel = document.createElement("button");
       btnDel.className = "btn btn-secondary";
       btnDel.textContent = "Elimina";
@@ -191,20 +191,20 @@ try {
         // Render form di modifica
         elDetails.innerHTML = renderEditForm(ev);
         // Guard UX in base allo stato (policy)
-          const apprNow = String(ev?.approvalStatus || "").toLowerCase();
-          if (apprNow === "blocked") {
-            showAlert("Evento bloccato dall’amministratore: modifica non consentita.", "error", { autoHideMs: 4000 });
-            // Non entra in edit: torna ai dettagli
-            elDetails.innerHTML = renderDetails(ev);
-            return;
-          }
-          if (apprNow === "approved") {
-            showAlert("Attenzione: salvando l’evento tornerà in revisione (pending).", "info");
-          }
-          if (apprNow === "rejected") {
-            const r = ev?.moderation?.reason ? (" — Motivo: " + ev.moderation.reason) : "";
-            showAlert("Evento rifiutato. Correggi e ripresenta" + r, "info");
-          }
+        const apprNow = String(ev?.approvalStatus || "").toLowerCase();
+        if (apprNow === "blocked") {
+          showAlert("Evento bloccato dall’amministratore: modifica non consentita.", "error", { autoHideMs: 4000 });
+          // Non entra in edit: torna ai dettagli
+          elDetails.innerHTML = renderDetails(ev);
+          return;
+        }
+        if (apprNow === "approved") {
+          showAlert("Attenzione: salvando l’evento tornerà in revisione (pending).", "info");
+        }
+        if (apprNow === "rejected") {
+          const r = ev?.moderation?.reason ? (" — Motivo: " + ev.moderation.reason) : "";
+          showAlert("Evento rifiutato. Correggi e ripresenta" + r, "info");
+        }
         const form = document.getElementById("editEventForm");
         const btnCancel = document.getElementById("btnCancelEdit");
         form.addEventListener("submit", async (e) => {
@@ -233,12 +233,13 @@ try {
         });
       });
 
-// Auto-enter edit mode se si arriva con #edit
-if (String(location.hash || "").toLowerCase() === "#edit") {
-  // doppia chance per evitare race-condition col rendering
-  setTimeout(() => btnEdit?.click(), 0);
-  setTimeout(() => { if (!document.getElementById("editEventForm")) btnEdit?.click(); }, 200);
-}
+      // Auto-enter edit mode se si arriva con #edit (robusto)
+      if (String(location.hash || "").toLowerCase() === "#edit") {
+        // doppia chance per evitare race-condition col rendering
+        setTimeout(() => btnEdit?.click(), 0);
+        setTimeout(() => { if (!document.getElementById("editEventForm")) btnEdit?.click(); }, 200);
+      }
+
       btnDel.addEventListener("click", async () => {
         if (confirm("Sei sicuro di voler eliminare questo evento?")) {
           const res = await apiDelete(`/events/${eventId}`, token);
@@ -251,41 +252,40 @@ if (String(location.hash || "").toLowerCase() === "#edit") {
         }
       });
     } else {
-// PARTECIPANTE (o non owner)
-let isJoined = Array.isArray(ev.participants)
-  && ev.participants.some((pid) => String(pid) === String(myId));
+      // PARTECIPANTE (o non owner)
+      let isJoined = Array.isArray(ev.participants)
+        && ev.participants.some((pid) => String(pid) === String(myId));
 
-const setToggleLabel = () => {
-  // testo compatto e coerente ovunque
-  btnToggle.textContent = isJoined ? "Annulla" : "Partecipa";
-};
+      const setToggleLabel = () => {
+        // testo compatto e coerente ovunque
+        btnToggle.textContent = isJoined ? "Annulla" : "Partecipa";
+      };
 
-btnToggle.style.display = "inline-block";
-setToggleLabel();
+      btnToggle.style.display = "inline-block";
+      setToggleLabel();
 
-btnToggle.addEventListener("click", async () => {
-  if (btnToggle.disabled) return;
-  btnToggle.disabled = true;
-  try {
-    if (isJoined) {
-      const res = await apiPost(`/events/${eventId}/leave`, {}, token);
-      if (!res?.ok) throw new Error(res?.error || "Errore annullamento");
-      isJoined = false; // aggiorna stato locale
-      showAlert("Partecipazione annullata", "success", { autoHideMs: 2500 });
-    } else {
-      const res = await apiPost(`/events/${eventId}/join`, {}, token);
-      if (!res?.ok) throw new Error(res?.error || "Errore partecipazione");
-      isJoined = true; // aggiorna stato locale
-      showAlert("Iscrizione effettuata", "success", { autoHideMs: 2500 });
-    }
-    setToggleLabel(); // aggiorna il testo SENZA ricaricare la pagina
-  } catch (err) {
-    showAlert(err?.message || "Operazione non riuscita", "error", { autoHideMs: 4000 });
-  } finally {
-    btnToggle.disabled = false;
-  }
-});
-      
+      btnToggle.addEventListener("click", async () => {
+        if (btnToggle.disabled) return;
+        btnToggle.disabled = true;
+        try {
+          if (isJoined) {
+            const res = await apiPost(`/events/${eventId}/leave`, {}, token);
+            if (!res?.ok) throw new Error(res?.error || "Errore annullamento");
+            isJoined = false; // aggiorna stato locale
+            showAlert("Partecipazione annullata", "success", { autoHideMs: 2500 });
+          } else {
+            const res = await apiPost(`/events/${eventId}/join`, {}, token);
+            if (!res?.ok) throw new Error(res?.error || "Errore partecipazione");
+            isJoined = true; // aggiorna stato locale
+            showAlert("Iscrizione effettuata", "success", { autoHideMs: 2500 });
+          }
+          setToggleLabel(); // aggiorna il testo SENZA ricaricare la pagina
+        } catch (err) {
+          showAlert(err?.message || "Operazione non riuscita", "error", { autoHideMs: 4000 });
+        } finally {
+          btnToggle.disabled = false;
+        }
+      });
     }
   } catch (err) {
     elDetails.innerHTML = `<p class="error">Errore: ${escapeHtml(err.message)}</p>`;
@@ -596,19 +596,4 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
