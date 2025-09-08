@@ -560,7 +560,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
         } catch {}
 
         try { sessionStorage.setItem("selectedEventId", id); } catch {}
-        const href = `evento.html?id=${encodeURIComponent(id)}#edit`;
+        const href = `evento.html?id=${encodeURIComponent(id)}';
         window.location.href = href;
         return;
       }
@@ -905,6 +905,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
