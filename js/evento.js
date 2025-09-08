@@ -233,7 +233,12 @@ try {
         });
       });
 
-if (String(location.hash || "").toLowerCase() === "#edit") { btnEdit.click(); }      
+// Auto-enter edit mode se si arriva con #edit
+if (String(location.hash || "").toLowerCase() === "#edit") {
+  // doppia chance per evitare race-condition col rendering
+  setTimeout(() => btnEdit?.click(), 0);
+  setTimeout(() => { if (!document.getElementById("editEventForm")) btnEdit?.click(); }, 200);
+}
       btnDel.addEventListener("click", async () => {
         if (confirm("Sei sicuro di voler eliminare questo evento?")) {
           const res = await apiDelete(`/events/${eventId}`, token);
@@ -591,6 +596,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
