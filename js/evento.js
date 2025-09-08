@@ -153,6 +153,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       secSchedule.innerHTML = `${startHtml}${endHtml}`;
     }
     // -----------------------------------------------------------------------
+// Gestione globale di #edit (funziona sia con layout modulare che fallback)
+(() => {
+  try {
+    if (String(location.hash || "").toLowerCase() !== "#edit") return;
+
+    const apprNow = String(ev?.approvalStatus || "").toLowerCase();
+    if (apprNow === "blocked") {
+      showAlert("Evento bloccato dall’amministratore: modifica non consentita.", "error", { autoHideMs: 4000 });
+      return; // resta in dettagli
+    }
+
+    // Nascondi le sezioni modulari, se presenti
+    [sMeta, sSched, sLoc, sPrice, sTax, sMedia].forEach(sec => {
+      if (sec) sec.setAttribute("hidden", "");
+    });
+
+    // Assicurati di avere un contenitore host per il form
+    let host = document.getElementById("eventDetails");
+    if (!host) {
+      host = document.createElement("section");
+      host.id = "eventDetails";
+      const main = document.querySelector("main") || document.body;
+      main.appendChild(host);
+    }
+
+    // Render del form di modifica
+    host.innerHTML = renderEditForm(ev);
+  } catch {/* silente */}
+})();
 
     // Determina proprietà reale dell'evento
     const evOrganizerId = (ev.organizer && typeof ev.organizer === "object" && ev.organizer._id)
@@ -596,4 +625,5 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
