@@ -238,10 +238,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
           }
           try {
-            const res = await apiPut(`/events/${eventId}`, payload, token);
-            if (!res?.ok) throw new Error(res?.error || "Aggiornamento non riuscito");
-            showAlert("Evento aggiornato", "success", { autoHideMs: 2000 });
-            setTimeout(() => window.location.reload(), 600);
+const res = await apiPut(`/events/${eventId}`, payload, token);
+if (!res?.ok) {
+// Mostra esattamente cosa ha detto il server (403, 400, 422, ecc.)
+const msg = res?.message || res?.error || "Aggiornamento non riuscito";
+showAlert(`Salvataggio fallito (${res?.status || "?"}): ${msg}`, "error");
+console.warn("Update event failed", res);
+return; // non ricaricare, lascia i campi così come sono
+}
+showAlert("Evento aggiornato", "success", { autoHideMs: 2000 });
+setTimeout(() => window.location.reload(), 600);
           } catch (err) {
             showAlert(err?.message || "Errore di rete", "error", { autoHideMs: 4000 });
           }
@@ -614,6 +620,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
