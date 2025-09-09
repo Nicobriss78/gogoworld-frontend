@@ -4,8 +4,8 @@
 // - Usa FormData (multipart) direttamente: NON passa da api.js (JSON-only)
 
 function getApiBase() {
-  const meta = document.querySelector('meta[name="api-base"]');
-  return (meta?.content || "").replace(/\/$/, "");
+// Opzione B: usa sempre il proxy relativo /api
+return "/api";
 }
 
 // Banner messaggi (error/success/info) riusando classi di style.css
