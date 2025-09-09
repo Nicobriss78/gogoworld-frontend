@@ -238,6 +238,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
           }
           try {
+            console.debug("PUT /events payload", { eventId, payload });
+
 const res = await apiPut(`/events/${eventId}`, payload, token);
 if (!res?.ok) {
 // Mostra esattamente cosa ha detto il server (403, 400, 422, ecc.)
@@ -246,8 +248,14 @@ showAlert(`Salvataggio fallito (${res?.status || "?"}): ${msg}`, "error");
 console.warn("Update event failed", res);
 return; // non ricaricare, lascia i campi così come sono
 }
+            console.debug("PUT /events OK", res);
 showAlert("Evento aggiornato", "success", { autoHideMs: 2000 });
-setTimeout(() => window.location.reload(), 600);
+// Cache-busting: ricarica la pagina aggiungendo un parametro _=timestamp
+setTimeout(() => {
+const u = new URL(window.location.href);
+u.searchParams.set("_", Date.now().toString());
+window.location.href = u.toString();
+}, 600);
           } catch (err) {
             showAlert(err?.message || "Errore di rete", "error", { autoHideMs: 4000 });
           }
@@ -620,6 +628,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
