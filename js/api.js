@@ -1,16 +1,9 @@
-// js/api.js — wrapper Fetch (aggiunto supporto <meta name="api-base">)
-
-// --- PATCH: helper per risolvere la base URL API ---
+// js/api.js — wrapper Fetch (proxy relativo /api/*)
+//
+// Opzione B: tutte le chiamate passano da un reverse-proxy (Netlify in staging,
+// reverse-proxy del "server unico" in produzione). Base fissa: "/api".
 function resolveApiBase() {
-  try {
-    const override = (typeof localStorage !== "undefined") ? localStorage.getItem("apiBase") : null;
-    if (override && /^https?:\/\//i.test(override)) return override.replace(/\/+$/, "");
-    if (typeof document !== "undefined") {
-      const meta = document.querySelector('meta[name="api-base"]');
-      if (meta && meta.content) return meta.content.replace(/\/+$/, "");
-    }
-  } catch {}
-  return "http://localhost:5000/api";
+return "/api";
 }
 
 const API_BASE = resolveApiBase();
