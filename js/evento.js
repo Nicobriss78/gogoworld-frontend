@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const ev = detail.event;
     // PATCH: myId corretto dentro me.user
-    const myId = me?.user?._id;
+  const myId = me?.user?._id || me?._id || me?.id;
 
     elTitle.textContent = ev.title || "Evento";
 
@@ -168,6 +168,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Render del form di modifica
+    // PATCH F1: gestione #edit demandata al blocco "isOwner" sottostante (btnEdit auto-click),
+    // per evitare doppio form e submit senza listener → esce subito.
+    return;
+    host.innerHTML = renderEditForm(ev);
+
     host.innerHTML = renderEditForm(ev);
   } catch {/* silente */}
 })();
@@ -629,6 +634,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
