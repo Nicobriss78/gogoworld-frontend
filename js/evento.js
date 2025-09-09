@@ -250,6 +250,7 @@ return; // non ricaricare, lascia i campi così come sono
 }
             console.debug("PUT /events OK", res);
 showAlert("Evento aggiornato", "success", { autoHideMs: 2000 });
+            return; // temporaneamnente niente reload: leggiamo la risposta in Network
 // Cache-busting: ricarica la pagina aggiungendo un parametro _=timestamp
 setTimeout(() => {
 const u = new URL(window.location.href);
@@ -628,6 +629,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
