@@ -6,8 +6,9 @@ import { apiGet, apiPost, apiDelete, apiPut, whoami } from "./api.js"; // PATCH:
 
 // -------------------- Helpers base --------------------
 function apiBase() {
-  const meta = document.querySelector('meta[name="api-base"]');
-  return (meta?.content || "").replace(/\/+$/, "");
+  // Opzione B: proxy relativo /api
+return "/api";
+
 }
 
 function getToken() {
