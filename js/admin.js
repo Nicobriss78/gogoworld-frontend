@@ -223,12 +223,12 @@ uniq.forEach(ev => elEvList.appendChild(renderEventCard(ev)));
 }
 
 elEvRefresh?.addEventListener("click", async () => {
-  await loadEvents();
-  await loadKpis();
+await loadEvents();
+await loadKpis();
 });
 [elEvSearch, elEvStatus, elEvVisibility].forEach(el => {
-  el?.addEventListener("change", () => elEvRefresh?.click());
-  el?.addEventListener("keyup", (e) => { if (e.key === "Enter") elEvRefresh?.click(); });
+el?.addEventListener("change", () => elEvRefresh?.click());
+el?.addEventListener("keyup", (e) => { if (e.key === "Enter") elEvRefresh?.click(); });
 });
 
 elEvList?.addEventListener("click", async (e) => {
