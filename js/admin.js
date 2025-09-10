@@ -200,11 +200,19 @@ async function loadEvents() {
   elEvList.innerHTML = "";
   try {
     const list = await fetchEvents();
-    if (!list.length) {
-      elEvList.appendChild(h("div", { class: "muted" }, "Nessun evento trovato."));
-    } else {
-      list.forEach(ev => elEvList.appendChild(renderEventCard(ev)));
-    }
+   // Dedup per _id/id: evita duplicati quando il filtro matcha più campi lato BE
+const seen = new Set();
+const uniq = [];
+for (const ev of (list || [])) {
+const key = String(ev?._id || ev?.id || "");
+if (!key) continue;
+if (!seen.has(key)) { seen.add(key); uniq.push(ev); }
+}
+if (!uniq.length) {
+elEvList.appendChild(h("div", { class: "muted" }, "Nessun evento trovato."));
+} else {
+uniq.forEach(ev => elEvList.appendChild(renderEventCard(ev)));
+}
   } catch (err) {
     showAlert(err?.message || "Errore caricamento eventi", "error");
   }
