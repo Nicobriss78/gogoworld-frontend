@@ -152,6 +152,7 @@ const elEvVisibility = document.getElementById("evVisibility");
 const elEvList = document.getElementById("eventsList");
 const elEvRefresh = document.getElementById("evRefresh");
 
+let evRequestSeq = 0; // token anti-race per loadEvents
 function qParams(obj) {
   const p = new URLSearchParams();
   Object.entries(obj).forEach(([k,v]) => {
@@ -197,10 +198,13 @@ function renderEventCard(ev) {
 }
 
 async function loadEvents() {
-  elEvList.innerHTML = "";
+const seq = ++evRequestSeq; // prendi un token progressivo
+elEvList.innerHTML = "";
   try {
     const list = await fetchEvents();
    // Dedup per _id/id: evita duplicati quando il filtro matcha più campi lato BE
+    if (seq !== evRequestSeq) return; // risposta superata: ignora
+
 const seen = new Set();
 const uniq = [];
 for (const ev of (list || [])) {
