@@ -62,6 +62,8 @@ function showAlert(message, type = "error", opts = {}) {
     box = document.createElement("div");
     box.id = "alertBox";
     main.prepend(box);
+    box.setAttribute("role", "status");
+    box.setAttribute("aria-live", "polite");
   }
   const t = type === "success" ? "success" : type === "error" ? "error" : "info";
   box.className = `alert ${t}`;
@@ -634,6 +636,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
