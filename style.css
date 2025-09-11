@@ -84,6 +84,12 @@ body {
 .btn:hover { background: #195db7; }
 .btn-secondary { background: var(--color-secondary); }
 .btn-secondary:hover { background: #333; }
+.btn[disabled],
+.btn:disabled { 
+  opacity: .6; 
+  cursor: not-allowed; 
+}
+
 /* nuove righe 87–88 */
 .btn[disabled],
 .btn:disabled { opacity: .6; cursor: not-allowed; }
@@ -385,6 +391,7 @@ body {
   color: #111 !important;
   font-size: 14px !important;
 }
+
 
 
 
