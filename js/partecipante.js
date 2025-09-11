@@ -17,6 +17,8 @@ function showAlert(message, type = "error", opts = {}) {
     box = document.createElement("div");
     box.id = "alertBox";
     main.prepend(box);
+    /* A2.1 */ box.setAttribute("role", "status");
+           box.setAttribute("aria-live", "polite");
   }
   const t = type === "success" ? "success" : type === "error" ? "error" : "info";
   box.className = `alert ${t}`;
@@ -255,6 +257,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!btn) return;
     const id = btn.getAttribute("data-id");
     const action = btn.getAttribute("data-action");
+/* A2.2 */ if (btn.disabled || btn.dataset.loading === "1") return;
+           const card = btn.closest(".event-card");
+           const evTitle = card?.querySelector("h3")?.textContent?.trim() || "";
 
     if (action === "details") {
       sessionStorage.setItem("selectedEventId", id);
@@ -262,27 +267,57 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    if (action === "join") {
-      const res = await apiPost(`/events/${id}/join`, {}, token);
-      if (!res.ok) {
-        showAlert(res.error || "Errore iscrizione", "error", { autoHideMs: 4000 });
-        return;
-      }
-      showAlert("Iscrizione effettuata", "success", { autoHideMs: 2500 });
-      await loadEvents();
-      return;
-    }
+ if (action === "join") {
+  try {
+    btn.dataset.loading = "1";
+    btn.disabled = true;
 
-    if (action === "leave") {
-      const res = await apiPost(`/events/${id}/leave`, {}, token);
-      if (!res.ok) {
-        showAlert(res.error || "Errore annullamento", "error", { autoHideMs: 4000 });
-        return;
-      }
-      showAlert("Partecipazione annullata", "success", { autoHideMs: 2500 });
-      await loadEvents();
+    const res = await apiPost(`/events/${id}/join`, {}, token);
+    if (!res.ok) {
+      showAlert(res.error || "Errore iscrizione", "error", { autoHideMs: 4000 });
       return;
     }
+    showAlert(
+      `Iscrizione effettuata${evTitle ? ' a "' + evTitle + '"' : ''}`,
+      "success",
+      { autoHideMs: 2500 }
+    );
+    await loadEvents();
+    return;
+  } catch (err) {
+    showAlert(err?.message || "Errore iscrizione", "error", { autoHideMs: 4000 });
+  } finally {
+    btn.dataset.loading = "";
+    btn.disabled = false;
+  }
+}
+
+
+if (action === "leave") {
+  try {
+    btn.dataset.loading = "1";
+    btn.disabled = true;
+
+    const res = await apiPost(`/events/${id}/leave`, {}, token);
+    if (!res.ok) {
+      showAlert(res.error || "Errore annullamento", "error", { autoHideMs: 4000 });
+      return;
+    }
+    showAlert(
+      `Partecipazione annullata${evTitle ? ' per "' + evTitle + '"' : ''}`,
+      "success",
+      { autoHideMs: 2500 }
+    );
+    await loadEvents();
+    return;
+  } catch (err) {
+    showAlert(err?.message || "Errore annullamento", "error", { autoHideMs: 4000 });
+  } finally {
+    btn.dataset.loading = "";
+    btn.disabled = false;
+  }
+}
+
   });
 
   // Filtri
@@ -343,6 +378,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Prima lista
   loadEvents();
 });
+
 
 
 
