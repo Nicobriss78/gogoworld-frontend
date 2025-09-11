@@ -62,6 +62,9 @@ function showAlert(message, type = "error", opts = {}) {
     box = document.createElement("div");
     box.id = "alertBox";
     main.prepend(box);
+    /* nuove righe tra 64 e 65 */
+    box.setAttribute("role", "status");
+    box.setAttribute("aria-live", "polite");
     box.setAttribute("role", "status");
     box.setAttribute("aria-live", "polite");
   }
@@ -636,6 +639,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
