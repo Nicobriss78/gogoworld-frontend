@@ -4,8 +4,26 @@ document.addEventListener("DOMContentLoaded", () => {
   // Se già loggato → redirect automatico nell’area coerente
   const token = localStorage.getItem("token");
   if (token) {
-    const role = (sessionStorage.getItem("desiredRole") || "participant");
-    window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
+    try {
+      fetch("/api/users/me", { headers: { "Authorization": `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(me => {
+          const serverRole = String((me && (me.role || (me.user && me.user.role))) || "").toLowerCase();
+          if (serverRole === "admin") {
+            window.location.href = "admin.html";
+            return;
+          }
+          const role = (sessionStorage.getItem("desiredRole") || "participant");
+          window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
+        })
+        .catch(() => {
+          const role = (sessionStorage.getItem("desiredRole") || "participant");
+          window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
+        });
+    } catch (e) {
+      const role = (sessionStorage.getItem("desiredRole") || "participant");
+      window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
+    }
     return;
   }
 
