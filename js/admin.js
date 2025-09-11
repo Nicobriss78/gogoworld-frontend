@@ -292,6 +292,7 @@ const elUsOrg = document.getElementById("usOrg");
 const elUsBan = document.getElementById("usBan");
 const elUsList = document.getElementById("usersList");
 const elUsRefresh = document.getElementById("usRefresh");
+let usRequestSeq = 0; // token anti-race per loadUsers
 
 async function fetchUsers() {
   const base = apiBase();
@@ -330,24 +331,35 @@ function renderUserCard(u) {
 }
 
 async function loadUsers() {
-  elUsList.innerHTML = "";
-  try {
-    const list = await fetchUsers();
-    if (!list.length) {
-      elUsList.appendChild(h("div", { class: "muted" }, "Nessun utente trovato."));
-    } else {
-      list.forEach(u => elUsList.appendChild(renderUserCard(u)));
-    }
-  } catch (err) {
-    showAlert(err?.message || "Errore caricamento utenti", "error");
-  }
+const seq = ++usRequestSeq; // prendi un token progressivo
+elUsList.innerHTML = "";
+try {
+const list = await fetchUsers();
+if (seq !== usRequestSeq) return; // risposta superata: ignora
+// Dedup per _id/id: ulteriore safety lato UI
+const seen = new Set();
+const uniq = [];
+for (const u of (list || [])) {
+const key = String(u?._id || u?.id || "");
+if (!key) continue;
+if (!seen.has(key)) { seen.add(key); uniq.push(u); }
 }
+if (!uniq.length) {
+elUsList.appendChild(h("div", { class: "muted" }, "Nessun utente trovato."));
+} else {
+uniq.forEach(u => elUsList.appendChild(renderUserCard(u)));
+}
+} catch (err) {
+showAlert(err?.message || "Errore caricamento utenti", "error");
+}
+}
+
 
 elUsRefresh?.addEventListener("click", async () => { await loadUsers(); });
 
 [elUsSearch, elUsRole, elUsOrg, elUsBan].forEach(el => {
-  el?.addEventListener("change", () => elUsRefresh?.click());
-  el?.addEventListener("keyup", (e) => { if (e.key === "Enter") elUsRefresh?.click(); });
+el?.addEventListener("change", () => loadUsers());
+el?.addEventListener("keyup", (e) => { if (e.key === "Enter") loadUsers(); });
 });
 
 elUsList?.addEventListener("click", async (e) => {
