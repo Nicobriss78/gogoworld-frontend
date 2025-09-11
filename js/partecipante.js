@@ -17,6 +17,8 @@ function showAlert(message, type = "error", opts = {}) {
     box = document.createElement("div");
     box.id = "alertBox";
     main.prepend(box);
+    box.setAttribute("role", "status");
+box.setAttribute("aria-live", "polite");
     /* A2.1 */ box.setAttribute("role", "status");
            box.setAttribute("aria-live", "polite");
   }
@@ -257,6 +259,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!btn) return;
     const id = btn.getAttribute("data-id");
     const action = btn.getAttribute("data-action");
+    if (btn.disabled || btn.dataset.loading === "1") return;
+const card = btn.closest(".event-card");
+const evTitle = card?.querySelector("h3")?.textContent?.trim() || "";
+
 /* A2.2 */ if (btn.disabled || btn.dataset.loading === "1") return;
            const card = btn.closest(".event-card");
            const evTitle = card?.querySelector("h3")?.textContent?.trim() || "";
@@ -378,6 +384,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
