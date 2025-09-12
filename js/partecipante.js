@@ -259,9 +259,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!btn) return;
     const id = btn.getAttribute("data-id");
     const action = btn.getAttribute("data-action");
-   if (btn.disabled || btn.dataset.loading === "1") return;
+  if (btn.disabled || btn.dataset.loading === "1") return;
 const cardEl = btn.closest(".event-card");
-const evTitle = cardEl?.querySelector("h3")?.textContent?.trim() || "";
+const evTitleText = cardEl?.querySelector("h3")?.textContent?.trim() || "";
+
 
 /* A2.2 */ if (btn.disabled || btn.dataset.loading === "1") return;
            const card = btn.closest(".event-card");
@@ -283,11 +284,8 @@ const evTitle = cardEl?.querySelector("h3")?.textContent?.trim() || "";
       showAlert(res.error || "Errore iscrizione", "error", { autoHideMs: 4000 });
       return;
     }
-    showAlert(
-      `Iscrizione effettuata${evTitle ? ' a "' + evTitle + '"' : ''}`,
-      "success",
-      { autoHideMs: 2500 }
-    );
+   showAlert(`Iscrizione effettuata${evTitleText ? ' a "' + evTitleText + '"' : ''}`, "success", { autoHideMs: 2500 });
+
     await loadEvents();
     return;
   } catch (err) {
@@ -309,11 +307,8 @@ if (action === "leave") {
       showAlert(res.error || "Errore annullamento", "error", { autoHideMs: 4000 });
       return;
     }
-    showAlert(
-      `Partecipazione annullata${evTitle ? ' per "' + evTitle + '"' : ''}`,
-      "success",
-      { autoHideMs: 2500 }
-    );
+   showAlert(`Partecipazione annullata${evTitleText ? ' per "' + evTitleText + '"' : ''}`, "success", { autoHideMs: 2500 });
+
     await loadEvents();
     return;
   } catch (err) {
@@ -384,6 +379,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
