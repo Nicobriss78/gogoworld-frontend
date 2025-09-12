@@ -16,42 +16,46 @@ function showAlert(message, type = "error", opts = {}) {
     box.id = "alertBox";
     box.className = "alert";
     main.prepend(box);
+    box.setAttribute("role", "status");
+    box.setAttribute("aria-live", "polite");
   }
-  // Allineamento con style.css: usa classi .alert.error / .alert.success / .alert.info
+  // Allineamento con style
   const t = type === "success" ? "success" : type === "error" ? "error" : "info";
   box.className = `alert ${t}`;
   box.textContent = message;
 
   if (autoHideMs > 0) {
-    setTimeout(() => {
+    if (box._hideTimer) clearTimeout(box._hideTimer);
+    box._hideTimer = setTimeout(() => {
       if (box && box.parentNode) box.parentNode.removeChild(box);
     }, autoHideMs);
   }
 }
 
+// desiredRole utility
+function getDesiredRole() {
+  try {
+    const role = sessionStorage.getItem("desiredRole");
+    return role === "organizer" ? "organizer" : "participant";
+  } catch {
+    return "participant";
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
-  const btnRegister = document.getElementById("goRegister");
-  const btnHome = document.getElementById("goHome");
+  const btnRegister = document.getElementById("btnRegister");
+  const btnHome = document.getElementById("btnHome");
 
   if (btnRegister) {
     btnRegister.addEventListener("click", () => {
-      window.location.href = "pages/register.html";
+      window.location.href = "register.html";
     });
   }
   if (btnHome) {
     btnHome.addEventListener("click", () => {
       window.location.href = "index.html";
     });
-  }
-
-  // Ricava ruolo desiderato (tollerante IT/EN) e restituisce sempre EN
-  function getDesiredRole() {
-    const r = sessionStorage.getItem("desiredRole");
-    // Normalize: accept both IT and EN, return EN only
-    if (r === "organizzatore" || r === "organizer") return "organizer";
-    if (r === "partecipante" || r === "participant") return "participant";
-    return "participant";
   }
 
   if (!form) return;
@@ -67,6 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
       showAlert("Inserisci email e password", "error", { autoHideMs: 3000 });
       return;
     }
+
+    const btnSubmit = form.querySelector('button[type="submit"]');
+    if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.dataset.loading = "1"; }
 
     try {
       const res = await apiPost("/users/login", { email, password });
@@ -90,16 +97,16 @@ document.addEventListener("DOMContentLoaded", () => {
       // (RIMOSSO) Notifica persistente al BE del ruolo richiesto
       // await apiPost("/users/session-role", { role: roleRequested }, res.token);
 
-      // Recupera profilo per conoscere canOrganize
-      const me = await apiGet("/users/me", res.token);
-      if (!me || me.ok === false) {
-        showAlert("Errore nel recupero profilo", "error", { autoHideMs: 4000 });
-        return;
+      // Chi sono?
+      let me = null;
+      try {
+        me = await apiGet("/users/me", res.token);
+      } catch {
+        // ignora
       }
 
-      // PATCH: redirect amministratore diretto dopo login
-      if (String(me?.role || me?.user?.role || "").toLowerCase() === "admin") {
-        window.location.href = "admin.html";
+      if (!me || me?.ok === false) {
+        showAlert(me?.error || "Impossibile recuperare il profilo utente", "error", { autoHideMs: 4000 });
         return;
       }
 
@@ -116,13 +123,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Se vogliamo entrare in organizer ma l'utente non è ancora abilitato, abilitalo adesso (Opzione B)
 if (redirectRole === "organizer" && me?.canOrganize !== true) {
-  const en = await apiPost("/users/me/enable-organizer", {}, res.token);
-  if (en?.ok === false) {
-    showAlert(en?.error || "Impossibile abilitare la modalità organizzatore", "error", { autoHideMs: 5000 });
-    return;
-  }
+  showAlert("Non sei abilitato come organizzatore. Accedi come partecipante.", "info", { autoHideMs: 4000 });
+  redirectRole = "participant";
 }
-
 
       // Redirect finale
       if (redirectRole === "organizer") {
@@ -132,9 +135,13 @@ if (redirectRole === "organizer" && me?.canOrganize !== true) {
       }
     } catch (err) {
       showAlert("Errore di rete o server non raggiungibile", "error", { autoHideMs: 4000 });
+    } finally {
+      const btnSubmit = form.querySelector('button[type="submit"]');
+      if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.dataset.loading = ""; }
     }
   });
 });
+
 
 
 
