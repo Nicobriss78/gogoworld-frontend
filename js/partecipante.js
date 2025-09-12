@@ -259,9 +259,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!btn) return;
     const id = btn.getAttribute("data-id");
     const action = btn.getAttribute("data-action");
-    if (btn.disabled || btn.dataset.loading === "1") return;
-const card = btn.closest(".event-card");
-const evTitle = card?.querySelector("h3")?.textContent?.trim() || "";
+   if (btn.disabled || btn.dataset.loading === "1") return;
+const cardEl = btn.closest(".event-card");
+const evTitle = cardEl?.querySelector("h3")?.textContent?.trim() || "";
 
 /* A2.2 */ if (btn.disabled || btn.dataset.loading === "1") return;
            const card = btn.closest(".event-card");
@@ -384,6 +384,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
