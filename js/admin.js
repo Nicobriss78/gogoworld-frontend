@@ -461,6 +461,31 @@ async function boot() {
     setTimeout(() => (window.location.href = "login.html"), 800);
     return;
   }
+// Wire: Logout admin
+  const btnLogout = document.getElementById("btnAdminLogout");
+  if (btnLogout) {
+    btnLogout.addEventListener("click", () => {
+      try {
+        // Rimuovi token e varianti comuni
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("authToken");
+        sessionStorage.removeItem("jwt");
+        sessionStorage.removeItem("accessToken");
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("desiredRole");
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        localStorage.removeItem("desiredRole");
+      } catch {}
+
+      // Redirect a login
+      window.location.href = "login.html";
+    });
+  }
 
   // default tab events
   await Promise.all([loadKpis(), loadEvents()]);
