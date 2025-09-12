@@ -16,6 +16,8 @@ function showAlert(message, type = "error", opts = {}) {
     box = document.createElement("div");
     box.id = "alertBox";
     main.prepend(box);
+    box.setAttribute("role", "status");
+box.setAttribute("aria-live", "polite");
   }
   const t = type === "success" ? "success" : type === "error" ? "error" : "info";
   box.className = `alert ${t}`;
@@ -383,7 +385,10 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
       if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
 
       if (!res.events.length) {
-        listContainer.innerHTML = "<p>Nessun evento creato.</p>";
+listContainer.innerHTML = '<p>Nessun evento creato.</p><div style="margin-top:.5em"><button id="btnEmptyCreate" class="btn btn-primary">Crea il tuo primo evento</button></div>';
+    const btnEmpty = document.getElementById("btnEmptyCreate");
+if (btnEmpty) btnEmpty.onclick = () => { try { document.getElementById("btnCreateEvent")?.click(); } catch {} };
+
       } else {
         listContainer.innerHTML = res.events.map(ev => `
           <div class="event-card">
@@ -572,7 +577,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
       }
 
       if (action === "delete") {
-        if (!confirm("Eliminare questo evento?")) return;
+       if (!confirm("Eliminare questo evento?")) { showAlert("Eliminazione annullata", "info", { autoHideMs: 2500 }); return; }
         const res = await apiDelete(`/events/${id}`, token);
         if (!res.ok) {
           showAlert(res.error || "Errore eliminazione", "error", { autoHideMs: 4000 });
@@ -741,6 +746,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
         form.reset();
         panel.style.display = "none";
         await loadEvents(); // KPI/Tabella si aggiornano dentro loadEvents
+        document.getElementById("myEventsList")?.scrollIntoView({ behavior: "smooth", block: "start" });
       } catch (err) {
         showAlert(err?.message || "Errore di rete in creazione", "error", { autoHideMs: 5000 });
       }
@@ -905,6 +911,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
