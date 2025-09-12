@@ -55,3 +55,11 @@ export async function apiPut(path, body = {}, token) {
 export async function whoami(token) {
   return apiGet("/users/whoami", token);
 }
+// Messaggio di errore uniforme dal risultato di apiFetch
+export function apiErrorMessage(result, fallback = "Errore") {
+  if (!result) return fallback;
+  if (result.ok === false) return result.message || result.error || fallback;
+  // In alcuni endpoint success possono comunque ritornare {error,message}
+  if (typeof result === "object" && result.error) return result.error;
+  return fallback;
+}
