@@ -105,6 +105,8 @@ function showAlert(msg, type = "info", { autoHideMs = 2500 } = {}) {
   if (!box) {
     box = h("div", { id: "adminAlert", class: "admin-card" });
     document.body.appendChild(box);
+    box.setAttribute("role", "status");
+    box.setAttribute("aria-live", "polite");
     box.style.position = "fixed";
     box.style.right = "1rem";
     box.style.bottom = "1rem";
@@ -407,6 +409,16 @@ const elImpFile = document.getElementById("impFile"); // PATCH: nuovo
 const elImpSim = document.getElementById("impSimulate");
 const elImpRun = document.getElementById("impRun");
 const elImpLog = document.getElementById("importLog");
+const elImpName = document.getElementById("impFileName");
+elImpFile?.addEventListener("change", () => {
+  const name = elImpFile?.files?.[0]?.name || "Nessun file selezionato";
+  if (elImpName) elImpName.textContent = name + (elImpSim?.checked ? " (validazione)" : "");
+});
+elImpSim?.addEventListener("change", () => {
+  if (!elImpName) return;
+  const base = (elImpFile?.files?.[0]?.name || "Nessun file selezionato").replace(/\s*\(validazione\)$/i, "");
+  elImpName.textContent = base + (elImpSim.checked ? " (validazione)" : "");
+});
 
 elImpRun?.addEventListener("click", async () => {
   const simulate = !!elImpSim?.checked;
@@ -420,7 +432,7 @@ elImpRun?.addEventListener("click", async () => {
   const form = new FormData();
   form.append("file", file);
   form.append("simulate", simulate ? "true" : "false");
-
+if (elImpRun) { elImpRun.disabled = true; elImpRun.dataset.loading = "1"; }
   const url = `${apiBase()}/admin/import/events`;
   try {
     const res = await fetch(url, {
@@ -428,13 +440,27 @@ elImpRun?.addEventListener("click", async () => {
       headers: { ...authHeaders() }, // niente Content-Type manuale con FormData
       body: form,
     });
-
+if (res.status === 401 || res.status === 403) {
+    showAlert("Sessione scaduta o permessi insufficienti. Effettua di nuovo il login.", "error", { autoHideMs: 4000 });
+    setTimeout(() => (window.location.href = "login.html"), 800);
+    if (elImpRun) { elImpRun.disabled = false; elImpRun.dataset.loading = ""; }
+    return;
+  }
     const out = await res.json().catch(() => ({}));
     if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore import");
-    elImpLog.textContent = JSON.stringify(out, null, 2);
-    showAlert("Import eseguito", "success");
+// Riepilogo leggibile + JSON dettagli
+    const created = out?.created ?? out?.stats?.created ?? 0;
+    const updated = out?.updated ?? out?.stats?.updated ?? 0;
+    const skipped = out?.skipped ?? out?.stats?.skipped ?? 0;
+    const modeLabel = simulate ? "Validazione completata" : "Import completato";
+    elImpLog.textContent =
+      `${modeLabel}:\n- creati: ${created}\n- aggiornati: ${updated}\n- saltati: ${skipped}\n\nDettagli JSON:\n` +
+      JSON.stringify(out, null, 2);
+    showAlert(modeLabel, "success");
+    if (elImpRun) { elImpRun.disabled = false; elImpRun.dataset.loading = ""; }
   } catch (err) {
     showAlert(err?.message || "Errore import", "error");
+    if (elImpRun) { elImpRun.disabled = false; elImpRun.dataset.loading = ""; }
   }
 });
 
