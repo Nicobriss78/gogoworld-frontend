@@ -229,9 +229,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         const markers = [];
 
         for (const ev of res.events) {
-          // Accetta sia ev.lng che ev.lon; accetta anche stringhe "45.07"
-          const latRaw = ev?.lat ?? ev?.Lat ?? ev?.latitude;
-          const lonRaw = ev?.lng ?? ev?.lon ?? ev?.Lon ?? ev?.longitude;
+          // Accetta varianti: lat/lon, lat/lng, e GeoJSON location.coordinates [lon, lat]
+          const coords = Array.isArray(ev?.location?.coordinates) ? ev.location.coordinates : null;
+
+          const latRaw =
+            ev?.lat ?? ev?.Lat ?? ev?.latitude ??
+            (coords ? coords[1] : undefined);
+
+          const lonRaw =
+            ev?.lon ?? ev?.lng ?? ev?.Lon ?? ev?.longitude ??
+            (coords ? coords[0] : undefined);
 
           const lat = typeof latRaw === "string" ? parseFloat(latRaw.replace(",", ".")) : latRaw;
           const lon = typeof lonRaw === "string" ? parseFloat(lonRaw.replace(",", ".")) : lonRaw;
@@ -421,6 +428,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
