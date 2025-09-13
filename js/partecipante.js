@@ -227,16 +227,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (cluster && map && Array.isArray(res?.events)) {
         cluster.clearLayers();
         const markers = [];
+
         for (const ev of res.events) {
-          const lat = ev?.lat, lng = ev?.lng;
-          if (typeof lat === "number" && typeof lng === "number") {
-            const m = L.marker([lat, lng]);
+          // Accetta sia ev.lng che ev.lon; accetta anche stringhe "45.07"
+          const latRaw = ev?.lat ?? ev?.Lat ?? ev?.latitude;
+          const lonRaw = ev?.lng ?? ev?.lon ?? ev?.Lon ?? ev?.longitude;
+
+          const lat = typeof latRaw === "string" ? parseFloat(latRaw.replace(",", ".")) : latRaw;
+          const lon = typeof lonRaw === "string" ? parseFloat(lonRaw.replace(",", ".")) : lonRaw;
+
+          if (Number.isFinite(lat) && Number.isFinite(lon)) {
+            const m = L.marker([lat, lon]);
             const when = formatEventDate(ev);
             const title = ev?.title || "";
             m.bindPopup(`<b>${title}</b>${when ? "<br/>" + when : ""}`);
             markers.push(m);
           }
         }
+
         // Aggiungi tutti i marker e adatta la vista
         if (markers.length) {
           markers.forEach(m => cluster.addLayer(m));
@@ -246,6 +254,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           } catch {}
         }
       }
+
       // >>> PATCH: funzione di rendering card arricchita (region/country, prezzo+currency)
       const renderCard = (ev, includeLeave) => {
         const priceStr = ev.isFree ? "Gratuito" : (ev.price != null ? `${ev.price} ${ev.currency || "EUR"}` : "-");
@@ -412,6 +421,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
