@@ -188,6 +188,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // >>> PATCH: popola tendine filtri
   populateFilterOptions();
+// --- MAPPA: init Leaflet + MarkerCluster (se presente #map e libreria L) ---
+  const mapEl = document.getElementById("map");
+  let map, cluster;
+  if (mapEl && window.L) {
+    map = L.map("map").setView([41.8719, 12.5674], 6); // Italia
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
+    cluster = L.markerClusterGroup();
+    map.addLayer(cluster);
+  }
 
   async function loadEvents(filters = {}) {
     allList.innerHTML = "<p>Caricamento...</p>";
@@ -212,7 +223,29 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
       const notJoined = res.events.filter(ev => !joinedIds.has(ev._id));
-
+// --- MAPPA: aggiorna marker su cluster ---
+      if (cluster && map && Array.isArray(res?.events)) {
+        cluster.clearLayers();
+        const markers = [];
+        for (const ev of res.events) {
+          const lat = ev?.lat, lng = ev?.lng;
+          if (typeof lat === "number" && typeof lng === "number") {
+            const m = L.marker([lat, lng]);
+            const when = formatEventDate(ev);
+            const title = ev?.title || "";
+            m.bindPopup(`<b>${title}</b>${when ? "<br/>" + when : ""}`);
+            markers.push(m);
+          }
+        }
+        // Aggiungi tutti i marker e adatta la vista
+        if (markers.length) {
+          markers.forEach(m => cluster.addLayer(m));
+          try {
+            const group = L.featureGroup(markers);
+            map.fitBounds(group.getBounds().pad(0.1));
+          } catch {}
+        }
+      }
       // >>> PATCH: funzione di rendering card arricchita (region/country, prezzo+currency)
       const renderCard = (ev, includeLeave) => {
         const priceStr = ev.isFree ? "Gratuito" : (ev.price != null ? `${ev.price} ${ev.currency || "EUR"}` : "-");
@@ -379,6 +412,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
