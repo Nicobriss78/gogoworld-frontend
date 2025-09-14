@@ -135,10 +135,14 @@
       </section>
       <!-- Tab: Recensioni -->
       <section data-tab-panel="reviews" hidden>
-        <div class="admin-toolbar">
-          <button id="revRefresh" class="btn">Aggiorna</button>
-          <span class="right muted">Recensioni pending in attesa di moderazione</span>
-        </div>
+<div class="admin-toolbar">
+    <label for="revEvent" class="muted">Evento:</label>
+    <select id="revEvent">
+      <option value="all">Tutti</option>
+    </select>
+    <button id="revRefresh" class="btn">Aggiorna</button>
+    <span class="right muted">Recensioni pending in attesa di moderazione</span>
+  </div>
         <div id="reviewsList" class="admin-grid"></div>
       </section>
     </main>
