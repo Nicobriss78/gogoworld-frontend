@@ -466,13 +466,22 @@ if (res.status === 401 || res.status === 403) {
 // -------------------- Recensioni (tab) --------------------
 const elRevList = document.getElementById("reviewsList");
 const elRevRefresh = document.getElementById("revRefresh");
-
-async function fetchReviews(status = "pending") {
+const elRevEvent = document.getElementById("revEvent");
+async function fetchAllPending() {
   const base = apiBase();
-const url = `${base}/reviews/pending?_=${Date.now()}`;
+  const url = `${base}/reviews/pending?_=${Date.now()}`;
   const res = await fetch(url, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore fetch recensioni");
+  return out.reviews || [];
+}
+
+async function fetchPendingByEvent(eventId) {
+  const base = apiBase();
+  const url = `${base}/reviews?event=${encodeURIComponent(eventId)}&status=pending&_=${Date.now()}`;
+  const res = await fetch(url, { headers: { ...authHeaders() } });
+  const out = await res.json().catch(() => ({}));
+  if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore fetch recensioni per evento");
   return out.reviews || [];
 }
 
@@ -494,7 +503,11 @@ async function loadReviews() {
   if (!elRevList) return;
   elRevList.innerHTML = "";
   try {
-    const list = await fetchReviews("pending");
+    const selected = elRevEvent?.value || "all";
+    const list = selected === "all"
+      ? await fetchAllPending()
+      : await fetchPendingByEvent(selected);
+
     if (!list.length) {
       elRevList.appendChild(h("div", { class: "muted" }, "Nessuna recensione pending."));
     } else {
@@ -505,7 +518,31 @@ async function loadReviews() {
   }
 }
 
+// Popola il select degli eventi (approvati)
+async function populateReviewEvents() {
+  if (!elRevEvent) return;
+  const hasFilled = elRevEvent.options.length > 1;
+  if (hasFilled) return;
+
+  const base = apiBase();
+  const url = `${base}/admin/events?approvalStatus=approved&limit=200&_=${Date.now()}`;
+  const res = await fetch(url, { headers: { ...authHeaders() } });
+  const out = await res.json().catch(() => ({}));
+  if (!res.ok || !out?.ok) return;
+
+  const evs = Array.isArray(out.events) ? out.events : [];
+  evs.sort((a,b) => new Date(b.dateEnd || b.dateStart || 0) - new Date(a.dateEnd || a.dateStart || 0));
+
+  for (const ev of evs) {
+    const opt = document.createElement("option");
+    opt.value = ev._id;
+    opt.textContent = `${ev.title || "(senza titolo)"} — ${ev.city || ""} ${ev.region ? "("+ev.region+")":""}`;
+    elRevEvent.appendChild(opt);
+  }
+}
+
 // click handler tab recensioni
+elRevEvent?.addEventListener("change", () => loadReviews());
 elRevRefresh?.addEventListener("click", () => loadReviews());
 elRevList?.addEventListener("click", async (e) => {
   const btn = e.target.closest("button[data-action]");
@@ -579,7 +616,9 @@ async function boot() {
   }
 
   // default tab events
-await Promise.all([loadKpis(), loadEvents(), loadUsers?.(), loadReviews?.()]);
+await Promise.all([loadKpis(), loadEvents(), loadUsers?.()]);
+await populateReviewEvents();
+await loadReviews();
 }
 document.addEventListener("DOMContentLoaded", boot);
 
