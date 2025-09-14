@@ -79,6 +79,41 @@ function showAlert(message, type = "error", opts = {}) {
     }, autoHideMs);
   }
 }
+// --- PATCH: Recensioni — helper & API ---
+function eventHasEnded(ev) {
+  const end = ev?.dateEnd || ev?.endDate || ev?.dateStart || ev?.date;
+  if (!end) return false;
+  const d = new Date(end);
+  return !isNaN(d.getTime()) && d.getTime() < Date.now();
+}
+function isParticipantOf(ev, userId) {
+  if (!Array.isArray(ev?.participants)) return false;
+  return ev.participants.map(String).includes(String(userId));
+}
+function canUserReview(ev, userId) {
+  // 1) evento concluso 2) utente è participant
+  return eventHasEnded(ev) && isParticipantOf(ev, userId);
+}
+async function loadReviewsList(eventId, token) {
+  const target = document.getElementById("reviewsList");
+  if (!target) return;
+  try {
+    const res = await apiGet(`/reviews?event=${eventId}`, token);
+    if (!res?.ok) throw new Error(res?.error || "Errore caricamento recensioni");
+    const items = res.reviews || [];
+    target.innerHTML = items.length
+      ? items.map(r => `
+        <article class="review">
+          <p><strong>${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</strong></p>
+          ${r.comment ? `<p>${escapeHtml(r.comment)}</p>` : ""}
+          <small>${r.createdAt ? new Date(r.createdAt).toLocaleDateString("it-IT") : ""}</small>
+        </article>
+      `).join("")
+      : `<p>Nessuna recensione ancora.</p>`;
+  } catch (err) {
+    showAlert(err.message, "error", { autoHideMs: 4000 });
+  }
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
@@ -146,6 +181,46 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       secSchedule.innerHTML = `${startHtml}${endHtml}`;
     }
+    // --- PATCH: Recensioni (setup sezione) ---
+    const secReviews = document.getElementById("eventReviews");
+    const formReview = document.getElementById("reviewForm");
+    const hint = document.getElementById("reviewHint");
+
+    if (secReviews) {
+      // Lista recensioni approvate (pubbliche)
+      loadReviewsList(eventId, token);
+
+      // Regole di visibilità form
+      const allowed = canUserReview(ev, myId);
+      if (!allowed) {
+        // Mostra motivo (evento non concluso o non participant)
+        const msgs = [];
+        if (!eventHasEnded(ev)) msgs.push("Le recensioni si possono lasciare solo a evento concluso.");
+        if (!isParticipantOf(ev, myId)) msgs.push("Solo i partecipanti possono lasciare una recensione.");
+        if (hint) hint.textContent = msgs.join(" ");
+        if (formReview) formReview.style.display = "none";
+      } else {
+        if (hint) hint.textContent = "La tua recensione sarà visibile dopo l’approvazione.";
+        if (formReview) formReview.style.display = "";
+        // Submit recensione
+        formReview?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const rating = document.getElementById("reviewRating")?.value || "";
+          const comment = (document.getElementById("reviewComment")?.value || "").trim();
+          try {
+            const out = await apiPost("/reviews", { event: eventId, rating, comment }, token);
+            if (!out?.ok) throw new Error(out?.error || "Invio non riuscito");
+            showAlert("Recensione inviata: in attesa di approvazione", "success", { autoHideMs: 3000 });
+            // ricarica lista (mostrerà solo approved; la tua comparirà dopo approvazione)
+            loadReviewsList(eventId, token);
+            formReview.reset();
+          } catch (err) {
+            showAlert(err.message, "error", { autoHideMs: 4000 });
+          }
+        });
+      }
+    }
+
     // -----------------------------------------------------------------------
 // Gestione globale di #edit (funziona sia con layout modulare che fallback)
 (() => {
@@ -639,6 +714,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
