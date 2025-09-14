@@ -23,6 +23,32 @@
       <div id="eventTaxonomy"></div> <!-- category, subcategory, tags -->
       <div id="eventMedia"></div> <!-- coverImage, images -->
     </section>
+<!-- PATCH: Recensioni -->
+    <section id="eventReviews" class="event-reviews">
+      <h2>Recensioni</h2>
+
+      <div id="reviewsList" class="reviews-list">
+        <!-- elenco recensioni approvate -->
+      </div>
+
+      <form id="reviewForm" class="review-form">
+        <label for="reviewRating">Valutazione</label>
+        <select id="reviewRating">
+          <option value="">–</option>
+          <option value="1">★☆☆☆☆</option>
+          <option value="2">★★☆☆☆</option>
+          <option value="3">★★★☆☆</option>
+          <option value="4">★★★★☆</option>
+          <option value="5">★★★★★</option>
+        </select>
+
+        <label for="reviewComment">Commento (opzionale)</label>
+        <textarea id="reviewComment" rows="4" placeholder="Scrivi la tua esperienza..."></textarea>
+
+        <button type="submit" class="btn btn-primary">Invia recensione</button>
+        <p id="reviewHint" class="hint"></p>
+      </form>
+    </section>
 
     <nav class="event-actions">
       <button id="btnBackToList" class="btn">Torna alla lista</button>
@@ -37,6 +63,7 @@
   <script type="module" src="js/evento.js"></script>
 </body>
 </html>
+
 
 
 
