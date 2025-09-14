@@ -469,7 +469,7 @@ const elRevRefresh = document.getElementById("revRefresh");
 
 async function fetchReviews(status = "pending") {
   const base = apiBase();
-  const url = `${base}/reviews?status=${status}&_=${Date.now()}`;
+const url = `${base}/reviews/pending?_=${Date.now()}`;
   const res = await fetch(url, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore fetch recensioni");
