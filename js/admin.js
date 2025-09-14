@@ -463,7 +463,72 @@ if (res.status === 401 || res.status === 403) {
     if (elImpRun) { elImpRun.disabled = false; elImpRun.dataset.loading = ""; }
   }
 });
+// -------------------- Recensioni (tab) --------------------
+const elRevList = document.getElementById("reviewsList");
+const elRevRefresh = document.getElementById("revRefresh");
 
+async function fetchReviews(status = "pending") {
+  const base = apiBase();
+  const url = `${base}/reviews?status=${status}&_=${Date.now()}`;
+  const res = await fetch(url, { headers: { ...authHeaders() } });
+  const out = await res.json().catch(() => ({}));
+  if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore fetch recensioni");
+  return out.reviews || [];
+}
+
+function renderReviewCard(r) {
+  const card = h("div", { class: "admin-card" });
+  card.innerHTML = `
+    <h3>${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</h3>
+    <div class="muted">${r.comment || "(nessun commento)"}</div>
+    <div class="muted">Evento: ${r.event || "-"} • Utente: ${r.participant || "-"}</div>
+    <div class="actions">
+      <button class="btn primary" data-action="approve-review" data-id="${r._id}">Approva</button>
+      <button class="btn" data-action="reject-review" data-id="${r._id}">Rifiuta</button>
+    </div>
+  `;
+  return card;
+}
+
+async function loadReviews() {
+  if (!elRevList) return;
+  elRevList.innerHTML = "";
+  try {
+    const list = await fetchReviews("pending");
+    if (!list.length) {
+      elRevList.appendChild(h("div", { class: "muted" }, "Nessuna recensione pending."));
+    } else {
+      list.forEach(r => elRevList.appendChild(renderReviewCard(r)));
+    }
+  } catch (err) {
+    showAlert(err?.message || "Errore caricamento recensioni", "error");
+  }
+}
+
+// click handler tab recensioni
+elRevRefresh?.addEventListener("click", () => loadReviews());
+elRevList?.addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-action]");
+  if (!btn) return;
+  const id = btn.getAttribute("data-id");
+  const action = btn.getAttribute("data-action");
+  const base = apiBase();
+  try {
+    const path = action === "approve-review"
+      ? `/reviews/${id}/approve`
+      : `/reviews/${id}/reject`;
+    const res = await fetch(`${base}${path}`, {
+      method: "PATCH",
+      headers: { ...authHeaders(), "Content-Type": "application/json" }
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore moderazione review");
+    showAlert(`Review ${action.includes("approve") ? "approvata" : "rifiutata"}`, "success");
+    await loadReviews();
+  } catch (err) {
+    showAlert(err?.message || "Errore azione review", "error");
+  }
+});
 // -------------------- Boot --------------------
 async function boot() {
   // check token
@@ -514,7 +579,7 @@ async function boot() {
   }
 
   // default tab events
-  await Promise.all([loadKpis(), loadEvents()]);
+await Promise.all([loadKpis(), loadEvents(), loadUsers?.(), loadReviews?.()]);
 }
 document.addEventListener("DOMContentLoaded", boot);
 
