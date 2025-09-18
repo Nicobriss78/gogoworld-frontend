@@ -174,12 +174,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     me?.email ||
     me?.user?.email ||
     "utente";
+   // CHIP STATUS: ricava lo status (fallback compatibile con payload legacy)
+  const statusRaw = (me?.status || me?.user?.status || "").toString().toLowerCase();
+  const statusLabel = statusRaw ? (statusRaw[0].toUpperCase() + statusRaw.slice(1)) : "";
     if (!document.getElementById("welcomeMsg")) {
       const main = document.querySelector("main") || document.body;
       const p = document.createElement("p");
       p.id = "welcomeMsg";
       p.className = "welcome";
       p.textContent = `Benvenuto, ${name}! Sei nella tua area Partecipante.`;
+      // CHIP STATUS: aggiungi badge di stato accanto al benvenuto
+    if (statusRaw) {
+      const chip = document.createElement("span");
+      chip.className = `chip status-chip chip-${statusRaw}`;
+      chip.textContent = statusLabel; // es. Novizio, Esploratore, Veterano, Ambassador
+      p.appendChild(document.createTextNode(" "));
+      p.appendChild(chip);
+    }
       if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
     }
   } catch {
@@ -428,6 +439,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
