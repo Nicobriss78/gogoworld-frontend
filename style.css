@@ -332,6 +332,45 @@ body {
 
 /* Testo attenuato riutilizzabile (per note/moderazione) */
 .muted { color: var(--color-secondary); }
+/* --- User Status Chip (profilo/benvenuto) --- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: var(--color-text);
+  vertical-align: middle;
+}
+
+.chip.status-chip { font-weight: 600; }
+
+/* Varianti status utente */
+.chip-novizio {
+  background: #f4f4f5;
+  color: #52525b;
+  border-color: #e4e4e7;
+}
+.chip-esploratore {
+  background: #e8f0fe;
+  color: #1a237e;
+  border-color: #c5cae9;
+}
+.chip-veterano {
+  background: #f3e8ff;
+  color: #6b21a8;
+  border-color: #e9d5ff;
+}
+.chip-ambassador {
+  background: #fff7e6;
+  color: #92400e;
+  border-color: #f5d399;
+}
+
 /* ===========================
    PATCH: aggiunte minime UI
    =========================== */
@@ -398,6 +437,7 @@ body {
   color: #111 !important;
   font-size: 14px !important;
 }
+
 
 
 
