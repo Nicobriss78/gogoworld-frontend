@@ -94,6 +94,31 @@ function canUserReview(ev, userId) {
   // 1) evento concluso 2) utente è participant
   return eventHasEnded(ev) && isParticipantOf(ev, userId);
 }
+// Rende una recensione; se è la MIA recensione, mostra la chip con il mio status
+function renderReviewItem(r, myId, myStatusRaw, myStatusLabel) {
+  const isMine = String(r.participant || "") === String(myId || "");
+  const stars = `<strong>${"★".repeat(r.rating || 0)}${"☆".repeat(5 - (r.rating || 0))}</strong>`;
+  const txt = r.comment ? `<p>${escapeHtml(r.comment)}</p>` : "";
+  const when = r.createdAt ? new Date(r.createdAt).toLocaleDateString("it-IT") : "";
+
+  // Header autore: “Tu” + chip (se mia)
+  let author = isMine ? "Tu" : "";
+  if (isMine && myStatusRaw) {
+    author += ` <span class="chip status-chip chip-${myStatusRaw}">${myStatusLabel}</span>`;
+  }
+
+  const authorLine = author ? `<p class="muted">${author}</p>` : "";
+
+  return `
+    <article class="review">
+      <p>${stars}</p>
+      ${txt}
+      ${authorLine}
+      <small>${when}</small>
+    </article>
+  `;
+}
+
 async function loadReviewsList(eventId, token) {
   const target = document.getElementById("reviewsList");
   if (!target) return;
@@ -101,14 +126,8 @@ async function loadReviewsList(eventId, token) {
     const res = await apiGet(`/reviews?event=${eventId}`, token);
     if (!res?.ok) throw new Error(res?.error || "Errore caricamento recensioni");
     const items = res.reviews || [];
-    target.innerHTML = items.length
-      ? items.map(r => `
-        <article class="review">
-          <p><strong>${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</strong></p>
-          ${r.comment ? `<p>${escapeHtml(r.comment)}</p>` : ""}
-          <small>${r.createdAt ? new Date(r.createdAt).toLocaleDateString("it-IT") : ""}</small>
-        </article>
-      `).join("")
+   target.innerHTML = items.length
+      ? items.map(r => renderReviewItem(r, myId, myStatusRaw, myStatusLabel)).join("")
       : `<p>Nessuna recensione ancora.</p>`;
   } catch (err) {
     showAlert(err.message, "error", { autoHideMs: 4000 });
@@ -147,6 +166,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ev = detail.event;
     // PATCH: myId corretto dentro me.user
   const myId = me?.user?._id || me?._id || me?.id;
+// CHIP STATUS (utente loggato)
+const statusRaw = (me?.status || me?.user?.status || "").toString().toLowerCase();
+const statusLabel = statusRaw ? (statusRaw[0].toUpperCase() + statusRaw.slice(1)) : "";
 
     elTitle.textContent = ev.title || "Evento";
 
@@ -188,7 +210,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (secReviews) {
       // Lista recensioni approvate (pubbliche)
-      loadReviewsList(eventId, token);
+loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
 
       // Regole di visibilità form
       const allowed = canUserReview(ev, myId);
@@ -212,7 +234,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!out?.ok) throw new Error(out?.error || "Invio non riuscito");
             showAlert("Recensione inviata: in attesa di approvazione", "success", { autoHideMs: 3000 });
             // ricarica lista (mostrerà solo approved; la tua comparirà dopo approvazione)
-            loadReviewsList(eventId, token);
+loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
             formReview.reset();
           } catch (err) {
             showAlert(err.message, "error", { autoHideMs: 4000 });
@@ -714,6 +736,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
