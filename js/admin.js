@@ -194,6 +194,7 @@ function renderEventCard(ev) {
       <button class="btn" data-action="block" data-id="${ev._id}">Block</button>
       <button class="btn" data-action="unblock" data-id="${ev._id}">Unblock</button>
       <button class="btn" data-action="force-delete" data-id="${ev._id}">Force Delete</button>
+      <button class="btn" data-action="close-award" data-id="${ev._id}">Chiudi & premia</button>
     </div>
   `;
   return card;
@@ -244,6 +245,8 @@ elEvList?.addEventListener("click", async (e) => {
     "reject": `/admin/events/${id}/reject`,
     "block": `/admin/events/${id}/block`,
     "unblock": `/admin/events/${id}/unblock`,
+    "close-award": `/events/${id}/close`,
+ 
   };
   try {
     if (action === "force-delete") {
@@ -253,6 +256,22 @@ elEvList?.addEventListener("click", async (e) => {
       if (!res.ok || !out?.ok) throw new Error(out?.error || "Force delete fallita");
       showAlert("Evento eliminato", "success");
     } else {
+      // Azione speciale: chiusura evento + award ai partecipanti
+      if (action === "close-award") {
+        const res = await fetch(`${base}${pathMap[action]}`, {
+          method: "PUT",
+          headers: { ...authHeaders(), "Content-Type": "application/json" },
+        });
+        const out = await res.json().catch(() => ({}));
+        if (!res.ok || !out?.ok) throw new Error(out?.error || "Chiusura/award fallita");
+        const awarded = (typeof out.awarded === "number") ? out.awarded : (out?.awarded ?? "?");
+        showAlert(`Evento chiuso. Premi assegnati: ${awarded}`, "success");
+        // Refresh KPI+lista e termina ramo
+        await loadEvents();
+        await loadKpis();
+        return;
+      }
+
       let body = {};
       if (action === "reject") {
         const reason = prompt("Motivo del rifiuto:");
@@ -316,9 +335,18 @@ function renderUserCard(u) {
   const roleBadge = `<span class="badge">${u.role}</span>`;
   const orgBadge = `<span class="badge ${u.canOrganize ? "approved" : "blocked"}">${u.canOrganize ? "canOrganize" : "noOrganize"}</span>`;
   const banBadge = `<span class="badge ${u.isBanned ? "blocked" : "approved"}">${u.isBanned ? "banned" : "active"}</span>`;
+  const statusRaw = String(u.status || "").toLowerCase();
+  const statusLabel = statusRaw ? (statusRaw[0].toUpperCase() + statusRaw.slice(1)) : "";
+  const score = Number.isFinite(u.score) ? u.score : (u.score || 0);
+  const attended = (u?.stats?.attended || 0);
+  const reviewsApproved = (u?.stats?.reviewsApproved || 0);
   card.innerHTML = `
     <h3>${u.name || "-"} <span class="muted">(${u.email || "-"})</span></h3>
     <div>${roleBadge} ${orgBadge} ${banBadge}</div>
+    <div>
+      ${statusRaw ? `<span class="chip status-chip chip-${statusRaw}">${statusLabel}</span>` : ""}
+      <span class="muted"> • score: ${score} • attended: ${attended} • reviews: ${reviewsApproved}</span>
+    </div>
     <div class="actions">
       <button class="btn" data-action="ban" data-id="${u._id}">Ban</button>
       <button class="btn" data-action="unban" data-id="${u._id}">Unban</button>
