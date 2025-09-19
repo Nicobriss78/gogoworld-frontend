@@ -374,11 +374,17 @@ const key = String(u?._id || u?.id || "");
 if (!key) continue;
 if (!seen.has(key)) { seen.add(key); uniq.push(u); }
 }
-if (!uniq.length) {
-elUsList.appendChild(h("div", { class: "muted" }, "Nessun utente trovato."));
+// Applica filtri client-side (status, score, ecc.)
+const filters = readUserFiltersFromUI();
+saveUserFilters(filters);
+const filtered = applyUserFilters(uniq, filters);
+
+if (!filtered.length) {
+  elUsList.appendChild(h("div", { class: "muted" }, "Nessun utente trovato."));
 } else {
-uniq.forEach(u => elUsList.appendChild(renderUserCard(u)));
+  filtered.forEach(u => elUsList.appendChild(renderUserCard(u)));
 }
+
 } catch (err) {
 showAlert(err?.message || "Errore caricamento utenti", "error");
 }
@@ -388,10 +394,14 @@ showAlert(err?.message || "Errore caricamento utenti", "error");
 elUsRefresh?.addEventListener("click", async () => { await loadUsers(); });
 
 [elUsSearch, elUsRole, elUsOrg, elUsBan].forEach(el => {
-el?.addEventListener("change", () => loadUsers());
-el?.addEventListener("keyup", (e) => { if (e.key === "Enter") loadUsers(); });
+  el?.addEventListener("change", () => { saveUserFilters(readUserFiltersFromUI()); loadUsers(); });
+  el?.addEventListener("keyup", (e) => { if (e.key === "Enter") { saveUserFilters(readUserFiltersFromUI()); loadUsers(); } });
 });
-
+["usStatus","usScoreMin","usScoreMax"].forEach(id => {
+  const el = document.getElementById(id);
+  el?.addEventListener("change", () => { saveUserFilters(readUserFiltersFromUI()); loadUsers(); });
+  el?.addEventListener("keyup", (e) => { if (e.key === "Enter") { saveUserFilters(readUserFiltersFromUI()); loadUsers(); } });
+});
 elUsList?.addEventListener("click", async (e) => {
   const btn = e.target.closest("button[data-action]");
   if (!btn) return;
@@ -644,9 +654,76 @@ async function boot() {
   }
 
   // default tab events
+await restoreUserFiltersUI();
+await Promise.all([loadKpis(), loadEvents()]);
+await loadUsers?.();
 await Promise.all([loadKpis(), loadEvents(), loadUsers?.()]);
 await populateReviewEvents();
 await loadReviews();
 }
 document.addEventListener("DOMContentLoaded", boot);
+// -------------------- Users Filters (client-side) --------------------
+function readUserFiltersFromUI() {
+  const g = (id) => document.getElementById(id);
+  const val = (el) => (el && typeof el.value === "string") ? el.value.trim() : "";
+  const num = (el) => {
+    const s = val(el);
+    const n = parseInt(s, 10);
+    return Number.isFinite(n) ? n : null;
+  };
+  return {
+    q: val(g("usSearch")),
+    role: val(g("usRole")),
+    canOrganize: val(g("usOrg")),
+    isBanned: val(g("usBan")),
+    status: val(g("usStatus")).toLowerCase(),
+    scoreMin: num(g("usScoreMin")),
+    scoreMax: num(g("usScoreMax")),
+  };
+}
+
+function saveUserFilters(filters) {
+  try { localStorage.setItem("ADMIN_USERS_FILTERS", JSON.stringify(filters || {})); } catch {}
+}
+
+async function restoreUserFiltersUI() {
+  try {
+    const raw = localStorage.getItem("ADMIN_USERS_FILTERS");
+    if (!raw) return;
+    const f = JSON.parse(raw);
+    const set = (id, v) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (v === undefined || v === null) return;
+      el.value = String(v);
+    };
+    set("usSearch", f.q ?? "");
+    set("usRole", f.role ?? "");
+    set("usOrg", f.canOrganize ?? "");
+    set("usBan", f.isBanned ?? "");
+    set("usStatus", f.status ?? "");
+    set("usScoreMin", f.scoreMin ?? "");
+    set("usScoreMax", f.scoreMax ?? "");
+  } catch {}
+}
+
+function applyUserFilters(list, f) {
+  const txt = (s) => String(s || "").toLowerCase();
+  return (list || []).filter(u => {
+    if (f.q) {
+      const hay = txt(u.name) + " " + txt(u.email);
+      if (!hay.includes(txt(f.q))) return false;
+    }
+    if (f.role && txt(u.role) !== txt(f.role)) return false;
+    if (f.canOrganize !== "" && String(!!u.canOrganize) !== (f.canOrganize === "true" ? "true" : "false")) return false;
+    if (f.isBanned !== "" && String(!!u.isBanned) !== (f.isBanned === "true" ? "true" : "false")) return false;
+    if (f.status && txt(u.status) !== txt(f.status)) return false;
+
+    const score = Number(u.score || 0);
+    if (Number.isFinite(f.scoreMin) && score < f.scoreMin) return false;
+    if (Number.isFinite(f.scoreMax) && score > f.scoreMax) return false;
+
+    return true;
+  });
+}
 
