@@ -9,7 +9,7 @@
 
 
   <link rel="stylesheet" href="style.css" />
-  <style>
+  <style> 
     /* Mini-stili specifici admin (non invasivi) */
     .admin-wrap { max-width: 1200px; margin: 0 auto; padding: 1rem; }
     .admin-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem; }
@@ -110,6 +110,15 @@
             <option value="true">Sì</option>
             <option value="false">No</option>
           </select>
+          <select id="usStatus" class="select-input">
+            <option value="">Tutti gli status</option>
+            <option value="novizio">Novizio</option>
+            <option value="esploratore">Esploratore</option>
+            <option value="veterano">Veterano</option>
+            <option value="ambassador">Ambassador</option>
+          </select>
+          <input id="usScoreMin" class="search-input" type="number" min="0" step="1" placeholder="Score min" />
+          <input id="usScoreMax" class="search-input" type="number" min="0" step="1" placeholder="Score max" />
           <button id="usRefresh" class="btn">Aggiorna</button>
         </div>
 
