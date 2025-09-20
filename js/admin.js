@@ -128,6 +128,13 @@ tabs?.addEventListener("click", (e) => {
   tabs.querySelectorAll("button").forEach(b => b.classList.toggle("active", b === btn));
   const tab = btn.getAttribute("data-tab");
   panels.forEach(p => p.hidden = p.getAttribute("data-tab-panel") !== tab);
+  // Auto-reset filtri quando si apre la tab Utenti
+  if (tab === "users") {
+    resetUserFiltersUI();
+    saveUserFilters({});
+    loadUsers();
+  }
+
 });
 
 // -------------------- KPI --------------------
@@ -660,8 +667,6 @@ async function boot() {
 
   // default tab events
 await restoreUserFiltersUI();
-await Promise.all([loadKpis(), loadEvents()]);
-await loadUsers?.();
 await Promise.all([loadKpis(), loadEvents(), loadUsers?.()]);
 await populateReviewEvents();
 await loadReviews();
@@ -710,7 +715,9 @@ async function restoreUserFiltersUI() {
     set("usScoreMin", f.scoreMin ?? "");
     set("usScoreMax", f.scoreMax ?? "");
   } catch {}
-  function resetUserFiltersUI() {
+
+}
+function resetUserFiltersUI() {
   const ids = ["usSearch","usRole","usOrg","usBan","usStatus","usScoreMin","usScoreMax"];
   ids.forEach(id => {
     const el = document.getElementById(id);
@@ -722,8 +729,6 @@ async function restoreUserFiltersUI() {
     }
   });
   try { localStorage.removeItem("ADMIN_USERS_FILTERS"); } catch {}
-}
-
 }
 
 function applyUserFilters(list, f) {
