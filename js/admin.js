@@ -745,4 +745,3 @@ function applyUserFilters(list, f) {
     return true;
   });
 }
-
