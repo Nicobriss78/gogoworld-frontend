@@ -44,19 +44,12 @@ function getDesiredRole() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
-  const btnRegister = document.getElementById("btnRegister");
-  const btnHome = document.getElementById("btnHome");
+  const btnRegister = document.getElementById("goRegister");
+  const btnHome = document.getElementById("goHome");
 
-  if (btnRegister) {
-    btnRegister.addEventListener("click", () => {
-      window.location.href = "register.html";
-    });
-  }
-  if (btnHome) {
-    btnHome.addEventListener("click", () => {
-      window.location.href = "index.html";
-    });
-  }
+  btnRegister?.addEventListener("click", () => { window.location.href = "register.html"; });
+  btnHome?.addEventListener("click", () => { window.location.href = "index.html"; });
+
 
   if (!form) return;
 
@@ -109,7 +102,9 @@ document.addEventListener("DOMContentLoaded", () => {
         showAlert(me?.error || "Impossibile recuperare il profilo utente", "error", { autoHideMs: 4000 });
         return;
       }
-
+      // Admin: vai direttamente al pannello admin
+      const role = (me?.role || "").toLowerCase();
+      if (role === "admin") { window.location.href = "admin.html"; return; }
       // Se non c'è un desiredRole già scelto prima (homepage 0),
       // imposta automaticamente il default in base a canOrganize
       let redirectRole = roleRequested;
@@ -141,6 +136,7 @@ if (redirectRole === "organizer" && me?.canOrganize !== true) {
     }
   });
 });
+
 
 
 
