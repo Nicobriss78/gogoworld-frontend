@@ -54,7 +54,7 @@ btnRegister?.addEventListener("click", (e) => {
       localStorage.removeItem("token");
       sessionStorage.removeItem("desiredRole");
     } catch {}
-    window.location.href = "register.html";
+    window.location.href = "/pages/register.html";
   });
   btnHome?.addEventListener("click", (e) => { e.preventDefault(); window.location.href = "index.html"; });
 
@@ -144,6 +144,7 @@ if (redirectRole === "organizer" && me?.canOrganize !== true) {
     }
   });
 });
+
 
 
 
