@@ -61,8 +61,23 @@
   </main>
 
   <script type="module" src="js/evento.js"></script>
+  <script>
+    // Listener globale per retry API (503/502/504)
+    window.addEventListener("api:status", (e) => {
+      const { phase, attempt, status } = e.detail || {};
+      if (phase === "retry") {
+        try {
+          showAlert(`⏳ Server in riattivazione… (tentativo ${attempt})`, "info", { autoHideMs: 1500 });
+        } catch {
+          console.info("Server in riattivazione… tentativo", attempt, "status", status);
+        }
+      }
+    });
+  </script>
+
 </body>
 </html>
+
 
 
 
