@@ -313,6 +313,7 @@ const elUsOrg = document.getElementById("usOrg");
 const elUsBan = document.getElementById("usBan");
 const elUsList = document.getElementById("usersList");
 const elUsRefresh = document.getElementById("usRefresh");
+const elUsReset = document.getElementById("usReset");
 let usRequestSeq = 0; // token anti-race per loadUsers
 
 async function fetchUsers() {
@@ -390,7 +391,11 @@ showAlert(err?.message || "Errore caricamento utenti", "error");
 }
 }
 
-
+elUsReset?.addEventListener("click", () => {
+  resetUserFiltersUI();
+  saveUserFilters({});
+  loadUsers();
+});
 elUsRefresh?.addEventListener("click", async () => { await loadUsers(); });
 
 [elUsSearch, elUsRole, elUsOrg, elUsBan].forEach(el => {
@@ -705,6 +710,20 @@ async function restoreUserFiltersUI() {
     set("usScoreMin", f.scoreMin ?? "");
     set("usScoreMax", f.scoreMax ?? "");
   } catch {}
+  function resetUserFiltersUI() {
+  const ids = ["usSearch","usRole","usOrg","usBan","usStatus","usScoreMin","usScoreMax"];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === "SELECT") {
+      el.value = "";
+    } else {
+      el.value = "";
+    }
+  });
+  try { localStorage.removeItem("ADMIN_USERS_FILTERS"); } catch {}
+}
+
 }
 
 function applyUserFilters(list, f) {
