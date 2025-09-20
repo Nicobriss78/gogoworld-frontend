@@ -119,7 +119,7 @@ function renderReviewItem(r, myId, myStatusRaw, myStatusLabel) {
   `;
 }
 
-async function loadReviewsList(eventId, token) {
+async function loadReviewsList(eventId, token, myId, myStatusRaw, myStatusLabel) {
   const target = document.getElementById("reviewsList");
   if (!target) return;
   try {
@@ -236,9 +236,15 @@ loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
             // ricarica lista (mostrerà solo approved; la tua comparirà dopo approvazione)
 loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
             formReview.reset();
-          } catch (err) {
-            showAlert(err.message, "error", { autoHideMs: 4000 });
-          }
+} catch (err) {
+  const status = err?.status || err?.response?.status || null;
+  const msg = String(err?.message || "");
+  if (status === 409 || /already reviewed/i.test(msg) || /già recensito/i.test(msg)) {
+    showAlert("Hai già recensito questo evento.", "warning", { autoHideMs: 4000 });
+  } else {
+    showAlert(msg || "Invio non riuscito", "error", { autoHideMs: 4000 });
+  }
+}
         });
       }
     }
@@ -736,6 +742,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
