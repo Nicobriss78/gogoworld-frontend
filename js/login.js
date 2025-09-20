@@ -47,8 +47,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnRegister = document.getElementById("goRegister");
   const btnHome = document.getElementById("goHome");
 
-  btnRegister?.addEventListener("click", () => { window.location.href = "register.html"; });
-  btnHome?.addEventListener("click", () => { window.location.href = "index.html"; });
+btnRegister?.addEventListener("click", (e) => {
+    e.preventDefault();
+    // Evita redirect automatici dalla pagina di registrazione se sei già loggato
+    try {
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("desiredRole");
+    } catch {}
+    window.location.href = "register.html";
+  });
+  btnHome?.addEventListener("click", (e) => { e.preventDefault(); window.location.href = "index.html"; });
 
 
   if (!form) return;
@@ -136,6 +144,7 @@ if (redirectRole === "organizer" && me?.canOrganize !== true) {
     }
   });
 });
+
 
 
 
