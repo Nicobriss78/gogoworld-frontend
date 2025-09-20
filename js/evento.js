@@ -407,8 +407,15 @@ window.location.href = u.toString();
         btnToggle.textContent = isJoined ? "Annulla" : "Partecipa";
       };
 
-      btnToggle.style.display = "inline-block";
-      setToggleLabel();
+// Mostra il bottone e, se l'evento è già concluso, disabilitalo
+        btnToggle.style.display = "inline-block";
+        if (eventHasEnded(ev)) {
+          btnToggle.disabled = true;
+          btnToggle.textContent = "Evento concluso";
+        } else {
+          setToggleLabel();
+        }
+
 
       btnToggle.addEventListener("click", async () => {
         if (btnToggle.disabled) return;
@@ -742,6 +749,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
