@@ -113,8 +113,15 @@ const chipHtml = snapshotRaw
   ? `<span class="chip status-chip chip-${snapshotRaw}">${snapshotLabel}</span>`
   : "";
 
-let author = isMine ? "Tu" : "";
-const authorLine = `<p class="muted">${author}${author ? (chipHtml ? " " : "") : ""}${chipHtml}</p>`;
+// Nome visualizzato (snapshot); fallback “Utente”
+const safeName = (typeof r.authorName === "string" && r.authorName.trim())
+  ? r.authorName.trim()
+  : "Utente";
+
+// Se è la mia recensione → “Tu · Nome”, altrimenti solo Nome
+const authorText = isMine ? `Tu · ${safeName}` : safeName;
+
+const authorLine = `<p class="muted"><strong>${authorText}</strong>${chipHtml ? " " : ""}${chipHtml}</p>`;
   return `
     <article class="review">
       <p>${stars}</p>
@@ -755,6 +762,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
