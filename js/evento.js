@@ -101,14 +101,20 @@ function renderReviewItem(r, myId, myStatusRaw, myStatusLabel) {
   const txt = r.comment ? `<p>${escapeHtml(r.comment)}</p>` : "";
   const when = r.createdAt ? new Date(r.createdAt).toLocaleDateString("it-IT") : "";
 
-  // Header autore: “Tu” + chip (se mia)
-  let author = isMine ? "Tu" : "";
-  if (isMine && myStatusRaw) {
-    author += ` <span class="chip status-chip chip-${myStatusRaw}">${myStatusLabel}</span>`;
-  }
+// Header autore: “Tu” + chip (se mia)
+const snapshotRaw = r.authorStatus || null;
+const snapshotLabel =
+  snapshotRaw === "ambassador" ? "Ambassador" :
+  snapshotRaw === "veterano" ? "Veterano" :
+  snapshotRaw === "esploratore"? "Esploratore":
+  snapshotRaw === "novizio" ? "Novizio" : "";
 
-  const authorLine = author ? `<p class="muted">${author}</p>` : "";
+const chipHtml = snapshotRaw
+  ? `<span class="chip status-chip chip-${snapshotRaw}">${snapshotLabel}</span>`
+  : "";
 
+let author = isMine ? "Tu" : "";
+const authorLine = `<p class="muted">${author}${author ? (chipHtml ? " " : "") : ""}${chipHtml}</p>`;
   return `
     <article class="review">
       <p>${stars}</p>
@@ -749,6 +755,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
