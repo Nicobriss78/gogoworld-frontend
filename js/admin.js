@@ -321,16 +321,21 @@ const elUsBan = document.getElementById("usBan");
 const elUsList = document.getElementById("usersList");
 const elUsRefresh = document.getElementById("usRefresh");
 const elUsReset = document.getElementById("usReset");
+const elUsExport = document.getElementById("usExport");
 let usRequestSeq = 0; // token anti-race per loadUsers
-
 async function fetchUsers() {
   const base = apiBase();
-  const q = {
-    q: elUsSearch?.value?.trim() || "",
-    role: elUsRole?.value || "",
-    canOrganize: elUsOrg?.value || "",
-    isBanned: elUsBan?.value || "",
-  };
+const filters = readUserFiltersFromUI();
+const q = {
+q: filters.q || "",
+role: filters.role || "",
+canOrganize: (filters.canOrganize ?? "").toString(),
+isBanned: (filters.isBanned ?? "").toString(),
+status: filters.status || "",
+scoreMin: Number.isFinite(filters.scoreMin) ? String(filters.scoreMin) : "",
+scoreMax: Number.isFinite(filters.scoreMax) ? String(filters.scoreMax) : "",
+};
+
   const url = `${base}/admin/users?${qParams(q)}&_=${Date.now()}`;
   const res = await fetch(url, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
@@ -404,7 +409,22 @@ elUsReset?.addEventListener("click", () => {
   loadUsers();
 });
 elUsRefresh?.addEventListener("click", async () => { await loadUsers(); });
-
+ elUsExport?.addEventListener("click", async () => {
+try {
+const base = apiBase();
+const filters = readUserFiltersFromUI();
+const params = Object.entries(filters).reduce((acc, [k, v]) => {
+if (v === null || v === undefined || v === "") return acc;
+acc[k] = String(v);
+return acc;
+}, {});
+const p = new URLSearchParams(params);
+const url = `${base}/admin/users/export.csv?${p.toString()}`;
+window.open(url, "_blank");
+} catch (err) {
+showAlert(err?.message || "Errore export CSV", "error");
+}
+});
 [elUsSearch, elUsRole, elUsOrg, elUsBan].forEach(el => {
   el?.addEventListener("change", () => { saveUserFilters(readUserFiltersFromUI()); loadUsers(); });
   el?.addEventListener("keyup", (e) => { if (e.key === "Enter") { saveUserFilters(readUserFiltersFromUI()); loadUsers(); } });
