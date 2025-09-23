@@ -401,19 +401,22 @@ if (!filtered.length) {
   elUsList.appendChild(h("div", { class: "muted" }, "Nessun utente trovato."));
 } else {
   filtered.forEach(u => elUsList.appendChild(renderUserCard(u)));
-  // Render pager
-  const pager = document.getElementById("usersPager");
-  if (pager) {
-    const page = Number(out?.page || 1);
-    const totalPages = Number(out?.totalPages || 1);
-    pager.innerHTML = "";
-    const prev = h("button", { class: "btn", disabled: page <= 1 }, "« Prev");
-    const info = h("span", { style: "margin:0 8px;" }, `Pagina ${page} / ${totalPages}`);
-    const next = h("button", { class: "btn", disabled: page >= totalPages }, "Next »");
-    pager.appendChild(prev); pager.appendChild(info); pager.appendChild(next);
-    prev.addEventListener("click", () => { if (usPage > 1) { usPage -= 1; loadUsers(); } });
-    next.addEventListener("click", () => { if (page < totalPages) { usPage += 1; loadUsers(); } });
-  }
+// Render pager (ASCII-only, no template-literals)
+const pager = document.getElementById("usersPager");
+if (pager) {
+const page = Number((out && out.page) || 1);
+const totalPages = Number((out && out.totalPages) || 1);
+pager.innerHTML = "";
+const prev = h("button", { class: "btn", disabled: page <= 1 }, "<< Prev");
+const info = h("span", { style: "margin:0 8px;" }, "Pagina " + page + " / " + totalPages);
+const next = h("button", { class: "btn", disabled: page >= totalPages }, "Next >>");
+pager.appendChild(prev);
+pager.appendChild(info);
+pager.appendChild(next);
+prev.addEventListener("click", function () { if (usPage > 1) { usPage -= 1; loadUsers(); } });
+next.addEventListener("click", function () { if (page < totalPages) { usPage += 1; loadUsers(); } });
+}
+
 }
 
 } catch (err) {
