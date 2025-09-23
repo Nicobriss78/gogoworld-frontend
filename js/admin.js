@@ -409,7 +409,7 @@ elUsReset?.addEventListener("click", () => {
   loadUsers();
 });
 elUsRefresh?.addEventListener("click", async () => { await loadUsers(); });
- elUsExport?.addEventListener("click", async () => {
+elUsExport?.addEventListener("click", async () => {
 try {
 const base = apiBase();
 const filters = readUserFiltersFromUI();
@@ -420,11 +420,26 @@ return acc;
 }, {});
 const p = new URLSearchParams(params);
 const url = `${base}/admin/users/export.csv?${p.toString()}`;
-window.open(url, "_blank");
+
+// Usa fetch con Authorization per evitare 401/UNAUTHORIZED
+const res = await fetch(url, { headers: { ...authHeaders() } });
+if (!res.ok) {
+const err = await res.json().catch(() => ({}));
+throw new Error(err?.error || "Errore export CSV");
+}
+const blob = await res.blob();
+const a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "users.csv";
+document.body.appendChild(a);
+a.click();
+URL.revokeObjectURL(a.href);
+a.remove();
 } catch (err) {
 showAlert(err?.message || "Errore export CSV", "error");
 }
 });
+
 [elUsSearch, elUsRole, elUsOrg, elUsBan].forEach(el => {
   el?.addEventListener("change", () => { saveUserFilters(readUserFiltersFromUI()); loadUsers(); });
   el?.addEventListener("keyup", (e) => { if (e.key === "Enter") { saveUserFilters(readUserFiltersFromUI()); loadUsers(); } });
