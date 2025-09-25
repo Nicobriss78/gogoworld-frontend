@@ -10,6 +10,20 @@ function apiBase() {
 return "/api";
 
 }
+// Solo per rotte admin: passano dalla Function che inietta la chiave interna
+function adminBase() {
+  return "/.netlify/functions/adminModeration";
+}
+
+// Helper per instradare le chiamate API
+function callApi(path, opts = {}) {
+  // path deve iniziare con "/" (es. "/admin/..." o "/events/...")
+  if (path.startsWith("/admin/")) {
+    // La Function si aspetta il prefisso /api davanti al path
+    return fetch(`${adminBase()}/api${path}`, opts);
+  }
+  return fetch(`${apiBase()}${path}`, opts);
+}
 
 function getToken() {
   // 1) sessionStorage: nomi più comuni
@@ -141,9 +155,8 @@ tabs?.addEventListener("click", (e) => {
 async function loadKpis() {
   // Usiamo la lista admin events con conteggio per stato
   const token = getToken();
-  const base = apiBase();
-  const url = `${base}/admin/events?approvalStatus=&_=${Date.now()}`;
-  const res = await fetch(url, { headers: { ...authHeaders() } });
+  const path = `/admin/events?approvalStatus=&_=${Date.now()}`;
+  const res = await callApi(path, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out?.ok) { showAlert(out?.error || "Errore KPI", "error"); return; }
   const counts = { pending:0, approved:0, rejected:0, blocked:0 };
@@ -171,14 +184,13 @@ function qParams(obj) {
 }
 
 async function fetchEvents() {
-  const base = apiBase();
   const q = {
     q: elEvSearch?.value?.trim() || "",
     approvalStatus: (elEvStatus?.value || "").toLowerCase(),
     visibility: (elEvVisibility?.value || "").toLowerCase(),
   };
-  const url = `${base}/admin/events?${qParams(q)}&_=${Date.now()}`;
-  const res = await fetch(url, { headers: { ...authHeaders() } });
+  const path = `/admin/events?${qParams(q)}&_=${Date.now()}`;
+  const res = await callApi(path, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore fetch eventi");
   return out.events || [];
@@ -197,6 +209,7 @@ function renderEventCard(ev) {
     <div>${badge(st)} <span class="muted">•</span> ${vis} <span class="muted">•</span> ${fmtDate(ev.dateStart)} → ${fmtDate(ev.dateEnd)}</div>
     <div class="actions">
       <button class="btn" data-action="approve" data-id="${ev._id}">Approve</button>
+      <button class="btn" data-action="unapprove" data-id="${ev._id}">Unapprove</button>
       <button class="btn" data-action="reject" data-id="${ev._id}">Reject</button>
       <button class="btn" data-action="block" data-id="${ev._id}">Block</button>
       <button class="btn" data-action="unblock" data-id="${ev._id}">Unblock</button>
@@ -249,6 +262,7 @@ elEvList?.addEventListener("click", async (e) => {
   const base = apiBase();
   const pathMap = {
     "approve": `/admin/events/${id}/approve`,
+    "unapprove": `/admin/events/${id}/unapprove`,
     "reject": `/admin/events/${id}/reject`,
     "block": `/admin/events/${id}/block`,
     "unblock": `/admin/events/${id}/unblock`,
@@ -258,7 +272,7 @@ elEvList?.addEventListener("click", async (e) => {
   try {
     if (action === "force-delete") {
       if (!confirm("Confermi l'eliminazione definitiva dell'evento?")) return;
-      const res = await fetch(`${base}/admin/events/${id}/force`, { method: "DELETE", headers: { ...authHeaders(), "Content-Type": "application/json" } });
+      const res = await callApi(`/admin/events/${id}/force`, { method: "DELETE", headers: { ...authHeaders(), "Content-Type": "application/json" } });
       const out = await res.json().catch(() => ({}));
       if (!res.ok || !out?.ok) throw new Error(out?.error || "Force delete fallita");
       showAlert("Evento eliminato", "success");
@@ -296,7 +310,7 @@ body.reason = "";
 body.notes = "";
 }
 
-      const res = await fetch(`${base}${pathMap[action]}`, {
+     const res = await callApi(pathMap[action], {
         method: "POST",
         headers: { ...authHeaders(), "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -324,7 +338,6 @@ const elUsReset = document.getElementById("usReset");
 const elUsExport = document.getElementById("usExport");
 let usRequestSeq = 0; // token anti-race per loadUsers
 async function fetchUsers() {
-  const base = apiBase();
 const filters = readUserFiltersFromUI();
 const q = {
 q: filters.q || "",
@@ -336,8 +349,8 @@ scoreMin: Number.isFinite(filters.scoreMin) ? String(filters.scoreMin) : "",
 scoreMax: Number.isFinite(filters.scoreMax) ? String(filters.scoreMax) : "",
 };
 
-  const url = `${base}/admin/users?${qParams(q)}&_=${Date.now()}`;
-  const res = await fetch(url, { headers: { ...authHeaders() } });
+  const path = `/admin/users?${qParams(q)}&_=${Date.now()}`;
+  const res = await callApi(path, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore fetch utenti");
   return out.users || [];
@@ -411,7 +424,6 @@ elUsReset?.addEventListener("click", () => {
 elUsRefresh?.addEventListener("click", async () => { await loadUsers(); });
 elUsExport?.addEventListener("click", async () => {
 try {
-const base = apiBase();
 const filters = readUserFiltersFromUI();
 const params = Object.entries(filters).reduce((acc, [k, v]) => {
 if (v === null || v === undefined || v === "") return acc;
@@ -419,10 +431,10 @@ acc[k] = String(v);
 return acc;
 }, {});
 const p = new URLSearchParams(params);
-const url = `${base}/admin/users/export.csv?${p.toString()}`;
+const path = `/admin/users/export.csv?${p.toString()}`;
 
 // Usa fetch con Authorization per evitare 401/UNAUTHORIZED
-const res = await fetch(url, { headers: { ...authHeaders() } });
+const res = await callApi(path, { headers: { ...authHeaders() } });
 if (!res.ok) {
 const err = await res.json().catch(() => ({}));
 throw new Error(err?.error || "Errore export CSV");
@@ -458,13 +470,21 @@ elUsList?.addEventListener("click", async (e) => {
   try {
     if (action === "ban" || action === "unban") {
       const path = `/admin/users/${id}/${action}`;
-      const res = await fetch(`${base}${path}`, { method: "POST", headers: { ...authHeaders(), "Content-Type": "application/json" } });
+      const res = await callApi(`/admin/users/${id}/role`, {
+       method: "POST",
+       headers: { ...authHeaders(), "Content-Type": "application/json" },
+       body: JSON.stringify({ role }),
+});
       const out = await res.json().catch(() => ({}));
       if (!res.ok || !out?.ok) throw new Error(out?.error || "Azione fallita");
       showAlert(`${action.toUpperCase()} ok`, "success");
     } else if (action === "role") {
       const role = btn.getAttribute("data-role");
-      const res = await fetch(`${base}/admin/users/${id}/role`, {
+      const res = await callApi(`/admin/users/${id}/role`, {
+       method: "POST",
+       headers: { ...authHeaders(), "Content-Type": "application/json" },
+       body: JSON.stringify({ role }),
+});
         method: "POST",
         headers: { ...authHeaders(), "Content-Type": "application/json" },
         body: JSON.stringify({ role }),
@@ -474,7 +494,11 @@ elUsList?.addEventListener("click", async (e) => {
       showAlert(`Ruolo impostato: ${role}`, "success");
     } else if (action === "org") {
       const value = btn.getAttribute("data-value") === "true";
-      const res = await fetch(`${base}/admin/users/${id}/can-organize`, {
+      const res = await callApi(`/admin/users/${id}/can-organize`, {
+        method: "POST",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        body: JSON.stringify({ value }),
+  });      
         method: "POST",
         headers: { ...authHeaders(), "Content-Type": "application/json" },
         body: JSON.stringify({ value }),
@@ -609,9 +633,8 @@ async function populateReviewEvents() {
   const hasFilled = elRevEvent.options.length > 1;
   if (hasFilled) return;
 
-  const base = apiBase();
-  const url = `${base}/admin/events?approvalStatus=approved&limit=200&_=${Date.now()}`;
-  const res = await fetch(url, { headers: { ...authHeaders() } });
+  const path = `/admin/events?approvalStatus=approved&limit=200&_=${Date.now()}`;
+  const res = await callApi(path, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out?.ok) return;
 
