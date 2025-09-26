@@ -207,14 +207,26 @@ function renderEventCard(ev) {
     <h3>${ev.title || "-"}</h3>
     <div class="muted">${ev.city || "-"}, ${ev.region || "-"}, ${ev.country || "-"}</div>
     <div>${badge(st)} <span class="muted">•</span> ${vis} <span class="muted">•</span> ${fmtDate(ev.dateStart)} → ${fmtDate(ev.dateEnd)}</div>
-    <div class="actions">
-      <button class="btn" data-action="approve" data-id="${ev._id}">Approve</button>
-      <button class="btn" data-action="unapprove" data-id="${ev._id}">Unapprove</button>
-      <button class="btn" data-action="reject" data-id="${ev._id}">Reject</button>
-      <button class="btn" data-action="block" data-id="${ev._id}">Block</button>
-      <button class="btn" data-action="unblock" data-id="${ev._id}">Unblock</button>
-      <button class="btn" data-action="force-delete" data-id="${ev._id}">Force Delete</button>
-      <button class="btn" data-action="close-award" data-id="${ev._id}">Chiudi & premia</button>
+<div class="actions">
+      ${(() => {
+        const parts = [];
+        if (st === "pending" || st === "rejected") {
+          parts.push(`<button class="btn" data-action="approve" data-id="${ev._id}">Approve</button>`);
+        }
+        if (st === "approved") {
+          parts.push(`<button class="btn" data-action="unapprove" data-id="${ev._id}">Unapprove</button>`);
+        }
+        if (st !== "blocked") {
+          parts.push(`<button class="btn" data-action="block" data-id="${ev._id}">Block</button>`);
+        } else {
+          parts.push(`<button class="btn" data-action="unblock" data-id="${ev._id}">Unblock</button>`);
+        }
+        parts.push(`<button class="btn" data-action="reject" data-id="${ev._id}">Reject</button>`);
+        parts.push(`<button class="btn" data-action="force-delete" data-id="${ev._id}">Force Delete</button>`);
+        parts.push(`<button class="btn" data-action="close-award" data-id="${ev._id}">Chiudi & premia</button>`);
+        return parts.join("");
+      })()}
+    </div>
     </div>
   `;
   return card;
@@ -259,6 +271,9 @@ elEvList?.addEventListener("click", async (e) => {
   if (!btn) return;
   const id = btn.getAttribute("data-id");
   const action = btn.getAttribute("data-action");
+  // evita doppi click
+  btn.disabled = true;
+  btn.classList.add("is-busy");
   const base = apiBase();
   const pathMap = {
     "approve": `/admin/events/${id}/approve`,
@@ -290,6 +305,9 @@ elEvList?.addEventListener("click", async (e) => {
         // Refresh KPI+lista e termina ramo
         await loadEvents();
         await loadKpis();
+        // ripristina stato bottone prima di uscire dal ramo
+        btn.disabled = false;
+        btn.classList.remove("is-busy");
         return;
       }
 
@@ -322,7 +340,13 @@ body.notes = "";
     // Refresh
     await loadEvents();
     await loadKpis();
+    // ripristina stato bottone (successo)
+  btn.disabled = false;
+  btn.classList.remove("is-busy");
   } catch (err) {
+    // ripristina stato bottone (errore)
+    btn.disabled = false;
+    btn.classList.remove("is-busy");
     showAlert(err?.message || "Errore azione admin", "error");
   }
 });
@@ -467,7 +491,9 @@ elUsList?.addEventListener("click", async (e) => {
 
   const id = btn.getAttribute("data-id");
   const action = btn.getAttribute("data-action");
-
+// evita doppi click
+  btn.disabled = true;
+  btn.classList.add("is-busy");
   try {
     if (action === "ban" || action === "unban") {
       const path = `/admin/users/${id}/${action}`;
@@ -506,8 +532,15 @@ elUsList?.addEventListener("click", async (e) => {
     }
 
     await loadUsers();
+    // ripristina stato bottone (successo)
+  btn.disabled = false;
+  btn.classList.remove("is-busy");
+
   } catch (err) {
     console.error(err);
+    // ripristina stato bottone (errore)
+    btn.disabled = false;
+    btn.classList.remove("is-busy");
     showAlert(err?.message || "Errore azione utente", "error");
   }
 });
