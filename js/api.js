@@ -96,6 +96,10 @@ async function apiFetch(path, { method = "GET", body, token } = {}) {
   }
 
   if (!res.ok) {
+    // Auto-logout: segnala 401 al FE (admin.js ascolta "auth:expired")
+  if (status === 401) {
+    try { window.dispatchEvent(new CustomEvent("auth:expired")); } catch {}
+  }
     const message = (data && (data.error || data.message)) || (text || `HTTP ${status}`);
     return { ok: false, status, error: data?.error || `HTTP_${status}`, message, data: data || null };
   }
