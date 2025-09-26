@@ -16,14 +16,22 @@ function adminBase() {
 }
 
 // Helper per instradare le chiamate API
-function callApi(path, opts = {}) {
+async function callApi(path, opts = {}) {
   // path deve iniziare con "/" (es. "/admin/..." o "/events/...")
-  if (path.startsWith("/admin/")) {
-    // La Function si aspetta il prefisso /api davanti al path
-    return fetch(`${adminBase()}/api${path}`, opts);
+  const url = path.startsWith("/admin/")
+    ? `${adminBase()}/api${path}` // Function admin con iniezione chiave interna
+    : `${apiBase()}${path}`; // Proxy /api per tutto il resto
+
+  const res = await fetch(url, opts);
+
+  // Auto-logout coerente con api.js: dispatch su 401
+  if (res.status === 401) {
+    try { window.dispatchEvent(new CustomEvent("auth:expired")); } catch {}
   }
-  return fetch(`${apiBase()}${path}`, opts);
+
+  return res; // mantieni la stessa API: i caller fanno await res.json()
 }
+
 
 function getToken() {
   // 1) sessionStorage: nomi più comuni
@@ -132,6 +140,29 @@ function showAlert(msg, type = "info", { autoHideMs = 2500 } = {}) {
   box.style.borderLeft = `4px solid ${type === "error" ? "#e00" : type === "success" ? "#0a0" : "#111"}`;
   if (autoHideMs) setTimeout(() => { box.remove(); }, autoHideMs);
 }
+// Auto-logout su 401 proveniente da api.js
+window.addEventListener("auth:expired", () => {
+  try {
+    // ripulisci tutte le varianti note di token/utente (session + local)
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("jwt");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("desiredRole");
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("desiredRole");
+  } catch {}
+
+  // feedback + redirect rapido a login
+  try { showAlert("Sessione scaduta. Effettua di nuovo il login.", "error", { autoHideMs: 4000 }); } catch {}
+  setTimeout(() => { window.location.href = "login.html"; }, 600);
+});
 
 // -------------------- Tabs --------------------
 const tabs = document.getElementById("adminTabs");
