@@ -464,54 +464,54 @@ showAlert(err?.message || "Errore export CSV", "error");
 elUsList?.addEventListener("click", async (e) => {
   const btn = e.target.closest("button[data-action]");
   if (!btn) return;
+
   const id = btn.getAttribute("data-id");
   const action = btn.getAttribute("data-action");
-  const base = apiBase();
+
   try {
     if (action === "ban" || action === "unban") {
       const path = `/admin/users/${id}/${action}`;
-      const res = await callApi(`/admin/users/${id}/role`, {
-       method: "POST",
-       headers: { ...authHeaders(), "Content-Type": "application/json" },
-       body: JSON.stringify({ role }),
-});
+      const res = await callApi(path, {
+        method: "POST",
+        headers: { ...authHeaders(), "Content-Type": "application/json" }
+      });
       const out = await res.json().catch(() => ({}));
       if (!res.ok || !out?.ok) throw new Error(out?.error || "Azione fallita");
       showAlert(`${action.toUpperCase()} ok`, "success");
+
     } else if (action === "role") {
       const role = btn.getAttribute("data-role");
       const res = await callApi(`/admin/users/${id}/role`, {
-       method: "POST",
-       headers: { ...authHeaders(), "Content-Type": "application/json" },
-       body: JSON.stringify({ role }),
-});
         method: "POST",
         headers: { ...authHeaders(), "Content-Type": "application/json" },
-        body: JSON.stringify({ role }),
+        body: JSON.stringify({ role })
       });
       const out = await res.json().catch(() => ({}));
       if (!res.ok || !out?.ok) throw new Error(out?.error || "Cambio ruolo fallito");
       showAlert(`Ruolo impostato: ${role}`, "success");
+
     } else if (action === "org") {
       const value = btn.getAttribute("data-value") === "true";
       const res = await callApi(`/admin/users/${id}/can-organize`, {
         method: "POST",
         headers: { ...authHeaders(), "Content-Type": "application/json" },
-        body: JSON.stringify({ value }),
-  });      
-        method: "POST",
-        headers: { ...authHeaders(), "Content-Type": "application/json" },
-        body: JSON.stringify({ value }),
+        body: JSON.stringify({ value })
       });
       const out = await res.json().catch(() => ({}));
-      if (!res.ok || !out?.ok) throw new Error(out?.error || "Toggle canOrganize fallito");
+      if (!res.ok || !out?.ok) throw new Error(out?.error || "Aggiornamento canOrganize fallito");
       showAlert(`canOrganize: ${value ? "ON" : "OFF"}`, "success");
+
+    } else {
+      return; // azione non gestita qui
     }
+
     await loadUsers();
   } catch (err) {
+    console.error(err);
     showAlert(err?.message || "Errore azione utente", "error");
   }
 });
+
 
 // -------------------- Import Massivo (tab) --------------------
 const elImpFile = document.getElementById("impFile"); // PATCH: nuovo
