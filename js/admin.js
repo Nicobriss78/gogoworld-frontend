@@ -305,7 +305,6 @@ elEvList?.addEventListener("click", async (e) => {
   // evita doppi click
   btn.disabled = true;
   btn.classList.add("is-busy");
-  const base = apiBase();
   const pathMap = {
     "approve": `/admin/events/${id}/approve`,
     "unapprove": `/admin/events/${id}/unapprove`,
@@ -325,7 +324,7 @@ elEvList?.addEventListener("click", async (e) => {
     } else {
       // Azione speciale: chiusura evento + award ai partecipanti
       if (action === "close-award") {
-        const res = await fetch(`${base}${pathMap[action]}`, {
+     const res = await callApi(pathMap[action], {
           method: "PUT",
           headers: { ...authHeaders(), "Content-Type": "application/json" },
         });
@@ -606,9 +605,8 @@ elImpRun?.addEventListener("click", async () => {
   form.append("file", file);
   form.append("simulate", simulate ? "true" : "false");
 if (elImpRun) { elImpRun.disabled = true; elImpRun.dataset.loading = "1"; }
-  const url = `${apiBase()}/admin/import/events`;
   try {
-    const res = await fetch(url, {
+const res = await callApi(`/admin/import/events`, {
       method: "POST",
       headers: { ...authHeaders() }, // niente Content-Type manuale con FormData
       body: form,
@@ -641,18 +639,17 @@ const elRevList = document.getElementById("reviewsList");
 const elRevRefresh = document.getElementById("revRefresh");
 const elRevEvent = document.getElementById("revEvent");
 async function fetchAllPending() {
-  const base = apiBase();
-  const url = `${base}/reviews/pending?_=${Date.now()}`;
-  const res = await fetch(url, { headers: { ...authHeaders() } });
+const path = `/reviews/pending?_=${Date.now()}`;
+const res = await callApi(path, { headers: { ...authHeaders() } });
+
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore fetch recensioni");
   return out.reviews || [];
 }
 
 async function fetchPendingByEvent(eventId) {
-  const base = apiBase();
-  const url = `${base}/reviews?event=${encodeURIComponent(eventId)}&status=pending&_=${Date.now()}`;
-  const res = await fetch(url, { headers: { ...authHeaders() } });
+const url = `${base}/reviews?event=${encodeURIComponent(eventId)}&status=pending&_=${Date.now()}`;
+const res = await fetch(url, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore fetch recensioni per evento");
   return out.reviews || [];
@@ -721,12 +718,11 @@ elRevList?.addEventListener("click", async (e) => {
   if (!btn) return;
   const id = btn.getAttribute("data-id");
   const action = btn.getAttribute("data-action");
-  const base = apiBase();
   try {
     const path = action === "approve-review"
       ? `/reviews/${id}/approve`
       : `/reviews/${id}/reject`;
-    const res = await fetch(`${base}${path}`, {
+    const res = await callApi(path, {
       method: "PATCH",
       headers: { ...authHeaders(), "Content-Type": "application/json" }
     });
