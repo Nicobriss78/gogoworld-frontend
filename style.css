@@ -90,12 +90,11 @@ body {
   cursor: not-allowed; 
 }
 
-/* nuove righe 87–88 */
-.btn[disabled],
-.btn:disabled { opacity: .6; cursor: not-allowed; }
+.is-busy {
+  opacity: 0.6;
+  pointer-events: none;
+}
 
-.btn[disabled],
-.btn:disabled { opacity: .6; cursor: not-allowed; }
 /* Link stile pulsante */
 .linklike {
   background: none;
@@ -468,6 +467,7 @@ body {
   color: #111 !important;
   font-size: 14px !important;
 }
+
 
 
 
