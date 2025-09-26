@@ -163,6 +163,60 @@ window.addEventListener("auth:expired", () => {
   try { showAlert("Sessione scaduta. Effettua di nuovo il login.", "error", { autoHideMs: 4000 }); } catch {}
   setTimeout(() => { window.location.href = "login.html"; }, 600);
 });
+// Monitoraggio errori client (versione "light" — solo errori, no DSN nel FE)
+(() => {
+  let __monCount = 0;
+  let __monWindow = 0;
+  const LIMIT_PER_MIN = 3;
+
+  function throttleOk() {
+    const now = Date.now();
+    if (now - __monWindow > 60_000) { __monWindow = now; __monCount = 0; }
+    if (__monCount >= LIMIT_PER_MIN) return false;
+    __monCount++;
+    return true;
+  }
+
+  async function sendClientError(payload) {
+    try {
+      if (!throttleOk()) return;
+      await callApi("/admin/monitor/client-error", {
+        method: "POST",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    } catch {}
+  }
+
+  // Errori JS non catturati
+  window.addEventListener("error", (ev) => {
+    try {
+      const payload = {
+        message: String(ev?.message || "JSError"),
+        stack: String(ev?.error?.stack || ""),
+        href: location.href,
+        ua: navigator.userAgent,
+        ts: Date.now(),
+      };
+      sendClientError(payload);
+    } catch {}
+  });
+
+  // Promise rifiutate non gestite
+  window.addEventListener("unhandledrejection", (ev) => {
+    try {
+      const r = ev?.reason;
+      const payload = {
+        message: String(r?.message || "UnhandledRejection"),
+        stack: String(r?.stack || (typeof r === "string" ? r : "")),
+        href: location.href,
+        ua: navigator.userAgent,
+        ts: Date.now(),
+      };
+      sendClientError(payload);
+    } catch {}
+  });
+})();
 
 // -------------------- Tabs --------------------
 const tabs = document.getElementById("adminTabs");
