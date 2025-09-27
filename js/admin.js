@@ -180,11 +180,17 @@ window.addEventListener("auth:expired", () => {
   async function sendClientError(payload) {
     try {
       if (!throttleOk()) return;
+const __h = { "Content-Type": "application/json" };
+      try {
+        const t = getToken();
+        if (t) __h.Authorization = "Bearer " + t;
+      } catch {}
       await callApi("/admin/monitor/client-error", {
         method: "POST",
-        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        headers: __h,
         body: JSON.stringify(payload),
       });
+
     } catch {}
   }
 
@@ -702,8 +708,8 @@ const res = await callApi(path, { headers: { ...authHeaders() } });
 }
 
 async function fetchPendingByEvent(eventId) {
-const url = `${base}/reviews?event=${encodeURIComponent(eventId)}&status=pending&_=${Date.now()}`;
-const res = await fetch(url, { headers: { ...authHeaders() } });
+const path = `/reviews?event=${encodeURIComponent(eventId)}&status=pending&_=${Date.now()}`;
+const res = await callApi(path, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore fetch recensioni per evento");
   return out.reviews || [];
