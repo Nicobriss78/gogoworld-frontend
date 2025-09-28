@@ -193,8 +193,10 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   function adminApi(path) { return "/.netlify/functions/adminModeration" + path; }
   async function adminFetch(path, opts) {
     const o = opts || {};
-    const init = Object.assign({ method: "GET", headers: { "Content-Type": "application/json" } }, o);
-    const res = await fetch(adminApi(path), init);
+const token = (typeof localStorage !== "undefined" && localStorage.getItem("token")) || "";
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = "Bearer " + token;
+  const init = Object.assign({ method: "GET", headers }, o);    const res = await fetch(adminApi(path), init);
     if (!res.ok && res.status !== 204) {
       let t = ""; try { t = await res.text(); } catch {}
       throw new Error("HTTP " + res.status + ": " + (t || res.statusText));
@@ -1002,6 +1004,7 @@ if (action === "promote") {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
