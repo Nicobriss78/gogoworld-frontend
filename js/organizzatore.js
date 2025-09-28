@@ -252,7 +252,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
         return;
       }
       try {
-        await adminFetch("/api/banners", { method: "POST", body: JSON.stringify(body) });
+      await adminFetch("/api/banners/submit", { method: "POST", body: JSON.stringify(body) });
         showAlert("Richiesta inviata — in attesa di approvazione", "success", { autoHideMs: 4000 });
         promoteForm.reset();
         promotePanel.style.display = "none";
@@ -1002,6 +1002,7 @@ if (action === "promote") {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
