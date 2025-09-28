@@ -1,5 +1,5 @@
 [build]
-  command = ""         # no build, it's a static site
+  command = "" # no build, it's a static site
   publish = "."
 
 [[redirects]]
@@ -7,10 +7,12 @@
   to = "https://gogoworld-api.onrender.com/api/:splat"
   status = 200
   force = true
+
 [[redirects]]
   from = "/pages/*"
   to = "/pages/:splat"
   status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
