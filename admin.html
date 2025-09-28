@@ -41,6 +41,13 @@
     .search-input { padding:.4rem .55rem; border:1px solid #ddd; border-radius:6px; min-width:220px; }
     .select-input { padding:.4rem .55rem; border:1px solid #ddd; border-radius:6px; }
     .right { margin-left:auto; }
+    /* --- Dropdown Banner --- */
+.menu-group { position:relative; }
+.menu-toggle { padding:.5rem .75rem; border:1px solid #ddd; background:#f9f9f9; cursor:pointer; }
+.menu-toggle.active { background:#111; color:#fff; border-color:#111; }
+.menu-dropdown { position:absolute; top:110%; left:0; min-width:220px; border:1px solid #ddd; background:#fff; border-radius:8px; box-shadow:0 4px 18px rgba(0,0,0,.08); display:none; z-index:10; }
+.menu-dropdown button { display:block; width:100%; text-align:left; padding:.5rem .75rem; border:0; background:#fff; cursor:pointer; }
+.menu-dropdown button:hover { background:#f5f5f5; }
   </style>
 </head>
 
@@ -53,6 +60,16 @@
         <button data-tab="users">Utenti</button>
         <button data-tab="imports">Import Massivo</button>
         <button data-tab="reviews">Recensioni</button>
+        <!-- Dropdown Banner -->
+        <span class="menu-group">
+          <button type="button" id="bannerMenuBtn" class="menu-toggle">Banner ▾</button>
+          <span class="menu-dropdown" id="bannerMenu">
+            <button type="button" data-tab="sponsor">Sponsor</button>
+            <button type="button" data-tab="house">House</button>
+            <button type="button" data-tab="approvals">Richieste da approvare</button>
+          </span>
+        </span>
+
       </nav>
       <button id="btnAdminLogout" class="btn">Logout</button>
     </header>
@@ -158,6 +175,86 @@
   </div>
         <div id="reviewsList" class="admin-grid"></div>
       </section>
+      <!-- Tab: Sponsor (admin_third_party) -->
+      <section data-tab-panel="sponsor" hidden>
+        <div class="admin-card">
+          <h3>Crea Sponsorizzazione Terzi</h3>
+          <div class="admin-grid">
+            <label>Titolo <input id="spTitle" class="search-input" type="text" placeholder="Titolo banner" /></label>
+            <label>Immagine (URL https) <input id="spImage" class="search-input" type="url" placeholder="https://..." /></label>
+            <label>Destinazione (URL https) <input id="spTarget" class="search-input" type="url" placeholder="https://..." /></label>
+            <label>Placement
+              <select id="spPlacement" class="select-input">
+                <option value="events_list_inline">events_list_inline</option>
+              </select>
+            </label>
+            <label>Paese (ISO-2) <input id="spCountry" class="search-input" type="text" placeholder="IT" /></label>
+            <label>Regione <input id="spRegion" class="search-input" type="text" placeholder="Basilicata" /></label>
+            <label>Inizio <input id="spFrom" class="search-input" type="datetime-local" /></label>
+            <label>Fine <input id="spTo" class="search-input" type="datetime-local" /></label>
+            <label>Priorità <input id="spPriority" class="search-input" type="number" value="100" /></label>
+            <label><input id="spActive" type="checkbox" checked /> Attivo</label>
+          </div>
+          <div class="actions">
+            <button id="spCreate" class="btn primary">Crea sponsor</button>
+            <span class="muted">type=sponsor • source=admin_third_party • pagamento esterno</span>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Elenco Sponsor</h3>
+          <div class="admin-toolbar">
+            <button id="spRefresh" class="btn">Aggiorna</button>
+          </div>
+          <div id="sponsorList" class="admin-grid"></div>
+        </div>
+      </section>
+
+      <!-- Tab: House (annunci piattaforma) -->
+      <section data-tab-panel="house" hidden>
+        <div class="admin-card">
+          <h3>Crea Annuncio Piattaforma (House)</h3>
+          <div class="admin-grid">
+            <label>Titolo <input id="hsTitle" class="search-input" type="text" placeholder="Titolo banner" /></label>
+            <label>Immagine (URL https) <input id="hsImage" class="search-input" type="url" placeholder="https://..." /></label>
+            <label>Destinazione (URL https) <input id="hsTarget" class="search-input" type="url" placeholder="https://..." /></label>
+            <label>Placement
+              <select id="hsPlacement" class="select-input">
+                <option value="events_list_inline">events_list_inline</option>
+              </select>
+            </label>
+            <label>Paese (ISO-2) <input id="hsCountry" class="search-input" type="text" placeholder="IT" /></label>
+            <label>Regione <input id="hsRegion" class="search-input" type="text" placeholder="Basilicata" /></label>
+            <label>Inizio <input id="hsFrom" class="search-input" type="datetime-local" /></label>
+            <label>Fine <input id="hsTo" class="search-input" type="datetime-local" /></label>
+            <label>Priorità <input id="hsPriority" class="search-input" type="number" value="100" /></label>
+            <label><input id="hsActive" type="checkbox" checked /> Attivo</label>
+          </div>
+          <div class="actions">
+            <button id="hsCreate" class="btn primary">Crea house</button>
+            <span class="muted">type=house • source=admin_house</span>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Elenco Annunci House</h3>
+          <div class="admin-toolbar">
+            <button id="hsRefresh" class="btn">Aggiorna</button>
+          </div>
+          <div id="houseList" class="admin-grid"></div>
+        </div>
+      </section>
+
+      <!-- Tab: Richieste da approvare (organizer) -->
+      <section data-tab-panel="approvals" hidden>
+        <div class="admin-card">
+          <h3>Richieste Organizzatori — In attesa</h3>
+          <div class="admin-toolbar">
+            <button id="apRefresh" class="btn">Aggiorna</button>
+          </div>
+          <div id="approvalsList" class="admin-grid"></div>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -174,6 +271,28 @@
         }
       }
     });
+    // --- Banner dropdown toggle ---
+(function(){
+  const btn = document.getElementById("bannerMenuBtn");
+  const menu = document.getElementById("bannerMenu");
+  if (btn && menu) {
+    btn.addEventListener("click", () => {
+      const open = menu.style.display === "block";
+      menu.style.display = open ? "none" : "block";
+      btn.classList.toggle("active", !open);
+    });
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && e.target !== btn) {
+        menu.style.display = "none";
+        btn.classList.remove("active");
+      }
+    });
+    menu.addEventListener("click", () => {
+      menu.style.display = "none";
+      btn.classList.remove("active");
+    });
+  }
+})();
   </script>
 </body>
 </html>
