@@ -326,7 +326,10 @@ function adminApi(path) {
 }
 async function adminFetch(path, opts) {
   const o = opts || {};
-  const init = Object.assign({ method: "GET", headers: { "Content-Type": "application/json" } }, o);
+const token = (typeof localStorage !== "undefined" && localStorage.getItem("token")) || "";
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = "Bearer " + token;
+  const init = Object.assign({ method: "GET", headers }, o);
   const res = await fetch(adminApi(path), init);
   if (!res.ok && res.status !== 204) {
     let t = "";
