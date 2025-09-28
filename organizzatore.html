@@ -128,6 +128,60 @@
       </form>
     </section>
     <!-- FINE PATCH -->
+    <!-- PANNELLO: Promuovi evento -->
+    <section id="promotePanel" style="display:none; margin:1em 0; padding:1em; border:1px solid #ccc; border-radius:8px;">
+      <h2>Promuovi evento</h2>
+      <form id="promoteForm">
+        <div class="muted">Evento: <span id="promoteEventTitle">—</span></div>
+        <input type="hidden" id="promoteEventId" />
+
+        <div class="grid-2">
+          <label>Titolo banner*
+            <input type="text" id="pmTitle" class="search-input" placeholder="Titolo" required />
+          </label>
+
+          <label>Placement*
+            <select id="pmPlacement" class="select-input" required>
+              <option value="events_list_inline">events_list_inline</option>
+            </select>
+          </label>
+
+          <label>Immagine (URL https)*
+            <input type="url" id="pmImage" class="search-input" placeholder="https://..." required />
+          </label>
+
+          <label>Destinazione (URL https)*
+            <input type="url" id="pmTarget" class="search-input" placeholder="https://..." required />
+          </label>
+
+          <label>Paese (ISO-2)
+            <input type="text" id="pmCountry" class="search-input" placeholder="IT" />
+          </label>
+
+          <label>Regione
+            <input type="text" id="pmRegion" class="search-input" placeholder="Basilicata" />
+          </label>
+
+          <label>Inizio
+            <input type="datetime-local" id="pmFrom" class="search-input" />
+          </label>
+
+          <label>Fine
+            <input type="datetime-local" id="pmTo" class="search-input" />
+          </label>
+
+          <label>Priorità
+            <input type="number" id="pmPriority" class="search-input" value="100" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Invia richiesta</button>
+          <button type="button" id="btnPromoteCancel" class="btn btn-secondary">Chiudi</button>
+          <span class="muted">type=event_promo • source=organizer • status=PENDING_REVIEW</span>
+        </div>
+      </form>
+    </section>
 
     <section id="myEventsList" class="events-list"></section>
 
@@ -139,6 +193,7 @@
   <script type="module" src="js/organizzatore.js"></script>
 </body>
 </html>
+
 
 
 
