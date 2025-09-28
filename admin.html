@@ -56,19 +56,20 @@
     <header class="admin-header">
       <div class="admin-title">Admin Dashboard</div>
       <nav class="admin-tabs" id="adminTabs">
-        <button data-tab="events" class="active">Eventi</button>
-        <button data-tab="users">Utenti</button>
-        <button data-tab="imports">Import Massivo</button>
-        <button data-tab="reviews">Recensioni</button>
-        <!-- Dropdown Banner -->
+<!-- Dropdown Sezioni -->
         <span class="menu-group">
-          <button type="button" id="bannerMenuBtn" class="menu-toggle">Banner ▾</button>
-          <span class="menu-dropdown" id="bannerMenu">
+          <button type="button" id="sectionsMenuBtn" class="menu-toggle">Sezioni ▾</button>
+          <span class="menu-dropdown" id="sectionsMenu">
+            <button type="button" data-tab="events">Eventi</button>
+            <button type="button" data-tab="users">Utenti</button>
+            <button type="button" data-tab="imports">Import Massivo</button>
+            <button type="button" data-tab="reviews">Recensioni</button>
             <button type="button" data-tab="sponsor">Sponsor</button>
             <button type="button" data-tab="house">House</button>
             <button type="button" data-tab="approvals">Richieste da approvare</button>
           </span>
         </span>
+
 
       </nav>
       <button id="btnAdminLogout" class="btn">Logout</button>
@@ -272,27 +273,31 @@
       }
     });
     // --- Banner dropdown toggle ---
-(function(){
-  const btn = document.getElementById("bannerMenuBtn");
-  const menu = document.getElementById("bannerMenu");
-  if (btn && menu) {
-    btn.addEventListener("click", () => {
-      const open = menu.style.display === "block";
-      menu.style.display = open ? "none" : "block";
-      btn.classList.toggle("active", !open);
-    });
-    document.addEventListener("click", (e) => {
-      if (!menu.contains(e.target) && e.target !== btn) {
-        menu.style.display = "none";
-        btn.classList.remove("active");
+// --- Sezioni dropdown toggle ---
+    (function(){
+      const btn = document.getElementById("sectionsMenuBtn");
+      const menu = document.getElementById("sectionsMenu");
+      if (btn && menu) {
+        btn.addEventListener("click", () => {
+          const open = menu.style.display === "block";
+          menu.style.display = open ? "none" : "block";
+          btn.classList.toggle("active", !open);
+        });
+        document.addEventListener("click", (e) => {
+          if (!menu.contains(e.target) && e.target !== btn) {
+            menu.style.display = "none";
+            btn.classList.remove("active");
+          }
+        });
+        // Chiude il menu quando scegli una voce; l’handler dei tab
+        // (già in admin.js) si attiva sul click di [data-tab]
+        menu.addEventListener("click", () => {
+          menu.style.display = "none";
+          btn.classList.remove("active");
+        });
       }
-    });
-    menu.addEventListener("click", () => {
-      menu.style.display = "none";
-      btn.classList.remove("active");
-    });
-  }
-})();
+    })();
+
   </script>
 </body>
 </html>
