@@ -428,7 +428,9 @@ async function approvalsList() {
   if (!box) return;
   box.innerHTML = '<div class="muted">Caricamento…</div>';
   var q = await adminFetch("/api/banners?status=PENDING_REVIEW&source=organizer&_=" + Date.now());
-  var arr = (q && q.data) || [];
+var arr = ((q && q.data) || []).filter(function (b) {
+  return b && b.status === "PENDING_REVIEW" && b.source === "organizer";
+});
   if (!arr.length) {
     box.innerHTML = '<div class="muted">Nessuna richiesta in attesa.</div>';
     return;
