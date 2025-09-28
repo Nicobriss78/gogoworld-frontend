@@ -47,7 +47,9 @@
 .menu-toggle.active { background:#111; color:#fff; border-color:#111; }
 .menu-dropdown { position:absolute; top:110%; left:0; min-width:220px; border:1px solid #ddd; background:#fff; border-radius:8px; box-shadow:0 4px 18px rgba(0,0,0,.08); display:none; z-index:10; }
 .menu-dropdown button { display:block; width:100%; text-align:left; padding:.5rem .75rem; border:0; background:#fff; cursor:pointer; }
-.menu-dropdown button:hover { background:#f5f5f5; }
+.menu-dropdown button:hover { background:#f5f5f5; }    
+.menu-current { margin-left: 12px; font-size: .9rem; color: #666; }
+
   </style>
 </head>
 
@@ -69,8 +71,7 @@
             <button type="button" data-tab="approvals">Richieste da approvare</button>
           </span>
         </span>
-
-
+       <span id="currentTabLabel" class="menu-current">Attuale: Eventi</span>
       </nav>
       <button id="btnAdminLogout" class="btn">Logout</button>
     </header>
@@ -297,6 +298,28 @@
         });
       }
     })();
+// --- Etichetta sezione corrente ---
+(function(){
+  const label = document.getElementById("currentTabLabel");
+  if (!label) return;
+  function setCurrent(name) {
+    label.textContent = "Attuale: " + name;
+  }
+  // iniziale: prova a leggere il tab attivo, altrimenti "Eventi"
+  document.addEventListener("DOMContentLoaded", () => {
+    const activePanel = document.querySelector('[data-tab-panel]:not([hidden])');
+    const fallback = "Eventi";
+    setCurrent(activePanel ? (activePanel.getAttribute("data-tab-panel") || fallback) : fallback);
+  });
+  // ogni click su una voce con data-tab aggiorna l’etichetta
+  document.addEventListener("click", (e) => {
+    const t = e.target;
+    if (t && t.getAttribute && t.hasAttribute("data-tab")) {
+      const name = t.getAttribute("data-tab") || "Eventi";
+      setCurrent(name);
+    }
+  });
+})();
 
   </script>
 </body>
