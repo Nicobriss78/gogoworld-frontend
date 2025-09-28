@@ -182,6 +182,85 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   const panel = document.getElementById("createEventPanel");
   const form = document.getElementById("createEventForm");
   const btnCancelCreate = document.getElementById("btnCancelCreate");
+// --- Pannello Promuovi evento (organizer)
+  const promotePanel = document.getElementById("promotePanel");
+  const promoteForm = document.getElementById("promoteForm");
+  const btnPromoteCancel = document.getElementById("btnPromoteCancel");
+  const promoteEventIdInput = document.getElementById("promoteEventId");
+  const promoteEventTitle = document.getElementById("promoteEventTitle");
+
+  // Helper API verso funzione Netlify adminModeration (container admin)
+  function adminApi(path) { return "/.netlify/functions/adminModeration" + path; }
+  async function adminFetch(path, opts) {
+    const o = opts || {};
+    const init = Object.assign({ method: "GET", headers: { "Content-Type": "application/json" } }, o);
+    const res = await fetch(adminApi(path), init);
+    if (!res.ok && res.status !== 204) {
+      let t = ""; try { t = await res.text(); } catch {}
+      throw new Error("HTTP " + res.status + ": " + (t || res.statusText));
+    }
+    if (res.status === 204) return null;
+    return res.json();
+  }
+
+  function openPromotePanel(ev) {
+    if (!promotePanel || !promoteForm) return;
+    promoteEventIdInput.value = ev._id || "";
+    // Prefill: titolo banner = titolo evento
+    const title = (ev.title || "").toString().trim();
+    document.getElementById("pmTitle").value = title;
+    // Prefill: target → pagina evento
+    const base = location.origin.replace(/\/$/, "");
+    const target = base + "/evento.html?id=" + encodeURIComponent(ev._id);
+    document.getElementById("pmTarget").value = target;
+    promoteEventTitle.textContent = title || "—";
+    promotePanel.style.display = "block";
+    promotePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  if (btnPromoteCancel && promotePanel) {
+    btnPromoteCancel.addEventListener("click", () => {
+      promoteForm?.reset();
+      promotePanel.style.display = "none";
+    });
+  }
+
+  if (promoteForm) {
+    promoteForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const eventId = promoteEventIdInput.value;
+      if (!eventId) { showAlert("Evento non valido", "error", { autoHideMs: 3000 }); return; }
+      const body = {
+        type: "event_promo",
+        source: "organizer",
+        status: "PENDING_REVIEW",
+        eventId: eventId,
+        title: document.getElementById("pmTitle").value.trim(),
+        imageUrl: document.getElementById("pmImage").value.trim(),
+        targetUrl: document.getElementById("pmTarget").value.trim(),
+        placement: document.getElementById("pmPlacement").value,
+        country: (document.getElementById("pmCountry").value || "").trim() || null,
+        region: (document.getElementById("pmRegion").value || "").trim() || null,
+        activeFrom: document.getElementById("pmFrom").value ? new Date(document.getElementById("pmFrom").value).toISOString() : null,
+        activeTo: document.getElementById("pmTo").value ? new Date(document.getElementById("pmTo").value).toISOString() : null,
+        priority: Number(document.getElementById("pmPriority").value || 100),
+        isActive: true
+      };
+      // Validazioni minime https://
+      if (!/^https:\/\//.test(body.imageUrl) || !/^https:\/\//.test(body.targetUrl)) {
+        showAlert("Usa URL https:// per Immagine e Destinazione", "error", { autoHideMs: 4000 });
+        return;
+      }
+      try {
+        await adminFetch("/api/banners", { method: "POST", body: JSON.stringify(body) });
+        showAlert("Richiesta inviata — in attesa di approvazione", "success", { autoHideMs: 4000 });
+        promoteForm.reset();
+        promotePanel.style.display = "none";
+      } catch (err) {
+        showAlert(err?.message || "Errore invio richiesta", "error", { autoHideMs: 4000 });
+      }
+    });
+  }
 
   // PATCH: tassonomia e liste (minimo necessario per popolare le tendine)
   const TAXONOMY = {
@@ -420,6 +499,7 @@ if (btnEmpty) btnEmpty.onclick = () => { try { document.getElementById("btnCreat
                       ? 'Bloccato'
                       : 'Modifica'
               }</button>
+  <button class="btn btn-secondary" data-action="promote" data-id="${ev._id}">Promuovi</button>
   <button class="btn btn-secondary" data-action="details" data-id="${ev._id}">Dettagli</button>
   <button class="btn btn-danger" data-action="delete" data-id="${ev._id}">Elimina</button>
 </div>
@@ -567,6 +647,17 @@ if (btnEmpty) btnEmpty.onclick = () => { try { document.getElementById("btnCreat
         try { sessionStorage.setItem("selectedEventId", id); } catch {}
        const href = `evento.html?id=${encodeURIComponent(id)}#edit`;
         window.location.href = href;
+        return;
+      }
+if (action === "promote") {
+        // prendi dati dal cache lista per prefilling
+        let ev = null;
+        try {
+          const arr = Array.isArray(window.__myEventsCache) ? window.__myEventsCache : [];
+          ev = arr.find(x => String(x._id) === String(id)) || null;
+        } catch {}
+        if (!ev) { showAlert("Evento non trovato in cache", "error", { autoHideMs: 3000 }); return; }
+        openPromotePanel(ev);
         return;
       }
 
@@ -911,6 +1002,7 @@ if (btnEmpty) btnEmpty.onclick = () => { try { document.getElementById("btnCreat
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
