@@ -320,6 +320,181 @@
     }
   });
 })();
+// === API helper (via Netlify Function adminModeration) ===
+function adminApi(path) {
+  return "/.netlify/functions/adminModeration" + path;
+}
+async function adminFetch(path, opts) {
+  const o = opts || {};
+  const init = Object.assign({ method: "GET", headers: { "Content-Type": "application/json" } }, o);
+  const res = await fetch(adminApi(path), init);
+  if (!res.ok && res.status !== 204) {
+    let t = "";
+    try { t = await res.text(); } catch {}
+    throw new Error("HTTP " + res.status + ": " + (t || res.statusText));
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+// === Render card banner ===
+function renderBannerCard(b) {
+  var status = (b.status || "-").toString().toLowerCase();
+  var badge = '<span class="badge ' + status + '">' + (b.status || "-") + "</span>";
+  return [
+    '<div class="admin-card">',
+    ' <h3>' + (b.title || '(senza titolo)') + ' ' + badge + '</h3>',
+    ' <div class="muted">type: ' + b.type + ' • source: ' + b.source + ' • placement: ' + b.placement + '</div>',
+    ' <div class="muted">geo: ' + (b.country || '—') + ' / ' + (b.region || '—') + ' • priority: ' + (b.priority || 100) + '</div>',
+    ' <div class="actions">',
+    ' <button class="btn" data-action="pause" data-id="' + b._id + '">Pausa</button>',
+    ' <button class="btn" data-action="resume" data-id="' + b._id + '">Riprendi</button>',
+    ' <button class="btn" data-action="delete" data-id="' + b._id + '">Elimina</button>',
+    ' <a class="btn" href="' + b.imageUrl + '" target="_blank" rel="noopener">Immagine</a>',
+    ' <a class="btn" href="' + b.targetUrl + '" target="_blank" rel="noopener">Landing</a>',
+    ' </div>',
+    '</div>'
+  ].join('\n');
+}
+
+// === Sponsor: create + list ===
+async function sponsorList() {
+  var box = document.getElementById("sponsorList");
+  if (!box) return;
+  box.innerHTML = '<div class="muted">Caricamento…</div>';
+  var q = await adminFetch("/api/banners?type=sponsor&source=admin_third_party");
+  var arr = (q && q.data) || [];
+  box.innerHTML = arr.length ? arr.map(renderBannerCard).join("") : '<div class="muted">Nessuno sponsor presente.</div>';
+}
+async function sponsorCreate() {
+  var body = {
+    type: "sponsor",
+    source: "admin_third_party",
+    status: "ACTIVE",
+    title: document.getElementById("spTitle").value.trim(),
+    imageUrl: document.getElementById("spImage").value.trim(),
+    targetUrl: document.getElementById("spTarget").value.trim(),
+    placement: document.getElementById("spPlacement").value,
+    country: (document.getElementById("spCountry").value || "").trim() || null,
+    region: (document.getElementById("spRegion").value || "").trim() || null,
+    activeFrom: document.getElementById("spFrom").value ? new Date(document.getElementById("spFrom").value).toISOString() : null,
+    activeTo: document.getElementById("spTo").value ? new Date(document.getElementById("spTo").value).toISOString() : null,
+    priority: Number(document.getElementById("spPriority").value || 100),
+    isActive: document.getElementById("spActive").checked
+  };
+  await adminFetch("/api/banners", { method: "POST", body: JSON.stringify(body) });
+  await sponsorList();
+  try { showAlert("Sponsor creato", "success"); } catch {}
+}
+
+// === House: create + list ===
+async function houseList() {
+  var box = document.getElementById("houseList");
+  if (!box) return;
+  box.innerHTML = '<div class="muted">Caricamento…</div>';
+  var q = await adminFetch("/api/banners?type=house&source=admin_house");
+  var arr = (q && q.data) || [];
+  box.innerHTML = arr.length ? arr.map(renderBannerCard).join("") : '<div class="muted">Nessun annuncio house presente.</div>';
+}
+async function houseCreate() {
+  var body = {
+    type: "house",
+    source: "admin_house",
+    status: "ACTIVE",
+    title: document.getElementById("hsTitle").value.trim(),
+    imageUrl: document.getElementById("hsImage").value.trim(),
+    targetUrl: document.getElementById("hsTarget").value.trim(),
+    placement: document.getElementById("hsPlacement").value,
+    country: (document.getElementById("hsCountry").value || "").trim() || null,
+    region: (document.getElementById("hsRegion").value || "").trim() || null,
+    activeFrom: document.getElementById("hsFrom").value ? new Date(document.getElementById("hsFrom").value).toISOString() : null,
+    activeTo: document.getElementById("hsTo").value ? new Date(document.getElementById("hsTo").value).toISOString() : null,
+    priority: Number(document.getElementById("hsPriority").value || 100),
+    isActive: document.getElementById("hsActive").checked
+  };
+  await adminFetch("/api/banners", { method: "POST", body: JSON.stringify(body) });
+  await houseList();
+  try { showAlert("Annuncio house creato", "success"); } catch {}
+}
+
+// === Approvals (organizer) ===
+async function approvalsList() {
+  var box = document.getElementById("approvalsList");
+  if (!box) return;
+  box.innerHTML = '<div class="muted">Caricamento…</div>';
+  var q = await adminFetch("/api/banners?status=PENDING_REVIEW&source=organizer");
+  var arr = (q && q.data) || [];
+  if (!arr.length) {
+    box.innerHTML = '<div class="muted">Nessuna richiesta in attesa.</div>';
+    return;
+  }
+  box.innerHTML = arr.map(function(b){
+    var badge = '<span class="badge pending">PENDING_REVIEW</span>';
+    return [
+      '<div class="admin-card">',
+      ' <h3>' + (b.title || '(senza titolo)') + ' ' + badge + '</h3>',
+      ' <div class="muted">evento: ' + (b.eventId || '—') + ' • placement: ' + b.placement + ' • geo: ' + (b.country || '—') + '/' + (b.region || '—') + '</div>',
+      ' <div class="actions">',
+      ' <button class="btn primary" data-action="approve" data-id="' + b._id + '">Approva</button>',
+      ' <button class="btn" data-action="reject" data-id="' + b._id + '">Rifiuta</button>',
+      ' </div>',
+      '</div>'
+    ].join('\n');
+  }).join('');
+}
+
+// === Deleghe click (pause/resume/delete/approve/reject) ===
+document.addEventListener("click", async function(e){
+  var t = e.target;
+  if (!t || !t.getAttribute) return;
+  var id = t.getAttribute("data-id");
+  var action = t.getAttribute("data-action");
+  if (!action || !id) return;
+  try {
+    if (action === "delete") {
+      await adminFetch("/api/banners/" + id, { method: "DELETE" });
+      sponsorList(); houseList(); approvalsList();
+    }
+    if (action === "pause") {
+      await adminFetch("/api/banners/" + id + "/pause", { method: "POST" });
+      sponsorList(); houseList(); approvalsList();
+    }
+    if (action === "resume") {
+      await adminFetch("/api/banners/" + id + "/resume", { method: "POST" });
+      sponsorList(); houseList(); approvalsList();
+    }
+    if (action === "approve") {
+      await adminFetch("/api/banners/" + id + "/approve", { method: "POST" });
+      approvalsList();
+    }
+    if (action === "reject") {
+      await adminFetch("/api/banners/" + id + "/reject", { method: "POST" });
+      approvalsList();
+    }
+  } catch (err) {
+    try { showAlert(err.message || "Errore operazione", "error"); } catch { console.error(err); }
+  }
+});
+
+// === Bind bottoni create/refresh ===
+document.addEventListener("DOMContentLoaded", function(){
+  function byId(id){ return document.getElementById(id); }
+  var spCreate = byId("spCreate"); if (spCreate) spCreate.addEventListener("click", function(){ sponsorCreate().catch(console.error); });
+  var spRefresh = byId("spRefresh"); if (spRefresh) spRefresh.addEventListener("click", function(){ sponsorList().catch(console.error); });
+  var hsCreate = byId("hsCreate"); if (hsCreate) hsCreate.addEventListener("click", function(){ houseCreate().catch(console.error); });
+  var hsRefresh = byId("hsRefresh"); if (hsRefresh) hsRefresh.addEventListener("click", function(){ houseList().catch(console.error); });
+  var apRefresh = byId("apRefresh"); if (apRefresh) apRefresh.addEventListener("click", function(){ approvalsList().catch(console.error); });
+});
+
+// === Auto-load quando si apre un pannello ===
+document.addEventListener("click", function(e){
+  var t = e.target;
+  if (!t || !t.getAttribute || !t.hasAttribute("data-tab")) return;
+  var tab = t.getAttribute("data-tab");
+  if (tab === "sponsor") sponsorList();
+  if (tab === "house") houseList();
+  if (tab === "approvals") approvalsList();
+});
 
   </script>
 </body>
