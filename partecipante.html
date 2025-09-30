@@ -140,29 +140,31 @@
           const clickHref = `${api}/api/banners/${encodeURIComponent(b.id)}/click?redirect=1`;
          if (lastId === b.id) return;
          lastId = b.id;
-          mount.innerHTML = `
-            <a href="${clickHref}" class="banner-card" rel="nofollow noopener" style="display:block;text-decoration:none;">
-              <img src="${b.imageUrl}" alt="${b.title}" style="width:100%;height:auto;display:block;border-radius:8px;" />
-              <span class="banner-label" style="display:block;margin-top:6px;font-size:.9rem;color:#555;">${b.title}</span>
-            </a>
-          `;
+         mount.innerHTML = `
+         <a href="${clickHref}" class="banner-card" rel="nofollow noopener" style="display:block;text-decoration:none;">
+         <img src="${b.imageUrl}" alt="${b.title}" style="width:100%;height:auto;display:block;border-radius:8px;" />
+         <span class="banner-label" style="display:block;margin-top:6px;font-size:.9rem;color:#555;">${b.title}</span>
+         </a>
+         `;
+
         } catch (err) {
           console.warn("[banner] events_list_inline load error:", err);
         }
       }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const area = { country: "IT" };
-  loadBanner("events_list_inline", "banner-events-inline", area);
-  // ruota ogni 30s chiedendo al server l’active corrente
-  setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area), 30000);
-});        loadBanner("events_list_inline", "banner-events-inline", { country: "IT" });
-      });
-    })();
+const area = { country: "IT" };
+loadBanner("events_list_inline", "banner-events-inline", area);
+// ruota ogni 30s chiedendo al server l’active corrente
+setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area), 30000);
+});
+})();
+
 
   </script>
 </body>
 </html>
+
 
 
 
