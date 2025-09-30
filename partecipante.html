@@ -86,7 +86,7 @@
     <!-- Container richiesti da partecipante.js -->
     <h2>Tutti gli eventi</h2>
     <!-- B1/2 banner placement: events_list_inline -->
-    <section id="banner-events-inline" class="banner-slot" style="margin: 12px 0;"></section>
+    <section id="banner-events-inline" class="banner-slot" style="margin:12px 0;padding:8px 0;border-radius:8px;"></section>
     <section id="allEventsList" class="events-list"></section>
 
     <h2>Eventi a cui partecipo</h2>
@@ -115,6 +115,7 @@
     // B1/2 — Banner widget (placement: events_list_inline)
     // ------------------------------------------------------------
     (function () {
+      let lastId = null;
       function getApiBase() {
         if (window.API_BASE && typeof window.API_BASE === "string") return window.API_BASE;
         return location.hostname.includes("localhost") ? "http://localhost:3000" : "https://gogoworld-api.onrender.com";
@@ -127,7 +128,7 @@
           if (area && area.country) params.append("country", area.country);
           if (area && area.region) params.append("region", area.region);
 
-          const res = await fetch(`${api}/api/banners/active?` + params.toString(), { method: "GET" });
+          const res = await fetch(`${api}/api/banners/active?${params.toString()}&_=${Date.now()}`, { method: "GET", cache: "no-store" });
           if (res.status === 204) return;
           const json = await res.json();
           if (!json || !json.ok || !json.data) return;
@@ -137,7 +138,8 @@
           if (!mount) return;
 
           const clickHref = `${api}/api/banners/${encodeURIComponent(b.id)}/click?redirect=1`;
-
+         if (lastId === b.id) return;
+         lastId = b.id;
           mount.innerHTML = `
             <a href="${clickHref}" class="banner-card" rel="nofollow noopener" style="display:block;text-decoration:none;">
               <img src="${b.imageUrl}" alt="${b.title}" style="width:100%;height:auto;display:block;border-radius:8px;" />
@@ -149,14 +151,19 @@
         }
       }
 
-      document.addEventListener("DOMContentLoaded", () => {
-        loadBanner("events_list_inline", "banner-events-inline", { country: "IT" });
+document.addEventListener("DOMContentLoaded", () => {
+  const area = { country: "IT" };
+  loadBanner("events_list_inline", "banner-events-inline", area);
+  // ruota ogni 30s chiedendo al server l’active corrente
+  setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area), 30000);
+});        loadBanner("events_list_inline", "banner-events-inline", { country: "IT" });
       });
     })();
 
   </script>
 </body>
 </html>
+
 
 
 
