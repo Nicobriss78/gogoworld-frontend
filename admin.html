@@ -149,7 +149,41 @@
         <div id="usersList" class="admin-grid"></div>
         <div id="usersPager" class="pager"></div>
       </section>
-
+<!-- TAB Banner -->
+  <section id="tab-banners" class="tab-pane">
+    <h2>Gestione Banner</h2>
+    <div class="filters">
+      <label>Stato:
+        <select id="bannerFilterStatus">
+          <option value="">Tutti</option>
+          <option value="active">Active</option>
+          <option value="paused">Paused</option>
+          <option value="expired">Expired</option>
+        </select>
+      </label>
+      <label>Placement:
+        <input id="bannerFilterPlacement" type="text" placeholder="es. home_top">
+      </label>
+    </div>
+    <table id="bannerTable">
+      <thead>
+        <tr>
+          <th>Titolo</th>
+          <th>Tipo</th>
+          <th>Placement</th>
+          <th>Area</th>
+          <th>Inizio</th>
+          <th>Fine</th>
+          <th>Imp</th>
+          <th>Click</th>
+          <th>CTR</th>
+          <th>Stato</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
       <!-- Tab: Import Massivo -->
       <section data-tab-panel="imports" hidden>
         <div class="admin-toolbar">
