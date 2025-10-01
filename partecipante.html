@@ -116,10 +116,11 @@
     // ------------------------------------------------------------
     (function () {
       let lastId = null;
-      function getApiBase() {
-        if (window.API_BASE && typeof window.API_BASE === "string") return window.API_BASE;
-        return location.hostname.includes("localhost") ? "http://localhost:3000" : "https://gogoworld-api.onrender.com";
-      }
+     function getApiBase() {
+     if (window.API_BASE && typeof window.API_BASE === "string") return window.API_BASE;
+     return "/api";
+     }
+
 
       async function loadBanner(placement, mountId, area) {
         try {
@@ -128,16 +129,15 @@
           if (area && area.country) params.append("country", area.country);
           if (area && area.region) params.append("region", area.region);
 
-          const res = await fetch(`${api}/api/banners/active?${params.toString()}&_=${Date.now()}`, { method: "GET", cache: "no-store" });
-          if (res.status === 204) return;
-          const json = await res.json();
-          if (!json || !json.ok || !json.data) return;
+         const res = await fetch(`${api}/banners/active?` + params.toString() + `&_=${Date.now()}`, { method: "GET", cache: "no-store" });
+         const mount = document.getElementById(mountId);
+         if (res.status === 204) { if (mount) mount.innerHTML = ""; return; }
+         const json = await res.json().catch(() => null);
+         if (!json || !json.ok || !json.data) { if (mount) mount.innerHTML = ""; return; }
 
-          const b = json.data;
-          const mount = document.getElementById(mountId);
-          if (!mount) return;
-
-          const clickHref = `${api}/api/banners/${encodeURIComponent(b.id)}/click?redirect=1`;
+         const b = json.data;
+         if (!mount) return;
+         const clickHref = `${api}/banners/${encodeURIComponent(b.id)}/click?redirect=1`;
          if (lastId === b.id) return;
          lastId = b.id;
          mount.innerHTML = `
@@ -164,6 +164,7 @@ setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area)
   </script>
 </body>
 </html>
+
 
 
 
