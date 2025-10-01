@@ -385,6 +385,8 @@ function renderBannerCard(b) {
     ' <h3>' + (b.title || '(senza titolo)') + ' ' + badge + '</h3>',
     ' <div class="muted">type: ' + b.type + ' • source: ' + b.source + ' • placement: ' + b.placement + '</div>',
     ' <div class="muted">geo: ' + (b.country || '—') + ' / ' + (b.region || '—') + ' • priority: ' + (b.priority || 100) + '</div>',
+    ' <div class="muted">metrics: imp ' + (b.impressionsTotal || 0) + ' • click ' + (b.clicksTotal || 0) + ' • CTR ' + (b.impressionsTotal ? ((b.clicksTotal / b.impressionsTotal) * 100).toFixed(2) + '%' : '0%') + '</div>',
+    ' <div class="muted">durata: ' + (b.activeFrom ? new Date(b.activeFrom).toLocaleString() : '—') + ' → ' + (b.activeTo ? new Date(b.activeTo).toLocaleString() : '—') + '</div>',
     ' <div class="actions">',
     ' <button class="btn" data-action="pause" data-id="' + b._id + '">Pausa</button>',
     ' <button class="btn" data-action="resume" data-id="' + b._id + '">Riprendi</button>',
