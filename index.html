@@ -14,8 +14,7 @@
       <h1 class="app-title">GoGoWorld.life</h1>
       <p class="subtitle">Scegli come entrare</p>
     </header>
-<!-- B1/2 banner placement: home_top -->
-    <section id="banner-home-top" class="banner-slot" style="margin: 12px 0;"></section>
+    
     <section class="role-grid">
       <button id="btnOrganizer" class="btn role-btn left">Sono un Organizzatore</button>
       <button id="btnParticipant" class="btn role-btn right">Sono un Partecipante</button>
@@ -44,55 +43,11 @@
         }
       }
     });
-    // ------------------------------------------------------------
-    // B1/2 — Banner widget (placement: home_top)
-    // ------------------------------------------------------------
-    (function () {
-      function getApiBase() {
-        // Usa variabile globale se definita, altrimenti backend prod; in dev localhost:3000
-        if (window.API_BASE && typeof window.API_BASE === "string") return window.API_BASE;
-        return location.hostname.includes("localhost") ? "http://localhost:3000" : "https://gogoworld-api.onrender.com";
-      }
-
-      async function loadBanner(placement, mountId, area) {
-        try {
-          const api = getApiBase();
-          const params = new URLSearchParams({ placement });
-          if (area && area.country) params.append("country", area.country);
-          if (area && area.region) params.append("region", area.region);
-
-          const res = await fetch(`${api}/api/banners/active?` + params.toString(), { method: "GET" });
-          if (res.status === 204) return; // nessun banner disponibile
-          const json = await res.json();
-          if (!json || !json.ok || !json.data) return;
-
-          const b = json.data;
-          const mount = document.getElementById(mountId);
-          if (!mount) return;
-
-          // Link diretto all’endpoint click con redirect=1 (tracking lato BE + 302 al target)
-          const clickHref = `${api}/api/banners/${encodeURIComponent(b.id)}/click?redirect=1`;
-
-          mount.innerHTML = `
-            <a href="${clickHref}" class="banner-card" rel="nofollow noopener" style="display:block;text-decoration:none;">
-              <img src="${b.imageUrl}" alt="${b.title}" style="width:100%;height:auto;display:block;border-radius:8px;" />
-              <span class="banner-label" style="display:block;margin-top:6px;font-size:.9rem;color:#555;">${b.title}</span>
-            </a>
-          `;
-        } catch (err) {
-          console.warn("[banner] home_top load error:", err);
-        }
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        // Per B1/2 usiamo country=IT; la region verrà integrata quando abiliteremo la geolocalizzazione
-        loadBanner("home_top", "banner-home-top", { country: "IT" });
-      });
-    })();
 
   </script>
 </body>
 </html>
+
 
 
 
