@@ -675,7 +675,10 @@ async function loadMyBanners() {
     sessionStorage.getItem("accessToken") ||
     localStorage.getItem("accessToken");
 
-  const res = await apiGet("banners?createdBy=me", tokenLocal);
+ const res = await fetch('/.netlify/functions/adminModeration/banners?createdBy=me', {
+ headers: { Authorization: `Bearer ${tokenLocal || ''}` },
+ credentials: 'include'
+ }).then(r => r.json()).catch(() => null);
   if (!res || res.ok === false) {
     const msg = (res && (res.message || res.error)) || "Errore nel caricamento dei banner";
     showAlert(msg, "error", { autoHideMs: 3000 });
@@ -1080,6 +1083,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
