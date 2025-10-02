@@ -675,7 +675,7 @@ async function loadMyBanners() {
     sessionStorage.getItem("accessToken") ||
     localStorage.getItem("accessToken");
 
-  const res = await apiGet("/banners?createdBy=me", tokenLocal);
+  const res = await apiGet("banners?createdBy=me", tokenLocal);
   if (!res || res.ok === false) {
     const msg = (res && (res.message || res.error)) || "Errore nel caricamento dei banner";
     showAlert(msg, "error", { autoHideMs: 3000 });
@@ -1080,6 +1080,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
