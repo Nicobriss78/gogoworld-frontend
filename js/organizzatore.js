@@ -174,7 +174,12 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   const btnLogout = document.getElementById("btnLogout");
   const btnSwitchRole = document.getElementById("btnSwitchRole");
   const btnCreate = document.getElementById("btnCreateEvent");
-  
+  const btnMyPromos = document.getElementById("btnMyPromos");
+  const myPromosPanel = document.getElementById("myPromosPanel");
+  const btnMyPromosRefresh = document.getElementById("btnMyPromosRefresh");
+  const btnMyPromosClose = document.getElementById("btnMyPromosClose");
+  const myPromosTable = document.getElementById("myPromosTable");
+
   // PATCH: bottone Importa CSV
   const btnImportCsv = document.getElementById("btnImportCsv");
   
@@ -628,6 +633,58 @@ if (btnEmpty) btnEmpty.onclick = () => { try { document.getElementById("btnCreat
       try { await loadEvents(); } catch {}
     }
   }
+// ---- Le mie promozioni (organizer) ----
+function renderMyPromosTable(arr) {
+  const tbody = myPromosTable?.querySelector("tbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  const data = Array.isArray(arr) ? arr : [];
+  if (data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="muted">Nessuna promozione trovata.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(b => {
+    const imp = b.impressionsTotal || 0;
+    const clk = b.clicksTotal || 0;
+    const ctr = imp ? ((clk / imp) * 100).toFixed(2) + '%' : '0%';
+    const start = b.activeFrom ? new Date(b.activeFrom).toLocaleString() : '—';
+    const end = b.activeTo ? new Date(b.activeTo).toLocaleString() : '—';
+    return `
+      <tr>
+        <td>${b.title || '(senza titolo)'}</td>
+        <td>${b.placement || '-'}</td>
+        <td>${start}</td>
+        <td>${end}</td>
+        <td>${imp}</td>
+        <td>${clk}</td>
+        <td>${ctr}</td>
+        <td>${b.status || '-'}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+async function loadMyBanners() {
+  const tokenLocal =
+    localStorage.getItem("token") ||
+    sessionStorage.getItem("token") ||
+    sessionStorage.getItem("authToken") ||
+    localStorage.getItem("authToken") ||
+    sessionStorage.getItem("jwt") ||
+    localStorage.getItem("jwt") ||
+    sessionStorage.getItem("accessToken") ||
+    localStorage.getItem("accessToken");
+
+  const res = await apiGet("/banners?createdBy=me", tokenLocal);
+  if (!res || res.ok === false) {
+    const msg = (res && (res.message || res.error)) || "Errore nel caricamento dei banner";
+    showAlert(msg, "error", { autoHideMs: 3000 });
+    if (myPromosTable) myPromosTable.querySelector("tbody").innerHTML =
+      '<tr><td colspan="8" class="error">Errore di caricamento</td></tr>';
+    return;
+  }
+  renderMyPromosTable(res.data || []);
+}
 
   // Event delegation
   if (listContainer) {
@@ -994,6 +1051,25 @@ if (action === "promote") {
       </table></div>`;
     }
   }
+  // Hook pannello "Le mie promozioni"
+if (btnMyPromos) {
+  btnMyPromos.addEventListener("click", () => {
+    if (!myPromosPanel) return;
+    myPromosPanel.style.display = "block";
+    loadMyBanners();
+  });
+}
+if (btnMyPromosRefresh) {
+  btnMyPromosRefresh.addEventListener("click", () => {
+    loadMyBanners();
+  });
+}
+if (btnMyPromosClose) {
+  btnMyPromosClose.addEventListener("click", () => {
+    if (myPromosPanel) myPromosPanel.style.display = "none";
+  });
+}
+
 
   // Prima lista
   loadEvents();
@@ -1004,6 +1080,7 @@ if (action === "promote") {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
