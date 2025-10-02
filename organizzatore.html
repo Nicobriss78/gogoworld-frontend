@@ -15,6 +15,7 @@
 <nav class="toolbar">
   <button id="btnSwitchRole" class="btn">Cambia ruolo</button>
   <button id="btnLogout" class="btn btn-secondary">Logout</button>
+  <button id="btnMyPromos" class="btn btn-secondary">Le mie promozioni</button>
   <!-- RIMOSSO: pulsante Importa CSV -->
 </nav>
     </header>
@@ -182,6 +183,32 @@
         </div>
       </form>
     </section>
+<!-- PANNELLO: Le mie promozioni -->
+  <section id="myPromosPanel" style="display:none; margin:1em 0; padding:1em; border:1px solid #ccc; border-radius:8px;">
+    <h2>Le mie promozioni</h2>
+    <div class="muted" id="myPromosInfo">Qui trovi i banner che hai richiesto o creato. Aggiorna per vedere le metriche aggiornate.</div>
+    <div style="margin:.5em 0;">
+      <button id="btnMyPromosRefresh" class="btn">Aggiorna</button>
+      <button id="btnMyPromosClose" class="btn btn-secondary">Chiudi</button>
+    </div>
+    <div class="table-wrap">
+      <table id="myPromosTable">
+        <thead>
+          <tr>
+            <th>Titolo</th>
+            <th>Placement</th>
+            <th>Inizio</th>
+            <th>Fine</th>
+            <th>Impr</th>
+            <th>Click</th>
+            <th>CTR</th>
+            <th>Stato</th>
+          </tr>
+        </thead>
+        <tbody><!-- popolato da JS --></tbody>
+      </table>
+    </div>
+  </section>
 
     <section id="myEventsList" class="events-list"></section>
 
@@ -193,6 +220,7 @@
   <script type="module" src="js/organizzatore.js"></script>
 </body>
 </html>
+
 
 
 
