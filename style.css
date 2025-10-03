@@ -467,6 +467,12 @@ body {
   color: #111 !important;
   font-size: 14px !important;
 }
+/* ---- Promozioni Organizer ---- */
+#myPromosTable td.ctr-high { color: green; font-weight: 600; }
+#myPromosTable td.ctr-mid { color: orange; }
+#myPromosTable td.ctr-low { color: red; }
+#myPromosTable tr.expired td { opacity: 0.6; text-decoration: line-through; }
+#myPromosCaption { display: none; font-style: italic; }
 
 
 
