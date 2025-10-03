@@ -642,19 +642,13 @@ function renderMyPromosTable(arr) {
   tbody.innerHTML = "";
   const data = Array.isArray(arr) ? arr : [];
 if (data.length === 0) {
-tbody.innerHTML = '';
-const cap = document.getElementById("myPromosCaption");
-if (cap) cap.style.display = "table-caption";
-return;
-} else {
+  tbody.innerHTML = '';
+  const cap = document.getElementById("myPromosCaption");
+  if (cap) cap.style.display = "table-caption";
+  return;
+}
 const cap = document.getElementById("myPromosCaption");
 if (cap) cap.style.display = "none";
-}
-
-} else {
-
-document.getElementById("myPromosCaption").style.display = "none";
-}
 
   tbody.innerHTML = data.map(b => {
     const imp = b.impressionsTotal || 0;
@@ -1121,6 +1115,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
