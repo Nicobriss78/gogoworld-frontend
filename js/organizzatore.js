@@ -639,28 +639,40 @@ function renderMyPromosTable(arr) {
   if (!tbody) return;
   tbody.innerHTML = "";
   const data = Array.isArray(arr) ? arr : [];
-  if (data.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="muted">Nessuna promozione trovata.</td></tr>';
-    return;
-  }
+if (data.length === 0) {
+tbody.innerHTML = '';
+
+document.getElementById("myPromosCaption").style.display = "table-caption";
+return;
+} else {
+
+document.getElementById("myPromosCaption").style.display = "none";
+}
+
   tbody.innerHTML = data.map(b => {
     const imp = b.impressionsTotal || 0;
     const clk = b.clicksTotal || 0;
-    const ctr = imp ? ((clk / imp) * 100).toFixed(2) + '%' : '0%';
-    const start = b.activeFrom ? new Date(b.activeFrom).toLocaleString() : '—';
-    const end = b.activeTo ? new Date(b.activeTo).toLocaleString() : '—';
-    return `
-      <tr>
-        <td>${b.title || '(senza titolo)'}</td>
-        <td>${b.placement || '-'}</td>
-        <td>${start}</td>
-        <td>${end}</td>
-        <td>${imp}</td>
-        <td>${clk}</td>
-        <td>${ctr}</td>
-        <td>${b.status || '-'}</td>
-      </tr>
-    `;
+const ctrVal = imp ? (clk / imp) * 100 : 0;
+let ctrClass = "ctr-low";
+if (ctrVal >= 3) ctrClass = "ctr-high";
+else if (ctrVal >= 1) ctrClass = "ctr-mid";
+const ctr = ctrVal.toFixed(2) + "%";
+const start = b.activeFrom ? new Date(b.activeFrom).toLocaleString() : '—';
+const end = b.activeTo ? new Date(b.activeTo).toLocaleString() : '—';
+const isExpired = b.activeTo && new Date(b.activeTo) < new Date();
+return `
+<tr class="${isExpired ? 'expired' : ''}">
+<td>${b.title || '(senza titolo)'}</td>
+<td>${b.placement || '-'}</td>
+<td>${start}</td>
+<td>${end}</td>
+<td>${imp}</td>
+<td>${clk}</td>
+<td class="${ctrClass}">${ctr}</td>
+<td>${b.status || '-'}</td>
+</tr>
+`;
+
   }).join("");
 }
 
@@ -1084,6 +1096,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
