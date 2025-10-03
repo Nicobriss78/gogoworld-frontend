@@ -475,6 +475,19 @@ body {
 #myPromosTable tr.expired td { opacity: .55; text-decoration: line-through; }
 .badge.warning { display:inline-block; margin-left:.35rem; padding:.15rem .4rem; border-radius:6px; background:#fff4db; color:#7a4d00; border:1px solid #f0d28a; font-size:.75rem; vertical-align:middle; }
 
+/* ---- Badge in scadenza ---- */
+.badge.warning {
+  display: inline-block;
+  margin-left: .35rem;
+  padding: .15rem .4rem;
+  border-radius: 6px;
+  background: #fff4db;
+  color: #7a4d00;
+  border: 1px solid #f0d28a;
+  font-size: .75rem;
+  vertical-align: middle;
+}
+
 
 
 
