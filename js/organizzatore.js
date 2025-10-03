@@ -660,7 +660,24 @@ else if (ctrVal >= 1) ctrClass = "ctr-mid";
 const ctr = ctrVal.toFixed(2) + "%";
 const start = b.activeFrom ? new Date(b.activeFrom).toLocaleString() : '—';
 const end = b.activeTo ? new Date(b.activeTo).toLocaleString() : '—';
-const isExpired = b.activeTo && new Date(b.activeTo) < new Date();
+
+// Preferisci il flag del backend, se presente; altrimenti calcola "fine giornata" locale
+let isExpired;
+if (typeof b.isExpired !== "undefined") {
+  isExpired = !!b.isExpired;
+} else {
+  if (b.activeTo) {
+    const endTs = new Date(b.activeTo);
+    // Se la stringa non contiene orario (solo data), considera 23:59:59 locale
+    if (typeof b.activeTo === "string" && !/\d{1,2}:\d{2}/.test(b.activeTo)) {
+      endTs.setHours(23, 59, 59, 999);
+    }
+    isExpired = endTs < new Date();
+  } else {
+    isExpired = false;
+  }
+}
+
 return `
 <tr class="${isExpired ? 'expired' : ''}">
 <td>${b.title || '(senza titolo)'}</td>
@@ -1117,6 +1134,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
