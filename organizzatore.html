@@ -191,8 +191,24 @@
       <button id="btnMyPromosRefresh" class="btn">Aggiorna</button>
       <button id="btnMyPromosClose" class="btn btn-secondary">Chiudi</button>
     </div>
+    <div class="filters" id="myPromosFilters" style="margin:.25em 0 .75em;">
+<label>Stato:
+<select id="myPromosFilterStatus" class="select-input">
+<option value="">Tutti</option>
+<option value="active">Active</option>
+<option value="paused">Paused</option>
+<option value="expired">Expired</option>
+</select>
+</label>
+<label style="margin-left:.5rem;">Placement:
+<input id="myPromosFilterPlacement" class="search-input" placeholder="es. events_list_inline" />
+</label>
+</div>
+
     <div class="table-wrap">
       <table id="myPromosTable">
+        <caption id="myPromosCaption" class="muted" style="caption-side:bottom; text-align:left; display:none;">
+Nessuna promozione trovata.
         <thead>
           <caption id="myPromosCaption" class="muted" style="caption-side:bottom; text-align:left;">
 Nessuna promozione trovata.
@@ -224,6 +240,7 @@ Nessuna promozione trovata.
   <script type="module" src="js/organizzatore.js"></script>
 </body>
 </html>
+
 
 
 
