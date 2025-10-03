@@ -467,12 +467,13 @@ body {
   color: #111 !important;
   font-size: 14px !important;
 }
-/* ---- Promozioni Organizer ---- */
-#myPromosTable td.ctr-high { color: green; font-weight: 600; }
-#myPromosTable td.ctr-mid { color: orange; }
-#myPromosTable td.ctr-low { color: red; }
-#myPromosTable tr.expired td { opacity: 0.6; text-decoration: line-through; }
-#myPromosCaption { display: none; font-style: italic; }
+
+/* ---- Organizer: Promozioni ---- */
+#myPromosTable td.ctr-high { color: #0a7a0a; font-weight: 600; }
+#myPromosTable td.ctr-mid { color: #b97800; }
+#myPromosTable td.ctr-low { color: #c21d1d; }
+#myPromosTable tr.expired td { opacity: .55; text-decoration: line-through; }
+.badge.warning { display:inline-block; margin-left:.35rem; padding:.15rem .4rem; border-radius:6px; background:#fff4db; color:#7a4d00; border:1px solid #f0d28a; font-size:.75rem; vertical-align:middle; }
 
 
 
