@@ -179,6 +179,8 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   const btnMyPromosRefresh = document.getElementById("btnMyPromosRefresh");
   const btnMyPromosClose = document.getElementById("btnMyPromosClose");
   const myPromosTable = document.getElementById("myPromosTable");
+  const myPromosFilterStatus = document.getElementById("myPromosFilterStatus");
+  const myPromosFilterPlacement = document.getElementById("myPromosFilterPlacement");
 
   // PATCH: bottone Importa CSV
   const btnImportCsv = document.getElementById("btnImportCsv");
@@ -641,9 +643,14 @@ function renderMyPromosTable(arr) {
   const data = Array.isArray(arr) ? arr : [];
 if (data.length === 0) {
 tbody.innerHTML = '';
-
-document.getElementById("myPromosCaption").style.display = "table-caption";
+const cap = document.getElementById("myPromosCaption");
+if (cap) cap.style.display = "table-caption";
 return;
+} else {
+const cap = document.getElementById("myPromosCaption");
+if (cap) cap.style.display = "none";
+}
+
 } else {
 
 document.getElementById("myPromosCaption").style.display = "none";
@@ -672,7 +679,22 @@ return `
 <td>${b.status || '-'}</td>
 </tr>
 `;
-
+function applyMyPromosFilters() {
+const all = (window.__myPromosCache || []);
+const s = (myPromosFilterStatus && myPromosFilterStatus.value || '').trim().toLowerCase();
+const p = (myPromosFilterPlacement && myPromosFilterPlacement.value || '').trim().toLowerCase();
+const filtered = all.filter(b => {
+if (s) {
+const isExpired = !!(b.activeTo && new Date(b.activeTo) < new Date());
+const stat = (b.status || '').toLowerCase();
+const logical = isExpired ? 'expired' : stat;
+if (logical !== s) return false;
+}
+if (p && !(String(b.placement || '').toLowerCase().includes(p))) return false;
+return true;
+});
+ renderMyPromosTable(filtered);
+}
   }).join("");
 }
 
@@ -699,8 +721,8 @@ credentials: 'include'
       '<tr><td colspan="8" class="error">Errore di caricamento</td></tr>';
     return;
   }
-  renderMyPromosTable(res.data || []);
-}
+window.__myPromosCache = Array.isArray(res.data) ? res.data : [];
+applyMyPromosFilters();}
 
   // Event delegation
   if (listContainer) {
@@ -1073,6 +1095,9 @@ if (btnMyPromos) {
     if (!myPromosPanel) return;
     myPromosPanel.style.display = "block";
     loadMyBanners();
+    if (myPromosFilterStatus) myPromosFilterStatus.addEventListener("change", applyMyPromosFilters);
+    if (myPromosFilterPlacement) myPromosFilterPlacement.addEventListener("input", applyMyPromosFilters);
+
   });
 }
 if (btnMyPromosRefresh) {
@@ -1096,6 +1121,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
