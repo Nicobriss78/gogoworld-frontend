@@ -673,23 +673,25 @@ return `
 <td>${b.status || '-'}</td>
 </tr>
 `;
-function applyMyPromosFilters() {
-const all = (window.__myPromosCache || []);
-const s = (myPromosFilterStatus && myPromosFilterStatus.value || '').trim().toLowerCase();
-const p = (myPromosFilterPlacement && myPromosFilterPlacement.value || '').trim().toLowerCase();
-const filtered = all.filter(b => {
-if (s) {
-const isExpired = !!(b.activeTo && new Date(b.activeTo) < new Date());
-const stat = (b.status || '').toLowerCase();
-const logical = isExpired ? 'expired' : stat;
-if (logical !== s) return false;
-}
-if (p && !(String(b.placement || '').toLowerCase().includes(p))) return false;
-return true;
-});
- renderMyPromosTable(filtered);
-}
   }).join("");
+}
+function applyMyPromosFilters() {
+  const all = (window.__myPromosCache || []);
+  const s = (myPromosFilterStatus && myPromosFilterStatus.value || '').trim().toLowerCase();
+  const p = (myPromosFilterPlacement && myPromosFilterPlacement.value || '').trim().toLowerCase();
+
+  const filtered = all.filter(b => {
+    if (s) {
+      const isExpired = !!(b.activeTo && new Date(b.activeTo) < new Date());
+      const stat = (b.status || '').toLowerCase();
+      const logical = isExpired ? 'expired' : stat;
+      if (logical !== s) return false;
+    }
+    if (p && !(String(b.placement || '').toLowerCase().includes(p))) return false;
+    return true;
+  });
+
+  renderMyPromosTable(filtered);
 }
 
 async function loadMyBanners() {
@@ -1115,6 +1117,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
