@@ -394,12 +394,11 @@ function renderBannerCard(b) {
   var isSoon = !!(b.activeTo && !isExpired && (new Date(b.activeTo) - new Date() <= 48*3600*1000));
 
   return `
-      <div class="admin-card banner-card${isExpired ? ' expired' : ''}${isSoon ? ' expiring' : ''}">
-      <h3>${b.title || "(senza titolo)"} ${badge} ${isSoon ? '<span class="badge warning">in scadenza</span>' : ''}</h3>
-      <div class="muted">type: ${b.type} • source: ${b.source}</div>
+    <div class="admin-card banner-card${isExpired ? ' expired' : ''}${isSoon ? ' expiring' : ''}">
+      <h3>${b.title || '(senza titolo)'} ${badge} ${isSoon ? '<span class="badge warning">in scadenza</span>' : ''}</h3>
       <div class="banner-meta">
-        <div><strong>Placement:</strong> ${b.placement || "-"}</div>
-        <div><strong>Area:</strong> ${b.country || "—"} / ${b.region || "—"}</div>
+        <div><strong>Placement:</strong> ${b.placement || '-'}</div>
+        <div><strong>Area:</strong> ${(b.country || '—')} / ${(b.region || '—')}</div>
         <div><strong>Inizio:</strong> ${start}</div>
         <div><strong>Fine:</strong> ${end}</div>
         <div><strong>Impressions:</strong> ${imp}</div>
@@ -416,6 +415,7 @@ function renderBannerCard(b) {
       </div>
     </div>`;
 }
+
 
 
 // === Sponsor: create + list ===
@@ -443,10 +443,14 @@ async function sponsorCreate() {
     priority: Number(document.getElementById("spPriority").value || 100),
     isActive: document.getElementById("spActive").checked
   };
+  if (!body.title) { alert("Inserisci il titolo"); return; }
+  if (!body.imageUrl || !/^https:\/\//i.test(body.imageUrl)) { alert("URL immagine non valido (https)"); return; }
+  if (!body.targetUrl || !/^https:\/\//i.test(body.targetUrl)) { alert("URL destinazione non valido (https)"); return; }
+
   await adminFetch("/api/banners", { method: "POST", body: JSON.stringify(body) });
   await sponsorList();
   try { showAlert("Sponsor creato", "success"); } catch {}
-}
+  }
 
 // === House: create + list ===
 async function houseList() {
@@ -473,6 +477,10 @@ async function houseCreate() {
     priority: Number(document.getElementById("hsPriority").value || 100),
     isActive: document.getElementById("hsActive").checked
   };
+  if (!body.title) { alert("Inserisci il titolo"); return; }
+  if (!body.imageUrl || !/^https:\/\//i.test(body.imageUrl)) { alert("URL immagine non valido (https)"); return; }
+  if (!body.targetUrl || !/^https:\/\//i.test(body.targetUrl)) { alert("URL destinazione non valido (https)"); return; }
+
   await adminFetch("/api/banners", { method: "POST", body: JSON.stringify(body) });
   await houseList();
   try { showAlert("Annuncio house creato", "success"); } catch {}
