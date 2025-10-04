@@ -721,8 +721,16 @@ async function loadMyBanners() {
     localStorage.getItem("jwt") ||
     sessionStorage.getItem("accessToken") ||
     localStorage.getItem("accessToken");
+const _params = [];
+if (myPromosFilterStatus && myPromosFilterStatus.value) {
+_params.push("status=" + encodeURIComponent(String(myPromosFilterStatus.value).toUpperCase()));
+}
+if (myPromosFilterPlacement && myPromosFilterPlacement.value) {
+_params.push("placement=" + encodeURIComponent(myPromosFilterPlacement.value));
+}
+const _qs = _params.length ? ("?" + _params.join("&")) : "";
 
-const res = await fetch('/.netlify/functions/adminModeration/api/banners/mine', {
+const res = await fetch('/.netlify/functions/adminModeration/api/banners/mine' + _qs, {
 headers: { Authorization: `Bearer ${tokenLocal || ''}` },
 credentials: 'include'
 }).then(r => r.json()).catch(() => null);
@@ -1134,6 +1142,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
