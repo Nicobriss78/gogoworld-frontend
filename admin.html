@@ -381,23 +381,42 @@ const token = (typeof localStorage !== "undefined" && localStorage.getItem("toke
 function renderBannerCard(b) {
   var status = (b.status || "-").toString().toLowerCase();
   var badge = '<span class="badge ' + status + '">' + (b.status || "-") + "</span>";
-  return [
-    '<div class="admin-card">',
-    ' <h3>' + (b.title || '(senza titolo)') + ' ' + badge + '</h3>',
-    ' <div class="muted">type: ' + b.type + ' • source: ' + b.source + ' • placement: ' + b.placement + '</div>',
-    ' <div class="muted">geo: ' + (b.country || '—') + ' / ' + (b.region || '—') + ' • priority: ' + (b.priority || 100) + '</div>',
-    ' <div class="muted">metrics: imp ' + (b.impressionsTotal || 0) + ' • click ' + (b.clicksTotal || 0) + ' • CTR ' + (b.impressionsTotal ? ((b.clicksTotal / b.impressionsTotal) * 100).toFixed(2) + '%' : '0%') + '</div>',
-    ' <div class="muted">durata: ' + (b.activeFrom ? new Date(b.activeFrom).toLocaleString() : '—') + ' → ' + (b.activeTo ? new Date(b.activeTo).toLocaleString() : '—') + '</div>',
-    ' <div class="actions">',
-    ' <button class="btn" data-action="pause" data-id="' + b._id + '">Pausa</button>',
-    ' <button class="btn" data-action="resume" data-id="' + b._id + '">Riprendi</button>',
-    ' <button class="btn" data-action="delete" data-id="' + b._id + '">Elimina</button>',
-    ' <a class="btn" href="' + b.imageUrl + '" target="_blank" rel="noopener">Immagine</a>',
-    ' <a class="btn" href="' + b.targetUrl + '" target="_blank" rel="noopener">Landing</a>',
-    ' </div>',
-    '</div>'
-  ].join('\n');
+
+  var imp = Number(b.impressionsTotal || 0);
+  var clk = Number(b.clicksTotal || 0);
+  var ctrVal = imp ? (clk / imp) * 100 : 0;
+  var ctrClass = ctrVal >= 3 ? "ctr-high" : (ctrVal >= 1 ? "ctr-mid" : "ctr-low");
+  var ctr = ctrVal.toFixed(2) + "%";
+
+  var start = b.activeFrom ? new Date(b.activeFrom).toLocaleString() : "—";
+  var end = b.activeTo ? new Date(b.activeTo).toLocaleString() : "—";
+  var isExpired = !!(b.activeTo && new Date(b.activeTo) < new Date());
+  var isSoon = !!(b.activeTo && !isExpired && (new Date(b.activeTo) - new Date() <= 48*3600*1000));
+
+  return `
+    <div class="admin-card banner-card">
+      <h3>${b.title || "(senza titolo)"} ${badge} ${isSoon ? '<span class="badge warning">in scadenza</span>' : ''}</h3>
+      <div class="muted">type: ${b.type} • source: ${b.source}</div>
+      <div class="banner-meta">
+        <div><strong>Placement:</strong> ${b.placement || "-"}</div>
+        <div><strong>Area:</strong> ${b.country || "—"} / ${b.region || "—"}</div>
+        <div><strong>Inizio:</strong> ${start}</div>
+        <div><strong>Fine:</strong> ${end}</div>
+        <div><strong>Impressions:</strong> ${imp}</div>
+        <div><strong>Click:</strong> ${clk}</div>
+        <div><strong>CTR:</strong> <span class="${ctrClass}">${ctr}</span></div>
+        <div><strong>Priorità:</strong> ${b.priority || 100}</div>
+      </div>
+      <div class="actions">
+        <button class="btn" data-action="pause" data-id="${b._id}">Pausa</button>
+        <button class="btn" data-action="resume" data-id="${b._id}">Riprendi</button>
+        <button class="btn" data-action="delete" data-id="${b._id}">Elimina</button>
+        <a class="btn" href="${b.imageUrl}" target="_blank" rel="noopener">Immagine</a>
+        <a class="btn" href="${b.targetUrl}" target="_blank" rel="noopener">Landing</a>
+      </div>
+    </div>`;
 }
+
 
 // === Sponsor: create + list ===
 async function sponsorList() {
