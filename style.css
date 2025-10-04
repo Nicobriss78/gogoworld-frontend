@@ -560,6 +560,26 @@ body {
   background: #eaeaea;
 }
 
+/* === Admin Card – Varianti stato === */
+
+/* Scaduti: fondo più spento, testo attenuato, bordo chiaro */
+.admin-card.expired {
+  background: #f7f7f7;
+  border-color: #e1e1e1;
+  box-shadow: none;
+}
+.admin-card.expired h3 { color: #555; }
+.admin-card.expired .banner-meta { color: #666; }
+.admin-card.expired .banner-meta .ctr-high,
+.admin-card.expired .banner-meta .ctr-mid,
+.admin-card.expired .banner-meta .ctr-low { opacity: .75; }
+.admin-card.expired .actions .btn { opacity: .85; }
+
+/* In scadenza (<48h): evidenza morbida sul bordo */
+.admin-card.expiring {
+  border-color: #f0d28a;
+  box-shadow: 0 0 0 3px rgba(240, 210, 138, .18);
+}
 
 
 
