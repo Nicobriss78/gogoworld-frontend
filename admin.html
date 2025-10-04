@@ -394,7 +394,7 @@ function renderBannerCard(b) {
   var isSoon = !!(b.activeTo && !isExpired && (new Date(b.activeTo) - new Date() <= 48*3600*1000));
 
   return `
-    <div class="admin-card banner-card">
+      <div class="admin-card banner-card${isExpired ? ' expired' : ''}${isSoon ? ' expiring' : ''}">
       <h3>${b.title || "(senza titolo)"} ${badge} ${isSoon ? '<span class="badge warning">in scadenza</span>' : ''}</h3>
       <div class="muted">type: ${b.type} • source: ${b.source}</div>
       <div class="banner-meta">
