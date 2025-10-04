@@ -698,12 +698,19 @@ function applyMyPromosFilters() {
   const p = (myPromosFilterPlacement && myPromosFilterPlacement.value || '').trim().toLowerCase();
 
   const filtered = all.filter(b => {
-    if (s) {
-      const isExpired = !!(b.activeTo && new Date(b.activeTo) < new Date());
-      const stat = (b.status || '').toLowerCase();
-      const logical = isExpired ? 'expired' : stat;
-      if (logical !== s) return false;
-    }
+if (s) {
+  const stat = (b.status || '').toLowerCase();
+
+  // se l’utente chiede "expired" usiamo la regola sulla data,
+  // altrimenti confrontiamo direttamente lo status del banner
+  if (s === 'expired') {
+    const isExpired = !!(b.activeTo && new Date(b.activeTo) < new Date());
+    if (!isExpired) return false;
+  } else {
+    if (stat !== s) return false;
+  }
+}
+
     if (p && !(String(b.placement || '').toLowerCase().includes(p))) return false;
     return true;
   });
@@ -1142,6 +1149,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
