@@ -131,9 +131,17 @@
 
          const res = await fetch(`${api}/banners/active?` + params.toString() + `&_=${Date.now()}`, { method: "GET", cache: "no-store" });
          const mount = document.getElementById(mountId);
-         if (res.status === 204) { if (mount) mount.innerHTML = ""; return; }
+         if (res.status === 204) {
+         if (mount) mount.innerHTML = "";
+         lastId = null;
+         return;
+         }
          const json = await res.json().catch(() => null);
-         if (!json || !json.ok || !json.data) { if (mount) mount.innerHTML = ""; return; }
+         if (!json || !json.ok || !json.data) {
+         if (mount) mount.innerHTML = "";
+         lastId = null;
+         return;
+         }
 
          const b = json.data;
          if (!mount) return;
@@ -164,6 +172,7 @@ setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area)
   </script>
 </body>
 </html>
+
 
 
 
