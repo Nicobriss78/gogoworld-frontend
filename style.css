@@ -561,17 +561,6 @@ body {
 }
 
 /* === Admin Card – Varianti stato === */
-/* Fix: rimuove residuo pulsante fantasma sopra "Elenco Sponsor" */
-h2 + .btn,
-h3 + .btn,
-section h2 + button,
-section h3 + button {
-  display: none !important;
-  visibility: hidden;
-  height: 0;
-  margin: 0;
-  padding: 0;
-}
 
 /* Scaduti: fondo più spento, testo attenuato, bordo chiaro */
 .admin-card.expired {
@@ -620,6 +609,7 @@ section h3 + button {
   background: #eaeaea !important;
   border-color: #999 !important;
 }
+
 
 
 
