@@ -618,6 +618,12 @@ body {
   background: #eaeaea !important;
   border-color: #999 !important;
 }
+/* Alternanza righe tabella banner (admin) e promozioni (organizzatore) */
+#bannerTable tr:nth-child(even),
+#myPromosTable tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
 
 
 
