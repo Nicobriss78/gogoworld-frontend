@@ -617,13 +617,16 @@ body {
   background: #eaeaea !important;
   border-color: #999 !important;
 }
-/* Alternanza righe tabella banner (admin) e promozioni (organizzatore) */
-#bannerTable tbody tr:nth-child(even) td,
-#myPromosTable tbody tr:nth-child(even) td { background-color: #f9f9f9; }
+/* Tabella banner/organizzatore: separatori e hover leggeri */
+#bannerTable tbody tr + tr td,
+#myPromosTable tbody tr + tr td {
+  border-top: 1px solid #ececec;
+}
 
 #bannerTable tbody tr:hover td,
-#myPromosTable tbody tr:hover td { background-color: #f1f1f1; }
-
+#myPromosTable tbody tr:hover td {
+  background-color: #f7faff;
+}
 
 
 
