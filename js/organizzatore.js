@@ -195,7 +195,6 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   const btnPromoteCancel = document.getElementById("btnPromoteCancel");
   const promoteEventIdInput = document.getElementById("promoteEventId");
   const promoteEventTitle = document.getElementById("promoteEventTitle");
-  }
 
   function openPromotePanel(ev) {
     if (!promotePanel || !promoteForm) return;
@@ -1141,6 +1140,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
