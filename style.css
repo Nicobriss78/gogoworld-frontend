@@ -604,6 +604,7 @@ body {
 
 /* già esistenti/aggiunti: varianti */
 .badge.active{ background:#008000; color:#fff; }
+.badge.warning{ /* resta quello che hai già */ }
 
 /* Override mirato per i bottoni "Crea sponsor/house" */
 #spCreate.btn.primary,
@@ -617,6 +618,7 @@ body {
   background: #eaeaea !important;
   border-color: #999 !important;
 }
+
 
 
 
