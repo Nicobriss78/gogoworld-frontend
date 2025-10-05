@@ -604,7 +604,6 @@ body {
 
 /* già esistenti/aggiunti: varianti */
 .badge.active{ background:#008000; color:#fff; }
-.badge.warning{ /* resta quello che hai già */ }
 
 /* Override mirato per i bottoni "Crea sponsor/house" */
 #spCreate.btn.primary,
@@ -619,20 +618,11 @@ body {
   border-color: #999 !important;
 }
 /* Alternanza righe tabella banner (admin) e promozioni (organizzatore) */
-#bannerTable tr:nth-child(even),
-#myPromosTable tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
+#bannerTable tbody tr:nth-child(even) td,
+#myPromosTable tbody tr:nth-child(even) td { background-color: #f9f9f9; }
 
-/* Zebra table (forzata) */
-#bannerTable tbody > tr:nth-of-type(even),
-#myPromosTable tbody > tr:nth-of-type(even) {
-  background-color: #f9f9f9 !important;
-}
-#bannerTable tbody > tr:hover,
-#myPromosTable tbody > tr:hover {
-  background-color: #f1f1f1 !important;
-}
+#bannerTable tbody tr:hover td,
+#myPromosTable tbody tr:hover td { background-color: #f1f1f1; }
 
 
 
