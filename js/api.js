@@ -117,6 +117,18 @@ export async function apiPut(path, body = {}, token) { return apiFetch(path, { m
 export async function whoami(token) {
   return apiGet("/users/whoami", token);
 }
+// === Profilo utente (C1) ===
+export async function getMyProfile(token) {
+  return apiGet("/profile/me", token);
+}
+
+export async function updateMyProfile(body = {}, token) {
+  return apiPut("/profile/me", body, token);
+}
+
+export async function getPublicProfile(userId) {
+  return apiGet(`/profile/${userId}`);
+}
 
 // Messaggio di errore uniforme dal risultato di apiFetch
 export function apiErrorMessage(result, fallback = "Errore") {
