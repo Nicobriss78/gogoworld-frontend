@@ -617,16 +617,7 @@ body {
   background: #eaeaea !important;
   border-color: #999 !important;
 }
-/* Tabella banner/organizzatore: separatori e hover leggeri */
-#bannerTable tbody tr + tr td,
-#myPromosTable tbody tr + tr td {
-  border-top: 1px solid #ececec;
-}
 
-#bannerTable tbody tr:hover td,
-#myPromosTable tbody tr:hover td {
-  background-color: #f7faff;
-}
 
 
 
