@@ -110,6 +110,13 @@ btnRegister?.addEventListener("click", (e) => {
         showAlert(me?.error || "Impossibile recuperare il profilo utente", "error", { autoHideMs: 4000 });
         return;
       }
+      // PATCH Opzione A – redirect automatico al profilo dopo registrazione
+      const postRedirect = sessionStorage.getItem("postLoginRedirect");
+      if (postRedirect) {
+      try { sessionStorage.removeItem("postLoginRedirect"); } catch {}
+      window.location.href = postRedirect;
+      return;
+      }
       // Admin: vai direttamente al pannello admin
       const role = (me?.role || "").toLowerCase();
       if (role === "admin") { window.location.href = "admin.html"; return; }
@@ -144,6 +151,7 @@ if (redirectRole === "organizer" && me?.canOrganize !== true) {
     }
   });
 });
+
 
 
 
