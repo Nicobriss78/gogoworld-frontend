@@ -1,0 +1,101 @@
+<!-- profile.html — C1 Profilo utente (UI minima) -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profilo • GoGoWorld.life</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="container">
+  <header class="app-header">
+    <h1 class="app-title">Profilo</h1>
+    <p class="subtitle">Gestisci il tuo profilo pubblico e le preferenze di messaggistica</p>
+  </header>
+
+  <!-- Alerts -->
+  <div id="alerts"></div>
+
+  <!-- === CARD: Dati di base === -->
+  <section class="event-card" id="card-basic">
+    <h3 style="margin:0 0 .5rem;">Dati di base</h3>
+    <form id="basicForm" class="form">
+      <div class="grid-2">
+        <div class="form-row">
+          <label for="nickname">Nickname</label>
+          <input id="nickname" name="nickname" type="text" maxlength="40" placeholder="es. NicoB"/>
+        </div>
+        <div class="form-row">
+          <label for="birthYear">Anno di nascita (opz.)</label>
+          <input id="birthYear" name="birthYear" type="number" min="1900" max="2100" placeholder="1978"/>
+        </div>
+        <div class="form-row">
+          <label for="region">Regione</label>
+          <input id="region" name="region" type="text" maxlength="60" placeholder="Basilicata"/>
+        </div>
+        <div class="form-row">
+          <label for="city">Città (opz.)</label>
+          <input id="city" name="city" type="text" maxlength="120" placeholder="Potenza"/>
+        </div>
+        <div class="form-row">
+          <label for="avatarUrl">Avatar URL (opz.)</label>
+          <input id="avatarUrl" name="avatarUrl" type="url" placeholder="https://..."/>
+        </div>
+        <div class="form-row">
+          <label for="languages">Lingue (separa con virgola)</label>
+          <input id="languages" name="languages" type="text" placeholder="it, en"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="socials">Social (uno per riga, opz.)</label>
+        <textarea id="socials" name="socials" rows="3" placeholder="https://instagram.com/...\nhttps://t.me/..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <label for="interests">Interessi (separa con virgola, opz.)</label>
+        <input id="interests" name="interests" type="text" placeholder="eventi, arte, musica"/>
+      </div>
+
+      <div class="form-row">
+        <label for="bio">Bio (max 1000)</label>
+        <textarea id="bio" name="bio" rows="4" maxlength="1000" placeholder="Racconta qualcosa di te..."></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn" id="saveBasicBtn">Salva profilo</button>
+        <button type="button" class="btn btn-secondary" id="reloadBtn">Ricarica</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- === CARD: Privacy DM === -->
+  <section class="event-card" id="card-privacy">
+    <h3 style="margin:0 0 .5rem;">Messaggi diretti</h3>
+    <form id="privacyForm" class="form">
+      <div class="grid-2">
+        <div class="form-row">
+          <label><input type="checkbox" id="optInDM"/> Acconsento a ricevere messaggi diretti</label>
+          <small class="muted">Potrai sempre cambiare idea.</small>
+        </div>
+        <div class="form-row">
+          <label for="dmsFrom">Chi può scrivermi</label>
+          <select id="dmsFrom" name="dmsFrom">
+            <option value="everyone">Tutti</option>
+            <option value="followers">Solo chi mi segue</option>
+            <option value="nobody">Nessuno</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn" id="savePrivacyBtn">Salva privacy</button>
+      </div>
+    </form>
+  </section>
+
+  <footer class="app-footer">© GoGoWorld.life</footer>
+
+  <!-- App -->
+  <script type="module" src="js/profile.js"></script>
+</body>
+</html>
