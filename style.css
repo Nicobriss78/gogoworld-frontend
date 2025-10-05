@@ -574,6 +574,15 @@ body {
 .admin-card.expired .banner-meta .ctr-mid,
 .admin-card.expired .banner-meta .ctr-low { opacity: .75; }
 .admin-card.expired .actions .btn { opacity: .85; }
+.admin-toolbar {
+  display: flex;
+  align-items: flex-end;
+  margin-top: 4px;
+}
+.admin-toolbar .btn {
+  margin-left: 8px;
+}
+
 
 /* In scadenza (<48h): evidenza morbida sul bordo */
 .admin-card.expiring {
@@ -609,6 +618,7 @@ body {
   background: #eaeaea !important;
   border-color: #999 !important;
 }
+
 
 
 
