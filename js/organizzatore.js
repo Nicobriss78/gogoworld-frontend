@@ -195,21 +195,6 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   const btnPromoteCancel = document.getElementById("btnPromoteCancel");
   const promoteEventIdInput = document.getElementById("promoteEventId");
   const promoteEventTitle = document.getElementById("promoteEventTitle");
-
-  // Helper API verso funzione Netlify adminModeration (container admin)
-  function adminApi(path) { return "/.netlify/functions/adminModeration" + path; }
-  async function adminFetch(path, opts) {
-    const o = opts || {};
-const token = (typeof localStorage !== "undefined" && localStorage.getItem("token")) || "";
-  const headers = { "Content-Type": "application/json" };
-  if (token) headers["Authorization"] = "Bearer " + token;
-  const init = Object.assign({ method: "GET", headers }, o);    const res = await fetch(adminApi(path), init);
-    if (!res.ok && res.status !== 204) {
-      let t = ""; try { t = await res.text(); } catch {}
-      throw new Error("HTTP " + res.status + ": " + (t || res.statusText));
-    }
-    if (res.status === 204) return null;
-    return res.json();
   }
 
   function openPromotePanel(ev) {
@@ -261,7 +246,8 @@ const token = (typeof localStorage !== "undefined" && localStorage.getItem("toke
         return;
       }
       try {
-      await adminFetch("/api/banners/submit", { method: "POST", body: JSON.stringify(body) });
+      const res = await apiPost("/banners/submit", body, token);
+      if (!res?.ok) { throw new Error(res?.message || res?.error || "Invio non riuscito"); }
         showAlert("Richiesta inviata — in attesa di approvazione", "success", { autoHideMs: 4000 });
         promoteForm.reset();
         promotePanel.style.display = "none";
@@ -737,20 +723,26 @@ _params.push("placement=" + encodeURIComponent(myPromosFilterPlacement.value));
 }
 const _qs = _params.length ? ("?" + _params.join("&")) : "";
 
-const res = await fetch('/.netlify/functions/adminModeration/api/banners/mine' + _qs, {
-headers: { Authorization: `Bearer ${tokenLocal || ''}` },
-credentials: 'include'
-}).then(r => r.json()).catch(() => null);
+const res = await apiGet(`/banners/mine${_qs}`, tokenLocal);
 
-  if (!res || res.ok === false) {
-    const msg = (res && (res.message || res.error)) || "Errore nel caricamento dei banner";
-    showAlert(msg, "error", { autoHideMs: 3000 });
-    if (myPromosTable) myPromosTable.querySelector("tbody").innerHTML =
-      '<tr><td colspan="8" class="error">Errore di caricamento</td></tr>';
-    return;
-  }
-window.__myPromosCache = Array.isArray(res.data) ? res.data : [];
-applyMyPromosFilters();}
+if (!res || res.ok === false) {
+  const msg = (res && (res.message || res.error)) || "Errore nel caricamento dei banner";
+  showAlert(msg, "error", { autoHideMs: 3000 });
+  if (myPromosTable) myPromosTable.querySelector("tbody").innerHTML =
+    '<tr><td colspan="8" class="error">Errore di caricamento</td></tr>';
+  return;
+}
+
+// Tolleranza formati: {data:[...] } | {banners:[...] } | {items:[...] } | [...]
+let list = [];
+if (Array.isArray(res?.data)) list = res.data;
+else if (Array.isArray(res?.banners)) list = res.banners;
+else if (Array.isArray(res?.items)) list = res.items;
+else if (Array.isArray(res)) list = res;
+
+window.__myPromosCache = list;
+applyMyPromosFilters();
+
 
   // Event delegation
   if (listContainer) {
@@ -1149,6 +1141,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
