@@ -77,9 +77,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Successo: blocca doppio click, mostra banner, resetta form e fai redirect
-      showAlert("Registrazione avvenuta! Reindirizzamento al login…", "success", { autoHideMs: 2000 });
+      showAlert("Registrazione avvenuta! Accedi per completare il profilo...", "success", { autoHideMs: 2000 });
       try { form.reset(); } catch {}
       if (submitBtn) submitBtn.disabled = true;
+      try { sessionStorage.setItem("postLoginRedirect", "/profile.html"); } catch {}
 
       setTimeout(() => {
         window.location.href = "../login.html";
