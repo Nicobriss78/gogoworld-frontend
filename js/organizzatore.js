@@ -741,9 +741,8 @@ else if (Array.isArray(res)) list = res;
 
 window.__myPromosCache = list;
 applyMyPromosFilters();
-
-
-  // Event delegation
+}
+ // Event delegation
   if (listContainer) {
     listContainer.addEventListener("click", async (e) => {
       const btn = e.target.closest("button[data-action]");
@@ -1140,6 +1139,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
