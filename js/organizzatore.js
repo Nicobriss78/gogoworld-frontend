@@ -5,7 +5,7 @@
 // - Conferme modali standard per delete (invece di confirm())
 // - Banner “welcome” con micro-CTA (es. “Crea nuovo evento”)
 
-import { apiGet, apiDelete, apiPost, whoami } from "./api.js"; // PATCH: aggiunto whoami
+import { apiGet, apiDelete, apiPost, whoami, getMyProfile } from "./api.js";
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -99,6 +99,34 @@ function renderStatus(status) {
   const text = labelMap[status] || status;
   return `<p class="status ${status}">${text}</p>`;
 }
+// --- Banner “Completa il profilo” (mostra se nickname mancante) ---
+async function maybeShowProfileNag(token) {
+  try {
+    if (sessionStorage.getItem("profileNag") === "0") return;
+    const res = await getMyProfile(token);
+    const p = res?.data || {};
+    const incomplete = !p?.nickname;
+    if (!incomplete) return;
+
+    const el = document.getElementById("profileNag");
+    if (!el) return;
+
+    el.style.display = "";
+    el.innerHTML = `
+      <strong>Completa il tuo profilo</strong> per sfruttare al meglio l’area Organizzatore.&nbsp;
+      <button id="nagGoProfile" class="btn">Completa ora</button>
+      <button id="nagLater" class="btn btn-secondary">Più tardi</button>
+    `;
+    document.getElementById("nagGoProfile")?.addEventListener("click", () => {
+      const ret = "/organizzatore.html";
+      window.location.href = \`profile.html?returnTo=\${encodeURIComponent(ret)}\`;
+    });
+    document.getElementById("nagLater")?.addEventListener("click", () => {
+      try { sessionStorage.setItem("profileNag", "0"); } catch {}
+      el.remove();
+    });
+  } catch {}
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   // Token base (come da tua logica attuale)
@@ -129,6 +157,8 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => (window.location.href = "partecipante.html"), 600);
         return;
       }
+      // Banner: invito a completare il profilo
+      await maybeShowProfileNag(token);
     } catch {
       showAlert("Verifica permessi non riuscita. Effettua di nuovo il login.", "error", { autoHideMs: 3500 });
       setTimeout(() => (window.location.href = "login.html"), 600);
@@ -1139,6 +1169,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
