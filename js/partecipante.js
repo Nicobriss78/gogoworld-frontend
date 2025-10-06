@@ -6,7 +6,7 @@
 // - Filtri con componenti input standard (date, select, tag)
 // - Notifiche errori/successo tramite componente centralizzato
 
-import { apiGet, apiPost } from "./api.js";
+import { apiGet, apiPost, getMyProfile } from "./api.js";
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -62,6 +62,35 @@ function renderStatus(status) {
   };
   const text = labelMap[status] || status;
   return `<p class="status ${status}">${text}</p>`;
+}
+// --- Banner “Completa il profilo” (mostra se nickname mancante) ---
+async function maybeShowProfileNag(token) {
+  try {
+    if (sessionStorage.getItem("profileNag") === "0") return;
+    const res = await getMyProfile(token);
+    const p = res?.data || {};
+    const incomplete = !p?.nickname; // criterio minimo: manca nickname
+    if (!incomplete) return;
+
+    const el = document.getElementById("profileNag");
+    if (!el) return;
+
+    el.style.display = "";
+    el.innerHTML = `
+      <strong>Completa il tuo profilo</strong> per sbloccare al meglio le funzioni (es. messaggi diretti).&nbsp;
+      <button id="nagGoProfile" class="btn">Completa ora</button>
+      <button id="nagLater" class="btn btn-secondary">Più tardi</button>
+    `;
+
+    document.getElementById("nagGoProfile")?.addEventListener("click", () => {
+      const ret = "/partecipante.html";
+      window.location.href = \`profile.html?returnTo=\${encodeURIComponent(ret)}\`;
+    });
+    document.getElementById("nagLater")?.addEventListener("click", () => {
+      try { sessionStorage.setItem("profileNag", "0"); } catch {}
+      el.remove();
+    });
+  } catch {}
 }
 
 // >>> PATCH: tassonomia e liste per tendine filtri
@@ -196,6 +225,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch {
     // nessun blocco della UI se /users/me fallisce: lo gestirà loadEvents()
   }
+ await maybeShowProfileNag(token);
 
   // >>> PATCH: popola tendine filtri
   populateFilterOptions();
@@ -439,6 +469,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
