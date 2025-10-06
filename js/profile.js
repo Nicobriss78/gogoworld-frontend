@@ -1,5 +1,5 @@
 // js/profile.js — C1 Profilo (UI)
-import { getMyProfile, updateMyProfile } from "./api.js";
+import { getMyProfile, updateMyProfile, whoami } from "./api.js";
 
 // --- helpers UI ---
 const $ = (sel) => document.querySelector(sel);
@@ -28,7 +28,21 @@ function joinCSV(arr) {
 function joinLines(arr) {
   return Array.isArray(arr) ? arr.join("\n") : "";
 }
-
+// --- setta il bottone "Torna alla mia pagina" ---
+async function setReturnButton() {
+  const btn = document.getElementById("btnReturn");
+  if (!btn) return;
+  const qs = new URLSearchParams(location.search);
+  const ret = qs.get("returnTo");
+  if (ret) { btn.href = ret; return; }
+  try {
+    const me = await whoami(localStorage.getItem("token"));
+    const role = String(me?.user?.role || "").toLowerCase();
+    btn.href = role === "organizer" || role === "admin" ? "/organizzatore.html" : "/partecipante.html";
+  } catch {
+    btn.href = "/partecipante.html";
+  }
+}
 // --- nodes ---
 const basicForm = $("#basicForm");
 const privacyForm = $("#privacyForm");
@@ -126,4 +140,4 @@ privacyForm?.addEventListener("submit", async (e) => {
 reloadBtn?.addEventListener("click", loadProfile);
 
 // --- bootstrap ---
-document.addEventListener("DOMContentLoaded", loadProfile);
+document.addEventListener("DOMContentLoaded", () => { setReturnButton(); loadProfile(); });
