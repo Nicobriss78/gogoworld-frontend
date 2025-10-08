@@ -119,7 +119,7 @@ async function maybeShowProfileNag(token) {
     `;
     document.getElementById("nagGoProfile")?.addEventListener("click", () => {
       const ret = "/organizzatore.html";
-      window.location.href = \`profile.html?returnTo=\${encodeURIComponent(ret)}\`;
+      window.location.href = \`profile.html?returnTo=\${encodeURIComponent(ret)}`;
     });
     document.getElementById("nagLater")?.addEventListener("click", () => {
       try { sessionStorage.setItem("profileNag", "0"); } catch {}
@@ -1169,6 +1169,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
