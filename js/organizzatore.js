@@ -111,21 +111,21 @@ async function maybeShowProfileNag(token) {
     const el = document.getElementById("profileNag");
     if (!el) return;
 
-    el.style.display = "";
-    el.innerHTML = `
-      <strong>Completa il tuo profilo</strong> per sfruttare al meglio l’area Organizzatore.&nbsp;
-      <button id="nagGoProfile" class="btn">Completa ora</button>
-      <button id="nagLater" class="btn btn-secondary">Più tardi</button>
-    `;
-    document.getElementById("nagGoProfile")?.addEventListener("click", () => {
-      const ret = "/organizzatore.html";
-      window.location.href = \`profile.html?returnTo=\${encodeURIComponent(ret)}`;
-    });
-    document.getElementById("nagLater")?.addEventListener("click", () => {
-      try { sessionStorage.setItem("profileNag", "0"); } catch {}
-      el.remove();
-    });
-  } catch {}
+el.style.display = "";
+el.innerHTML = `
+  <strong>Completa il tuo profilo</strong> per sfruttare al meglio l’area Organizzatore.&nbsp;
+  <button id="nagGoProfile" class="btn">Completa ora</button>
+  <button id="nagLater" class="btn btn-secondary">Più tardi</button>
+`;
+document.getElementById("nagGoProfile")?.addEventListener("click", () => {
+  const ret = "/organizzatore.html";
+  window.location.href = `profile.html?returnTo=${encodeURIComponent(ret)}`;
+});
+document.getElementById("nagLater")?.addEventListener("click", () => {
+  try { sessionStorage.setItem("profileNag", "0"); } catch {}
+  el.remove();
+});
+} catch {}
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1169,6 +1169,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
