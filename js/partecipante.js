@@ -83,8 +83,8 @@ async function maybeShowProfileNag(token) {
     `;
 
     document.getElementById("nagGoProfile")?.addEventListener("click", () => {
-      const ret = "/partecipante.html";
-      window.location.href = \`profile.html?returnTo=\${encodeURIComponent(ret)}\`;
+    const ret = "/partecipante.html";
+    window.location.href = `profile.html?returnTo=${encodeURIComponent(ret)}`;
     });
     document.getElementById("nagLater")?.addEventListener("click", () => {
       try { sessionStorage.setItem("profileNag", "0"); } catch {}
@@ -469,6 +469,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
