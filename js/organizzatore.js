@@ -132,7 +132,6 @@ document.getElementById("nagLater")?.addEventListener("click", () => {
 document.addEventListener("DOMContentLoaded", () => {
   // Token base (come da tua logica attuale)
   const token =
-const token =
   localStorage.getItem("token") ||
   sessionStorage.getItem("token") ||
   sessionStorage.getItem("authToken") ||
@@ -1173,3 +1172,4 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
