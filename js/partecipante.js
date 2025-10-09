@@ -75,8 +75,10 @@ async function maybeShowProfileNag(token) {
     const el = document.getElementById("profileNag");
     if (!el) return;
 
-    el.style.display = "";
-    el.innerHTML = `
+el.style.display = "";
+el.classList.add("fade-in");
+el.innerHTML = `
+
       <strong>Completa il tuo profilo</strong> per sbloccare al meglio le funzioni (es. messaggi diretti).&nbsp;
       <button id="nagGoProfile" class="btn">Completa ora</button>
       <button id="nagLater" class="btn btn-secondary">Più tardi</button>
@@ -182,6 +184,9 @@ function populateFilterOptions() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
+  const btnProfile = document.getElementById("btnProfileLink");
+  if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/partecipante.html")}`;
+
   if (!token) {
     window.location.href = "../index.html";
     return;
@@ -469,6 +474,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
