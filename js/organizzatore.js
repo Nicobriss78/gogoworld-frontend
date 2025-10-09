@@ -112,6 +112,7 @@ async function maybeShowProfileNag(token) {
     if (!el) return;
 
 el.style.display = "";
+el.classList.add("fade-in");
 el.innerHTML = `
   <strong>Completa il tuo profilo</strong> per sfruttare al meglio l’area Organizzatore.&nbsp;
   <button id="nagGoProfile" class="btn">Completa ora</button>
@@ -132,6 +133,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Token base (come da tua logica attuale)
   const token =
     localStorage.getItem("token") ||
+    const btnProfile = document.getElementById("btnProfileLink");
+  if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/organizzatore.html")}`;
     sessionStorage.getItem("token") ||
     sessionStorage.getItem("authToken") ||
     localStorage.getItem("authToken") ||
@@ -1169,6 +1172,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
