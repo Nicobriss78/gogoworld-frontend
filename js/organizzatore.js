@@ -132,16 +132,17 @@ document.getElementById("nagLater")?.addEventListener("click", () => {
 document.addEventListener("DOMContentLoaded", () => {
   // Token base (come da tua logica attuale)
   const token =
-    localStorage.getItem("token") ||
-    const btnProfile = document.getElementById("btnProfileLink");
-  if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/organizzatore.html")}`;
-    sessionStorage.getItem("token") ||
-    sessionStorage.getItem("authToken") ||
-    localStorage.getItem("authToken") ||
-    sessionStorage.getItem("jwt") ||
-    localStorage.getItem("jwt") ||
-    sessionStorage.getItem("accessToken") ||
-    localStorage.getItem("accessToken");
+const token =
+  localStorage.getItem("token") ||
+  sessionStorage.getItem("token") ||
+  sessionStorage.getItem("authToken") ||
+  localStorage.getItem("authToken") ||
+  sessionStorage.getItem("jwt") ||
+  localStorage.getItem("jwt") ||
+  sessionStorage.getItem("accessToken") ||
+  localStorage.getItem("accessToken");
+const btnProfile = document.getElementById("btnProfileLink");
+if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/organizzatore.html")}`;
 
   if (!token) {
     window.location.href = "../index.html";
@@ -1172,35 +1173,3 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
