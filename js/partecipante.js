@@ -19,8 +19,6 @@ function showAlert(message, type = "error", opts = {}) {
     main.prepend(box);
     box.setAttribute("role", "status");
 box.setAttribute("aria-live", "polite");
-    /* A2.1 */ box.setAttribute("role", "status");
-           box.setAttribute("aria-live", "polite");
   }
   const t = type === "success" ? "success" : type === "error" ? "error" : "info";
   box.className = `alert ${t}`;
@@ -358,11 +356,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 const cardEl = btn.closest(".event-card");
 const evTitleText = cardEl?.querySelector("h3")?.textContent?.trim() || "";
 
-
-/* A2.2 */ if (btn.disabled || btn.dataset.loading === "1") return;
-           const card = btn.closest(".event-card");
-           const evTitle = card?.querySelector("h3")?.textContent?.trim() || "";
-
     if (action === "details") {
       sessionStorage.setItem("selectedEventId", id);
       window.location.href = "evento.html";
@@ -474,18 +467,3 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
