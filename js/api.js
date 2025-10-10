@@ -137,3 +137,19 @@ export function apiErrorMessage(result, fallback = "Errore") {
   if (typeof result === "object" && result.error) return result.error;
   return fallback;
 }
+// === API DM ===
+export async function listThreads() {
+  return await apiGet("/dm/threads");
+}
+export async function listMessages(userId) {
+  return await apiGet(`/dm/threads/${userId}/messages`);
+}
+export async function sendMessage(userId, text) {
+  return await apiPost("/dm/messages", { recipientId: userId, text });
+}
+export async function markRead(userId, upTo) {
+  return await apiPost(`/dm/threads/${userId}/read`, { upTo });
+}
+export async function getUnreadCount() {
+  return await apiGet("/dm/unread-count");
+}
