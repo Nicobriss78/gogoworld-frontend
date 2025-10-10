@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messaggi</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Messaggi</h1>
+    <nav class="toolbar" style="display:flex; gap:.5rem;">
+      <a href="../partecipante.html" class="btn btn-secondary">← Torna</a>
+    </nav>
+  </header>
+
+  <main id="messagesApp">
+    <section id="threadsPanel">
+      <h2>Conversazioni</h2>
+      <div id="threadsList" class="scrollable"></div>
+    </section>
+
+    <section id="chatPanel">
+      <div id="chatHeader">
+        <h2 id="chatUser"></h2>
+      </div>
+      <div id="chatMessages" class="scrollable"></div>
+      <div id="chatInput">
+        <textarea id="msgText" rows="2" placeholder="Scrivi un messaggio..."></textarea>
+        <button id="sendBtn" class="btn">Invia</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../js/messages.js"></script>
+</body>
+</html>
