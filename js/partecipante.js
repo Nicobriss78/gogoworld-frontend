@@ -204,36 +204,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (badgeRooms) badgeRooms.style.display = "none";
   }
 
-  async function pollRoomsBadge() {
-    if (_roomsBadgeDisabled) return;
+ async function pollRoomsBadge() {
+  if (_roomsBadgeDisabled) return;
 
-    const t = localStorage.getItem("token");
-    if (!t) {
-      _roomsBadgeDisabled = true;
-      if (_roomsBadgeInterval) { clearInterval(_roomsBadgeInterval); _roomsBadgeInterval = null; }
-      _hideRoomsBadge();
-      return;
+  const t = localStorage.getItem("token");
+  if (!t) {
+    _roomsBadgeDisabled = true;
+    if (_roomsBadgeInterval) {
+      clearInterval(_roomsBadgeInterval);
+      _roomsBadgeInterval = null;
     }
-
-    try {
-      const r = await getRoomsUnreadCount(); // /api/rooms/unread-count (protetta)
-      const n = r?.unread || 0;
-      if (badgeRooms) {
-        badgeRooms.textContent = n;
-        badgeRooms.style.display = n ? "inline-block" : "none";
-      }
-    } catch (err) {
-      const msg = String((err && err.message) || "");
-      if (msg.includes("401") || msg.toUpperCase().includes("UNAUTHORIZED")) {
-        _roomsBadgeDisabled = true;
-        if (_roomsBadgeInterval) { clearInterval(_roomsBadgeInterval); _roomsBadgeInterval = null; }
-        _hideRoomsBadge();
-        return;
-      }
-      // altri errori: log leggero (non spammare)
-      console.debug("[roomsBadge] errore non critico:", msg);
-    }
+    _hideRoomsBadge();
+    return;
   }
+
+  try {
+    const r = await getRoomsUnreadCount(); // /api/rooms/unread-count (protetta)
+    const n = r?.unread || 0;
+    if (badgeRooms) {
+      badgeRooms.textContent = n;
+      badgeRooms.style.display = n ? "inline-block" : "none";
+    }
+  } catch (err) {
+    // Disattiva SEMPRE il polling al primo errore
+    _roomsBadgeDisabled = true;
+    if (_roomsBadgeInterval) {
+      clearInterval(_roomsBadgeInterval);
+      _roomsBadgeInterval = null;
+    }
+    if (badgeRooms) badgeRooms.style.display = "none";
+    console.debug("[roomsBadge] stop on error:", err && (err.status || err.code || err.message || err));
+    return;
+  }
+}
+
 
   // Avvia PRIMA l'intervallo, poi la prima chiamata (così al primo 401 l'interval esiste già)
   _roomsBadgeInterval = setInterval(pollRoomsBadge, 20000);
@@ -516,6 +520,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
