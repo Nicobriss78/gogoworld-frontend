@@ -182,40 +182,63 @@ function populateFilterOptions() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // Token: se non c'è, esci subito (niente polling)
   const token = localStorage.getItem("token");
-  const btnProfile = document.getElementById("btnProfileLink");
-const badgeRooms = document.getElementById("roomsBadge");
-
-  if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/partecipante.html")}`;
-// --- Badge "Room" con guard token e stop su 401 ---
-let _roomsBadgeInterval = null;
-
-async function pollRoomsBadge() {
-  const token = localStorage.getItem("token");
-  if (!token) return; // non chiamare senza token
-
-  try {
-    const r = await getRoomsUnreadCount(); // /api/rooms/unread-count
-    const n = r?.unread || 0;
-    if (badgeRooms) {
-      badgeRooms.textContent = n;
-      badgeRooms.style.display = n ? "inline-block" : "none";
-    }
-  } catch (err) {
-    const msg = String((err && err.message) || "");
-    if (msg.includes("401") || msg.toUpperCase().includes("UNAUTHORIZED")) {
-      if (_roomsBadgeInterval) { clearInterval(_roomsBadgeInterval); _roomsBadgeInterval = null; }
-      if (badgeRooms) badgeRooms.style.display = "none";
-    }
-  }
-}
-
-pollRoomsBadge();
-_roomsBadgeInterval = setInterval(pollRoomsBadge, 20000);
   if (!token) {
     window.location.href = "index.html";
     return;
   }
+
+  // Link al profilo
+  const btnProfile = document.getElementById("btnProfileLink");
+  if (btnProfile) {
+    btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/partecipante.html")}`;
+  }
+
+  // --- Badge "Room" con guard token e stop definitivo su 401 ---
+  const badgeRooms = document.getElementById("roomsBadge");
+  let _roomsBadgeInterval = null;
+  let _roomsBadgeDisabled = false; // flag di kill
+
+  function _hideRoomsBadge() {
+    if (badgeRooms) badgeRooms.style.display = "none";
+  }
+
+  async function pollRoomsBadge() {
+    if (_roomsBadgeDisabled) return;
+
+    const t = localStorage.getItem("token");
+    if (!t) {
+      _roomsBadgeDisabled = true;
+      if (_roomsBadgeInterval) { clearInterval(_roomsBadgeInterval); _roomsBadgeInterval = null; }
+      _hideRoomsBadge();
+      return;
+    }
+
+    try {
+      const r = await getRoomsUnreadCount(); // /api/rooms/unread-count (protetta)
+      const n = r?.unread || 0;
+      if (badgeRooms) {
+        badgeRooms.textContent = n;
+        badgeRooms.style.display = n ? "inline-block" : "none";
+      }
+    } catch (err) {
+      const msg = String((err && err.message) || "");
+      if (msg.includes("401") || msg.toUpperCase().includes("UNAUTHORIZED")) {
+        _roomsBadgeDisabled = true;
+        if (_roomsBadgeInterval) { clearInterval(_roomsBadgeInterval); _roomsBadgeInterval = null; }
+        _hideRoomsBadge();
+        return;
+      }
+      // altri errori: log leggero (non spammare)
+      console.debug("[roomsBadge] errore non critico:", msg);
+    }
+  }
+
+  // Avvia PRIMA l'intervallo, poi la prima chiamata (così al primo 401 l'interval esiste già)
+  _roomsBadgeInterval = setInterval(pollRoomsBadge, 20000);
+  pollRoomsBadge();
+});
 
   const allList = document.getElementById("allEventsList");
   const myList = document.getElementById("myEventsList");
@@ -494,6 +517,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
