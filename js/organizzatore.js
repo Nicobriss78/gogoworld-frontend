@@ -219,7 +219,19 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   const myPromosTable = document.getElementById("myPromosTable");
   const myPromosFilterStatus = document.getElementById("myPromosFilterStatus");
   const myPromosFilterPlacement = document.getElementById("myPromosFilterPlacement");
-
+  const badgeRooms = document.getElementById("roomsBadge");
+  async function pollRoomsBadge() {
+    try {
+      const r = await getRoomsUnreadCount();
+      const n = r?.unread || 0;
+      if (badgeRooms) {
+        badgeRooms.textContent = n;
+        badgeRooms.style.display = n ? "inline-block" : "none";
+      }
+    } catch {}
+  }
+pollRoomsBadge();
+setInterval(pollRoomsBadge, 20000);
   // PATCH: bottone Importa CSV
   const btnImportCsv = document.getElementById("btnImportCsv");
   
@@ -1177,6 +1189,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
