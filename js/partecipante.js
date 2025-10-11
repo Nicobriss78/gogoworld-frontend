@@ -199,7 +199,6 @@ setInterval(pollRoomsBadge, 20000); pollRoomsBadge();
   const btnFilters = document.getElementById("btnApplyFilters");
   const btnLogout = document.getElementById("btnLogout");
   const btnSwitchRole = document.getElementById("btnSwitchRole");
-  const badgeRooms = document.getElementById("roomsBadge");
   async function pollRoomsBadge() {
     try {
       const r = await getRoomsUnreadCount();
@@ -483,6 +482,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
