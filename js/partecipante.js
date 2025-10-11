@@ -183,6 +183,10 @@ function populateFilterOptions() {
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   const btnProfile = document.getElementById("btnProfileLink");
+  import { getRoomsUnreadCount } from "./api.js"; // se non già importato in cima
+const badgeRooms = document.getElementById("roomsBadge");
+async function pollRoomsBadge(){ try{ const r = await getRoomsUnreadCount(); const n = r?.unread||0; if(badgeRooms){ badgeRooms.textContent = n; badgeRooms.style.display = n? "inline-block":"none"; } }catch{} }
+setInterval(pollRoomsBadge, 20000); pollRoomsBadge();
   if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/partecipante.html")}`;
 
   if (!token) {
@@ -467,3 +471,4 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
