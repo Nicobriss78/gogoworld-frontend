@@ -15,10 +15,13 @@
   <main class="container participant">
     <header class="app-header">
       <h1>Eventi disponibili</h1>
-      <nav class="toolbar">
-        <button id="btnSwitchRole" class="btn">Cambia ruolo</button>
-        <button id="btnLogout" class="btn btn-secondary">Logout</button>
-      </nav>
+<nav class="toolbar">
+  <button id="btnSwitchRole" class="btn">Cambia ruolo</button>
+  <a href="pages/messages.html" class="btn">✉️ Messaggi</a>
+  <a href="pages/rooms.html" class="btn">💬 Room <span id="roomsBadge" class="badge" style="display:none">0</span></a>
+  <button id="btnLogout" class="btn btn-secondary">Logout</button>
+</nav>
+
       <nav class="toolbar" style="display:flex; justify-content:flex-end; gap:.5rem; margin-top:.25rem;">
   <a id="btnProfileLink" class="btn btn-secondary" href="#">Profilo</a>
 </nav>
@@ -181,6 +184,7 @@ setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area)
   </script>
 </body>
 </html>
+
 
 
 
