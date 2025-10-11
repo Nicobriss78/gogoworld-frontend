@@ -142,7 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem("accessToken") ||
   localStorage.getItem("accessToken");
 const btnProfile = document.getElementById("btnProfileLink");
-  import { getRoomsUnreadCount } from "./api.js"; // se non già presente
 const badgeRooms = document.getElementById("roomsBadge");
 async function pollRoomsBadge(){ try{ const r = await getRoomsUnreadCount(); const n = r?.unread||0; if(badgeRooms){ badgeRooms.textContent = n; badgeRooms.style.display = n? "inline-block":"none"; } }catch{} }
 setInterval(pollRoomsBadge, 20000); pollRoomsBadge();
@@ -1189,6 +1188,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
