@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-const r = await getRoomsUnreadCount(); // /api/rooms/unread-count (protetta)
+const r = await getRoomsUnreadCount(t); // passa il token letto sopra
 
 // se la risposta NON è ok (o è 401), spegni definitivamente il polling
 if (!r || r.ok === false || r.status === 401) {
@@ -532,6 +532,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
