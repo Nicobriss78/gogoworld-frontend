@@ -200,7 +200,19 @@ setInterval(pollRoomsBadge, 20000); pollRoomsBadge();
   const btnFilters = document.getElementById("btnApplyFilters");
   const btnLogout = document.getElementById("btnLogout");
   const btnSwitchRole = document.getElementById("btnSwitchRole");
-
+  const badgeRooms = document.getElementById("roomsBadge");
+  async function pollRoomsBadge() {
+    try {
+      const r = await getRoomsUnreadCount();
+      const n = r?.unread || 0;
+      if (badgeRooms) {
+        badgeRooms.textContent = n;
+        badgeRooms.style.display = n ? "inline-block" : "none";
+      }
+    } catch {}
+  }
+  pollRoomsBadge();
+  setInterval(pollRoomsBadge, 20000);
   // 👉 Benvenuto: creato UNA sola volta qui (non dentro loadEvents)
  try {
   const me = await apiGet("/users/me", token);
@@ -472,5 +484,6 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
