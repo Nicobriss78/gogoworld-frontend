@@ -506,7 +506,7 @@ if (action === "leave") {
     btnLogout.addEventListener("click", () => {
       localStorage.removeItem("token");
       sessionStorage.removeItem("desiredRole");
-      window.location.href = "../index.html";
+      window.location.href = "index.html";
     });
   }
 
@@ -516,6 +516,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
