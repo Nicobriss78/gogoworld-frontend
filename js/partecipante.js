@@ -7,6 +7,7 @@
 // - Notifiche errori/successo tramite componente centralizzato
 
 import { apiGet, apiPost, getMyProfile } from "./api.js";
+import { getRoomsUnreadCount } from "./api.js";
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -471,4 +472,5 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
