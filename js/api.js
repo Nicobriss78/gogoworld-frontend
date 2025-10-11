@@ -153,3 +153,27 @@ export async function markRead(userId, upTo) {
 export async function getUnreadCount() {
   return await apiGet("/dm/unread-count");
 }
+
+// === API ROOMS (Evento pubblico) ===
+export async function openOrJoinEvent(eventId) {
+  return await apiPost(`/rooms/event/${eventId}/open-or-join`, {});
+}
+export async function getEventRoomMeta(eventId) {
+  return await apiGet(`/rooms/event/${eventId}`);
+}
+export async function listRoomMessages(roomId, params={}) {
+  const q = [];
+  if (params.before) q.push(`before=${encodeURIComponent(params.before)}`);
+  if (params.limit) q.push(`limit=${encodeURIComponent(params.limit)}`);
+  const qs = q.length ? `?${q.join("&")}` : "";
+  return await apiGet(`/rooms/${roomId}/messages${qs}`);
+}
+export async function postRoomMessage(roomId, text) {
+  return await apiPost(`/rooms/${roomId}/messages`, { text });
+}
+export async function markRoomRead(roomId, upTo) {
+  return await apiPost(`/rooms/${roomId}/read`, { upTo });
+}
+export async function getRoomsUnreadCount() {
+  return await apiGet(`/rooms/unread-count`);
+}
