@@ -143,7 +143,58 @@ document.addEventListener("DOMContentLoaded", () => {
   localStorage.getItem("accessToken");
 const btnProfile = document.getElementById("btnProfileLink");
 const badgeRooms = document.getElementById("roomsBadge");
-async function pollRoomsBadge(){ try{ const t = localStorage.getItem("token"); if(!t) return; const r = await getRoomsUnreadCount(t); if(!r || r.ok===false || r.status===401){ if(badgeRooms) badgeRooms.style.display="none"; return; } const n = r?.unread||0; if(badgeRooms){ badgeRooms.textContent=n; badgeRooms.style.display=n?"inline-block":"none"; } }catch(e){ if(badgeRooms) badgeRooms.style.display="none"; } }setInterval(pollRoomsBadge, 20000); pollRoomsBadge();
+let _roomsBadgeInterval = null;
+let _roomsBadgeDisabled = false;
+
+function _hideRoomsBadge() {
+  if (badgeRooms) badgeRooms.style.display = "none";
+}
+
+async function pollRoomsBadge() {
+  if (_roomsBadgeDisabled) return;
+
+  const t = localStorage.getItem("token");
+  if (!t) {
+    _roomsBadgeDisabled = true;
+    if (_roomsBadgeInterval) {
+      clearInterval(_roomsBadgeInterval);
+      _roomsBadgeInterval = null;
+    }
+    _hideRoomsBadge();
+    return;
+  }
+
+  try {
+    const r = await getRoomsUnreadCount(t); // passa il token
+    // se l'API restituisce oggetto non ok (es. {ok:false,status:401}), spegni
+    if (!r || r.ok === false || r.status === 401) {
+      _roomsBadgeDisabled = true;
+      if (_roomsBadgeInterval) {
+        clearInterval(_roomsBadgeInterval);
+        _roomsBadgeInterval = null;
+      }
+      _hideRoomsBadge();
+      return;
+    }
+
+    const n = r?.unread || 0;
+    if (badgeRooms) {
+      badgeRooms.textContent = n;
+      badgeRooms.style.display = n ? "inline-block" : "none";
+    }
+  } catch (err) {
+    _roomsBadgeDisabled = true;
+    if (_roomsBadgeInterval) {
+      clearInterval(_roomsBadgeInterval);
+      _roomsBadgeInterval = null;
+    }
+    _hideRoomsBadge();
+  }
+}
+
+_roomsBadgeInterval = setInterval(pollRoomsBadge, 20000);
+pollRoomsBadge();
+
 if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/organizzatore.html")}`;
 
   if (!token) {
@@ -1175,6 +1226,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
