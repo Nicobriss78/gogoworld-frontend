@@ -143,8 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
   localStorage.getItem("accessToken");
 const btnProfile = document.getElementById("btnProfileLink");
 const badgeRooms = document.getElementById("roomsBadge");
-async function pollRoomsBadge(){ try{ const r = await getRoomsUnreadCount(); const n = r?.unread||0; if(badgeRooms){ badgeRooms.textContent = n; badgeRooms.style.display = n? "inline-block":"none"; } }catch{} }
-setInterval(pollRoomsBadge, 20000); pollRoomsBadge();
+async function pollRoomsBadge(){ try{ const t = localStorage.getItem("token"); if(!t) return; const r = await getRoomsUnreadCount(t); if(!r || r.ok===false || r.status===401){ if(badgeRooms) badgeRooms.style.display="none"; return; } const n = r?.unread||0; if(badgeRooms){ badgeRooms.textContent=n; badgeRooms.style.display=n?"inline-block":"none"; } }catch(e){ if(badgeRooms) badgeRooms.style.display="none"; } }setInterval(pollRoomsBadge, 20000); pollRoomsBadge();
 if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/organizzatore.html")}`;
 
   if (!token) {
@@ -218,19 +217,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   const myPromosTable = document.getElementById("myPromosTable");
   const myPromosFilterStatus = document.getElementById("myPromosFilterStatus");
   const myPromosFilterPlacement = document.getElementById("myPromosFilterPlacement");
-  const badgeRooms = document.getElementById("roomsBadge");
-  async function pollRoomsBadge() {
-    try {
-      const r = await getRoomsUnreadCount();
-      const n = r?.unread || 0;
-      if (badgeRooms) {
-        badgeRooms.textContent = n;
-        badgeRooms.style.display = n ? "inline-block" : "none";
-      }
-    } catch {}
-  }
-pollRoomsBadge();
-setInterval(pollRoomsBadge, 20000);
+
   // PATCH: bottone Importa CSV
   const btnImportCsv = document.getElementById("btnImportCsv");
   
@@ -1188,6 +1175,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
