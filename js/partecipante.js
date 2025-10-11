@@ -185,12 +185,35 @@ document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   const btnProfile = document.getElementById("btnProfileLink");
 const badgeRooms = document.getElementById("roomsBadge");
-async function pollRoomsBadge(){ try{ const r = await getRoomsUnreadCount(); const n = r?.unread||0; if(badgeRooms){ badgeRooms.textContent = n; badgeRooms.style.display = n? "inline-block":"none"; } }catch{} }
-setInterval(pollRoomsBadge, 20000); pollRoomsBadge();
-  if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/partecipante.html")}`;
 
+  if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/partecipante.html")}`;
+// --- Badge "Room" con guard token e stop su 401 ---
+let _roomsBadgeInterval = null;
+
+async function pollRoomsBadge() {
+  const token = localStorage.getItem("token");
+  if (!token) return; // non chiamare senza token
+
+  try {
+    const r = await getRoomsUnreadCount(); // /api/rooms/unread-count
+    const n = r?.unread || 0;
+    if (badgeRooms) {
+      badgeRooms.textContent = n;
+      badgeRooms.style.display = n ? "inline-block" : "none";
+    }
+  } catch (err) {
+    const msg = String((err && err.message) || "");
+    if (msg.includes("401") || msg.toUpperCase().includes("UNAUTHORIZED")) {
+      if (_roomsBadgeInterval) { clearInterval(_roomsBadgeInterval); _roomsBadgeInterval = null; }
+      if (badgeRooms) badgeRooms.style.display = "none";
+    }
+  }
+}
+
+pollRoomsBadge();
+_roomsBadgeInterval = setInterval(pollRoomsBadge, 20000);
   if (!token) {
-    window.location.href = "../index.html";
+    window.location.href = "index.html";
     return;
   }
 
@@ -199,18 +222,7 @@ setInterval(pollRoomsBadge, 20000); pollRoomsBadge();
   const btnFilters = document.getElementById("btnApplyFilters");
   const btnLogout = document.getElementById("btnLogout");
   const btnSwitchRole = document.getElementById("btnSwitchRole");
-  async function pollRoomsBadge() {
-    try {
-      const r = await getRoomsUnreadCount();
-      const n = r?.unread || 0;
-      if (badgeRooms) {
-        badgeRooms.textContent = n;
-        badgeRooms.style.display = n ? "inline-block" : "none";
-      }
-    } catch {}
-  }
-  pollRoomsBadge();
-  setInterval(pollRoomsBadge, 20000);
+
   // 👉 Benvenuto: creato UNA sola volta qui (non dentro loadEvents)
  try {
   const me = await apiGet("/users/me", token);
@@ -482,6 +494,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
