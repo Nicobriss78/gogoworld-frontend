@@ -73,7 +73,7 @@ function bindRoom(meta) {
   const back = q("btnBackToEvent");
   if (current.eventId) {
     back.style.display = "";
-    back.href = `../pages/event-detail.html?id=${encodeURIComponent(current.eventId)}`;
+    back.href = `../evento.html?id=${encodeURIComponent(current.eventId)}`;
   } else {
     back.style.display = "none";
   }
