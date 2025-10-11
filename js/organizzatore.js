@@ -6,6 +6,7 @@
 // - Banner “welcome” con micro-CTA (es. “Crea nuovo evento”)
 
 import { apiGet, apiDelete, apiPost, whoami, getMyProfile } from "./api.js";
+import { getRoomsUnreadCount } from "./api.js";
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -1176,5 +1177,6 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
