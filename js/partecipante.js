@@ -238,7 +238,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Avvia PRIMA l'intervallo, poi la prima chiamata (così al primo 401 l'interval esiste già)
   _roomsBadgeInterval = setInterval(pollRoomsBadge, 20000);
   pollRoomsBadge();
-});
 
   const allList = document.getElementById("allEventsList");
   const myList = document.getElementById("myEventsList");
@@ -517,6 +516,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
