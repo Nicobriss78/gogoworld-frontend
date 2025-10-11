@@ -174,6 +174,13 @@ export async function postRoomMessage(roomId, text) {
 export async function markRoomRead(roomId, upTo) {
   return await apiPost(`/rooms/${roomId}/read`, { upTo });
 }
-export async function getRoomsUnreadCount() {
-  return await apiGet(`/rooms/unread-count`);
+export async function getRoomsUnreadCount(
+  token = (typeof localStorage !== "undefined" ? localStorage.getItem("token") : null)
+) {
+  // se manca il token, comportati come "non autorizzato"
+  if (!token) {
+    return { ok: false, status: 401, unread: 0 };
+  }
+  // passa il token ad apiGet (coerente con come chiami /users/me, ecc.)
+  return await apiGet(`/rooms/unread-count`, token);
 }
