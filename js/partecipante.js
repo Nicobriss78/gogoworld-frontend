@@ -219,7 +219,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const r = await getRoomsUnreadCount(); // /api/rooms/unread-count (protetta)
+const r = await getRoomsUnreadCount(); // /api/rooms/unread-count (protetta)
+
+// se la risposta NON è ok (o è 401), spegni definitivamente il polling
+if (!r || r.ok === false || r.status === 401) {
+  _roomsBadgeDisabled = true;
+  if (_roomsBadgeInterval) {
+    clearInterval(_roomsBadgeInterval);
+    _roomsBadgeInterval = null;
+  }
+  if (badgeRooms) badgeRooms.style.display = "none";
+  console.debug("[roomsBadge] stop on response:", r);
+  return;
+}
     const n = r?.unread || 0;
     if (badgeRooms) {
       badgeRooms.textContent = n;
@@ -520,6 +532,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
