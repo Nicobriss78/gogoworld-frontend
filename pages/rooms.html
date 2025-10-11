@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat Evento</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* UI minimale per MVP */
+    #roomsApp { display:flex; gap:1rem; height:80vh; }
+    #leftCol { width:30%; border-right:1px solid #ddd; padding:.5rem; overflow:auto; }
+    #rightCol { flex:1; display:flex; flex-direction:column; }
+    #roomHeader { padding:.5rem .75rem; border-bottom:1px solid #ddd; display:flex; align-items:center; justify-content:space-between; }
+    #msgs { flex:1; overflow:auto; padding:.75rem; background:#fafafa; }
+    .msg { margin:.3rem 0; padding:.35rem .6rem; border-radius:8px; max-width:75%; }
+    .msg.me { background:#dff0ff; align-self:flex-end; }
+    .msg.them { background:#f1f1f3; align-self:flex-start; }
+    #composer { display:flex; gap:.5rem; border-top:1px solid #ddd; padding:.5rem; }
+    #composer textarea { flex:1; resize:none; }
+    .roomItem { padding:.5rem; border-radius:8px; cursor:pointer; }
+    .roomItem.active { background:#eef6ff; border:1px solid #cfe7ff; }
+    .badge { background:#e53935; color:#fff; border-radius:10px; padding:0 .4em; font-size:.75em; margin-left:.35em; }
+    .muted { opacity:.65; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Chat Evento</h1>
+    <nav class="toolbar" style="display:flex; gap:.5rem;">
+      <a href="../index.html" class="btn btn-secondary">← Home</a>
+      <a id="btnBackToEvent" href="#" class="btn btn-secondary" style="display:none;">Torna all’evento</a>
+    </nav>
+  </header>
+
+  <main id="roomsApp">
+    <aside id="leftCol">
+      <h3>Le mie stanze</h3>
+      <p class="muted" id="leftHint">Apri una chat evento dalla pagina di dettaglio evento.</p>
+      <div id="roomList"></div>
+    </aside>
+
+    <section id="rightCol">
+      <div id="roomHeader">
+        <h2 id="roomTitle" class="muted">Nessuna stanza aperta</h2>
+        <small id="roomWindow" class="muted"></small>
+      </div>
+      <div id="msgs"></div>
+      <div id="composer">
+        <textarea id="txt" rows="2" placeholder="Scrivi un messaggio…"></textarea>
+        <button id="sendBtn" class="btn">Invia</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../js/rooms.js"></script>
+</body>
+</html>
