@@ -306,7 +306,7 @@ loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
     const btnChat = document.getElementById("btnChatEvento");
      if (btnChat) btnChat.href = `pages/rooms.html?eventId=${encodeURIComponent(ev._id)}`;
      const btnDM = document.getElementById("btnDMOrganizzatore");
-      if (btnDM && evOrganizerId) btnDM.href = `pages/messages.html?to=${encodeURIComponent(evOrganizerId)}`;
+      if (btnDM && evOrganizerId) btnDM.href = `messages.html?to=${encodeURIComponent(evOrganizerId)}`;
 
     if (isOwner) {
       btnToggle.style.display = "none";
@@ -766,6 +766,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
