@@ -65,8 +65,6 @@ function showAlert(message, type = "error", opts = {}) {
     /* nuove righe tra 64 e 65 */
     box.setAttribute("role", "status");
     box.setAttribute("aria-live", "polite");
-    box.setAttribute("role", "status");
-    box.setAttribute("aria-live", "polite");
   }
   const t = type === "success" ? "success" : type === "error" ? "error" : "info";
   box.className = `alert ${t}`;
@@ -150,7 +148,7 @@ async function loadReviewsList(eventId, token, myId, myStatusRaw, myStatusLabel)
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (!token) {
-    window.location.href = "../index.html";
+    window.location.href = "index.html";
     return;
   }
 
@@ -292,9 +290,7 @@ loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
     // PATCH F1: gestione #edit demandata al blocco "isOwner" sottostante (btnEdit auto-click),
     // per evitare doppio form e submit senza listener → esce subito.
     return;
-    host.innerHTML = renderEditForm(ev);
 
-    host.innerHTML = renderEditForm(ev);
   } catch {/* silente */}
 })();
 
@@ -766,6 +762,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
