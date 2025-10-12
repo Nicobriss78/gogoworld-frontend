@@ -303,6 +303,53 @@ loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
      if (btnChat) btnChat.href = `pages/rooms.html?eventId=${encodeURIComponent(ev._id)}`;
      const btnDM = document.getElementById("btnDMOrganizzatore");
       if (btnDM && evOrganizerId) btnDM.href = `messages.html?to=${encodeURIComponent(evOrganizerId)}`;
+// --- Chat privata: verifica lock senza codice & sblocco ---
+const unlockBox = document.getElementById("unlockBox");
+const unlockCode = document.getElementById("unlockCode");
+const btnUnlock = document.getElementById("btnUnlock");
+
+async function checkChatAccess(eventId, token) {
+  try {
+    const res = await apiPost(`/rooms/event/${encodeURIComponent(eventId)}/open-or-join`, {}, token);
+    if (res?.ok && res?.data && res.data.locked) {
+      // evento privato: mostra box sblocco e disabilita il bottone chat
+      if (unlockBox) unlockBox.style.display = "";
+      if (btnChat) { btnChat.disabled = true; btnChat.classList.add("btn-disabled"); }
+      return { locked: true };
+    }
+    // pubblico o già sbloccato
+    if (unlockBox) unlockBox.style.display = "none";
+    if (btnChat) { btnChat.disabled = false; btnChat.classList.remove("btn-disabled"); }
+    return { locked: false, roomId: res?.data?.roomId || null };
+  } catch (err) {
+    console.debug("[evento] checkChatAccess error:", err?.message || err);
+    return { locked: false };
+  }
+}
+
+// Avvia controllo all’apertura
+await checkChatAccess(eventId, token);
+
+// Gestione tasto “Sblocca”
+if (btnUnlock && unlockCode) {
+  btnUnlock.addEventListener("click", async () => {
+    const code = (unlockCode.value || "").trim();
+    if (!code) {
+      showAlert("Inserisci il codice", "error", { autoHideMs: 2000 });
+      return;
+    }
+    try {
+      const res = await apiPost(`/rooms/event/${encodeURIComponent(eventId)}/unlock`, { code }, token);
+      if (!res?.ok || res?.error) throw new Error(res.error || "Sblocco fallito");
+      // sbloccato: nascondi box, abilita chat
+      if (unlockBox) unlockBox.style.display = "none";
+      if (btnChat) { btnChat.disabled = false; btnChat.classList.remove("btn-disabled"); }
+      showAlert("Evento sbloccato. Puoi entrare in chat.", "success", { autoHideMs: 2000 });
+    } catch (err) {
+      showAlert(err?.message || "Codice non valido", "error", { autoHideMs: 2500 });
+    }
+  });
+}
 
     if (isOwner) {
       btnToggle.style.display = "none";
@@ -762,6 +809,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
