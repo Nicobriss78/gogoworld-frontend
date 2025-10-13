@@ -1,186 +1,151 @@
-// js/api.js — wrapper Fetch con retry/backoff e gestione errori uniformi
+/* =========================================================
+   GoGoWorld.life – API Client (auto-token wrappers)
+   VERSIONE: P25-API-2025-10-13
+   NOTE:
+   - Le primitive apiGet/apiPost... accettano un token opzionale.
+   - I wrapper (openOrJoinEvent, listRoomMessages, ecc.) recuperano
+     il token automaticamente da localStorage e lo passano alle primitive.
+   - Standardizza tutte le chiamate FE su questi wrapper per evitare 401.
+   ========================================================= */
 
-// Base API: reverse-proxy (Netlify/prod) → "/api"
-function resolveApiBase() {
-  return "/api";
-}
-const API_BASE = resolveApiBase();
+/* -------- Config base -------- */
+const API_BASE =
+  (typeof window !== "undefined" && window._API_BASE) ||
+  "/api"; // Netlify proxy verso Render già gestito dal tuo setup
 
-// Sleep helper per il backoff
-function sleep(ms) {
-  return new Promise(res => setTimeout(res, ms));
-}
-
-/**
- * fetchWithRetry(url, options)
- * - Riprova su 502/503/504 con backoff [500ms, 1500ms, 3000ms]
- * - Dispatch di CustomEvent "api:status" { detail: { phase: 'retry', attempt, status } }
- * → puoi intercettarlo nel FE per mostrare un banner "server in riattivazione…"
- */
-async function fetchWithRetry(url, options = {}) {
-  const retryOn = new Set([502, 503, 504]);
-  const delays = [500, 1500, 3000]; // 3 tentativi totali (1° + 2 retry)
-  let lastErr = null;
-
-  for (let attempt = 0; attempt < delays.length + 1; attempt++) {
-    try {
-      const res = await fetch(url, options);
-      // Se non è uno status "ritentabile", restituisci subito
-      if (!retryOn.has(res.status)) return res;
-
-      // Status ritentabile → dispatch evento e ritenta (se restano tentativi)
-      if (attempt < delays.length) {
-        try {
-          window.dispatchEvent(new CustomEvent("api:status", {
-            detail: { phase: "retry", attempt: attempt + 1, status: res.status }
-          }));
-        } catch {}
-        await sleep(delays[attempt]);
-        continue;
-      }
-      // Esauriti i tentativi → restituisci comunque la response (fallirà poi a valle)
-      return res;
-    } catch (e) {
-      // Errori di rete (offline/DNS) → ritenta, poi fallisci
-      lastErr = e;
-      if (attempt < delays.length) {
-        try {
-          window.dispatchEvent(new CustomEvent("api:status", {
-            detail: { phase: "retry", attempt: attempt + 1, status: 0, error: String(e?.message || e) }
-          }));
-        } catch {}
-        await sleep(delays[attempt]);
-        continue;
-      }
-      throw e;
-    }
-  }
-  // Fallback (in pratica non si arriva qui)
-  if (lastErr) throw lastErr;
-  return fetch(url, options);
+/* -------- Helpers -------- */
+function buildHeaders(token, extra = {}) {
+  const h = {
+    "Content-Type": "application/json",
+    ...extra,
+  };
+  if (token) h.Authorization = `Bearer ${token}`;
+  return h;
 }
 
-// --- Fetch uniforme con auth, body JSON e gestione errori ---
-async function apiFetch(path, { method = "GET", body, token } = {}) {
-  const url = `${API_BASE}${path.startsWith("/") ? path : "/" + path}`;
-
-  const headers = {};
-  if (token) headers.Authorization = `Bearer ${token}`;
-
-  let fetchBody;
-  if (method.toUpperCase() !== "GET" && body !== undefined) {
-    headers["Content-Type"] = "application/json";
-    fetchBody = typeof body === "string" ? body : JSON.stringify(body);
-  }
-
-  let res;
-  try {
-    // ⬇️ usa fetchWithRetry al posto di fetch
-    res = await fetchWithRetry(url, { method, headers, body: fetchBody });
-  } catch (networkErr) {
-    return {
-      ok: false,
-      status: 0,
-      error: "NETWORK_ERROR",
-      message: networkErr?.message || "Errore di rete"
-    };
-  }
-
-  let data = null;
-  let text = "";
-  const status = res.status;
-  try {
-    data = await res.json();
-  } catch {
-    try { text = await res.text(); } catch {}
-  }
-
+async function handleResponse(res) {
+  const isJson = res.headers.get("content-type")?.includes("application/json");
+  const data = isJson ? await res.json().catch(() => ({})) : await res.text();
   if (!res.ok) {
-    // Auto-logout: segnala 401 al FE (admin.js ascolta "auth:expired")
-  if (status === 401) {
-    try { window.dispatchEvent(new CustomEvent("auth:expired")); } catch {}
+    const err = new Error(
+      (data && data.message) ||
+        `HTTP ${res.status} – ${res.statusText || "Errore di rete"}`
+    );
+    err.status = res.status;
+    err.payload = data;
+    throw err;
   }
-    const message = (data && (data.error || data.message)) || (text || `HTTP ${status}`);
-    return { ok: false, status, error: data?.error || `HTTP_${status}`, message, data: data || null };
+  return data;
+}
+
+/* -------- Primitive low-level (accettano token opzionale) -------- */
+export async function apiGet(path, token, extraHeaders = {}) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "GET",
+    headers: buildHeaders(token, extraHeaders),
+    credentials: "include",
+  });
+  return handleResponse(res);
+}
+
+export async function apiPost(path, body = {}, token, extraHeaders = {}) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    headers: buildHeaders(token, extraHeaders),
+    body: JSON.stringify(body),
+    credentials: "include",
+  });
+  return handleResponse(res);
+}
+
+export async function apiPut(path, body = {}, token, extraHeaders = {}) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "PUT",
+    headers: buildHeaders(token, extraHeaders),
+    body: JSON.stringify(body),
+    credentials: "include",
+  });
+  return handleResponse(res);
+}
+
+export async function apiDelete(path, token, extraHeaders = {}) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "DELETE",
+    headers: buildHeaders(token, extraHeaders),
+    credentials: "include",
+  });
+  return handleResponse(res);
+}
+
+/* -------- Token access -------- */
+function getToken() {
+  try {
+    return localStorage.getItem("token");
+  } catch {
+    return null;
   }
-
-  return { ok: true, status, ...(data != null ? data : { data: text }) };
 }
 
-// Shortcuts
-export async function apiGet(path, token) { return apiFetch(path, { method: "GET", token }); }
-export async function apiPost(path, body = {}, token){ return apiFetch(path, { method: "POST", body, token }); }
-export async function apiDelete(path, token) { return apiFetch(path, { method: "DELETE", token }); }
-export async function apiPut(path, body = {}, token) { return apiFetch(path, { method: "PUT", body, token }); }
+/* =========================================================
+   WRAPPERS AD USO UI (AUTO-TOKEN)
+   ========================================================= */
 
-// Helper diagnostico ruoli/token
-export async function whoami(token) {
-  return apiGet("/users/whoami", token);
-}
-// === Profilo utente (C1) ===
-export async function getMyProfile(token) {
-  return apiGet("/profile/me", token);
-}
-
-export async function updateMyProfile(body = {}, token) {
-  return apiPut("/profile/me", body, token);
-}
-
-export async function getPublicProfile(userId) {
-  return apiGet(`/profile/${userId}`);
-}
-
-// Messaggio di errore uniforme dal risultato di apiFetch
-export function apiErrorMessage(result, fallback = "Errore") {
-  if (!result) return fallback;
-  if (result.ok === false) return result.message || result.error || fallback;
-  if (typeof result === "object" && result.error) return result.error;
-  return fallback;
-}
-// === API DM ===
-export async function listThreads() {
-  return await apiGet("/dm/threads");
-}
-export async function listMessages(userId) {
-  return await apiGet(`/dm/threads/${userId}/messages`);
-}
-export async function sendMessage(userId, text) {
-  return await apiPost("/dm/messages", { recipientId: userId, text });
-}
-export async function markRead(userId, upTo) {
-  return await apiPost(`/dm/threads/${userId}/read`, { upTo });
-}
-export async function getUnreadCount() {
-  return await apiGet("/dm/unread-count");
-}
-
-// === API ROOMS (Evento pubblico) ===
+/* --- EVENTI & ROOMS --- */
 export async function openOrJoinEvent(eventId) {
-  return await apiPost(`/rooms/event/${eventId}/open-or-join`, {});
+  const token = getToken();
+  return apiPost(`/rooms/event/${encodeURIComponent(eventId)}/open-or-join`, {}, token);
 }
+
+export async function unlockEventRoom(eventId, accessCode) {
+  const token = getToken();
+  return apiPost(
+    `/rooms/event/${encodeURIComponent(eventId)}/unlock`,
+    { accessCode },
+    token
+  );
+}
+
 export async function getEventRoomMeta(eventId) {
-  return await apiGet(`/rooms/event/${eventId}`);
+  const token = getToken();
+  return apiGet(`/rooms/event/${encodeURIComponent(eventId)}`, token);
 }
-export async function listRoomMessages(roomId, params={}) {
-  const q = [];
-  if (params.before) q.push(`before=${encodeURIComponent(params.before)}`);
-  if (params.limit) q.push(`limit=${encodeURIComponent(params.limit)}`);
-  const qs = q.length ? `?${q.join("&")}` : "";
-  return await apiGet(`/rooms/${roomId}/messages${qs}`);
+
+/* --- MESSAGGI ROOM --- */
+export async function listRoomMessages(roomId, { page = 1, limit = 50 } = {}) {
+  const token = getToken();
+  const q = new URLSearchParams({ page: String(page), limit: String(limit) });
+  return apiGet(`/rooms/${encodeURIComponent(roomId)}/messages?${q}`, token);
 }
+
 export async function postRoomMessage(roomId, text) {
-  return await apiPost(`/rooms/${roomId}/messages`, { text });
+  const token = getToken();
+  return apiPost(
+    `/rooms/${encodeURIComponent(roomId)}/messages`,
+    { text },
+    token
+  );
 }
-export async function markRoomRead(roomId, upTo) {
-  return await apiPost(`/rooms/${roomId}/read`, { upTo });
+
+export async function markRoomRead(roomId) {
+  const token = getToken();
+  return apiPost(`/rooms/${encodeURIComponent(roomId)}/read`, {}, token);
 }
-export async function getRoomsUnreadCount(
-  token = (typeof localStorage !== "undefined" ? localStorage.getItem("token") : null)
-) {
-  // se manca il token, comportati come "non autorizzato"
-  if (!token) {
-    return { ok: false, status: 401, unread: 0 };
+
+/* --- UNREAD COUNT --- */
+export async function getUnreadCount() {
+  const token = getToken();
+  return apiGet(`/rooms/unread-count`, token);
+}
+
+/* --- UTILITY AUTH --- */
+export function isLoggedIn() {
+  return !!getToken();
+}
+
+export function requireAuthOrRedirect(loginUrl = "../pages/login.html") {
+  if (!isLoggedIn()) {
+    window.location.href = loginUrl;
+    return false;
   }
-  // passa il token ad apiGet (coerente con come chiami /users/me, ecc.)
-  return await apiGet(`/rooms/unread-count`, token);
+  return true;
 }
