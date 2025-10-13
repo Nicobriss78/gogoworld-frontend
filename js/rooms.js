@@ -1,132 +1,196 @@
-// rooms.js — C2.2 Evento pubblico
+/* =========================================================
+   GoGoWorld.life – Rooms UI
+   VERSIONE: P25-ROOMS-2025-10-13
+   Dipendenze: ./api.js (wrappers auto-token)
+   ========================================================= */
+
 import {
+  requireAuthOrRedirect,
   openOrJoinEvent,
+  unlockEventRoom,
   getEventRoomMeta,
   listRoomMessages,
   postRoomMessage,
   markRoomRead,
 } from "./api.js";
 
-// Stato locale
-let current = { roomId: null, eventId: null, canSend: false, title: "", activeFrom: null, activeUntil: null };
+/* -------- DOM refs -------- */
+const qs = (s) => document.querySelector(s);
+const qsa = (s) => Array.from(document.querySelectorAll(s));
+
+const elStatus = qs("#room-status");
+const elMsgList = qs("#messages");
+const elForm = qs("#message-form");
+const elInput = qs("#message-text");
+const elUnlockForm = qs("#unlock-form");
+const elAccessCode = qs("#access-code");
+const elRoomTitle = qs("#room-title");
+const elSendBtn = qs("#send-btn");
+
+let currentEventId = null;
+let currentRoomId = null;
 let polling = null;
 
-function q(id) { return document.getElementById(id); }
-function fmtDate(d) {
-  const dt = new Date(d);
-  return dt.toLocaleString("it-IT", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" });
-}
-function escapeHtml(t="") {
-  return t.replace(/[&<>]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;" }[c]));
+/* -------- Utils -------- */
+function getEventIdFromURL() {
+  const u = new URL(window.location.href);
+  return u.searchParams.get("eventId");
 }
 
-async function init() {
-  const token = localStorage.getItem("token");
-  if (!token) { window.location.href = "../index.html"; return; }
+function setStatus(text) {
+  if (elStatus) elStatus.textContent = text || "";
+}
 
-  // Query: ?eventId=... oppure ?roomId=...
-  const qs = new URLSearchParams(location.search);
-  const eventId = qs.get("eventId");
-  const roomId = qs.get("roomId");
+function renderMessages(messages = []) {
+  if (!elMsgList) return;
+  elMsgList.innerHTML = "";
+  messages.forEach((m) => {
+    const li = document.createElement("li");
+    li.className = "message-item";
+    const date = m.createdAt ? new Date(m.createdAt) : null;
+    li.innerHTML = `
+      <div class="msg-head">
+        <span class="msg-author">${m.authorName || "Utente"}</span>
+        <span class="msg-time">${date ? date.toLocaleString() : ""}</span>
+      </div>
+      <div class="msg-body">${(m.text || "").replace(/\n/g, "<br>")}</div>
+    `;
+    elMsgList.appendChild(li);
+  });
+  // scroll bottom
+  elMsgList.scrollTop = elMsgList.scrollHeight;
+}
 
-  if (eventId) {
-    // crea/entra stanza dell'evento (pubblica)
-    const res = await openOrJoinEvent(eventId);
-    if (res?.ok) {
-      bindRoom({
-        roomId: res.data.roomId,
-        eventId,
-        canSend: !!res.data.canSend,
-        title: res.data.title,
-        activeFrom: res.data.activeFrom,
-        activeUntil: res.data.activeUntil,
-      });
-      await loadMessages();
-    } else {
-      showEmpty(`Impossibile aprire la stanza dell’evento.`);
+/* -------- Bootstrap -------- */
+async function boot() {
+  if (!requireAuthOrRedirect()) return;
+
+  currentEventId = getEventIdFromURL();
+  if (!currentEventId) {
+    setStatus("Evento non specificato.");
+    return;
+  }
+
+  try {
+    // 1) Apri/entra nella room legata all'evento
+    setStatus("Connessione alla chat in corso…");
+    const openRes = await openOrJoinEvent(currentEventId);
+    currentRoomId = openRes?.room?._id || openRes?.roomId;
+
+    // 2) Metadati evento/room (privato, finestra, ecc.)
+    const meta = await getEventRoomMeta(currentEventId);
+
+    if (elRoomTitle) {
+      elRoomTitle.textContent = meta?.event?.title || "Chat evento";
     }
-  } else if (roomId) {
-    // meta stanza da roomId (facoltativo: non abbiamo ancora API dedicata, usiamo GET event meta se possibile)
-    // In MVP: senza eventId non mostriamo il link "torna all'evento".
-    bindRoom({ roomId, eventId: null, canSend: true, title: "Chat evento", activeFrom: null, activeUntil: null });
-    await loadMessages();
-  } else {
-    // Nessun parametro -> UI vuota con istruzione
-    showEmpty(`Apri una chat evento dalla pagina di dettaglio evento.`);
-  }
 
-  q("sendBtn").addEventListener("click", onSend);
-  q("txt").addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSend(); }
-  });
-}
+    // 3) Se privata e non sbloccata → mostra form di sblocco
+    if (meta?.event?.isPrivate && meta?.room?.locked) {
+      setStatus("Chat privata. Inserisci il codice per sbloccare.");
+      if (elUnlockForm) elUnlockForm.style.display = "block";
+      if (elForm) elForm.style.display = "none";
+      return; // stop qui finché non sblocchi
+    } else {
+      if (elUnlockForm) elUnlockForm.style.display = "none";
+      if (elForm) elForm.style.display = "flex";
+    }
 
-function bindRoom(meta) {
-  current = { ...current, ...meta };
-  q("roomTitle").textContent = current.title || "Chat evento";
-  if (current.activeFrom && current.activeUntil) {
-    q("roomWindow").textContent = `Invio abilitato tra ${fmtDate(current.activeFrom)} e ${fmtDate(current.activeUntil)}.`;
-  } else {
-    q("roomWindow").textContent = "";
-  }
-  // link “torna all’evento” se eventId presente
-  const back = q("btnBackToEvent");
-  if (current.eventId) {
-    back.style.display = "";
-    back.href = `../evento.html?id=${encodeURIComponent(current.eventId)}`;
-  } else {
-    back.style.display = "none";
-  }
-  q("txt").disabled = !current.canSend;
-  q("sendBtn").disabled = !current.canSend;
-}
+    // 4) Carica messaggi iniziali
+    await refreshMessages();
+    setStatus("");
 
-async function loadMessages(before) {
-  if (!current.roomId) return;
-  const res = await listRoomMessages(current.roomId, { before });
-  const msgs = res?.data || [];
-  renderMessages(msgs);
-  await markRoomRead(current.roomId);
-  // polling leggero ogni 10s
-  if (polling) clearInterval(polling);
-  polling = setInterval(async () => {
-    const res2 = await listRoomMessages(current.roomId);
-    const msgs2 = res2?.data || [];
-    renderMessages(msgs2);
-    await markRoomRead(current.roomId);
-  }, 10000);
-}
-
-function renderMessages(msgs) {
-  const box = q("msgs");
-  box.innerHTML = "";
-  msgs.slice().reverse().forEach(m => {
-    const div = document.createElement("div");
-    div.className = "msg " + (m.sender === "me" ? "me" : "them");
-    div.innerHTML = `<span>${escapeHtml(m.text)}</span><br><small>${fmtDate(m.createdAt)}</small>`;
-    box.appendChild(div);
-  });
-  box.scrollTop = box.scrollHeight;
-}
-
-async function onSend() {
-  if (!current.roomId || !current.canSend) return;
-  const txt = q("txt");
-  const val = (txt.value || "").trim();
-  if (!val) return;
-  const r = await postRoomMessage(current.roomId, val);
-  if (r?.ok) {
-    txt.value = "";
-    await loadMessages();
+    // 5) Avvia polling leggero (puoi passare a WS/sse in futuro)
+    startPolling();
+  } catch (err) {
+    console.error(err);
+    if (err.status === 401) {
+      // token mancante/scaduto
+      requireAuthOrRedirect();
+      return;
+    }
+    setStatus(err?.payload?.message || err.message || "Errore di connessione.");
   }
 }
 
-function showEmpty(message) {
-  q("roomTitle").textContent = "Nessuna stanza aperta";
-  q("roomWindow").textContent = "";
-  q("msgs").innerHTML = `<p class="muted">${escapeHtml(message)}</p>`;
-  q("txt").disabled = true;
-  q("sendBtn").disabled = true;
+/* -------- Polling -------- */
+function startPolling() {
+  stopPolling();
+  polling = setInterval(refreshMessages, 5000);
 }
 
-document.addEventListener("DOMContentLoaded", init);
+function stopPolling() {
+  if (polling) {
+    clearInterval(polling);
+    polling = null;
+  }
+}
+
+/* -------- Azioni -------- */
+async function refreshMessages() {
+  if (!currentRoomId) return;
+  try {
+    const page = 1;
+    const limit = 100; // prima vista ampia, poi ottimizziamo con virtual scroll
+    const data = await listRoomMessages(currentRoomId, { page, limit });
+    renderMessages(data?.messages || data || []);
+    await markRoomRead(currentRoomId).catch(() => {});
+  } catch (err) {
+    console.error("refreshMessages error:", err);
+    if (err.status === 401) requireAuthOrRedirect();
+  }
+}
+
+async function handleSend(e) {
+  e?.preventDefault?.();
+  if (!currentRoomId) return;
+  const text = (elInput?.value || "").trim();
+  if (!text) return;
+
+  elSendBtn && (elSendBtn.disabled = true);
+
+  try {
+    await postRoomMessage(currentRoomId, text);
+    elInput.value = "";
+    await refreshMessages();
+  } catch (err) {
+    console.error(err);
+    if (err.status === 401) requireAuthOrRedirect();
+    else alert(err?.payload?.message || err.message || "Errore nell'invio.");
+  } finally {
+    elSendBtn && (elSendBtn.disabled = false);
+  }
+}
+
+async function handleUnlock(e) {
+  e?.preventDefault?.();
+  const code = (elAccessCode?.value || "").trim();
+  if (!code) {
+    setStatus("Inserisci il codice di accesso.");
+    return;
+  }
+  try {
+    setStatus("Verifica codice…");
+    await unlockEventRoom(currentEventId, code);
+    // ok sbloccata: ricarica meta e messaggi
+    const meta = await getEventRoomMeta(currentEventId);
+    if (meta?.room && !meta.room.locked) {
+      if (elUnlockForm) elUnlockForm.style.display = "none";
+      if (elForm) elForm.style.display = "flex";
+      await refreshMessages();
+      setStatus("");
+    } else {
+      setStatus("Codice non valido o chat non sbloccata.");
+    }
+  } catch (err) {
+    console.error(err);
+    if (err.status === 401) requireAuthOrRedirect();
+    else setStatus(err?.payload?.message || err.message || "Errore sblocco.");
+  }
+}
+
+/* -------- Bind -------- */
+elForm && elForm.addEventListener("submit", handleSend);
+elUnlockForm && elUnlockForm.addEventListener("submit", handleUnlock);
+
+/* -------- Start -------- */
+document.addEventListener("DOMContentLoaded", boot);
