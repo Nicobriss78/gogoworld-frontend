@@ -1,133 +1,140 @@
 // js/api.js — wrapper Fetch con retry/backoff e gestione errori uniformi
-// (Versione P25 compatibile con il tuo backup + auto-token nei wrapper rooms/DM)
 
-// ===== Base API: reverse-proxy (Netlify/prod) → "/api"
+// Base API: reverse-proxy (Netlify/prod) → "/api"
 function resolveApiBase() {
   return "/api";
 }
 const API_BASE = resolveApiBase();
 
-// ===== Utility: sleep per backoff
+// Sleep helper per il backoff
 function sleep(ms) {
-  return new Promise((res) => setTimeout(res, ms));
+  return new Promise(res => setTimeout(res, ms));
 }
 
-// ===== Fetch con retry su 502/503/504
+/**
+ * fetchWithRetry(url, options)
+ * - Riprova su 502/503/504 con backoff [500ms, 1500ms, 3000ms]
+ * - Dispatch di CustomEvent "api:status" { detail: { phase: 'retry', attempt, status } }
+ * → puoi intercettarlo nel FE per mostrare un banner "server in riattivazione…"
+ */
 async function fetchWithRetry(url, options = {}) {
   const retryOn = new Set([502, 503, 504]);
-  const delays = [500, 1500, 3000]; // ms
+  const delays = [500, 1500, 3000]; // 3 tentativi totali (1° + 2 retry)
+  let lastErr = null;
 
-  let attempt = 0;
-  while (true) {
+  for (let attempt = 0; attempt < delays.length + 1; attempt++) {
     try {
       const res = await fetch(url, options);
+      // Se non è uno status "ritentabile", restituisci subito
       if (!retryOn.has(res.status)) return res;
 
-      // status "ritentabile"
+      // Status ritentabile → dispatch evento e ritenta (se restano tentativi)
       if (attempt < delays.length) {
         try {
-          window.dispatchEvent(
-            new CustomEvent("api:status", {
-              detail: { phase: "retry", attempt: attempt + 1, status: res.status },
-            })
-          );
+          window.dispatchEvent(new CustomEvent("api:status", {
+            detail: { phase: "retry", attempt: attempt + 1, status: res.status }
+          }));
         } catch {}
         await sleep(delays[attempt]);
-        attempt++;
         continue;
       }
-      // esauriti i tentativi
+      // Esauriti i tentativi → restituisci comunque la response (fallirà poi a valle)
       return res;
     } catch (e) {
-      // errore di rete: ritenta se rimangono tentativi
+      // Errori di rete (offline/DNS) → ritenta, poi fallisci
+      lastErr = e;
       if (attempt < delays.length) {
+        try {
+          window.dispatchEvent(new CustomEvent("api:status", {
+            detail: { phase: "retry", attempt: attempt + 1, status: 0, error: String(e?.message || e) }
+          }));
+        } catch {}
         await sleep(delays[attempt]);
-        attempt++;
         continue;
       }
       throw e;
     }
   }
+  // Fallback (in pratica non si arriva qui)
+  if (lastErr) throw lastErr;
+  return fetch(url, options);
 }
 
-// ===== Helpers comuni
-function getStoredToken() {
-  try {
-    return typeof localStorage !== "undefined" ? localStorage.getItem("token") : null;
-  } catch {
-    return null;
-  }
+// Recupero token sicuro da localStorage
+function getToken(){
+  try { return localStorage.getItem("token"); } catch { return null; }
 }
 
-function buildHeaders(token) {
-  const headers = { "Content-Type": "application/json" };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-  return headers;
-}
-
-// ===== Core fetch (uniforma esiti e messaggi di errore)
+// --- Fetch uniforme con auth, body JSON e gestione errori ---
 async function apiFetch(path, { method = "GET", body, token } = {}) {
-  const url = `${API_BASE}${path}`;
-  const headers = buildHeaders(token);
+  const url = `${API_BASE}${path.startsWith("/") ? path : "/" + path}`;
+
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
 
   let fetchBody;
-  if (body !== undefined) {
+  if (method.toUpperCase() !== "GET" && body !== undefined) {
     headers["Content-Type"] = "application/json";
     fetchBody = typeof body === "string" ? body : JSON.stringify(body);
   }
 
   let res;
   try {
+    // ⬇️ usa fetchWithRetry al posto di fetch
     res = await fetchWithRetry(url, { method, headers, body: fetchBody });
   } catch (networkErr) {
-    return { ok: false, status: 0, error: "NETWORK_ERROR", message: networkErr?.message || "Errore di rete" };
+    return {
+      ok: false,
+      status: 0,
+      error: "NETWORK_ERROR",
+      message: networkErr?.message || "Errore di rete"
+    };
   }
 
-  const contentType = res.headers.get("content-type") || "";
-  const isJson = contentType.includes("application/json");
-  const data = isJson ? await res.json().catch(() => ({})) : await res.text();
+  let data = null;
+  let text = "";
+  const status = res.status;
+  try {
+    data = await res.json();
+  } catch {
+    try { text = await res.text(); } catch {}
+  }
 
   if (!res.ok) {
-    const msg =
-      (isJson ? data?.message || data?.error : String(data)) ||
-      `HTTP ${res.status} – ${res.statusText || "Errore"}`;
-    return { ok: false, status: res.status, error: "HTTP_ERROR", message: msg, payload: data };
+    // Auto-logout: segnala 401 al FE (admin.js ascolta "auth:expired")
+    if (status === 401) {
+      try { window.dispatchEvent(new CustomEvent("auth:expired")); } catch {}
+    }
+    const message = (data && (data.error || data.message)) || (text || `HTTP ${status}`);
+    return { ok: false, status, error: data?.error || `HTTP_${status}`, message, data: data || null };
   }
 
-  return data ?? { ok: true };
+  return { ok: true, status, ...(data != null ? data : { data: text }) };
 }
 
-// ===== Primitive low-level (come nel tuo backup)
-export async function apiGet(path, token) {
-  return apiFetch(path, { method: "GET", token });
-}
-export async function apiPost(path, body = {}, token) {
-  return apiFetch(path, { method: "POST", body, token });
-}
-export async function apiDelete(path, token) {
-  return apiFetch(path, { method: "DELETE", token });
-}
-export async function apiPut(path, body = {}, token) {
-  return apiFetch(path, { method: "PUT", body, token });
-}
+// Shortcuts
+export async function apiGet(path, token) { return apiFetch(path, { method: "GET", token }); }
+export async function apiPost(path, body = {}, token){ return apiFetch(path, { method: "POST", body, token }); }
+export async function apiDelete(path, token) { return apiFetch(path, { method: "DELETE", token }); }
+export async function apiPut(path, body = {}, token) { return apiFetch(path, { method: "PUT", body, token }); }
 
-// ===== Helper diagnostico ruoli/token (come nel tuo backup)
+// Helper diagnostico ruoli/token
 export async function whoami(token) {
-  return apiGet("/users/whoami", token ?? getStoredToken());
+  return apiGet("/users/whoami", token ?? getToken());
 }
 
-// ===== Profilo utente (C1) – invariato
+// === Profilo utente (C1) ===
 export async function getMyProfile(token) {
-  return apiGet("/profile/me", token ?? getStoredToken());
+  return apiGet("/profile/me", token ?? getToken());
 }
 export async function updateMyProfile(body = {}, token) {
-  return apiPut("/profile/me", body, token ?? getStoredToken());
+  return apiPut("/profile/me", body, token ?? getToken());
 }
 export async function getPublicProfile(userId) {
   return apiGet(`/profile/${userId}`);
 }
 
-// ===== Messaggio di errore uniforme (come nel tuo backup)
+// Messaggio di errore uniforme dal risultato di apiFetch
 export function apiErrorMessage(result, fallback = "Errore") {
   if (!result) return fallback;
   if (result.ok === false) return result.message || result.error || fallback;
@@ -135,49 +142,50 @@ export function apiErrorMessage(result, fallback = "Errore") {
   return fallback;
 }
 
-/* =====================================================================
-   DM (coerente con il tuo backup, ma ora auto-token)
-   ===================================================================== */
+// === API DM (auto-token) ===
 export async function listThreads(token) {
-  return apiGet("/dm/threads", token ?? getStoredToken());
+  return await apiGet("/dm/threads", token ?? getToken());
 }
 export async function listMessages(userId, token) {
-  return apiGet(`/dm/threads/${encodeURIComponent(userId)}/messages`, token ?? getStoredToken());
+  return await apiGet(`/dm/threads/${userId}/messages`, token ?? getToken());
 }
 export async function sendMessage(userId, text, token) {
-  return apiPost("/dm/messages", { recipientId: userId, text }, token ?? getStoredToken());
+  return await apiPost("/dm/messages", { recipientId: userId, text }, token ?? getToken());
 }
 export async function markRead(userId, upTo, token) {
-  return apiPost(`/dm/threads/${encodeURIComponent(userId)}/read`, { upTo }, token ?? getStoredToken());
+  return await apiPost(`/dm/threads/${userId}/read`, { upTo }, token ?? getToken());
 }
 export async function getUnreadCount(token) {
-  return apiGet("/dm/unread-count", token ?? getStoredToken());
+  return await apiGet("/dm/unread-count", token ?? getToken());
 }
 
-/* =====================================================================
-   ROOMS – Evento pubblico (come nel tuo backup, + auto-token)
-   ===================================================================== */
+// === API ROOMS (Evento pubblico) — auto-token ===
 export async function openOrJoinEvent(eventId, token) {
-  return apiPost(`/rooms/event/${encodeURIComponent(eventId)}/open-or-join`, {}, token ?? getStoredToken());
+  return await apiPost(`/rooms/event/${eventId}/open-or-join`, {}, token ?? getToken());
 }
 export async function getEventRoomMeta(eventId, token) {
-  return apiGet(`/rooms/event/${encodeURIComponent(eventId)}`, token ?? getStoredToken());
+  return await apiGet(`/rooms/event/${eventId}`, token ?? getToken());
 }
-export async function listRoomMessages(roomId, params = {}, token) {
+export async function listRoomMessages(roomId, params={}, token) {
   const q = [];
   if (params.before) q.push(`before=${encodeURIComponent(params.before)}`);
-  if (params.after) q.push(`after=${encodeURIComponent(params.after)}`);
   if (params.limit) q.push(`limit=${encodeURIComponent(params.limit)}`);
   const qs = q.length ? `?${q.join("&")}` : "";
-  return apiGet(`/rooms/${encodeURIComponent(roomId)}/messages${qs}`, token ?? getStoredToken());
+  return await apiGet(`/rooms/${roomId}/messages${qs}`, token ?? getToken());
 }
 export async function postRoomMessage(roomId, text, token) {
-  return apiPost(`/rooms/${encodeURIComponent(roomId)}/messages`, { text }, token ?? getStoredToken());
+  return await apiPost(`/rooms/${roomId}/messages`, { text }, token ?? getToken());
 }
 export async function markRoomRead(roomId, upTo, token) {
-  return apiPost(`/rooms/${encodeURIComponent(roomId)}/read`, { upTo }, token ?? getStoredToken());
+  return await apiPost(`/rooms/${roomId}/read`, { upTo }, token ?? getToken());
 }
-export async function getRoomsUnreadCount(token = getStoredToken()) {
-  if (!token) return { ok: false, status: 401, unread: 0 };
-  return apiGet(`/rooms/unread-count`, token);
+export async function getRoomsUnreadCount(
+  token = (typeof localStorage !== "undefined" ? localStorage.getItem("token") : null)
+) {
+  // se manca il token, comportati come "non autorizzato"
+  if (!token) {
+    return { ok: false, status: 401, unread: 0 };
+  }
+  // passa il token ad apiGet (coerente con come chiami /users/me, ecc.)
+  return await apiGet(`/rooms/unread-count`, token);
 }
