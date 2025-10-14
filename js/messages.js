@@ -6,7 +6,8 @@ import {
   getUnreadCount,
   markRead,
 } from "./api.js";
-
+// Validatore semplice per ObjectId Mongo
+const isObjectId = (s) => typeof s === "string" && /^[a-f0-9]{24}$/i.test(s);
 let me = null;
 let currentUserId = null;
 let threads = [];
@@ -89,14 +90,27 @@ function renderMessages(msgs) {
 async function onSend() {
   const txt = document.getElementById("msgText");
   const val = txt.value.trim();
-  if (!val || !currentUserId) return;
-  try {
-    const r = await sendMessage(currentUserId, val);
-    if (r.ok) {
-      txt.value = "";
-      openThread(currentUserId); // ricarica
-    }
-  } catch (err) {
+// Validazioni robuste prima dell'invio
+if (!currentUserId || !isObjectId(currentUserId)) {
+alert("Destinatario non valido. (manca ?to=<organizerId> oppure formato ID errato)");
+return;
+}
+if (!val) {
+alert("Il messaggio è vuoto.");
+return;
+}
+ try {
+ const r = await sendMessage(currentUserId, val);
+ if (!r || r.ok === false) {
+ const msg = (r && (r.message || r.error)) || "Invio non riuscito.";
+ alert(msg); // es. INVALID_RECIPIENT / INVALID_TEXT dal backend
+ return;
+ }
+ txt.value = "";
+ openThread(currentUserId); // ricarica
+ } catch (err) {
+     console.error("Errore invio:", err);
+   }
     console.error("Errore invio:", err);
   }
 }
