@@ -19,6 +19,11 @@ function fmtDate(d) {
 function escapeHtml(t="") {
   return t.replace(/[&<>]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;" }[c]));
 }
+// override solo per test: rooms.html?...&forceSend=1
+function forceSendEnabled() {
+  try { return new URLSearchParams(location.search).get("forceSend") === "1"; }
+  catch { return false; }
+}
 
 async function init() {
   const token = localStorage.getItem("token");
@@ -65,7 +70,7 @@ function bindRoom(meta) {
   current = { ...current, ...meta };
   q("roomTitle").textContent = current.title || "Chat evento";
   if (current.activeFrom && current.activeUntil) {
-    q("roomWindow").textContent = `Invio abilitato tra ${fmtDate(current.activeFrom)} e ${fmtDate(current.activeUntil)}.`;
+  q("roomWindow").textContent = `Invio abilitato tra ${fmtDate(current.activeFrom)} e ${fmtDate(current.activeUntil)}.`;
   } else {
     q("roomWindow").textContent = "";
   }
@@ -77,8 +82,8 @@ function bindRoom(meta) {
   } else {
     back.style.display = "none";
   }
-  q("txt").disabled = !current.canSend;
-  q("sendBtn").disabled = !current.canSend;
+ q("txt").disabled = !(current.canSend || forceSendEnabled());
+ q("sendBtn").disabled = !(current.canSend || forceSendEnabled());
 }
 
 async function loadMessages(before) {
