@@ -14,105 +14,108 @@ let polling = null;
 function q(id) { return document.getElementById(id); }
 function fmtDate(d) {
   const dt = new Date(d);
-  const pad = (n) => (n < 10 ? "0" + n : "" + n);
-  return `${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()} ${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+  return dt.toLocaleString("it-IT", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" });
 }
-function escapeHtml(s) {
-  return (s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]));
+function escapeHtml(t="") {
+  return t.replace(/[&<>]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;" }[c]));
 }
 
 async function init() {
-  // eventId da URL
-  const url = new URL(window.location.href);
-  const eventId = url.searchParams.get("eventId");
-  if (!eventId) {
-    showEmpty("Evento non specificato.");
-    return;
+  const token = localStorage.getItem("token");
+  if (!token) { window.location.href = "../index.html"; return; }
+
+  // Query: ?eventId=... oppure ?roomId=...
+  const qs = new URLSearchParams(location.search);
+  const eventId = qs.get("eventId");
+  const roomId = qs.get("roomId");
+
+  if (eventId) {
+    // crea/entra stanza dell'evento (pubblica)
+    const res = await openOrJoinEvent(eventId);
+    if (res?.ok) {
+      bindRoom({
+        roomId: res.data.roomId,
+        eventId,
+        canSend: !!res.data.canSend,
+        title: res.data.title,
+        activeFrom: res.data.activeFrom,
+        activeUntil: res.data.activeUntil,
+      });
+      await loadMessages();
+    } else {
+      showEmpty(`Impossibile aprire la stanza dell’evento.`);
+    }
+  } else if (roomId) {
+    // meta stanza da roomId (facoltativo: non abbiamo ancora API dedicata, usiamo GET event meta se possibile)
+    // In MVP: senza eventId non mostriamo il link "torna all'evento".
+    bindRoom({ roomId, eventId: null, canSend: true, title: "Chat evento", activeFrom: null, activeUntil: null });
+    await loadMessages();
+  } else {
+    // Nessun parametro -> UI vuota con istruzione
+    showEmpty(`Apri una chat evento dalla pagina di dettaglio evento.`);
   }
-  current.eventId = eventId;
 
-  // 1) open-or-join
-  const joinRes = await openOrJoinEvent(eventId);
-  if (joinRes?.ok === false) {
-    showEmpty(joinRes.message || "Errore di apertura stanza.");
-    return;
-  }
-  current.roomId = joinRes?.room?._id || joinRes?.roomId || joinRes?.id || null;
-
-  // 2) meta (titolo/finestra invio)
-  const meta = await getEventRoomMeta(eventId);
-  if (meta?.ok === false) {
-    showEmpty(meta.message || "Errore meta stanza.");
-    return;
-  }
-  current.title = meta?.event?.title || "Chat evento";
-  current.activeFrom = meta?.room?.activeFrom || meta?.event?.chat?.activeFrom || null;
-  current.activeUntil = meta?.room?.activeUntil || meta?.event?.chat?.activeUntil || null;
-
-  renderHeader();
-  await loadMessages();
-
-  // polling
-  startPolling();
+  q("sendBtn").addEventListener("click", onSend);
+  q("txt").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSend(); }
+  });
 }
 
-function renderHeader() {
+function bindRoom(meta) {
+  current = { ...current, ...meta };
   q("roomTitle").textContent = current.title || "Chat evento";
-  if (current.activeFrom || current.activeUntil) {
-    const from = current.activeFrom ? fmtDate(current.activeFrom) : "—";
-    const to = current.activeUntil ? fmtDate(current.activeUntil) : "—";
-    q("roomWindow").textContent = `Finestra chat: ${from} → ${to}`;
+  if (current.activeFrom && current.activeUntil) {
+    q("roomWindow").textContent = `Invio abilitato tra ${fmtDate(current.activeFrom)} e ${fmtDate(current.activeUntil)}.`;
   } else {
     q("roomWindow").textContent = "";
   }
-}
-
-async function loadMessages() {
-  if (!current.roomId) {
-    showEmpty("Nessuna stanza aperta.");
-    return;
-  }
-  const res = await listRoomMessages(current.roomId, { limit: 100 });
-  if (res?.ok === false) {
-    showEmpty(res.message || "Errore caricamento messaggi.");
-    return;
-  }
-  const messages = res?.messages || res || [];
-  q("msgs").innerHTML = messages
-    .map(m => {
-      const when = m.createdAt ? fmtDate(m.createdAt) : "";
-      const who = escapeHtml(m.authorName || "Utente");
-      const body = escapeHtml(m.text || "");
-      return `<div class="msg"><div class="msg-head">${who} • <span class="muted">${when}</span></div><div class="msg-body">${body.replace(/\n/g,"<br>")}</div></div>`;
-    })
-    .join("");
-  q("msgs").scrollTop = q("msgs").scrollHeight;
-
-  // segna come letti
-  try { await markRoomRead(current.roomId); } catch {}
-}
-
-function startPolling() {
-  stopPolling();
-  polling = setInterval(loadMessages, 5000);
-}
-function stopPolling() {
-  if (polling) { clearInterval(polling); polling = null; }
-}
-
-q("sendForm")?.addEventListener("submit", onSend);
-async function onSend(e) {
-  e?.preventDefault?.();
-  if (!current.roomId) return;
-  const txt = q("txt");
-  const val = (txt?.value || "").trim();
-  if (!val) return;
-
-  // invio
-  const sent = await postRoomMessage(current.roomId, val);
-  if (sent?.ok === false) {
-    alert(sent.message || "Errore invio.");
+  // link “torna all’evento” se eventId presente
+  const back = q("btnBackToEvent");
+  if (current.eventId) {
+    back.style.display = "";
+    back.href = `../evento.html?id=${encodeURIComponent(current.eventId)}`;
   } else {
+    back.style.display = "none";
+  }
+  q("txt").disabled = !current.canSend;
+  q("sendBtn").disabled = !current.canSend;
+}
+
+async function loadMessages(before) {
+  if (!current.roomId) return;
+  const res = await listRoomMessages(current.roomId, { before });
+  const msgs = res?.data || [];
+  renderMessages(msgs);
+  await markRoomRead(current.roomId);
+  // polling leggero ogni 10s
+  if (polling) clearInterval(polling);
+  polling = setInterval(async () => {
+    const res2 = await listRoomMessages(current.roomId);
+    const msgs2 = res2?.data || [];
+    renderMessages(msgs2);
+    await markRoomRead(current.roomId);
+  }, 10000);
+}
+
+function renderMessages(msgs) {
+  const box = q("msgs");
+  box.innerHTML = "";
+  msgs.slice().reverse().forEach(m => {
+    const div = document.createElement("div");
+    div.className = "msg " + (m.sender === "me" ? "me" : "them");
+    div.innerHTML = `<span>${escapeHtml(m.text)}</span><br><small>${fmtDate(m.createdAt)}</small>`;
+    box.appendChild(div);
+  });
+  box.scrollTop = box.scrollHeight;
+}
+
+async function onSend() {
+  if (!current.roomId || !current.canSend) return;
+  const txt = q("txt");
+  const val = (txt.value || "").trim();
+  if (!val) return;
+  const r = await postRoomMessage(current.roomId, val);
+  if (r?.ok) {
     txt.value = "";
     await loadMessages();
   }
