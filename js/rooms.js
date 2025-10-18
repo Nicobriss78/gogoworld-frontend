@@ -115,7 +115,7 @@ function renderMessages(msgs) {
 }
 
 async function onSend() {
-  if (!current.roomId || !current.canSend) return;
+if (!current.roomId || !(current.canSend || forceSendEnabled())) return;
   const txt = q("txt");
   const val = (txt.value || "").trim();
   if (!val) return;
