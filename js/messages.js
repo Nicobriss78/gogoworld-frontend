@@ -70,6 +70,7 @@ async function openThread(userId) {
     const msgs = res?.data || [];
     renderMessages(msgs);
     await markRead(userId);
+    window.dispatchEvent(new CustomEvent("dm:updated"));
   } catch (err) {
     console.error("Errore openThread:", err);
   }
@@ -106,8 +107,8 @@ return;
  alert(msg); // es. INVALID_RECIPIENT / INVALID_TEXT dal backend
  return;
  }
- txt.value = "";
- openThread(currentUserId); // ricarica
+window.dispatchEvent(new CustomEvent("dm:updated"));
+
  } catch (err) {
      console.error("Errore invio:", err);
   }
