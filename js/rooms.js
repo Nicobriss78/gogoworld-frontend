@@ -91,7 +91,7 @@ async function loadMessages(before) {
   const res = await listRoomMessages(current.roomId, { before });
   const msgs = res?.data || [];
   renderMessages(msgs);
-  await markRoomRead(current.roomId);
+ window.dispatchEvent(new CustomEvent("rooms:updated"));
   // polling leggero ogni 10s
   if (polling) clearInterval(polling);
   polling = setInterval(async () => {
@@ -120,9 +120,8 @@ if (!current.roomId || !(current.canSend || forceSendEnabled())) return;
   const val = (txt.value || "").trim();
   if (!val) return;
   const r = await postRoomMessage(current.roomId, val);
-  if (r?.ok) {
-    txt.value = "";
-    await loadMessages();
+ window.dispatchEvent(new CustomEvent("rooms:updated"));
+   }
   }
 }
 
