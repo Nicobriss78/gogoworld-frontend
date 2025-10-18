@@ -110,8 +110,6 @@ return;
  openThread(currentUserId); // ricarica
  } catch (err) {
      console.error("Errore invio:", err);
-   }
-    console.error("Errore invio:", err);
   }
 }
 
