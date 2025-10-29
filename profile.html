@@ -46,6 +46,15 @@
           <input id="avatarUrl" name="avatarUrl" type="url" placeholder="https://..."/>
         </div>
         <div class="form-row">
+         <label for="avatarFile">Carica avatar dal PC (opz.)</label>
+         <input id="avatarFile" name="avatarFile" type="file" accept="image/*" />
+         <small class="muted">PNG/JPG fino a 2 MB</small>
+         <div style="margin-top:.5rem;">
+          <img id="avatar-preview" alt="Anteprima avatar" style="max-width:120px;display:none;border-radius:6px;"/>
+         </div>
+        </div>
+
+        <div class="form-row">
           <label for="languages">Lingue (separa con virgola)</label>
           <input id="languages" name="languages" type="text" placeholder="it, en"/>
         </div>
