@@ -114,16 +114,18 @@ function renderMessages(msgs) {
   box.scrollTop = box.scrollHeight;
 }
 
-async function onSend() {
-if (!current.roomId || !(current.canSend || forceSendEnabled())) return;
-  const txt = q("txt");
-  const val = (txt.value || "").trim();
-  if (!val) return;
-  const r = await postRoomMessage(current.roomId, val);
+ async function onSend() {
+ if (!current.roomId || !(current.canSend || forceSendEnabled())) return;
+ const txt = q("txt");
+ const val = (txt.value || "").trim();
+ if (!val) return;
+ await postRoomMessage(current.roomId, val);
+ txt.value = "";
+ await loadMessages();
+ await markRoomRead(current.roomId);
  window.dispatchEvent(new CustomEvent("rooms:updated"));
-   }
-  }
-}
+ }
+
 
 function showEmpty(message) {
   q("roomTitle").textContent = "Nessuna stanza aperta";
