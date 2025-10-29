@@ -97,14 +97,18 @@ async function loadProfile() {
   optInDM.checked = !!(p.privacy && p.privacy.optInDM);
   dmsFrom.value = (p.privacy && p.privacy.dmsFrom) || "everyone";
 }
-if (birthYear.value && (Number(birthYear.value) < 1900 || Number(birthYear.value) > 2100)) {
-  showAlert("Anno non valido (1900–2100)", "error", 3500);
-  return;
-}
 
 // --- submit basic ---
 basicForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
+  // Validazione client birthYear (ora *dentro* al submit)
+if (birthYear.value) {
+  const y = Number(birthYear.value);
+  if (!Number.isInteger(y) || y < 1900 || y > 2100) {
+    showAlert("Anno non valido (1900–2100)", "error", 3500);
+    return; // <-- ora è legale: ferma solo il submit
+  }
+}
   // Se c'è un file da caricare, invialo prima
 if (avatarFile?.files?.[0]) {
   const fd = new FormData();
