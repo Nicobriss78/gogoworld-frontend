@@ -57,6 +57,16 @@ const languages = $("#languages");
 const socials = $("#socials");
 const interests = $("#interests");
 const bio = $("#bio");
+// Gestione avatar file locale
+const avatarFile = $("#avatarFile");
+const avatarPreview = $("#avatar-preview");
+
+avatarFile?.addEventListener("change", (e) => {
+  const f = e.target.files?.[0];
+  if (!f || !avatarPreview) return;
+  avatarPreview.src = URL.createObjectURL(f);
+  avatarPreview.style.display = "inline-block";
+});
 
 const optInDM = $("#optInDM");
 const dmsFrom = $("#dmsFrom");
@@ -87,10 +97,31 @@ async function loadProfile() {
   optInDM.checked = !!(p.privacy && p.privacy.optInDM);
   dmsFrom.value = (p.privacy && p.privacy.dmsFrom) || "everyone";
 }
+if (birthYear.value && (Number(birthYear.value) < 1900 || Number(birthYear.value) > 2100)) {
+  showAlert("Anno non valido (1900–2100)", "error", 3500);
+  return;
+}
 
 // --- submit basic ---
 basicForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
+  // Se c'è un file da caricare, invialo prima
+if (avatarFile?.files?.[0]) {
+  const fd = new FormData();
+  fd.append("avatar", avatarFile.files[0]);
+  const resp = await fetch("/api/profile/me/avatar", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: fd
+  });
+  const out = await resp.json();
+  if (out?.ok && out.avatarUrl) {
+    avatarUrl.value = out.avatarUrl;
+  } else if (out?.error) {
+    showAlert("Upload avatar fallito: " + out.error, "error", 3500);
+  }
+}
+
   const payload = {
     nickname: nickname.value.trim() || null,
     birthYear: birthYear.value ? Number(birthYear.value) : undefined,
