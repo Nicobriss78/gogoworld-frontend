@@ -307,6 +307,19 @@ loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
 const unlockBox = document.getElementById("unlockBox");
 const unlockCode = document.getElementById("unlockCode");
 const btnUnlock = document.getElementById("btnUnlock");
+// GATE CHAT: visibile da APPROVATO fino a 24h dopo la fine
+const appr = String(ev?.approvalStatus || "").toLowerCase();
+const endRef = ev?.dateEnd || ev?.endDate || ev?.dateStart || ev?.date || null;
+const chatExpired = endRef ? (Date.now() > (new Date(endRef)).getTime() + 24*60*60*1000) : false;
+const chatEligible = (appr === "approved") && !chatExpired;
+
+// Mostra/nascondi bottone chat e box sblocco coerentemente
+if (!chatEligible) {
+  if (btnChat) { btnChat.style.display = "none"; btnChat.disabled = true; btnChat.classList.add("btn-disabled"); }
+  if (unlockBox) unlockBox.style.display = "none";
+} else {
+  if (btnChat) { btnChat.style.display = ""; btnChat.disabled = false; btnChat.classList.remove("btn-disabled"); }
+}
 
 async function checkChatAccess(eventId, token) {
   try {
@@ -328,8 +341,9 @@ async function checkChatAccess(eventId, token) {
 }
 
 // Avvia controllo all’apertura
-await checkChatAccess(eventId, token);
-
+if (chatEligible) {
+  await checkChatAccess(eventId, token);
+}
 // Gestione tasto “Sblocca”
 if (btnUnlock && unlockCode) {
   btnUnlock.addEventListener("click", async () => {
@@ -809,6 +823,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
