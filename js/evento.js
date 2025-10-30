@@ -500,11 +500,18 @@ window.location.href = u.toString();
             if (!res?.ok) throw new Error(res?.error || "Errore annullamento");
             isJoined = false; // aggiorna stato locale
             showAlert("Partecipazione annullata", "success", { autoHideMs: 2500 });
+              window.dispatchEvent(new CustomEvent("events:joined-changed", {
+              detail: { eventId, joined: false }
+  }));
           } else {
             const res = await apiPost(`/events/${eventId}/join`, {}, token);
             if (!res?.ok) throw new Error(res?.error || "Errore partecipazione");
             isJoined = true; // aggiorna stato locale
             showAlert("Iscrizione effettuata", "success", { autoHideMs: 2500 });
+                window.dispatchEvent(new CustomEvent("events:joined-changed", {
+                detail: { eventId, joined: true }
+    }));
+
           }
           setToggleLabel(); // aggiorna il testo SENZA ricaricare la pagina
         } catch (err) {
@@ -823,6 +830,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
