@@ -69,11 +69,11 @@ async function init() {
 function bindRoom(meta) {
   current = { ...current, ...meta };
   q("roomTitle").textContent = current.title || "Chat evento";
-  if (current.activeFrom && current.activeUntil) {
-  q("roomWindow").textContent = `Invio abilitato tra ${fmtDate(current.activeFrom)} e ${fmtDate(current.activeUntil)}.`;
-  } else {
-    q("roomWindow").textContent = "";
-  }
+   if (current.activeUntil) {
+   q("roomWindow").textContent = `Chat attiva fino a ${fmtDate(current.activeUntil)}.`;
+   } else {
+   q("roomWindow").textContent = "Chat attiva.";
+   }
   // link “torna all’evento” se eventId presente
   const back = q("btnBackToEvent");
   if (current.eventId) {
@@ -84,6 +84,12 @@ function bindRoom(meta) {
   }
  q("txt").disabled = !(current.canSend || forceSendEnabled());
  q("sendBtn").disabled = !(current.canSend || forceSendEnabled());
+// Se la chat è scaduta (oltre la fine +24h) disabilita comunque
+if (current.activeUntil && new Date() > new Date(current.activeUntil)) {
+ q("txt").disabled = true;
+ q("sendBtn").disabled = true;
+ q("roomWindow").textContent = "Chat non più attiva (evento concluso).";
+ }
 }
 
 async function loadMessages(before) {
