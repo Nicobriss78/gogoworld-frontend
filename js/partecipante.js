@@ -410,7 +410,10 @@ if (!r || r.ok === false || r.status === 401) {
       myList.innerHTML = "";
     }
   }
-
+  // Refresh liste quando cambia la partecipazione da altre pagine (es. evento.html)
+    window.addEventListener("events:joined-changed", () => {
+    loadEvents();
+    });
   // Delegation click (tutti / miei)
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest("button[data-action]");
@@ -532,6 +535,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
