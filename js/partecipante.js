@@ -184,6 +184,11 @@ function populateFilterOptions() {
 document.addEventListener("DOMContentLoaded", async () => {
   // Token: se non c'è, esci subito (niente polling)
   const token = localStorage.getItem("token");
+  // 🔁 Listener globale: aggiorna le liste quando cambia la partecipazione altrove
+  window.addEventListener("events:joined-changed", () => {
+    console.debug("🔄 Evento globale ricevuto: aggiorno liste partecipante");
+    loadEvents();
+  });
   if (!token) {
     window.location.href = "index.html";
     return;
@@ -410,10 +415,7 @@ if (!r || r.ok === false || r.status === 401) {
       myList.innerHTML = "";
     }
   }
-  // Refresh liste quando cambia la partecipazione da altre pagine (es. evento.html)
-    window.addEventListener("events:joined-changed", () => {
-    loadEvents();
-    });
+
   // Delegation click (tutti / miei)
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest("button[data-action]");
@@ -535,6 +537,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
