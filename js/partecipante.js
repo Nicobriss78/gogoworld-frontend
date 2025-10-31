@@ -184,11 +184,39 @@ function populateFilterOptions() {
 document.addEventListener("DOMContentLoaded", async () => {
   // Token: se non c'è, esci subito (niente polling)
   const token = localStorage.getItem("token");
-  // 🔁 Listener globale: aggiorna le liste quando cambia la partecipazione altrove
+  // 🔁 Aggiorna le liste quando cambia la partecipazione in un'altra scheda
   window.addEventListener("events:joined-changed", () => {
-    console.debug("🔄 Evento globale ricevuto: aggiorno liste partecipante");
+    console.debug("🔄 window event: joined-changed → loadEvents()");
     loadEvents();
   });
+
+  // BroadcastChannel (cross-tab moderno)
+  let _bc;
+  try {
+    _bc = new BroadcastChannel("gogoworld.events");
+    _bc.addEventListener("message", (ev) => {
+      if (ev?.data?.type === "joined-changed") {
+        console.debug("🔄 BC joined-changed", ev.data);
+        loadEvents();
+      }
+    });
+  } catch (e) { /* ignore */ }
+
+  // Fallback cross-tab tramite localStorage
+  window.addEventListener("storage", (e) => {
+    if (e.key === "events:joined-changed" && e.newValue) {
+      // Nota: l'evento storage NON si attiva nella scheda che fa setItem,
+      // ma si attiva nelle ALTRE schede dello stesso origin → perfetto per il nostro caso.
+      console.debug("🔄 storage joined-changed", e.newValue);
+      loadEvents();
+    }
+  });
+
+  // Cleanup canale quando si chiude la scheda
+  window.addEventListener("beforeunload", () => {
+    try { _bc?.close?.(); } catch (e) { /* ignore */ }
+  });
+
   if (!token) {
     window.location.href = "index.html";
     return;
@@ -537,6 +565,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
