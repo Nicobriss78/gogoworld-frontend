@@ -503,6 +503,16 @@ window.location.href = u.toString();
               window.dispatchEvent(new CustomEvent("events:joined-changed", {
               detail: { eventId, joined: false }
   }));
+            // Cross-tab notify (BroadcastChannel + storage event)
+try {
+  const bc = new BroadcastChannel("gogoworld.events");
+  bc.postMessage({ type: "joined-changed", eventId, joined: false, ts: Date.now() });
+  bc.close();
+} catch (e) { /* ignore */ }
+try {
+  localStorage.setItem("events:joined-changed", JSON.stringify({ eventId, joined: false, ts: Date.now() }));
+} catch (e) { /* ignore */ }
+
           } else {
             const res = await apiPost(`/events/${eventId}/join`, {}, token);
             if (!res?.ok) throw new Error(res?.error || "Errore partecipazione");
@@ -511,6 +521,15 @@ window.location.href = u.toString();
                 window.dispatchEvent(new CustomEvent("events:joined-changed", {
                 detail: { eventId, joined: true }
     }));
+// Cross-tab notify (BroadcastChannel + storage event)
+try {
+  const bc = new BroadcastChannel("gogoworld.events");
+  bc.postMessage({ type: "joined-changed", eventId, joined: true, ts: Date.now() });
+  bc.close();
+} catch (e) { /* ignore */ }
+try {
+  localStorage.setItem("events:joined-changed", JSON.stringify({ eventId, joined: true, ts: Date.now() }));
+} catch (e) { /* ignore */ }
 
           }
           setToggleLabel(); // aggiorna il testo SENZA ricaricare la pagina
@@ -830,6 +849,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
