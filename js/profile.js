@@ -12,6 +12,13 @@ function showAlert(msg, type = "success", ms = 2500) {
   alerts.appendChild(div);
   if (ms) setTimeout(() => div.remove(), ms);
 }
+function showInfo(msg) {
+  const div = document.createElement("div");
+  div.className = "alert info";
+  div.textContent = msg;
+  alerts.appendChild(div);
+  return () => div.remove(); // ritorna funzione di cleanup
+}
 
 function parseCSV(input) {
   if (!input) return [];
@@ -109,22 +116,36 @@ if (birthYear.value) {
     return; // <-- ora è legale: ferma solo il submit
   }
 }
-  // Se c'è un file da caricare, invialo prima
+// Se c'è un file da caricare, invialo prima
 if (avatarFile?.files?.[0]) {
-  const fd = new FormData();
-  fd.append("avatar", avatarFile.files[0]);
-  const resp = await fetch("/api/profile/me/avatar", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-    body: fd
-  });
-  const out = await resp.json();
-  if (out?.ok && out.avatarUrl) {
-    avatarUrl.value = out.avatarUrl;
-  } else if (out?.error) {
-    showAlert("Upload avatar fallito: " + out.error, "error", 3500);
+  const removeInfo = showInfo("📤 Caricamento avatar in corso…");
+  try {
+    const fd = new FormData();
+    fd.append("avatar", avatarFile.files[0]);
+    const resp = await fetch("/api/profile/me/avatar", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd
+    });
+    const out = await resp.json();
+    removeInfo();
+    if (out?.ok && out.avatarUrl) {
+      avatarUrl.value = out.avatarUrl;
+      showAlert("✅ Avatar aggiornato con successo");
+    } else if (out?.error) {
+      showAlert("❌ Upload avatar fallito: " + out.error, "error", 4000);
+      return; // interrompi submit se upload fallisce
+    } else {
+      showAlert("❌ Upload avatar fallito", "error", 4000);
+      return;
+    }
+  } catch (err) {
+    removeInfo();
+    showAlert("❌ Errore di rete durante l'upload", "error", 4000);
+    return;
   }
 }
+
 
   const payload = {
     nickname: nickname.value.trim() || null,
