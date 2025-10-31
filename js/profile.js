@@ -102,7 +102,7 @@ async function loadProfile() {
      avatarPreview.src = p.avatarUrl;
      avatarPreview.style.display = "inline-block";
      } else {
-096: avatarPreview.style.display = "none";
+  avatarPreview.style.display = "none";
      }
      }
 
