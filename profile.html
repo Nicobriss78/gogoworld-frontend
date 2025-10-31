@@ -42,9 +42,19 @@
           <input id="city" name="city" type="text" maxlength="120" placeholder="Potenza"/>
         </div>
         <div class="form-row">
-          <label for="avatarUrl">Avatar URL (opz.)</label>
-          <input id="avatarUrl" name="avatarUrl" type="url" placeholder="https://..."/>
-        </div>
+   <input id="avatarUrl" name="avatarUrl" type="hidden"/>
+     </div>
+     <div class="form-row">
+     <label for="avatarFile">Avatar</label>
+     <input id="avatarFile" name="avatarFile" type="file" accept="image/*"/>
+     </div>
+     <div class="form-row">
+     <div class="avatar-box">
+     <img id="avatar-preview" alt="Anteprima avatar"
+     style="display:none; max-width:120px; max-height:120px; border-radius:8px; border:1px solid #ddd;"/>
+     </div>
+     </div>
+
         <div class="form-row">
          <label for="avatarFile">Carica avatar dal PC (opz.)</label>
          <input id="avatarFile" name="avatarFile" type="file" accept="image/*" />
