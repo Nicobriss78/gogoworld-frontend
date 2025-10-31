@@ -96,15 +96,18 @@ async function loadProfile() {
   birthYear.value = p.birthYear || "";
   region.value = p.region || "";
   city.value = p.city || "";
-  avatarUrl.value = p.avatarUrl || "";
-    if (avatarPreview) {
-     if (p.avatarUrl) {
-     avatarPreview.src = p.avatarUrl;
-     avatarPreview.style.display = "inline-block";
-     } else {
-  avatarPreview.style.display = "none";
-     }
-     }
+avatarUrl.value = p.avatarUrl || "";
+  if (avatarPreview) {
+    if (p.avatarUrl) {
+      const src = p.avatarUrl.startsWith("/uploads/")
+        ? "/api" + p.avatarUrl
+        : p.avatarUrl;
+      avatarPreview.src = src;
+      avatarPreview.style.display = "inline-block";
+    } else {
+      avatarPreview.style.display = "none";
+    }
+  }
 
   bio.value = p.bio || "";
 
@@ -140,14 +143,19 @@ if (avatarFile?.files?.[0]) {
     });
     const out = await resp.json();
     removeInfo();
-    if (out?.ok && out.avatarUrl) {
-      avatarUrl.value = out.avatarUrl;
-         if (avatarPreview) {
-       avatarPreview.src = out.avatarUrl;
-       avatarPreview.style.display = "inline-block";
-       }
+if (out?.ok && out.avatarUrl) {
+      const savedUrl = out.avatarUrl.startsWith("/uploads/")
+        ? "/api" + out.avatarUrl
+        : out.avatarUrl;
+
+      avatarUrl.value = savedUrl;
+      if (avatarPreview) {
+        avatarPreview.src = savedUrl;
+        avatarPreview.style.display = "inline-block";
+      }
 
       showAlert("✅ Avatar aggiornato con successo");
+
     } else if (out?.error) {
       showAlert("❌ Upload avatar fallito: " + out.error, "error", 4000);
       return; // interrompi submit se upload fallisce
