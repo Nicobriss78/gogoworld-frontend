@@ -81,8 +81,9 @@ async function apiFetch(path, { method = "GET", body, token } = {}) {
   let res;
   try {
     // ⬇️ usa fetchWithRetry al posto di fetch
-    res = await fetchWithRetry(url, { method, headers, body: fetchBody });
-  } catch (networkErr) {
+   const opts = { method, headers, body: fetchBody };
+   if (method.toUpperCase() === "GET") opts.cache = "no-store";
+   res = await fetchWithRetry(url, opts);  } catch (networkErr) {
     return {
       ok: false,
       status: 0,
