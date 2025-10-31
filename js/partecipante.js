@@ -186,7 +186,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   // 🔁 Aggiorna le liste quando cambia la partecipazione in un'altra scheda
   window.addEventListener("events:joined-changed", () => {
-    console.debug("🔄 window event: joined-changed → loadEvents()");
     loadEvents();
   });
 
@@ -196,7 +195,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     _bc = new BroadcastChannel("gogoworld.events");
     _bc.addEventListener("message", (ev) => {
       if (ev?.data?.type === "joined-changed") {
-        console.debug("🔄 BC joined-changed", ev.data);
         loadEvents();
       }
     });
@@ -207,7 +205,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.key === "events:joined-changed" && e.newValue) {
       // Nota: l'evento storage NON si attiva nella scheda che fa setItem,
       // ma si attiva nelle ALTRE schede dello stesso origin → perfetto per il nostro caso.
-      console.debug("🔄 storage joined-changed", e.newValue);
       loadEvents();
     }
   });
@@ -566,6 +563,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
