@@ -71,7 +71,9 @@ const avatarPreview = $("#avatar-preview");
 avatarFile?.addEventListener("change", (e) => {
   const f = e.target.files?.[0];
   if (!f || !avatarPreview) return;
-  avatarPreview.src = URL.createObjectURL(f);
+  const tmp = URL.createObjectURL(f);
+  avatarPreview.onload = () => URL.revokeObjectURL(tmp);
+  avatarPreview.src = tmp;
   avatarPreview.style.display = "inline-block";
 });
 
@@ -95,6 +97,15 @@ async function loadProfile() {
   region.value = p.region || "";
   city.value = p.city || "";
   avatarUrl.value = p.avatarUrl || "";
+    if (avatarPreview) {
+     if (p.avatarUrl) {
+     avatarPreview.src = p.avatarUrl;
+     avatarPreview.style.display = "inline-block";
+     } else {
+096: avatarPreview.style.display = "none";
+     }
+     }
+
   bio.value = p.bio || "";
 
   languages.value = joinCSV(p.languages);
@@ -124,13 +135,18 @@ if (avatarFile?.files?.[0]) {
     fd.append("avatar", avatarFile.files[0]);
     const resp = await fetch("/api/profile/me/avatar", {
       method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: "Bearer " + token },
       body: fd
     });
     const out = await resp.json();
     removeInfo();
     if (out?.ok && out.avatarUrl) {
       avatarUrl.value = out.avatarUrl;
+         if (avatarPreview) {
+       avatarPreview.src = out.avatarUrl;
+       avatarPreview.style.display = "inline-block";
+       }
+
       showAlert("✅ Avatar aggiornato con successo");
     } else if (out?.error) {
       showAlert("❌ Upload avatar fallito: " + out.error, "error", 4000);
