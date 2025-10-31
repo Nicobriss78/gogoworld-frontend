@@ -347,8 +347,9 @@ if (!r || r.ok === false || r.status === 401) {
     myList.innerHTML = "";
 
     try {
-      const query = new URLSearchParams(filters).toString();
-      const res = await apiGet(`/events${query ? "?" + query : ""}`, token);
+    const qs = new URLSearchParams(filters);
+     qs.set("__ts", String(Date.now())); // cache-buster
+    const res = await apiGet(`/events?${qs.toString()}`, token);
       if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
 
       // Recupera anche i miei per marcare join/leave
@@ -565,6 +566,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
