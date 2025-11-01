@@ -639,6 +639,52 @@ body {
 #chatInput { display:flex; gap:.5rem; border-top:1px solid #ccc; padding:.4rem; }
 #msgText { flex:1; resize:none; }
 
+/* === Avatar Profilo (UI responsive e centrato) === */
+.avatar-box {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-top: .25rem;
+  justify-content: center;
+}
+
+.avatar-wrapper {
+  width: 128px;
+  height: 128px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#avatar-preview {
+  max-width: 100%;
+  max-height: 100%;
+  display: none; /* mostrata via JS */
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Stato placeholder (nessun avatar caricato) */
+.avatar-wrapper::before {
+  content: "👤";
+  font-size: 2.5rem;
+  color: #bbb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile: centrato e proporzionato */
+@media (max-width: 640px) {
+  .avatar-box {
+    flex-direction: column;
+  }
+}
+
 
 
 
