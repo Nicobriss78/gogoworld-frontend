@@ -1,5 +1,9 @@
 // js/profile.js — C1 Profilo (UI)
 import { getMyProfile, updateMyProfile, whoami } from "./api.js";
+// Fallback assoluto al backend Render se il proxy Netlify /api fallisce (404)
+// Mantieni sincronizzato questo valore con netlify.toml
+const BACKEND_ORIGIN = "https://gogoworld-api.onrender.com";
+const API_PREFIX = "/api";
 
 // --- helpers UI ---
 const $ = (sel) => document.querySelector(sel);
@@ -67,6 +71,26 @@ const bio = $("#bio");
 // Gestione avatar file locale
 const avatarFile = $("#avatarFile");
 const avatarPreview = $("#avatar-preview");
+function setAvatarPreview(url) {
+  if (!avatarPreview || !url) return;
+  const isUploads = url.startsWith("/uploads/");
+  const isApiUploads = url.startsWith("/api/uploads/");
+  // normalizza su /api
+  let src = isUploads ? (API_PREFIX + url) : url;
+  if (!isUploads && !isApiUploads && !/^https?:\/\//i.test(url)) {
+    // caso edge: percorso relativo non previsto
+    src = API_PREFIX + "/" + url.replace(/^\/+/, "");
+  }
+  avatarPreview.onerror = () => {
+    // fallback diretto al dominio Render
+    const path = src.startsWith(API_PREFIX) ? src : (API_PREFIX + src);
+    avatarPreview.onerror = null; // evita loop
+    avatarPreview.src = BACKEND_ORIGIN + path;
+  };
+  avatarPreview.src = src;
+  avatarPreview.style.display = "inline-block";
+}
+
 
 avatarFile?.addEventListener("change", (e) => {
   const f = e.target.files?.[0];
@@ -98,15 +122,12 @@ async function loadProfile() {
   city.value = p.city || "";
 avatarUrl.value = p.avatarUrl || "";
   if (avatarPreview) {
-    if (p.avatarUrl) {
-      const src = p.avatarUrl.startsWith("/uploads/")
-        ? "/api" + p.avatarUrl
-        : p.avatarUrl;
-      avatarPreview.src = src;
-      avatarPreview.style.display = "inline-block";
-    } else {
-      avatarPreview.style.display = "none";
-    }
+if (p.avatarUrl) {
+  setAvatarPreview(p.avatarUrl);
+} else {
+  avatarPreview.style.display = "none";
+}
+
   }
 
   bio.value = p.bio || "";
@@ -144,15 +165,9 @@ if (avatarFile?.files?.[0]) {
     const out = await resp.json();
     removeInfo();
 if (out?.ok && out.avatarUrl) {
-      const savedUrl = out.avatarUrl.startsWith("/uploads/")
-        ? "/api" + out.avatarUrl
-        : out.avatarUrl;
-
-      avatarUrl.value = savedUrl;
-      if (avatarPreview) {
-        avatarPreview.src = savedUrl;
-        avatarPreview.style.display = "inline-block";
-      }
+const savedUrl = out.avatarUrl;
+avatarUrl.value = savedUrl;
+setAvatarPreview(savedUrl);
 
       showAlert("✅ Avatar aggiornato con successo");
 
