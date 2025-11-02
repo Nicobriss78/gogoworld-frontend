@@ -18,10 +18,9 @@ function adminBase() {
 // Helper per instradare le chiamate API
 async function callApi(path, opts = {}) {
   // path deve iniziare con "/" (es. "/admin/..." o "/events/...")
-  const url = path.startsWith("/admin/")
-    ? `${adminBase()}/api${path}` // Function admin con iniezione chiave interna
-    : `${apiBase()}${path}`; // Proxy /api per tutto il resto
-
+ const url = path.startsWith("/admin/")
+ ? `${adminBase()}/api${path}` // instrada via Function
+ : (path.startsWith("/api/") ? path : `${apiBase()}${path}`); // se è già /api/ non duplicare
   const res = await fetch(url, opts);
 
   // Auto-logout coerente con api.js: dispatch su 401
@@ -280,7 +279,8 @@ async function fetchEvents() {
     approvalStatus: (elEvStatus?.value || "").toLowerCase(),
     visibility: (elEvVisibility?.value || "").toLowerCase(),
   };
-  const path = `/admin/events?${qParams(q)}&_=${Date.now()}`;
+ const path = `/api/admin/events?${qParams(q)}&_=${Date.now()}`;
+ console.debug("[admin] fetchEvents url:", path, q);  
   const res = await callApi(path, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore fetch eventi");
