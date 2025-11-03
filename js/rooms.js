@@ -78,10 +78,19 @@ function bindRoom(meta) {
   const back = q("btnBackToEvent");
   if (current.eventId) {
     back.style.display = "";
-    back.href = `../evento.html?id=${encodeURIComponent(current.eventId)}`;
-  } else {
-    back.style.display = "none";
-  }
+ back.href = `../evento.html?id=${encodeURIComponent(current.eventId)}`;
+ // Preferisci history.back() se provenivi da evento.html
+ back.addEventListener("click", (e) => {
+ const ref = document.referrer || "";
+ if (ref.includes("evento.html")) {
+ e.preventDefault();
+ history.back();
+ }
+ });
+   } else {
+     back.style.display = "none";
+   }
+
  q("txt").disabled = !(current.canSend || forceSendEnabled());
  q("sendBtn").disabled = !(current.canSend || forceSendEnabled());
 // Se la chat è scaduta (oltre la fine +24h) disabilita comunque
