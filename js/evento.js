@@ -300,7 +300,10 @@ loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
       : ev.organizer;
     const isOwner = String(evOrganizerId || "") === String(myId || "");
     const btnChat = document.getElementById("btnChatEvento");
-     if (btnChat) btnChat.href = `pages/rooms.html?eventId=${encodeURIComponent(ev._id)}`;
+ if (btnChat) {
+ const ret = encodeURIComponent(window.location.href);
+ btnChat.href = `pages/rooms.html?eventId=${encodeURIComponent(ev._id)}&returnTo=${ret}`;
+}
      const btnDM = document.getElementById("btnDMOrganizzatore");
       if (btnDM && evOrganizerId) btnDM.href = `messages.html?to=${encodeURIComponent(evOrganizerId)}`;
 // --- Chat privata: verifica lock senza codice & sblocco ---
@@ -849,6 +852,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
