@@ -122,8 +122,15 @@ function formatTime(d) {
   return dt.toLocaleString("it-IT", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
 }
 
-// Bind
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("sendBtn").addEventListener("click", onSend);
-  init();
-});
+   // Bind
+    document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("sendBtn").addEventListener("click", onSend);
+    // PATCH A4: back dinamico se arrivo da evento
+    const params = new URLSearchParams(location.search);
+    const rt = params.get("returnTo");
+    if (rt) {
+    const back = document.getElementById("backLink");
+    if (back) back.href = decodeURIComponent(rt);
+    }
+    init();
+    });
