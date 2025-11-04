@@ -299,12 +299,20 @@ loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
       ? ev.organizer._id
       : ev.organizer;
     const isOwner = String(evOrganizerId || "") === String(myId || "");
-    const btnChat = document.getElementById("btnChatEvento");
- if (btnChat) {
- const ret = encodeURIComponent(window.location.href);
- btnChat.href = `pages/rooms.html?eventId=${encodeURIComponent(ev._id)}&returnTo=${ret}`;
+// URL di ritorno (riusato per chat evento e DM)
+const ret = encodeURIComponent(window.location.href);
+
+// Link "Apri chat evento" (+ returnTo)
+const btnChat = document.getElementById("btnChatEvento");
+if (btnChat) {
+  btnChat.href = `pages/rooms.html?eventId=${encodeURIComponent(ev._id)}&returnTo=${ret}`;
 }
-     const btnDM = document.getElementById("btnDMOrganizzatore");
+
+// Link "Scrivi all’organizzatore" (+ returnTo)
+const btnDM = document.getElementById("btnDMOrganizzatore");
+if (btnDM && evOrganizerId) {
+  btnDM.href = `messages.html?to=${encodeURIComponent(evOrganizerId)}&returnTo=${ret}`;
+}
       if (btnDM && evOrganizerId) btnDM.href = `messages.html?to=${encodeURIComponent(evOrganizerId)}`;
 // --- Chat privata: verifica lock senza codice & sblocco ---
 const unlockBox = document.getElementById("unlockBox");
@@ -852,6 +860,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
