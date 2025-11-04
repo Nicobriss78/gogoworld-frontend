@@ -33,5 +33,17 @@
   </main>
 
   <script type="module" src="js/messages.js"></script>
+  <script>
+  // PATCH A4 – gestione ritorno dinamico
+  (function () {
+    const params = new URLSearchParams(location.search);
+    const rt = params.get("returnTo");
+    if (rt) {
+      const back = document.getElementById("backLink");
+      if (back) back.href = decodeURIComponent(rt);
+    }
+  })();
+</script>
+
 </body>
 </html>
