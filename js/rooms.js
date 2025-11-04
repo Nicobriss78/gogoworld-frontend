@@ -74,21 +74,27 @@ function bindRoom(meta) {
    } else {
    q("roomWindow").textContent = "Chat attiva.";
    }
-  // link “torna all’evento” se eventId presente
-  const back = q("btnBackToEvent");
-  if (current.eventId) {
-    back.style.display = "";
- back.href = `../evento.html?id=${encodeURIComponent(current.eventId)}`;
- // Preferisci history.back() se provenivi da evento.html
- back.addEventListener("click", (e) => {
- const ref = document.referrer || "";
- if (ref.includes("evento.html")) {
- e.preventDefault();
- history.back();
- }
- });
+   // link "torna all’evento" se eventId presente
+   const back = q("btnBackToEvent");
+   if (current.eventId) {
+   back.style.display = "";
+  const params = new URLSearchParams(location.search);
+   const rt = params.get("returnTo");
+   if (rt) {
+   back.href = decodeURIComponent(rt);
    } else {
-     back.style.display = "none";
+   back.href = `../evento.html?id=${encodeURIComponent(current.eventId)}`;
+   }
+   // Preferisci history.back() se provenivi da evento.html
+   back.addEventListener("click", (e) => {
+   const ref = document.referrer || "";
+   if (ref.includes("evento.html")) {
+   e.preventDefault();
+   history.back();
+   }
+   });
+   } else {
+   back.style.display = "none";
    }
 
  q("txt").disabled = !(current.canSend || forceSendEnabled());
