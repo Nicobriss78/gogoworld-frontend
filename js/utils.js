@@ -56,5 +56,14 @@ export function gwNotify(message, type = "info", opts = {}) {
     }, autoHideMs);
   }
 }
+// Recupera parametro da querystring (utility condivisa)
+export function getQueryParam(name) {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name);
+  } catch {
+    return null;
+  }
+}
 
 
