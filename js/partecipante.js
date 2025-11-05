@@ -284,6 +284,17 @@ if (!r || r.ok === false || r.status === 401) {
   // Avvia PRIMA l'intervallo, poi la prima chiamata (così al primo 401 l'interval esiste già)
   _roomsBadgeInterval = setInterval(pollRoomsBadge, 20000);
   pollRoomsBadge();
+// PATCH: handler bottone Room con returnTo coerente
+const btnRooms = document.getElementById("btnRooms");
+if (btnRooms) {
+  btnRooms.addEventListener("click", (e) => {
+    // Se vogliamo solo passare il returnTo ora (la selezione stanza la gestiremo in rooms.js)
+    const ret = "/partecipante.html";
+    // Lasciamo l’ancora funzionare ma sovrascriviamo l'href con il returnTo
+    btnRooms.href = `pages/rooms.html?returnTo=${encodeURIComponent(ret)}`;
+    // (niente preventDefault: lasciamo navigare normalmente)
+  });
+}
 
   const allList = document.getElementById("allEventsList");
   const myList = document.getElementById("myEventsList");
@@ -563,6 +574,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
