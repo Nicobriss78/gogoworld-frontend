@@ -24,6 +24,16 @@ function forceSendEnabled() {
   try { return new URLSearchParams(location.search).get("forceSend") === "1"; }
   catch { return false; }
 }
+// Helper: recupera le "mie stanze"
+async function getMyRooms() {
+  const token = localStorage.getItem("token");
+  const res = await fetch("/api/rooms/mine", {
+    headers: { "Authorization": `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error("rooms/mine failed");
+  const payload = await res.json();
+  return payload?.data || [];
+}
 
 async function init() {
   const token = localStorage.getItem("token");
@@ -55,10 +65,51 @@ async function init() {
     // In MVP: senza eventId non mostriamo il link "torna all'evento".
     bindRoom({ roomId, eventId: null, canSend: true, title: "Chat evento", activeFrom: null, activeUntil: null });
     await loadMessages();
-  } else {
-    // Nessun parametro -> UI vuota con istruzione
+} else {
+  // Nessun parametro -> prova ad aprire la prima mia stanza (se esiste)
+  try {
+    const mine = await getMyRooms();
+    if (mine.length > 0) {
+      const r0 = mine[0]; // la più recente (ordinamento lato BE consigliato per updatedAt desc)
+      // Se la room è legata a un evento, riusa openOrJoinEvent per avere canSend/finestra coerente
+      if (r0.event && (r0.event._id || r0.event.id)) {
+        const evId = r0.event._id || r0.event.id;
+        const res = await openOrJoinEvent(evId);
+        if (res?.ok) {
+          bindRoom({
+            roomId: res.data.roomId,
+            eventId: evId,
+            canSend: !!res.data.canSend,
+            title: res.data.title || (r0.title || "Chat evento"),
+            activeFrom: res.data.activeFrom || r0.activeFrom || null,
+            activeUntil: res.data.activeUntil || r0.activeUntil || null,
+          });
+          await loadMessages();
+        } else {
+          showEmpty(`Impossibile aprire la stanza dell’evento.`);
+        }
+      } else if (r0._id) {
+        // Fallback: stanza senza event popolato → apri via roomId
+        bindRoom({
+          roomId: r0._id,
+          eventId: r0.event?._id || r0.event?.id || null,
+          canSend: true,
+          title: r0.title || "Chat evento",
+          activeFrom: r0.activeFrom || null,
+          activeUntil: r0.activeUntil || null,
+        });
+        await loadMessages();
+      } else {
+        showEmpty(`Apri una chat evento dalla pagina di dettaglio evento.`);
+      }
+    } else {
+      showEmpty(`Apri una chat evento dalla pagina di dettaglio evento.`);
+    }
+  } catch (e) {
+    console.debug("getMyRooms err:", e?.message || e);
     showEmpty(`Apri una chat evento dalla pagina di dettaglio evento.`);
   }
+}
 
   q("sendBtn").addEventListener("click", onSend);
   q("txt").addEventListener("keydown", (e) => {
