@@ -11,7 +11,7 @@ const isObjectId = (s) => typeof s === "string" && /^[a-f0-9]{24}$/i.test(s);
 let me = null;
 let currentUserId = null;
 let threads = [];
-
+let currentMsgs = [];
 async function init() {
   try {
     const token = localStorage.getItem("token");
@@ -67,8 +67,8 @@ async function openThread(userId) {
     const thread = threads.find(t => t.user.id === userId);
     if (thread) document.getElementById("chatUser").textContent = thread.user.nickname || "Utente";
     const res = await listMessages(userId);
-    const msgs = res?.data || [];
-    renderMessages(msgs);
+    currentMsgs = res?.data || [];
+    renderMessages(currentMsgs);
     await markRead(userId);
     window.dispatchEvent(new CustomEvent("dm:updated"));
   } catch (err) {
@@ -91,6 +91,9 @@ function renderMessages(msgs) {
 async function onSend() {
   const txt = document.getElementById("msgText");
   const val = txt.value.trim();
+  const btn = document.getElementById("sendBtn");
+   if (btn) btn.disabled = true;
+
 // Validazioni robuste prima dell'invio
 if (!currentUserId || !isObjectId(currentUserId)) {
 alert("Destinatario non valido. (manca ?to=<organizerId> oppure formato ID errato)");
@@ -108,10 +111,21 @@ return;
  return;
  }
 window.dispatchEvent(new CustomEvent("dm:updated"));
-
+   // --- Render ottimistico & pulizia input ---
+   // Accoda subito il messaggio tra i "miei" e renderizza senza attendere reload
+   currentMsgs.unshift({
+   sender: "me",
+   text: val,
+   createdAt: new Date().toISOString(),
+   });
+   renderMessages(currentMsgs);
+   // svuota la textarea e rimetti il focus
+   txt.value = "";
+   txt.focus();
  } catch (err) {
      console.error("Errore invio:", err);
   }
+     if (btn) btn.disabled = false;
 }
 
 function escapeHtml(t) {
