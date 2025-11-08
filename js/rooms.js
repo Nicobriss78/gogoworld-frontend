@@ -27,7 +27,7 @@ function forceSendEnabled() {
 // Helper: recupera le "mie stanze"
 async function getMyRooms() {
   const token = localStorage.getItem("token");
-  const res = await fetch("/api/rooms/mine", {
+  const res = await fetch("/api/rooms/mine?onlyActive=1", {
     headers: { "Authorization": `Bearer ${token}` }
   });
   if (!res.ok) throw new Error("rooms/mine failed");
