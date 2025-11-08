@@ -638,6 +638,18 @@ body {
 .badge { background:red; color:#fff; border-radius:10px; font-size:.7em; padding:0 .3em; margin-left:.3em; }
 #chatInput { display:flex; gap:.5rem; border-top:1px solid #ccc; padding:.4rem; }
 #msgText { flex:1; resize:none; }
+/* === Rooms sidebar (rooms.html) === */
+.roomItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .45rem .5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.roomItem:hover { background: #f5f5f5; }
+.roomItem.active { background: #eaf3ff; }
+.roomItem .badge { margin-left: .5rem; }
 
 /* === Avatar Profilo (UI responsive e centrato) === */
 .avatar-box {
@@ -684,6 +696,7 @@ body {
     flex-direction: column;
   }
 }
+
 
 
 
