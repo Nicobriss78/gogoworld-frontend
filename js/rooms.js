@@ -34,7 +34,80 @@ async function getMyRooms() {
   const payload = await res.json();
   return payload?.data || [];
 }
+// === Sidebar: "Le mie stanze" (render + click + refresh) ===
+function renderMyRooms(list = []) {
+  const box = q("roomList");
+  const hint = q("leftHint");
+  if (!box) return;
 
+  // hint visibile solo se lista vuota
+  if (hint) hint.style.display = list.length ? "none" : "";
+
+  if (!list.length) {
+    box.innerHTML = "";
+    return;
+  }
+
+  // costruzione voci
+  const curId = current?.roomId || null;
+  box.innerHTML = "";
+  list.forEach(r => {
+    const title = r?.title || (r?.event?.title || "Chat evento");
+    const div = document.createElement("div");
+    div.className = "roomItem" + (curId && r?._id === curId ? " active" : "");
+    div.dataset.roomId = r?._id || "";
+    div.dataset.eventId = (r?.event?._id || r?.event?.id || "") + "";
+    div.innerHTML = `
+      <span>${escapeHtml(title)}</span>
+      ${r?.unread > 0 ? `<span class="badge">${r.unread}</span>` : ""}
+    `;
+    box.appendChild(div);
+  });
+
+  attachRoomClick();
+}
+
+function attachRoomClick() {
+  const box = q("roomList");
+  if (!box) return;
+  const items = box.querySelectorAll(".roomItem");
+  items.forEach(el => {
+    el.onclick = async () => {
+      const roomId = el.dataset.roomId || null;
+      const eventId = el.dataset.eventId || null;
+
+      if (!roomId) return;
+
+      // bind locale e apertura messaggi
+      bindRoom({
+        roomId,
+        eventId: eventId || null,
+        canSend: true,
+        title: el.querySelector("span")?.textContent || "Chat evento",
+        activeFrom: null,
+        activeUntil: null,
+      });
+
+      // salva "ultima stanza" (non usata per auto-apertura ora, ma utile)
+      try { localStorage.setItem("lastRoomId", roomId); } catch {}
+
+      await loadMessages();
+      await markRoomRead(roomId);
+
+      // evidenzia attiva + refresh badge
+      window.dispatchEvent(new CustomEvent("rooms:updated"));
+    };
+  });
+}
+
+async function loadMyRooms() {
+  try {
+    const list = await getMyRooms();
+    renderMyRooms(list);
+  } catch (e) {
+    console.debug("loadMyRooms err:", e?.message || e);
+  }
+}
 async function init() {
   const token = localStorage.getItem("token");
   if (!token) { window.location.href = "../index.html"; return; }
@@ -43,6 +116,8 @@ async function init() {
   const qs = new URLSearchParams(location.search);
   const eventId = qs.get("eventId");
   const roomId = qs.get("roomId");
+// Popola subito la lista "Le mie stanze" nella colonna sinistra
+await loadMyRooms();
 
   if (eventId) {
     // crea/entra stanza dell'evento (pubblica)
@@ -206,5 +281,14 @@ function showEmpty(message) {
   q("txt").disabled = true;
   q("sendBtn").disabled = true;
 }
+// refresh lista quando cambiano i messaggi (es. invio, markRead, ecc.)
+window.addEventListener("rooms:updated", () => {
+  loadMyRooms().catch(() => {});
+});
+
+// refresh leggero ogni 10s (riuso polling generale)
+setInterval(() => {
+  loadMyRooms().catch(() => {});
+}, 10000);
 
 document.addEventListener("DOMContentLoaded", init);
