@@ -68,6 +68,8 @@ function attachRoomClick() {
   items.forEach(el => {
     el.onclick = async () => {
       const roomId = el.dataset.roomId || null;
+      // salva ultima stanza aperta
+      try { localStorage.setItem("lastRoomId", roomId); } catch {}
       const eventId = el.dataset.eventId || null;
 
       if (!roomId) return;
