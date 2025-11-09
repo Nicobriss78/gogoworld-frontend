@@ -386,9 +386,46 @@ window.addEventListener("rooms:updated", () => {
   loadMyRooms().catch(() => {});
 });
 
-// refresh unread ogni 10s (poll leggero badge)
-setInterval(() => {
-  pollUnreadSummary().catch(() => {});
-}, 10000);
+// === Poll unread raffinato ===
+let unreadTimer = null;
+let pollFailures = 0;
+let isPolling = false;
+
+async function safePollUnread() {
+  if (isPolling) return; // single-flight
+  isPolling = true;
+  try {
+    await pollUnreadSummary();
+    pollFailures = 0;
+    console.debug("[rooms] unread-summary OK", new Date().toLocaleTimeString());
+  } catch (e) {
+    pollFailures++;
+    console.debug("[rooms] unread-summary FAIL", pollFailures, e?.message || e);
+    // backoff dopo 3 errori consecutivi → pausa 60 s
+    if (pollFailures >= 3) {
+      clearInterval(unreadTimer);
+      console.debug("[rooms] unread-summary backoff 60 s");
+      setTimeout(startUnreadPoll, 60000);
+      isPolling = false;
+      return;
+    }
+  }
+  isPolling = false;
+}
+
+function startUnreadPoll() {
+  if (unreadTimer) clearInterval(unreadTimer);
+  const delay = document.visibilityState === "visible" ? 10000 : 25000;
+  unreadTimer = setInterval(() => safePollUnread(), delay);
+  safePollUnread(); // run immediately
+}
+
+// aggiorna intervallo quando cambia visibilità tab
+document.addEventListener("visibilitychange", () => {
+  startUnreadPoll();
+});
+
+startUnreadPoll();
+
 
 document.addEventListener("DOMContentLoaded", init);
