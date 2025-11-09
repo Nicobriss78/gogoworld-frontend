@@ -157,6 +157,46 @@ await loadMyRooms();
   // Nessun parametro -> prova ad aprire la prima mia stanza (se esiste)
   try {
 const mine = await getMyRooms({ onlyActive: 1 });
+    // Preferisci l'ultima stanza usata se presente nell'elenco
+    try {
+      const lastRoomId = localStorage.getItem("lastRoomId");
+      if (lastRoomId) {
+        const found = mine.find(r => r._id === lastRoomId);
+        if (found) {
+          // Se ha un evento, riusa openOrJoinEvent per canSend/finestra corretti
+          if (found.event && (found.event._id || found.event.id)) {
+            const evId2 = found.event._id || found.event.id;
+            const res2 = await openOrJoinEvent(evId2);
+            if (res2?.ok) {
+              bindRoom({
+                roomId: res2.data.roomId,
+                eventId: evId2,
+                canSend: !!res2.data.canSend,
+                title: res2.data.title,
+                activeFrom: res2.data.activeFrom,
+                activeUntil: res2.data.activeUntil,
+              });
+              await loadMessages();
+              await markRoomRead(res2.data.roomId);
+              return; // non aprire la "prima" stanza, abbiamo ripristinato l'ultima
+            }
+          }
+          // Fallback: apri direttamente via roomId
+          bindRoom({
+            roomId: found._id,
+            eventId: found.event?._id || found.event?.id || null,
+            canSend: true,
+            title: found.title || "Chat evento",
+            activeFrom: found.activeFrom || null,
+            activeUntil: found.activeUntil || null,
+          });
+          await loadMessages();
+          await markRoomRead(found._id);
+          return; // non aprire la "prima" stanza
+        }
+      }
+    } catch {}
+
     if (mine.length > 0) {
       const r0 = mine[0]; // la più recente (ordinamento lato BE consigliato per updatedAt desc)
       // Se la room è legata a un evento, riusa openOrJoinEvent per avere canSend/finestra coerente
@@ -207,6 +247,8 @@ const mine = await getMyRooms({ onlyActive: 1 });
 
 function bindRoom(meta) {
   current = { ...current, ...meta };
+  // memorizza ultima stanza aperta (anche quando arrivi da evento/roomId)
+  try { if (current.roomId) localStorage.setItem("lastRoomId", current.roomId); } catch {}
   q("roomTitle").textContent = current.title || "Chat evento";
    if (current.activeUntil) {
    q("roomWindow").textContent = `Chat attiva fino a ${fmtDate(current.activeUntil)}.`;
