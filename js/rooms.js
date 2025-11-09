@@ -5,7 +5,9 @@ import {
   listRoomMessages,
   postRoomMessage,
   markRoomRead,
+  getMyRooms,
 } from "./api.js";
+
 
 // Stato locale
 let current = { roomId: null, eventId: null, canSend: false, title: "", activeFrom: null, activeUntil: null };
@@ -24,16 +26,8 @@ function forceSendEnabled() {
   try { return new URLSearchParams(location.search).get("forceSend") === "1"; }
   catch { return false; }
 }
-// Helper: recupera le "mie stanze"
-async function getMyRooms() {
-  const token = localStorage.getItem("token");
-  const res = await fetch("/api/rooms/mine?onlyActive=1", {
-    headers: { "Authorization": `Bearer ${token}` }
-  });
-  if (!res.ok) throw new Error("rooms/mine failed");
-  const payload = await res.json();
-  return payload?.data || [];
-}
+// (decommission) getMyRooms() locale rimosso: ora si usa l'export centralizzato da ./api.js
+
 // === Sidebar: "Le mie stanze" (render + click + refresh) ===
 function renderMyRooms(list = []) {
   const box = q("roomList");
@@ -160,7 +154,7 @@ await loadMyRooms();
 } else {
   // Nessun parametro -> prova ad aprire la prima mia stanza (se esiste)
   try {
-    const mine = await getMyRooms();
+const mine = await getMyRooms({ onlyActive: 1 });
     if (mine.length > 0) {
       const r0 = mine[0]; // la più recente (ordinamento lato BE consigliato per updatedAt desc)
       // Se la room è legata a un evento, riusa openOrJoinEvent per avere canSend/finestra coerente
