@@ -305,7 +305,7 @@ const ret = encodeURIComponent(window.location.href);
 // Link "Apri chat evento" (+ returnTo)
 const btnChat = document.getElementById("btnChatEvento");
 if (btnChat) {
-  btnChat.href = `pages/rooms.html?eventId=${encodeURIComponent(ev._id)}&returnTo=${ret}`;
+btnChat.href = `pages/rooms.html?eventId=${encodeURIComponent(ev._id)}`;
 }
 
 // Link "Scrivi all’organizzatore" (+ returnTo)
@@ -860,6 +860,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
