@@ -190,6 +190,15 @@ export async function getRoomsUnreadCount(
   // passa il token ad apiGet (coerente con come chiami /users/me, ecc.)
   return await apiGet(`/rooms/unread-count`, token);
 }
+// Elenco unread per stanza: [{ _id, unread }]
+export async function getUnreadSummary(
+  token = (typeof localStorage !== "undefined" ? localStorage.getItem("token") : null)
+) {
+  if (!token) return [];
+  const resp = await apiGet(`/rooms/unread-summary`, token);
+  return Array.isArray(resp?.data) ? resp.data : [];
+}
+
 // Elenco "Le mie stanze" — opz. filtro solo attive
 export async function getMyRooms(
   options = {},
