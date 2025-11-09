@@ -190,6 +190,21 @@ export async function getRoomsUnreadCount(
   // passa il token ad apiGet (coerente con come chiami /users/me, ecc.)
   return await apiGet(`/rooms/unread-count`, token);
 }
+// Elenco "Le mie stanze" — opz. filtro solo attive
+export async function getMyRooms(
+  options = {},
+  token = (typeof localStorage !== "undefined" ? localStorage.getItem("token") : null)
+) {
+  if (!token) return [];
+  const q = [];
+  if (options.onlyActive == 1 || options.onlyActive === "1" || options.onlyActive === true) {
+    q.push("onlyActive=1");
+  }
+  const qs = q.length ? `?${q.join("&")}` : "";
+  const resp = await apiGet(`/rooms/mine${qs}`, token);
+  return Array.isArray(resp?.data) ? resp.data : [];
+}
+
 // Elenco "Le mie stanze" (solo id/titolo/event/lastAt/unread) — coerenza con controller.listMine
 export async function getMyRooms(
   token = (typeof localStorage !== "undefined" ? localStorage.getItem("token") : null)
