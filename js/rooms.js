@@ -6,6 +6,7 @@ import {
   postRoomMessage,
   markRoomRead,
   getMyRooms,
+  getUnreadSummary,
 } from "./api.js";
 
 
@@ -89,7 +90,7 @@ function attachRoomClick() {
 
       await loadMessages();
       await markRoomRead(roomId);
-
+       try { setBadge(roomId, 0); } catch {}
       // evidenzia attiva + refresh badge
       window.dispatchEvent(new CustomEvent("rooms:updated"));
     };
@@ -104,6 +105,60 @@ const list = await getMyRooms({ onlyActive: 1 });
     console.debug("loadMyRooms err:", e?.message || e);
   }
 }
+// Aggiorna/crea/rimuove il badge per una room nella sidebar
+function setBadge(roomId, count) {
+  const box = q("roomList");
+  if (!box) return;
+  const items = box.querySelectorAll(".roomItem");
+  for (const el of items) {
+    if ((el.dataset.roomId || "") === (roomId || "")) {
+      let badge = el.querySelector(".badge");
+      if (count > 0) {
+        if (!badge) {
+          badge = document.createElement("span");
+          badge.className = "badge";
+          el.appendChild(badge);
+        }
+        badge.textContent = String(count);
+      } else if (badge) {
+        badge.remove();
+      }
+      break;
+    }
+  }
+}
+
+// Poll leggero: aggiorna solo i badge senza ricostruire la lista
+async function pollUnreadSummary() {
+  try {
+    const arr = await getUnreadSummary();
+    if (!Array.isArray(arr)) throw new Error("unread-summary: invalid");
+    const map = new Map(arr.map(r => [r._id, Number(r.unread) || 0]));
+    const box = q("roomList");
+    if (!box) return;
+    const items = box.querySelectorAll(".roomItem");
+    items.forEach(el => {
+      const rid = el.dataset.roomId || "";
+      const n = map.get(rid) || 0;
+      const badge = el.querySelector(".badge");
+      if (n > 0) {
+        if (badge) badge.textContent = String(n);
+        else {
+          const b = document.createElement("span");
+          b.className = "badge";
+          b.textContent = String(n);
+          el.appendChild(b);
+        }
+      } else if (badge) {
+        badge.remove();
+      }
+    });
+  } catch (e) {
+    // Fallback una tantum: se l'endpoint non c'è/errore, ricarica lista
+    try { await loadMyRooms(); } catch {}
+  }
+}
+
 async function init() {
   const token = localStorage.getItem("token");
   if (!token) { window.location.href = "../index.html"; return; }
@@ -178,6 +233,7 @@ const mine = await getMyRooms({ onlyActive: 1 });
               });
               await loadMessages();
               await markRoomRead(res2.data.roomId);
+               try { setBadge(res2.data.roomId, 0); } catch {}
               return; // non aprire la "prima" stanza, abbiamo ripristinato l'ultima
             }
           }
@@ -192,6 +248,7 @@ const mine = await getMyRooms({ onlyActive: 1 });
           });
           await loadMessages();
           await markRoomRead(found._id);
+           try { setBadge(found._id, 0); } catch {}
           return; // non aprire la "prima" stanza
         }
       }
@@ -287,6 +344,7 @@ async function loadMessages(before) {
     const msgs2 = res2?.data || [];
     renderMessages(msgs2);
     await markRoomRead(current.roomId);
+    try { setBadge(current.roomId, 0); } catch {}
   }, 10000);
 }
 
@@ -311,6 +369,7 @@ function renderMessages(msgs) {
  txt.value = "";
  await loadMessages();
  await markRoomRead(current.roomId);
+  try { setBadge(current.roomId, 0); } catch {}
  window.dispatchEvent(new CustomEvent("rooms:updated"));
  }
 
@@ -327,9 +386,9 @@ window.addEventListener("rooms:updated", () => {
   loadMyRooms().catch(() => {});
 });
 
-// refresh leggero ogni 10s (riuso polling generale)
+// refresh unread ogni 10s (poll leggero badge)
 setInterval(() => {
-  loadMyRooms().catch(() => {});
+  pollUnreadSummary().catch(() => {});
 }, 10000);
 
 document.addEventListener("DOMContentLoaded", init);
