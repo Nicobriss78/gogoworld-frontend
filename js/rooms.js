@@ -96,7 +96,7 @@ function attachRoomClick() {
 
 async function loadMyRooms() {
   try {
-    const list = await getMyRooms();
+const list = await getMyRooms({ onlyActive: 1 });
     renderMyRooms(list);
   } catch (e) {
     console.debug("loadMyRooms err:", e?.message || e);
