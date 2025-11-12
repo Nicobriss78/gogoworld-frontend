@@ -164,6 +164,16 @@ export async function getUnreadCount(token) {
 export async function openOrJoinEvent(eventId, token) {
   return await apiPost(`/rooms/event/${eventId}/open-or-join`, {}, token ?? getToken());
 }
+// Apri o crea un DM con un utente target
+export async function openOrJoinDM(
+  targetUserId,
+  token = (typeof localStorage !== "undefined" ? localStorage.getItem("token") : null)
+) {
+  if (!token) return { ok: false, error: "NO_TOKEN" };
+  if (!targetUserId) return { ok: false, error: "NO_TARGET" };
+  return await apiPost(`/rooms/dm/open-or-join`, { targetUserId }, token);
+}
+
 export async function getEventRoomMeta(eventId, token) {
   return await apiGet(`/rooms/event/${eventId}`, token ?? getToken());
 }
