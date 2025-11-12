@@ -134,7 +134,12 @@ export async function updateMyProfile(body = {}, token) {
 export async function getPublicProfile(userId) {
   return apiGet(`/profile/${userId}`);
 }
-
+// Ricerca utenti (autenticata)
+export async function searchUsers(query, token) {
+  const qs = `?query=${encodeURIComponent(String(query || "").trim())}`;
+  const resp = await apiGet(`/users/search${qs}`, token ?? getToken());
+  return Array.isArray(resp?.data) ? resp.data : [];
+}
 // Messaggio di errore uniforme dal risultato di apiFetch
 export function apiErrorMessage(result, fallback = "Errore") {
   if (!result) return fallback;
