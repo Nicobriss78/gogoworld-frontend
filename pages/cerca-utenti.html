@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cerca utenti – GoGoWorld.life</title>
+  <link rel="stylesheet" href="../style.css" />
+  <meta name="robots" content="noindex" />
+</head>
+<body>
+  <main class="container">
+    <header class="app-header">
+      <h1>Cerca utenti</h1>
+      <nav class="toolbar">
+        <a href="../partecipante.html" class="btn">🏠 Home</a>
+        <a href="rooms.html" class="btn">💬 Room</a>
+      </nav>
+    </header>
+
+    <section class="card" style="padding:1rem">
+      <input id="q" class="input" type="text" placeholder="Digita un nome o nickname…" autocomplete="off" />
+    </section>
+
+    <section class="card" style="padding:0">
+      <ul id="userResults" class="list"></ul>
+    </section>
+  </main>
+
+  <script type="module" src="../js/cerca-utenti.js"></script>
+</body>
+</html>
