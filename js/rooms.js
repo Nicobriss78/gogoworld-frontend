@@ -47,12 +47,21 @@ function renderMyRooms(list = []) {
   const curId = current?.roomId || null;
   box.innerHTML = "";
   list.forEach(r => {
-    const title = r?.title || (r?.event?.title || "Chat evento");
+const isDM = (r?.type === "dm");
+    const displayTitle = isDM
+      ? ((r?.peer && (r.peer.name || "")) || "Chat privata")
+      : (r?.title || (r?.event?.title || "Chat evento"));
+
     const div = document.createElement("div");
     div.className = "roomItem" + (curId && r?._id === curId ? " active" : "");
     div.dataset.roomId = r?._id || "";
+    div.dataset.type = isDM ? "dm" : "event";
     div.dataset.eventId = (r?.event?._id || r?.event?.id || "") + "";
     div.innerHTML = `
+      <span>${escapeHtml(displayTitle)}</span>
+      ${r?.unread > 0 ? `<span class="badge">${r.unread}</span>` : ""}
+    `;
+
       <span>${escapeHtml(title)}</span>
       ${r?.unread > 0 ? `<span class="badge">${r.unread}</span>` : ""}
     `;
@@ -306,7 +315,7 @@ function bindRoom(meta) {
   current = { ...current, ...meta };
   // memorizza ultima stanza aperta (anche quando arrivi da evento/roomId)
   try { if (current.roomId) localStorage.setItem("lastRoomId", current.roomId); } catch {}
-  q("roomTitle").textContent = current.title || "Chat evento";
+q("roomTitle").textContent = current.title || (current.eventId ? "Chat evento" : "Chat privata");
    if (current.activeUntil) {
    q("roomWindow").textContent = `Chat attiva fino a ${fmtDate(current.activeUntil)}.`;
    } else {
