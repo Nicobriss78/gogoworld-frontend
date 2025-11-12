@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GoGoWorld.life – Area Partecipante</title>
@@ -8,8 +9,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-
   <meta name="robots" content="noindex" />
+  
 </head>
 <body>
   <main class="container participant">
@@ -19,6 +20,7 @@
   <button id="btnSwitchRole" class="btn">Cambia ruolo</button>
 <a href="messages.html" class="btn">✉️ Messaggi <span id="messagesBadge" class="badge" style="display:none">0</span></a>
 <a id="btnRooms" href="pages/rooms.html" class="btn">💬 Room <span id="roomsBadge" class="badge" style="display:none">0</span></a>
+  <a href="pages/cerca-utenti.html" class="btn">🔎 Cerca</a>
   <button id="btnLogout" class="btn btn-secondary">Logout</button>
 </nav>
 
@@ -182,6 +184,7 @@ setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area)
 <script type="module" src="js/notifications.js"></script>
 </body>
 </html>
+
 
 
 
