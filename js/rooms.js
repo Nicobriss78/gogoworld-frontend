@@ -9,7 +9,6 @@ import {
   getUnreadSummary,
 } from "./api.js";
 
-
 // Stato locale
 let current = { roomId: null, eventId: null, canSend: false, title: "", activeFrom: null, activeUntil: null };
 let polling = null;
@@ -35,6 +34,8 @@ function renderMyRooms(list = []) {
   const hint = q("leftHint");
   if (!box) return;
 
+  if (!Array.isArray(list)) list = [];
+
   // hint visibile solo se lista vuota
   if (hint) hint.style.display = list.length ? "none" : "";
 
@@ -46,8 +47,8 @@ function renderMyRooms(list = []) {
   // costruzione voci
   const curId = current?.roomId || null;
   box.innerHTML = "";
-  list.forEach(r => {
-const isDM = (r?.type === "dm");
+  list.forEach((r) => {
+    const isDM = r?.type === "dm";
     const displayTitle = isDM
       ? ((r?.peer && (r.peer.name || "")) || "Chat privata")
       : (r?.title || (r?.event?.title || "Chat evento"));
@@ -55,21 +56,23 @@ const isDM = (r?.type === "dm");
     const div = document.createElement("div");
     div.className = "roomItem" + (curId && r?._id === curId ? " active" : "");
     div.dataset.roomId = r?._id || "";
-    div.dataset.type = isDM ? "dm" : "event";
-    div.dataset.eventId = (r?.event?._id || r?.event?.id || "") + "";
-    div.innerHTML = `
-      <span>${escapeHtml(displayTitle)}</span>
-      ${r?.unread > 0 ? `<span class="badge">${r.unread}</span>` : ""}
-    `;
+    if (isDM) {
+      div.dataset.type = "dm";
+      div.dataset.eventId = "";
+    } else {
+      div.dataset.type = "event";
+      div.dataset.eventId = (r?.event?._id || r?.event?.id || "") + "";
+    }
 
-      <span>${escapeHtml(title)}</span>
-      ${r?.unread > 0 ? `<span class="badge">${r.unread}</span>` : ""}
-    `;
+    const badgeHtml = r?.unread > 0 ? `<span class="badge">${r.unread}</span>` : "";
+    div.innerHTML = `<span>${escapeHtml(displayTitle)}</span>${badgeHtml}`;
+
     box.appendChild(div);
   });
 
   attachRoomClick();
 }
+
 
 function attachRoomClick() {
   const box = q("roomList");
