@@ -169,16 +169,37 @@ export async function getUnreadCount(token) {
 export async function openOrJoinEvent(eventId, token) {
   return await apiPost(`/rooms/event/${eventId}/open-or-join`, {}, token ?? getToken());
 }
-// Apri o crea un DM con un utente target
+// Apri una chat privata (DM) reindirizzando a messages.html
 export async function openOrJoinDM(
   targetUserId,
   token = (typeof localStorage !== "undefined" ? localStorage.getItem("token") : null)
 ) {
-  if (!token) return { ok: false, error: "NO_TOKEN" };
-  if (!targetUserId) return { ok: false, error: "NO_TARGET" };
-  return await apiPost(`/rooms/dm/open-or-join`, { targetUserId }, token);
-}
+  // opzionale: piccolo check sul token, ma non chiamiamo l'API
+  if (!token) {
+    return { ok: false, error: "NO_TOKEN" };
+  }
+  if (!targetUserId) {
+    return { ok: false, error: "NO_TARGET" };
+  }
 
+  // Costruisci l'URL verso la pagina DM già esistente
+  const base =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : "";
+  const url = `${base}/messages.html?to=${encodeURIComponent(targetUserId)}`;
+
+  if (typeof window !== "undefined") {
+    window.location.href = url;
+  }
+
+  // Ritorniamo comunque una struttura "ok" per coerenza
+  return {
+    ok: true,
+    status: 200,
+    data: { url },
+  };
+}
 export async function getEventRoomMeta(eventId, token) {
   return await apiGet(`/rooms/event/${eventId}`, token ?? getToken());
 }
