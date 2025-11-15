@@ -1,4 +1,4 @@
-import { searchUsers, openOrJoinDM } from "./api.js";
+import { searchUsers } from "./api.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -37,20 +37,24 @@ function render(list = []) {
     li.innerHTML = liTemplate(u);
     ul.appendChild(li);
   }
-  // bind pulsanti Messaggia
-  ul.querySelectorAll("button[data-user]").forEach(btn => {
-    btn.onclick = async () => {
+// bind pulsanti Messaggia
+  ul.querySelectorAll("button[data-user]").forEach((btn) => {
+    btn.onclick = () => {
       const targetUserId = btn.getAttribute("data-user");
-      try {
-        const res = await openOrJoinDM(targetUserId);
-        if (res?.ok && res.data?.roomId) {
-          location.href = `rooms.html?roomId=${res.data.roomId}`;
-        }
-      } catch (e) {
-        console.warn("openOrJoinDM failed", e);
+      if (!targetUserId) return;
+
+      const base =
+        typeof window !== "undefined"
+          ? window.location.origin
+          : "";
+      const url = `${base}/messages.html?to=${encodeURIComponent(targetUserId)}`;
+
+      if (typeof window !== "undefined") {
+        window.location.href = url;
       }
     };
   });
+
 }
 
 async function doSearch(q) {
