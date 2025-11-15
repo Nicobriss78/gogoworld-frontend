@@ -631,7 +631,14 @@ body {
 #messagesApp { display:flex; height:80vh; gap:1rem; }
 #threadsPanel { width:30%; border-right:1px solid #ccc; overflow-y:auto; }
 #chatPanel { flex:1; display:flex; flex-direction:column; }
-#chatMessages { flex:1; overflow-y:auto; padding:.5rem; background:#fafafa; }
+#chatMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: .5rem;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+}
 .msg { margin:.3rem 0; padding:.3rem .6rem; border-radius:6px; max-width:70%; }
 .msg.me { background:#dff0ff; align-self:flex-end; }
 .msg.them { background:#f0f0f0; align-self:flex-start; }
@@ -696,6 +703,7 @@ body {
     flex-direction: column;
   }
 }
+
 
 
 
