@@ -472,20 +472,39 @@ scoreMax: Number.isFinite(filters.scoreMax) ? String(filters.scoreMax) : "",
 
 function renderUserCard(u) {
   const card = h("div", { class: "admin-card" });
+
   const roleBadge = `<span class="badge">${u.role}</span>`;
   const orgBadge = `<span class="badge ${u.canOrganize ? "approved" : "blocked"}">${u.canOrganize ? "canOrganize" : "noOrganize"}</span>`;
   const banBadge = `<span class="badge ${u.isBanned ? "blocked" : "approved"}">${u.isBanned ? "banned" : "active"}</span>`;
+
   const statusRaw = String(u.status || "").toLowerCase();
-  const statusLabel = statusRaw ? (statusRaw[0].toUpperCase() + statusRaw.slice(1)) : "";
+  const statusLabel = statusRaw
+    ? statusRaw[0].toUpperCase() + statusRaw.slice(1)
+    : "";
+
   const score = Number.isFinite(u.score) ? u.score : (u.score || 0);
   const attended = (u?.stats?.attended || 0);
   const reviewsApproved = (u?.stats?.reviewsApproved || 0);
+
   card.innerHTML = `
-    <h3>${u.name || "-"} <span class="muted">(${u.email || "-"})</span></h3>
-    <div>${roleBadge} ${orgBadge} ${banBadge}</div>
+    <h3>
+      ${u.name || "-"}
+      <span class="muted">(${u.email || "-"})</span>
+    </h3>
     <div>
-      ${statusRaw ? `<span class="chip status-chip chip-${statusRaw}">${statusLabel}</span>` : ""}
-      <span class="muted"> • score: ${score} • attended: ${attended} • reviews: ${reviewsApproved}</span>
+      ${roleBadge} ${orgBadge} ${banBadge}
+    </div>
+    <div>
+      ${
+        statusRaw
+          ? `<span class="chip status-chip chip-${statusRaw}">${statusLabel}</span>`
+          : ""
+      }
+      <span class="muted">
+        • score: ${score}
+        • attended: ${attended}
+        • reviews: ${reviewsApproved}
+      </span>
     </div>
     <div class="actions">
       <button class="btn" data-action="ban" data-id="${u._id}">Ban</button>
@@ -497,8 +516,10 @@ function renderUserCard(u) {
       <button class="btn" data-action="org" data-id="${u._id}" data-value="false">Can Organize: OFF</button>
     </div>
   `;
+
   return card;
 }
+
 
 async function loadUsers() {
 const seq = ++usRequestSeq; // prendi un token progressivo
