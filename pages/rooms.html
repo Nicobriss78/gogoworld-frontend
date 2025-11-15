@@ -11,8 +11,14 @@
     #leftCol { width:30%; border-right:1px solid #ddd; padding:.5rem; overflow:auto; }
     #rightCol { flex:1; display:flex; flex-direction:column; }
     #roomHeader { padding:.5rem .75rem; border-bottom:1px solid #ddd; display:flex; align-items:center; justify-content:space-between; }
-    #msgs { flex:1; overflow:auto; padding:.75rem; background:#fafafa; }
-    .msg { margin:.3rem 0; padding:.35rem .6rem; border-radius:8px; max-width:75%; }
+#msgs {
+  flex: 1;
+  overflow: auto;
+  padding: .75rem;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+}    .msg { margin:.3rem 0; padding:.35rem .6rem; border-radius:8px; max-width:75%; }
     .msg.me { background:#dff0ff; align-self:flex-end; }
     .msg.them { background:#f1f1f3; align-self:flex-start; }
     #composer { display:flex; gap:.5rem; border-top:1px solid #ddd; padding:.5rem; }
