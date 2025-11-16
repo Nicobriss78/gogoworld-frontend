@@ -14,17 +14,36 @@ function liTemplate(u) {
   const avatar = u.avatar
     ? `<img src="${u.avatar}" alt="" class="avatar" />`
     : `<span class="avatar placeholder">👤</span>`;
-  const meta = [u.city, u.region].filter(Boolean).join(" • ");
 
-  const blockedByMe = !!u.blockedByMe;
+  const meta = [u.city, u.region].filter(Boolean).join(" • ");
+  const role = u.role || null;
+  const isAdmin = role === "admin";
+
+  // se è admin ignoriamo eventuali vecchi dati "blockedByMe"
+  let blockedByMe = !!u.blockedByMe;
   const hasBlockedMe = !!u.hasBlockedMe;
+
+  if (isAdmin) {
+    blockedByMe = false;
+  }
 
   let actionsHtml = "";
 
   if (hasBlockedMe) {
+    // vale per tutti, anche admin: se ti ha bloccato → niente messaggi
     actionsHtml = `
       <div class="user-status user-status--blocked-by-them">
         🔒 Questo utente ti ha bloccato
+      </div>
+    `;
+  } else if (isAdmin) {
+    // admin: solo Messaggia, niente Blocca/Sblocca
+    actionsHtml = `
+      <div class="user-actions">
+        <button class="btn btn-primary" data-action="msg" data-user="${u._id}">Messaggia</button>
+      </div>
+      <div class="user-status user-status--admin">
+        Amministratore
       </div>
     `;
   } else if (blockedByMe) {
@@ -59,6 +78,7 @@ function liTemplate(u) {
     </div>
   `;
 }
+
 
 
 function render(list = []) {
