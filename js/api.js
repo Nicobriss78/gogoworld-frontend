@@ -140,6 +140,29 @@ export async function searchUsers(query, token) {
   const resp = await apiGet(`/users/search${qs}`, token ?? getToken());
   return Array.isArray(resp?.data) ? resp.data : [];
 }
+// Blocca / sblocca utente (autenticata)
+export async function blockUser(userId, token) {
+  if (!userId) {
+    return { ok: false, error: "NO_USER_ID" };
+  }
+  return await apiPost(
+    `/users/${encodeURIComponent(String(userId))}/block`,
+    {},
+    token ?? getToken()
+  );
+}
+
+export async function unblockUser(userId, token) {
+  if (!userId) {
+    return { ok: false, error: "NO_USER_ID" };
+  }
+  return await apiPost(
+    `/users/${encodeURIComponent(String(userId))}/unblock`,
+    {},
+    token ?? getToken()
+  );
+}
+
 // Messaggio di errore uniforme dal risultato di apiFetch
 export function apiErrorMessage(result, fallback = "Errore") {
   if (!result) return fallback;
