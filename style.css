@@ -299,6 +299,59 @@ body {
   color: #52525b;
   border-color: #e4e4e7;
 }
+/* --- Dettaglio evento: badge di stato + messaggio --- */
+
+.event-status-badge {
+  display: inline-block;
+  margin: 4px 0 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  border: 1px solid #ddd;
+  background: #f7f7f7;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* Varianti colore, coerenti con le .status della lista */
+.event-status-badge.status-future {
+  background: #e8f0fe;
+  color: #1a237e;
+  border-color: #c5cae9;
+}
+
+.event-status-badge.status-imminent {
+  background: #fff7ed;
+  color: #b45309;
+  border-color: #fed7aa;
+}
+
+.event-status-badge.status-ongoing {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  border-color: #c8e6c9;
+}
+
+.event-status-badge.status-concluded {
+  background: #f4f4f5;
+  color: #52525b;
+  border-color: #e4e4e7;
+}
+
+.event-status-badge.status-past {
+  background: #f4f4f5;
+  color: #737373;
+  border-color: #e5e5e5;
+}
+
+/* Messaggio sotto la toolbar negli eventi passati */
+.event-state-message {
+  margin: 0.25rem 0 1rem;
+  font-size: 0.9rem;
+  color: var(--color-secondary);
+}
+
 /* --- Approval badge (moderazione evento) --- */
 .badge {
   display: inline-block;
@@ -703,6 +756,7 @@ body {
     flex-direction: column;
   }
 }
+
 
 
 
