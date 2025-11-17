@@ -3,7 +3,6 @@
 // - Layout dettaglio evento (cover, meta grid, azioni) con componenti standard
 // - Distinguere chiaramente UI owner vs participant con banner/toolbar dedicata
 // - Pulsante “Partecipa/Annulla” con stato loading e toast di esito
-
 import { apiGet, apiPost, apiDelete, apiPut } from "./api.js";
 // --- helper: risolve l'ID evento sia da query (?id=) sia da sessionStorage ---
 function resolveEventId() {
@@ -89,6 +88,163 @@ function isParticipantOf(ev, userId) {
   return ev.participants.map(String).includes(String(userId));
 }
 function canUserReview(ev, userId) {
+  function getEventStatus(ev) {
+  const raw = String(ev?.status || "").toLowerCase();
+  if (raw === "future" || raw === "imminent" || raw === "ongoing" || raw === "concluded" || raw === "past") {
+    return raw;
+  }
+  // fallback prudente se per qualche motivo lo status non c'è
+  try {
+    if (eventHasEnded(ev)) return "past";
+  } catch {} // silente
+  return "future";
+}
+
+/**
+ * Stabilisce se la chat evento può essere aperta temporalmente,
+ * in base allo stato e a chat.activeFrom / chat.activeUntil.
+ * NON applica vincoli di approvazione (quelli restano nel main flow).
+ */
+function canOpenChat(ev) {
+  const status = getEventStatus(ev);
+  const chat = ev?.chat || {};
+  const now = Date.now();
+  const from = chat.activeFrom ? new Date(chat.activeFrom).getTime() : null;
+  const until = chat.activeUntil ? new Date(chat.activeUntil).getTime() : null;
+
+  switch (status) {
+    case "future":
+    case "imminent":
+      // futura / imminente → ON solo se dalla activeFrom in poi
+      if (from && !isNaN(from)) {
+        return now >= from;
+      }
+      return true;
+    case "ongoing":
+      // in corso → sempre ON
+      return true;
+    case "concluded":
+      // finestra "appena concluso": ON finché non si supera activeUntil (se valorizzato)
+      if (until && !isNaN(until)) {
+        return now <= until;
+      }
+      return true;
+    case "past":
+      // evento passato → OFF
+      return false;
+    default:
+      return true;
+  }
+}
+
+/**
+ * Verifica se il pulsante "Partecipa" deve essere abilitato.
+ * future / imminent / ongoing → ON
+ * concluded / past → OFF (UI), il backend comunque blocca già.
+ */
+function canJoin(ev) {
+  const status = getEventStatus(ev);
+  return status === "future" || status === "imminent" || status === "ongoing";
+}
+
+/**
+ * Applica piccoli aggiustamenti di UI in base allo stato evento:
+ * - badge di stato
+ * - messaggio per eventi passati
+ * - nasconde alcune azioni sugli eventi "past"
+ */
+function applyEventStateUI(ev, opts = {}) {
+  const { isOwner = false } = opts || {};
+  const status = getEventStatus(ev);
+  const header = document.querySelector(".app-header");
+  const actionsBar = document.getElementById("eventActions");
+  const btnToggle = document.getElementById("btnToggleParticipation");
+  const btnChat = document.getElementById("btnChatEvento");
+  const btnDM = document.getElementById("btnDMOrganizzatore");
+  const unlockBox = document.getElementById("unlockBox");
+
+  // Badge stato (in header)
+  if (header) {
+    let badge = document.getElementById("eventStatusBadge");
+    if (!badge) {
+      badge = document.createElement("div");
+      badge.id = "eventStatusBadge";
+      badge.className = "event-status-badge";
+      header.appendChild(badge);
+    }
+
+    let label = "";
+    let extraClass = "";
+
+    switch (status) {
+      case "future":
+        label = "In arrivo";
+        extraClass = "status-future";
+        break;
+      case "imminent":
+        label = "Imminente";
+        extraClass = "status-imminent";
+        break;
+      case "ongoing":
+        label = "In corso";
+        extraClass = "status-ongoing";
+        break;
+      case "concluded":
+        label = "Appena concluso";
+        extraClass = "status-concluded";
+        break;
+      case "past":
+        label = "Evento passato";
+        extraClass = "status-past";
+        break;
+      default:
+        label = "";
+        extraClass = "";
+    }
+
+    badge.textContent = label;
+    badge.className = "event-status-badge" + (extraClass ? " " + extraClass : "");
+    badge.style.display = label ? "" : "none";
+  }
+
+  // Eventi completamente passati: disattiva parte interattiva
+  if (status === "past") {
+    // nascondi pulsante partecipa solo per i non-owner
+    if (!isOwner && btnToggle) {
+      btnToggle.style.display = "none";
+    }
+    if (btnChat) {
+      btnChat.style.display = "none";
+      btnChat.disabled = true;
+      btnChat.classList.add("btn-disabled");
+    }
+    if (btnDM) {
+      btnDM.style.display = "none";
+    }
+    if (unlockBox) {
+      unlockBox.style.display = "none";
+    }
+
+    // messaggio informativo
+    let msg = document.getElementById("eventStateMessage");
+    if (!msg) {
+      msg = document.createElement("p");
+      msg.id = "eventStateMessage";
+      msg.className = "event-state-message";
+      const target =
+        actionsBar ||
+        document.getElementById("eventDetails") ||
+        document.querySelector(".event-detail");
+      if (target && target.parentNode) {
+        target.parentNode.insertBefore(msg, target.nextSibling);
+      } else {
+        document.body.appendChild(msg);
+      }
+    }
+    msg.textContent = "Evento passato. Le funzioni interattive sono disattive.";
+  }
+}
+
   // 1) evento concluso 2) utente è participant
   return eventHasEnded(ev) && isParticipantOf(ev, userId);
 }
@@ -318,19 +474,46 @@ if (btnDM && evOrganizerId) {
 const unlockBox = document.getElementById("unlockBox");
 const unlockCode = document.getElementById("unlockCode");
 const btnUnlock = document.getElementById("btnUnlock");
-// GATE CHAT: visibile da APPROVATO fino a 24h dopo la fine
+// GATE CHAT: approvazione + stato evento + activeFrom/activeUntil
 const appr = String(ev?.approvalStatus || "").toLowerCase();
-const endRef = ev?.dateEnd || ev?.endDate || ev?.dateStart || ev?.date || null;
-const chatExpired = endRef ? (Date.now() > (new Date(endRef)).getTime() + 24*60*60*1000) : false;
-const chatEligible = (appr === "approved") && !chatExpired;
+const evStatus = getEventStatus(ev);
+const timeChatAllowed = canOpenChat(ev);
+const isPast = evStatus === "past";
 
-// Mostra/nascondi bottone chat e box sblocco coerentemente
-if (!chatEligible) {
-  if (btnChat) { btnChat.style.display = "none"; btnChat.disabled = true; btnChat.classList.add("btn-disabled"); }
+// Chat disponibile solo se:
+// - evento APPROVATO
+// - finestra temporale consentita (canOpenChat)
+// - non "past"
+const chatEligible = (appr === "approved") && timeChatAllowed && !isPast;
+
+// Mostra/nascondi / disabilita bottone chat e box sblocco coerentemente
+if (!btnChat) {
+  // niente bottone → nascondiamo eventuale box sblocco
   if (unlockBox) unlockBox.style.display = "none";
+} else if (!chatEligible) {
+  // chat NON disponibile:
+  // - evento non ancora in finestra chat
+  // - evento non approvato
+  // - evento fuori finestra o passato
+  btnChat.disabled = true;
+  btnChat.classList.add("btn-disabled");
+
+  if (isPast) {
+    // sugli eventi "past" la chat sparisce del tutto
+    btnChat.style.display = "none";
+    if (unlockBox) unlockBox.style.display = "none";
+  } else {
+    // future / imminent con chat non ancora attiva → bottone visibile ma disabilitato
+    btnChat.style.display = "";
+    if (unlockBox) unlockBox.style.display = "none";
+  }
 } else {
-  if (btnChat) { btnChat.style.display = ""; btnChat.disabled = false; btnChat.classList.remove("btn-disabled"); }
+  // chat eleggibile → lasciamo a checkChatAccess la gestione lock/sblocco
+  btnChat.style.display = "";
+  btnChat.disabled = false;
+  btnChat.classList.remove("btn-disabled");
 }
+
 
 async function checkChatAccess(eventId, token) {
   try {
@@ -494,12 +677,22 @@ window.location.href = u.toString();
 
 // Mostra il bottone e, se l'evento è già concluso, disabilitalo
         btnToggle.style.display = "inline-block";
-        if (eventHasEnded(ev)) {
-          btnToggle.disabled = true;
-          btnToggle.textContent = "Evento concluso";
+const evStatus = getEventStatus(ev);
+
+        if (!canJoin(ev)) {
+          if (evStatus === "past") {
+            // evento completamente passato → nascondi il bottone
+            btnToggle.style.display = "none";
+          } else {
+            // finestra "concluded": bottone disabilitato con etichetta informativa
+            btnToggle.disabled = true;
+            btnToggle.textContent = "Evento concluso";
+          }
         } else {
+          // future / imminent / ongoing → etichetta dinamica in base a isJoined
           setToggleLabel();
         }
+
 
 
       btnToggle.addEventListener("click", async () => {
@@ -551,6 +744,7 @@ try {
         }
       });
     }
+    applyEventStateUI(ev, { isOwner });
   } catch (err) {
     elDetails.innerHTML = `<p class="error">Errore: ${escapeHtml(err.message)}</p>`;
     showAlert(err?.message || "Si è verificato un errore", "error", { autoHideMs: 4000 });
@@ -860,6 +1054,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
