@@ -88,7 +88,15 @@ function isParticipantOf(ev, userId) {
   return ev.participants.map(String).includes(String(userId));
 }
 function canUserReview(ev, userId) {
-  function getEventStatus(ev) {
+  // 1) evento concluso 2) utente è participant
+  return eventHasEnded(ev) && isParticipantOf(ev, userId);
+}
+
+// ------------------------
+// STATO EVENTO & UI
+// ------------------------
+
+function getEventStatus(ev) {
   const raw = String(ev?.status || "").toLowerCase();
   if (raw === "future" || raw === "imminent" || raw === "ongoing" || raw === "concluded" || raw === "past") {
     return raw;
@@ -245,9 +253,6 @@ function applyEventStateUI(ev, opts = {}) {
   }
 }
 
-  // 1) evento concluso 2) utente è participant
-  return eventHasEnded(ev) && isParticipantOf(ev, userId);
-}
 // Rende una recensione; se è la MIA recensione, mostra la chip con il mio status
 function renderReviewItem(r, myId, myStatusRaw, myStatusLabel) {
   const isMine = String(r.participant || "") === String(myId || "");
@@ -469,7 +474,6 @@ const btnDM = document.getElementById("btnDMOrganizzatore");
 if (btnDM && evOrganizerId) {
   btnDM.href = `messages.html?to=${encodeURIComponent(evOrganizerId)}&returnTo=${ret}`;
 }
-      if (btnDM && evOrganizerId) btnDM.href = `messages.html?to=${encodeURIComponent(evOrganizerId)}`;
 // --- Chat privata: verifica lock senza codice & sblocco ---
 const unlockBox = document.getElementById("unlockBox");
 const unlockCode = document.getElementById("unlockCode");
@@ -1054,6 +1058,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
