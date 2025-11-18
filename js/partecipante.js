@@ -57,7 +57,8 @@ function renderStatus(status) {
     ongoing: "In corso",
     imminent: "Imminente",
     future: "Futuro",
-    concluded: "Concluso"
+    concluded: "Concluso",
+    past: "Passato"
   };
   const text = labelMap[status] || status;
   return `<p class="status ${status}">${text}</p>`;
@@ -184,6 +185,16 @@ function populateFilterOptions() {
 document.addEventListener("DOMContentLoaded", async () => {
   // Token: se non c'è, esci subito (niente polling)
   const token = localStorage.getItem("token");
+  // C1.1 — Flag per auto-focus iniziale (persistito nella sessione)
+  let _autoFocusDone = false;
+  try {
+    if (sessionStorage.getItem("participant:autoFocusDone") === "1") {
+      _autoFocusDone = true;
+    }
+  } catch {
+    // se sessionStorage non è disponibile, ignoriamo e useremo solo il flag in memoria
+  }
+
   // 🔁 Aggiorna le liste quando cambia la partecipazione in un'altra scheda
   window.addEventListener("events:joined-changed", () => {
     loadEvents();
@@ -349,6 +360,32 @@ if (btnRooms) {
     cluster = L.markerClusterGroup();
     map.addLayer(cluster);
   }
+// C1.1 — Auto-focus sugli eventi imminenti/ongoing/futuri nella lista "Tutti gli eventi"
+  function autoFocusOnRelevantEvent() {
+    try {
+      // Se l'utente ha già scrollato, non forzare alcun movimento
+      if (window.scrollY > 20) return;
+
+      const container = document.getElementById("allEventsList");
+      if (!container) return;
+
+      const statusOrder = ["imminent", "ongoing", "future"];
+      let targetCard = null;
+
+      for (const st of statusOrder) {
+        targetCard = container.querySelector(`.event-card[data-status="${st}"]`);
+        if (targetCard) break;
+      }
+      // Se non troviamo nulla (lista vuota), non facciamo niente
+      if (!targetCard) return;
+
+      const rect = targetCard.getBoundingClientRect();
+      const newTop = rect.top + window.scrollY - 8; // piccolo margine
+      window.scrollTo({ top: newTop, behavior: "auto" });
+    } catch (err) {
+      console.debug("[autoFocus] skip:", err);
+    }
+  }
 
   async function loadEvents(filters = {}) {
     allList.innerHTML = "<p>Caricamento...</p>";
@@ -383,7 +420,48 @@ if (btnRooms) {
 
         // Nascondi gli eventi "past" dalla lista pubblica
         return s !== "past";
-      });// --- MAPPA: aggiorna marker su cluster ---
+      });
+      // C1.1 — Ordinamento eventi per partecipante:
+      // future → imminent → ongoing → concluded → past, con data di inizio crescente
+      const statusPriority = {
+        future: 1,
+        imminent: 2,
+        ongoing: 3,
+        concluded: 4,
+        past: 5
+      };
+
+      function getStatusPriority(ev) {
+        const s = String(ev?.status || "").toLowerCase();
+        return statusPriority[s] || 99;
+      }
+
+      function getStartTime(ev) {
+        // Usiamo gli stessi campi della formatEventDate, ma in forma timestamp
+        const raw = ev?.dateStart || ev?.date || ev?.startDate;
+        if (!raw) return Number.POSITIVE_INFINITY;
+        const t = new Date(raw).getTime();
+        return Number.isFinite(t) ? t : Number.POSITIVE_INFINITY;
+      }
+
+      function sortEventsForParticipant(a, b) {
+        const pa = getStatusPriority(a);
+        const pb = getStatusPriority(b);
+        if (pa !== pb) return pa - pb;
+        const ta = getStartTime(a);
+        const tb = getStartTime(b);
+        return ta - tb;
+      }
+
+      const notJoinedSorted = Array.isArray(notJoined)
+        ? [...notJoined].sort(sortEventsForParticipant)
+        : [];
+
+      const joined = res.events.filter(ev => joinedIds.has(ev._id));
+      const joinedSorted = Array.isArray(joined)
+        ? [...joined].sort(sortEventsForParticipant)
+        : [];
+      // --- MAPPA: aggiorna marker su cluster ---
       if (cluster && map && Array.isArray(res?.events)) {
         cluster.clearLayers();
         const markers = [];
@@ -462,8 +540,8 @@ if (btnRooms) {
           }
         }
 
-        return `
-          <div class="event-card">
+return `
+          <div class="event-card" data-status="${rawStatus}" data-event-id="${ev._id}">
             <h3>${ev.title}</h3>
             ${renderStatus(ev.status)}
             <p>${whereLine} ${formatEventDate(ev)}</p>
@@ -477,16 +555,27 @@ if (btnRooms) {
         `;
       };
 
-      // Popola lista "tutti"
-      allList.innerHTML = notJoined.length
-        ? notJoined.map(ev => renderCard(ev, false)).join("")
+// Popola lista "tutti" (ordinata)
+      allList.innerHTML = notJoinedSorted.length
+        ? notJoinedSorted.map(ev => renderCard(ev, false)).join("")
         : "<p>Nessun evento disponibile.</p>";
 
-      // Popola lista "a cui partecipo"
-      const joined = res.events.filter(ev => joinedIds.has(ev._id));
-      myList.innerHTML = joined.length
-        ? joined.map(ev => renderCard(ev, true)).join("")
+      // Popola lista "a cui partecipo" (ordinata)
+      myList.innerHTML = joinedSorted.length
+        ? joinedSorted.map(ev => renderCard(ev, true)).join("")
         : "<p>Nessun evento a cui partecipi.</p>";
+
+      // C1.1 — Auto-focus solo al primo caricamento, senza filtri e se l'utente non ha già scrollato
+      const noFilters =
+        !filters || (typeof filters === "object" && Object.keys(filters).length === 0);
+
+      if (!_autoFocusDone && noFilters && window.scrollY < 20) {
+        autoFocusOnRelevantEvent();
+        _autoFocusDone = true;
+        try {
+          sessionStorage.setItem("participant:autoFocusDone", "1");
+        } catch {}
+      }
 
     } catch (err) {
       showAlert(err?.message || "Si è verificato un errore", "error", { autoHideMs: 4000 });
@@ -616,6 +705,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
