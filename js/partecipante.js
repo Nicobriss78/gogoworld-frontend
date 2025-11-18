@@ -413,10 +413,46 @@ if (btnRooms) {
         }
       }
 
-      // >>> PATCH: funzione di rendering card arricchita (region/country, prezzo+currency)
+// >>> PATCH: funzione di rendering card arricchita (region/country, prezzo+currency + stato)
       const renderCard = (ev, includeLeave) => {
-        const priceStr = ev.isFree ? "Gratuito" : (ev.price != null ? `${ev.price} ${ev.currency || "EUR"}` : "-");
+        const priceStr = ev.isFree
+          ? "Gratuito"
+          : (ev.price != null ? `${ev.price} ${ev.currency || "EUR"}` : "-");
         const whereLine = `${ev.city || ""}${ev.region ? " • " + ev.region : ""}${ev.country ? " • " + ev.country : ""}`;
+
+        // Stato evento normalizzato
+        const rawStatus = String(ev?.status || "").toLowerCase();
+        const canJoin =
+          rawStatus === "future" ||
+          rawStatus === "imminent" ||
+          rawStatus === "ongoing";
+        const isConcluded = rawStatus === "concluded";
+        const isPast = rawStatus === "past";
+
+        // Base: il pulsante "Dettagli" è sempre presente
+        let actionsHtml =
+          `<button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>`;
+
+        if (includeLeave) {
+          // Lista "A cui partecipo"
+          if (!isPast) {
+            // Sugli eventi passati non ha senso mostrare "Annulla"
+            actionsHtml +=
+              ` <button class="btn btn-secondary" data-id="${ev._id}" data-action="leave">Annulla</button>`;
+          }
+        } else {
+          // Lista "Tutti gli eventi"
+          if (canJoin) {
+            actionsHtml +=
+              ` <button class="btn btn-primary" data-id="${ev._id}" data-action="join">Partecipa</button>`;
+          } else if (isConcluded || isPast) {
+            // Stato concluso/past → solo etichetta informativa disabilitata
+            const label = isPast ? "Evento passato" : "Evento concluso";
+            actionsHtml +=
+              ` <button class="btn btn-secondary btn-disabled" type="button" disabled>${label}</button>`;
+          }
+        }
+
         return `
           <div class="event-card">
             <h3>${ev.title}</h3>
@@ -426,10 +462,7 @@ if (btnRooms) {
             <p class="meta"><strong>Lingua/Target:</strong> ${ev.language || ""}${ev.target ? " • " + ev.target : ""}</p>
             <p class="meta"><strong>Prezzo:</strong> ${priceStr}</p>
             <div class="event-actions">
-              <button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>
-              ${includeLeave
-                ? `<button class="btn btn-secondary" data-id="${ev._id}" data-action="leave">Annulla</button>`
-                : `<button class="btn btn-primary" data-id="${ev._id}" data-action="join">Partecipa</button>`}
+              ${actionsHtml}
             </div>
           </div>
         `;
@@ -574,6 +607,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
