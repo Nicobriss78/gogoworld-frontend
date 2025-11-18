@@ -373,8 +373,17 @@ if (btnRooms) {
           }
         }
       }
-      const notJoined = res.events.filter(ev => !joinedIds.has(ev._id));
-// --- MAPPA: aggiorna marker su cluster ---
+// B1.3 — Lista "Tutti gli eventi": escludi gli eventi completamente passati
+      const notJoined = res.events.filter((ev) => {
+        // Se l'utente è già iscritto, questo evento NON va nella lista "Tutti gli eventi"
+        if (joinedIds.has(ev._id)) return false;
+
+        // Normalizza lo stato evento
+        const s = String(ev?.status || "").toLowerCase();
+
+        // Nascondi gli eventi "past" dalla lista pubblica
+        return s !== "past";
+      });// --- MAPPA: aggiorna marker su cluster ---
       if (cluster && map && Array.isArray(res?.events)) {
         cluster.clearLayers();
         const markers = [];
@@ -607,6 +616,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
