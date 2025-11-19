@@ -687,7 +687,7 @@ elImpRun?.addEventListener("click", async () => {
   form.append("simulate", simulate ? "true" : "false");
 if (elImpRun) { elImpRun.disabled = true; elImpRun.dataset.loading = "1"; }
   try {
-const res = await callApi(`/admin/import/events`, {
+const res = await callApi(`/api/admin/import/events`, {
       method: "POST",
       headers: { ...authHeaders() }, // niente Content-Type manuale con FormData
       body: form,
