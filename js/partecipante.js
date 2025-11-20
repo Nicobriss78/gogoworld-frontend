@@ -350,16 +350,20 @@ if (btnRooms) {
   // >>> PATCH: popola tendine filtri
   populateFilterOptions();
 // --- MAPPA: init Leaflet + MarkerCluster (se presente #map e libreria L) ---
-  const mapEl = document.getElementById("map");
-  let map, cluster;
-  if (mapEl && window.L) {
-    map = L.map("map").setView([41.8719, 12.5674], 6); // Italia
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap contributors"
-    }).addTo(map);
-    cluster = L.markerClusterGroup();
-    map.addLayer(cluster);
-  }
+const mapEl = document.getElementById("map");
+let map, cluster;
+// B2.2 — mappa: dizionario per trovare il marker a partire dall'ID evento
+let markersById = {};
+
+if (mapEl && window.L) {
+  map = L.map("map").setView([41.8719, 12.5674], 6); // Italia
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(map);
+  cluster = L.markerClusterGroup();
+  map.addLayer(cluster);
+}
+
 // C1.1 — Auto-focus sugli eventi imminenti/ongoing/futuri nella lista "Tutti gli eventi"
   function autoFocusOnRelevantEvent() {
     try {
@@ -461,44 +465,53 @@ if (btnRooms) {
       const joinedSorted = Array.isArray(joined)
         ? [...joined].sort(sortEventsForParticipant)
         : [];
-      // --- MAPPA: aggiorna marker su cluster ---
-      if (cluster && map && Array.isArray(res?.events)) {
-        cluster.clearLayers();
-        const markers = [];
+// --- MAPPA: aggiorna marker su cluster ---
+if (cluster && map && Array.isArray(res?.events)) {
+  cluster.clearLayers();
+  const markers = [];
+  // B2.2 — reset mappa ID → marker
+  markersById = {};
 
-        for (const ev of res.events) {
-          // Accetta varianti: lat/lon, lat/lng, e GeoJSON location.coordinates [lon, lat]
-          const coords = Array.isArray(ev?.location?.coordinates) ? ev.location.coordinates : null;
+  for (const ev of res.events) {
+    // Accetta varianti: lat/lon, lat/lng, e GeoJSON location.coordinates [lon, lat]
+    const coords = Array.isArray(ev?.location?.coordinates) ? ev.location.coordinates : null;
 
-          const latRaw =
-            ev?.lat ?? ev?.Lat ?? ev?.latitude ??
-            (coords ? coords[1] : undefined);
+    const latRaw =
+      ev?.lat ?? ev?.Lat ?? ev?.latitude ??
+      (coords ? coords[1] : undefined);
 
-          const lonRaw =
-            ev?.lon ?? ev?.lng ?? ev?.Lon ?? ev?.longitude ??
-            (coords ? coords[0] : undefined);
+    const lonRaw =
+      ev?.lon ?? ev?.lng ?? ev?.Lon ?? ev?.longitude ??
+      (coords ? coords[0] : undefined);
 
-          const lat = typeof latRaw === "string" ? parseFloat(latRaw.replace(",", ".")) : latRaw;
-          const lon = typeof lonRaw === "string" ? parseFloat(lonRaw.replace(",", ".")) : lonRaw;
+    const lat = typeof latRaw === "string" ? parseFloat(latRaw.replace(",", ".")) : latRaw;
+    const lon = typeof lonRaw === "string" ? parseFloat(lonRaw.replace(",", ".")) : lonRaw;
 
-          if (Number.isFinite(lat) && Number.isFinite(lon)) {
-            const m = L.marker([lat, lon]);
-            const when = formatEventDate(ev);
-            const title = ev?.title || "";
-            m.bindPopup(`<b>${title}</b>${when ? "<br/>" + when : ""}`);
-            markers.push(m);
-          }
-        }
+    if (Number.isFinite(lat) && Number.isFinite(lon)) {
+      const m = L.marker([lat, lon]);
+      const when = formatEventDate(ev);
+      const title = ev?.title || "";
+      m.bindPopup(`<b>${title}</b>${when ? "<br/>" + when : ""}`);
 
-        // Aggiungi tutti i marker e adatta la vista
-        if (markers.length) {
-          markers.forEach(m => cluster.addLayer(m));
-          try {
-            const group = L.featureGroup(markers);
-            map.fitBounds(group.getBounds().pad(0.1));
-          } catch {}
-        }
+      markers.push(m);
+
+      // B2.2 — collega marker all'evento per click su card
+      if (ev?._id) {
+        markersById[ev._id] = m;
       }
+    }
+  }
+
+  // Aggiungi tutti i marker e adatta la vista
+  if (markers.length) {
+    markers.forEach(m => cluster.addLayer(m));
+    try {
+      const group = L.featureGroup(markers);
+      map.fitBounds(group.getBounds().pad(0.1));
+    } catch {}
+  }
+}
+
 
 // >>> PATCH: funzione di rendering card arricchita (region/country, prezzo+currency + stato)
       const renderCard = (ev, includeLeave) => {
@@ -705,6 +718,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
