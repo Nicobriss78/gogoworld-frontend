@@ -580,13 +580,20 @@ var arr = ((q && q.data) || []).filter(function (b) {
   }).join('');
 }
 
-// === Deleghe click (pause/resume/delete/approve/reject) ===
+// === Deleghe click (pause/resume/delete/approve/reject) SOLO per i banner ===
 document.addEventListener("click", async function(e){
   var t = e.target;
   if (!t || !t.getAttribute) return;
+
+  // Limita il listener alle sole aree banner,
+  // per non interferire con i pulsanti data-action di Eventi/Utenti/Recensioni
+  var scope = t.closest("#bannerTable, #sponsorList, #houseList, #approvalsList");
+  if (!scope) return;
+
   var id = t.getAttribute("data-id");
   var action = t.getAttribute("data-action");
   if (!action || !id) return;
+
   try {
     if (action === "delete") {
       await adminFetch("/api/banners/" + id, { method: "DELETE" });
@@ -614,6 +621,7 @@ document.addEventListener("click", async function(e){
     try { showAlert(err.message || "Errore operazione", "error"); } catch { console.error(err); }
   }
 });
+
 
 // === Bind bottoni create/refresh ===
 document.addEventListener("DOMContentLoaded", function(){
