@@ -146,6 +146,15 @@ body {
   border-radius: 6px;
 }
 
+/* B2.1 – Mappa fissa in alto nella pagina Partecipante */
+.participant #mapSection {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #fff;
+}
+
+
 /* Specifiche home0 */
 .home0 .role-grid {
   display: flex;
@@ -756,6 +765,7 @@ body {
     flex-direction: column;
   }
 }
+
 
 
 
