@@ -510,6 +510,13 @@ if (cluster && map && Array.isArray(res?.events)) {
   markersById = {};
 
   for (const ev of res.events) {
+    // Normalizza stato
+    const statusRaw = String(ev?.status || "").toLowerCase();
+
+    // 🔹 NON mostrare sulla mappa gli eventi completamente passati
+    // (restano solo nella lista "Eventi a cui partecipo")
+    if (statusRaw === "past") continue;
+
     // Accetta varianti: lat/lon, lat/lng, e GeoJSON location.coordinates [lon, lat]
     const coords = Array.isArray(ev?.location?.coordinates) ? ev.location.coordinates : null;
 
@@ -524,21 +531,32 @@ if (cluster && map && Array.isArray(res?.events)) {
     const lat = typeof latRaw === "string" ? parseFloat(latRaw.replace(",", ".")) : latRaw;
     const lon = typeof lonRaw === "string" ? parseFloat(lonRaw.replace(",", ".")) : lonRaw;
 
-if (Number.isFinite(lat) && Number.isFinite(lon)) {
-      // B2.3 — icona personalizzata in base allo stato evento
-      const markerIcon = buildMarkerIcon(ev);
-      const m = L.marker([lat, lon], { icon: markerIcon });
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
 
-      const when = formatEventDate(ev);
-      const title = ev?.title || "";
-      m.bindPopup(`<b>${title}</b>${when ? "<br/>" + when : ""}`);
+    // Colore coerente con legenda / badge
+    let fill = "#4a90e2"; // future default
+    if (statusRaw === "imminent") fill = "#f5a623";
+    else if (statusRaw === "ongoing") fill = "#d0021b";
+    else if (statusRaw === "concluded") fill = "#999999";
 
-      markers.push(m);
+    // Marker come cerchio colorato
+    const m = L.circleMarker([lat, lon], {
+      radius: 10,
+      weight: 2,
+      color: "#ffffff",
+      fillColor: fill,
+      fillOpacity: 1
+    });
 
-      // B2.2 — collega marker all'evento per click su card
-      if (ev?._id) {
-        markersById[ev._id] = m;
-      }
+    const when = formatEventDate(ev);
+    const title = ev?.title || "";
+    m.bindPopup(`<b>${title}</b>${when ? "<br/>" + when : ""}`);
+
+    markers.push(m);
+
+    // B2.2 — collega marker all'evento per click su card
+    if (ev?._id) {
+      markersById[ev._id] = m;
     }
   }
 
@@ -779,6 +797,7 @@ return `
   // Prima lista
   loadEvents();
 });
+
 
 
 
