@@ -738,14 +738,46 @@ if (mapEl && window.L) {
         return ta - tb;
       }
 
-      const notJoinedSorted = Array.isArray(notJoined)
+const notJoinedSorted = Array.isArray(notJoined)
         ? [...notJoined].sort(sortEventsForParticipant)
         : [];
 
       const joined = res.events.filter(ev => joinedIds.has(ev._id));
-      const joinedSorted = Array.isArray(joined)
+      let joinedSorted = Array.isArray(joined)
         ? [...joined].sort(sortEventsForParticipant)
         : [];
+
+      // Bx — includi anche eventuali eventi privati sbloccati a cui partecipo
+      loadPrivateIds();
+      if (Array.isArray(privateEventIds) && privateEventIds.length && myId) {
+        const joinedSet = new Set(joinedSorted.map(ev => ev._id));
+
+        for (const pid of privateEventIds) {
+          if (!pid || joinedSet.has(pid)) continue;
+
+          try {
+            const detail = await apiGet(`/events/${pid}`, token);
+            if (!detail?.ok || !detail?.event) continue;
+
+            const ev = detail.event;
+            if (!Array.isArray(ev?.participants)) continue;
+
+            const isMine = ev.participants.some(
+              (p) => (p?._id || p) === myId
+            );
+            if (!isMine) continue;
+
+            joinedSorted.push(ev);
+            joinedSet.add(pid);
+          } catch {
+            // silenzioso: non bloccare tutto se una chiamata fallisce
+          }
+        }
+
+        // ri-ordina dopo aver aggiunto gli eventi privati
+        joinedSorted = [...joinedSorted].sort(sortEventsForParticipant);
+      }
+
 // --- MAPPA: aggiorna marker su cluster ---
 if (cluster && map && Array.isArray(res?.events)) {
   cluster.clearLayers();
@@ -996,6 +1028,7 @@ return `
   await loadEvents();
   await refreshPrivateEvents();
 });
+
 
 
 
