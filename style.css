@@ -766,6 +766,77 @@ body {
   }
 }
 
+/* === Mappa partecipante: marker per stato + legenda === */
+.status-marker {
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
+.status-marker-inner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+/* Colori coerenti con i badge di stato */
+.status-future .status-marker-inner {
+  background-color: #4a90e2; /* evento futuro */
+}
+
+.status-imminent .status-marker-inner {
+  background-color: #f5a623; /* evento imminente */
+}
+
+.status-ongoing .status-marker-inner {
+  background-color: #d0021b; /* evento in corso */
+}
+
+.status-concluded .status-marker-inner {
+  background-color: #999999; /* evento concluso */
+}
+
+.status-past .status-marker-inner {
+  background-color: #cccccc; /* evento passato (solo nella lista "miei") */
+}
+
+/* Legenda sotto la mappa */
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  align-items: center;
+}
+
+.map-legend .legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-dot-future {
+  background-color: #4a90e2;
+}
+
+.legend-dot-imminent {
+  background-color: #f5a623;
+}
+
+.legend-dot-ongoing {
+  background-color: #d0021b;
+}
 
 
 
