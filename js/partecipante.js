@@ -312,6 +312,179 @@ if (btnRooms) {
   const btnFilters = document.getElementById("btnApplyFilters");
   const btnLogout = document.getElementById("btnLogout");
   const btnSwitchRole = document.getElementById("btnSwitchRole");
+  // --- Eventi privati: codice invito + lista locale ---
+  const inviteInput = document.getElementById("inviteCodeInput");
+  const btnApplyInvite = document.getElementById("btnApplyInvite");
+  const privateListEl = document.getElementById("privateEventsList");
+  const privateToggleBtn = document.getElementById("togglePrivateList");
+  const PRIVATE_LS_KEY = "gogo_private_event_ids";
+
+  let privateEventIds = [];
+  let privateEvents = [];
+
+  function loadPrivateIds() {
+    try {
+      const raw = localStorage.getItem(PRIVATE_LS_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      if (Array.isArray(parsed)) {
+        privateEventIds = parsed.filter((id) => typeof id === "string" && id);
+      } else {
+        privateEventIds = [];
+      }
+    } catch {
+      privateEventIds = [];
+    }
+  }
+
+  function savePrivateIds(ids) {
+    const uniq = Array.from(new Set(
+      (ids || []).filter((id) => typeof id === "string" && id)
+    ));
+    privateEventIds = uniq;
+    try {
+      localStorage.setItem(PRIVATE_LS_KEY, JSON.stringify(uniq));
+    } catch {
+      // nessun blocco in caso di quota piena
+    }
+    updatePrivateCount();
+  }
+
+  function updatePrivateCount() {
+    const span = document.getElementById("privateCount");
+    if (!span) return;
+    const n = privateEvents.length || privateEventIds.length || 0;
+    span.textContent = String(n);
+  }
+
+  function renderPrivateList() {
+    if (!privateListEl) return;
+    if (!privateEvents.length) {
+      privateListEl.innerHTML = `<li class="empty">Nessun evento privato sbloccato</li>`;
+    } else {
+      privateListEl.innerHTML = privateEvents
+        .map((ev) => `<li data-id="${ev._id}">${ev.title || "(Senza titolo)"}</li>`)
+        .join("");
+    }
+    updatePrivateCount();
+  }
+
+  async function refreshPrivateEvents() {
+    if (!token) return;
+    loadPrivateIds();
+
+    if (!privateEventIds.length) {
+      privateEvents = [];
+      renderPrivateList();
+      return;
+    }
+
+    const results = [];
+    for (const id of privateEventIds) {
+      try {
+        const detail = await apiGet(`/events/${id}`, token);
+        if (!detail?.ok || !detail?.event) continue;
+        const ev = detail.event;
+
+        // Se ormai è passato, lo togliamo dalla lista
+        if (ev.status === "past") {
+          continue;
+        }
+
+        results.push(ev);
+      } catch {
+        // silenzioso
+      }
+    }
+
+    privateEvents = results;
+    savePrivateIds(privateEvents.map((ev) => ev._id));
+    renderPrivateList();
+  }
+
+  async function handleApplyInviteCode() {
+    if (!inviteInput) return;
+    const code = inviteInput.value.trim();
+    if (!code) {
+      showAlert("Inserisci un codice invito", "error", { autoHideMs: 2500 });
+      return;
+    }
+
+    try {
+      if (btnApplyInvite) {
+        btnApplyInvite.disabled = true;
+      }
+
+      const res = await apiPost("/events/access-code", { code }, token);
+      if (!res?.ok || !res?.event) {
+        throw new Error(res?.error || "Codice invito non valido");
+      }
+
+      const ev = res.event;
+      if (!ev?._id) throw new Error("Evento non valido");
+
+      // Evita duplicati
+      if (!privateEventIds.includes(ev._id)) {
+        privateEvents.push(ev);
+        savePrivateIds([...privateEventIds, ev._id]);
+        renderPrivateList();
+      }
+
+      inviteInput.value = "";
+
+      // apre la lista se era chiusa
+      if (privateListEl && privateListEl.style.display === "none") {
+        privateListEl.style.display = "block";
+      }
+
+      showAlert("Evento privato sbloccato", "success", { autoHideMs: 2500 });
+    } catch (err) {
+      const msg = err?.message || "Codice invito non valido";
+      showAlert(msg, "error", { autoHideMs: 3000 });
+    } finally {
+      if (btnApplyInvite) {
+        btnApplyInvite.disabled = false;
+      }
+    }
+  }
+
+  // Listener: codice invito
+  if (btnApplyInvite) {
+    btnApplyInvite.addEventListener("click", (e) => {
+      e.preventDefault();
+      handleApplyInviteCode();
+    });
+  }
+
+  if (inviteInput) {
+    inviteInput.addEventListener("keyup", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleApplyInviteCode();
+      }
+    });
+  }
+
+  // Listener: toggle menù a tendina “Eventi privati”
+  if (privateToggleBtn && privateListEl) {
+    privateToggleBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const isHidden =
+        privateListEl.style.display === "none" || !privateListEl.style.display;
+      privateListEl.style.display = isHidden ? "block" : "none";
+    });
+  }
+
+  // Click sulla voce della lista -> apre il dettaglio evento
+  if (privateListEl) {
+    privateListEl.addEventListener("click", (e) => {
+      const li = e.target.closest("li[data-id]");
+      if (!li || li.classList.contains("empty")) return;
+      const id = li.getAttribute("data-id");
+      if (!id) return;
+      sessionStorage.setItem("selectedEventId", id);
+      window.location.href = "evento.html";
+    });
+  }
 
   // 👉 Benvenuto: creato UNA sola volta qui (non dentro loadEvents)
  try {
@@ -782,7 +955,7 @@ return `
     });
   }
 
-  // Logout
+// Logout
   if (btnLogout) {
     btnLogout.addEventListener("click", () => {
       localStorage.removeItem("token");
@@ -794,9 +967,11 @@ return `
   // Inizializza
   hookFilters();
 
-  // Prima lista
-  loadEvents();
+  // Prima lista + eventuali eventi privati già sbloccati
+  await loadEvents();
+  await refreshPrivateEvents();
 });
+
 
 
 
