@@ -597,15 +597,38 @@ return `
     }
   }
 
-  // Delegation click (tutti / miei)
+// Delegation click (tutti / miei + focus su mappa al click sulla card)
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest("button[data-action]");
-    if (!btn) return;
+
+    // 🔹 Nessun bottone azione: interpretiamo il click come "focus su mappa"
+    if (!btn) {
+      const card = e.target.closest(".event-card");
+      if (card && map && markersById) {
+        const evId = card.getAttribute("data-event-id");
+        const marker = evId ? markersById[evId] : null;
+
+        if (marker && typeof marker.getLatLng === "function") {
+          const latLng = marker.getLatLng();
+          try {
+            // Zoom minimo 8, per non restare troppo lontani
+            const targetZoom = Math.max(map.getZoom() || 0, 8);
+            map.setView(latLng, targetZoom, { animate: true });
+            marker.openPopup();
+          } catch (err) {
+            console.debug("[map focus] errore centratura:", err);
+          }
+        }
+      }
+      return; // importantissimo: non proseguiamo con la logica bottoni
+    }
+
+    // 🔹 Da qui in poi: logica esistente per i bottoni (details / join / leave)
     const id = btn.getAttribute("data-id");
     const action = btn.getAttribute("data-action");
-  if (btn.disabled || btn.dataset.loading === "1") return;
-const cardEl = btn.closest(".event-card");
-const evTitleText = cardEl?.querySelector("h3")?.textContent?.trim() || "";
+    if (btn.disabled || btn.dataset.loading === "1") return;
+    const cardEl = btn.closest(".event-card");
+    const evTitleText = cardEl?.querySelector("h3")?.textContent?.trim() || "";
 
     if (action === "details") {
       sessionStorage.setItem("selectedEventId", id);
@@ -613,51 +636,49 @@ const evTitleText = cardEl?.querySelector("h3")?.textContent?.trim() || "";
       return;
     }
 
- if (action === "join") {
-  try {
-    btn.dataset.loading = "1";
-    btn.disabled = true;
+    if (action === "join") {
+      try {
+        btn.dataset.loading = "1";
+        btn.disabled = true;
 
-    const res = await apiPost(`/events/${id}/join`, {}, token);
-    if (!res.ok) {
-      showAlert(res.error || "Errore iscrizione", "error", { autoHideMs: 4000 });
-      return;
+        const res = await apiPost(`/events/${id}/join`, {}, token);
+        if (!res.ok) {
+          showAlert(res.error || "Errore iscrizione", "error", { autoHideMs: 4000 });
+          return;
+        }
+        showAlert(`Iscrizione effettuata${evTitleText ? ' a "' + evTitleText + '"' : ''}`, "success", { autoHideMs: 2500 });
+
+        await loadEvents();
+        return;
+      } catch (err) {
+        showAlert(err?.message || "Errore iscrizione", "error", { autoHideMs: 4000 });
+      } finally {
+        btn.dataset.loading = "";
+        btn.disabled = false;
+      }
     }
-   showAlert(`Iscrizione effettuata${evTitleText ? ' a "' + evTitleText + '"' : ''}`, "success", { autoHideMs: 2500 });
 
-    await loadEvents();
-    return;
-  } catch (err) {
-    showAlert(err?.message || "Errore iscrizione", "error", { autoHideMs: 4000 });
-  } finally {
-    btn.dataset.loading = "";
-    btn.disabled = false;
-  }
-}
+    if (action === "leave") {
+      try {
+        btn.dataset.loading = "1";
+        btn.disabled = true;
 
+        const res = await apiPost(`/events/${id}/leave`, {}, token);
+        if (!res.ok) {
+          showAlert(res.error || "Errore annullamento", "error", { autoHideMs: 4000 });
+          return;
+        }
+        showAlert(`Partecipazione annullata${evTitleText ? ' per "' + evTitleText + '"' : ''}`, "success", { autoHideMs: 2500 });
 
-if (action === "leave") {
-  try {
-    btn.dataset.loading = "1";
-    btn.disabled = true;
-
-    const res = await apiPost(`/events/${id}/leave`, {}, token);
-    if (!res.ok) {
-      showAlert(res.error || "Errore annullamento", "error", { autoHideMs: 4000 });
-      return;
+        await loadEvents();
+        return;
+      } catch (err) {
+        showAlert(err?.message || "Errore annullamento", "error", { autoHideMs: 4000 });
+      } finally {
+        btn.dataset.loading = "";
+        btn.disabled = false;
+      }
     }
-   showAlert(`Partecipazione annullata${evTitleText ? ' per "' + evTitleText + '"' : ''}`, "success", { autoHideMs: 2500 });
-
-    await loadEvents();
-    return;
-  } catch (err) {
-    showAlert(err?.message || "Errore annullamento", "error", { autoHideMs: 4000 });
-  } finally {
-    btn.dataset.loading = "";
-    btn.disabled = false;
-  }
-}
-
   });
 
   // Filtri
@@ -718,6 +739,7 @@ if (action === "leave") {
   // Prima lista
   loadEvents();
 });
+
 
 
 
