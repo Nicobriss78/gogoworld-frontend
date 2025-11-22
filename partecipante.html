@@ -77,19 +77,34 @@
 
       <button id="btnApplyFilters" class="btn">Filtra</button>
     </section>
-    <!-- Banner “Completa profilo” -->
+<!-- Banner “Completa profilo” -->
     <section id="profileNag" class="alert info" style="display:none; margin:.5rem 0;"></section>
 
-    <!-- PATCH (placeholder, non attivo): codice invito per eventi privati -->
-    <section id="invitePanel" style="display:none; margin:0.5rem 0;">
-      <input id="inviteCodeInput" type="text" placeholder="Hai un codice invito?" />
-      <button id="btnApplyInvite" class="btn">Mostra eventi privati</button>
+    <!-- Eventi privati: codice invito + menù a tendina -->
+    <section id="privateEventsBlock" style="margin:0.5rem 0;">
+      <div class="private-code-row">
+        <input
+          id="inviteCodeInput"
+          type="text"
+          placeholder="Hai un codice per un evento privato?"
+          autocomplete="off"
+        />
+        <button id="btnApplyInvite" class="btn">Sblocca evento</button>
+      </div>
+
+      <button id="togglePrivateList" class="btn btn-secondary private-toggle">
+        🔒 Eventi privati (<span id="privateCount">0</span>)
+      </button>
+
+      <ul id="privateEventsList" class="private-events-list" style="display:none;"></ul>
     </section>
-    <!-- /PATCH -->
+    <!-- /Eventi privati -->
+
     <!-- Mappa eventi -->
-<section id="mapSection">
-        <h2>Mappa eventi</h2>
-        <div id="map"></div>
+    <section id="mapSection">
+      <div id="map"></div>
+    </section>
+
 
         <!-- B2.3 — Legenda colori stato evento -->
         <div id="mapLegend" class="map-legend">
@@ -199,6 +214,7 @@ setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area)
 <script type="module" src="js/notifications.js"></script>
 </body>
 </html>
+
 
 
 
