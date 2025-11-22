@@ -317,7 +317,7 @@ if (btnRooms) {
   const btnApplyInvite = document.getElementById("btnApplyInvite");
   const privateListEl = document.getElementById("privateEventsList");
   const privateToggleBtn = document.getElementById("togglePrivateList");
-  const PRIVATE_LS_KEY = "gogo_private_event_ids";
+  let PRIVATE_LS_KEY = "gogo_private_event_ids";
 
   let privateEventIds = [];
   let privateEvents = [];
@@ -399,6 +399,16 @@ if (btnRooms) {
     privateEvents = results;
     savePrivateIds(privateEvents.map((ev) => ev._id));
     renderPrivateList();
+    // Aggiunge in mappa anche gli eventi privati sbloccati (se hanno coordinate)
+    if (cluster && map && Array.isArray(privateEvents)) {
+      for (const ev of privateEvents) {
+        if (!ev?._id) continue;
+        // se esiste già un marker (es. evento ora reso pubblico) non lo duplico
+        if (markersById[ev._id]) continue;
+        addMapMarkerForEvent(ev);
+      }
+    }
+
   }
 
   async function handleApplyInviteCode() {
@@ -515,6 +525,13 @@ if (btnRooms) {
     }
       if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
     }
+   // >>> CHIAVE PER-EUTENTE per eventi privati
+    const myUserId = me?._id || me?.user?._id || null;
+    if (myUserId) {
+      // chiave tipo: gogo_private_event_ids_64fa...
+      PRIVATE_LS_KEY = `gogo_private_event_ids_${myUserId}`;
+    }
+
   } catch {
     // nessun blocco della UI se /users/me fallisce: lo gestirà loadEvents()
   }
@@ -527,7 +544,60 @@ const mapEl = document.getElementById("map");
 let map, cluster;
 // B2.2 — mappa: dizionario per trovare il marker a partire dall'ID evento
 let markersById = {};
-// B2.3 — helper: status evento → colore marker per la mappa
+// Helper: aggiunge un marker sulla mappa per un singolo evento
+function addMapMarkerForEvent(ev) {
+  if (!cluster || !map || !ev) return null;
+
+  // stato normalizzato (future/imminent/ongoing/concluded/past)
+  const statusRaw = String(ev?.status || "").toLowerCase();
+  if (statusRaw === "past") return null; // niente marker per eventi completamente passati
+
+  // Geo: supporta sia lat/lon diretti che GeoJSON location.coordinates [lon, lat]
+  const coords = Array.isArray(ev?.location?.coordinates)
+    ? ev.location.coordinates
+    : null;
+
+  const latRaw =
+    ev?.lat ?? ev?.Lat ?? ev?.latitude ??
+    (coords ? coords[1] : undefined);
+
+  const lonRaw =
+    ev?.lon ?? ev?.lng ?? ev?.Lon ?? ev?.longitude ??
+    (coords ? coords[0] : undefined);
+
+  const lat = typeof latRaw === "string" ? parseFloat(latRaw.replace(",", ".")) : latRaw;
+  const lon = typeof lonRaw === "string" ? parseFloat(lonRaw.replace(",", ".")) : lonRaw;
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+
+  // Colore coerente con legenda
+  let fill = "#4a90e2"; // future
+  if (statusRaw === "imminent") fill = "#f5a623";
+  else if (statusRaw === "ongoing") fill = "#d0021b";
+  else if (statusRaw === "concluded") fill = "#999999";
+
+  const m = L.circleMarker([lat, lon], {
+    radius: 10,
+    weight: 2,
+    color: "#ffffff",
+    fillColor: fill,
+    fillOpacity: 1
+  });
+
+  const when = formatEventDate(ev);
+  const title = ev?.title || "";
+  m.bindPopup(`<b>${title}</b>${when ? "<br/>" + when : ""}`);
+
+  cluster.addLayer(m);
+
+  if (ev?._id) {
+    markersById[ev._id] = m;
+  }
+
+  return m;
+}
+
+// B2.3 — helper: status evento → stringa normalizzata
 function getEventStatusForMap(ev) {
   const raw = String(ev?.status || "").toLowerCase();
   if (
@@ -555,6 +625,7 @@ function getEventStatusForMap(ev) {
   return "future";
 }
 
+// (attualmente non usato, ma lo teniamo pronto)
 function buildMarkerIcon(ev) {
   const status = getEventStatusForMap(ev);
   const statusClass = status ? `status-${status}` : "status-unknown";
@@ -678,70 +749,24 @@ if (mapEl && window.L) {
 // --- MAPPA: aggiorna marker su cluster ---
 if (cluster && map && Array.isArray(res?.events)) {
   cluster.clearLayers();
-  const markers = [];
-  // B2.2 — reset mappa ID → marker
+  // reset mappa ID → marker
   markersById = {};
+  const markers = [];
 
   for (const ev of res.events) {
-    // Normalizza stato
-    const statusRaw = String(ev?.status || "").toLowerCase();
-
-    // 🔹 NON mostrare sulla mappa gli eventi completamente passati
-    // (restano solo nella lista "Eventi a cui partecipo")
-    if (statusRaw === "past") continue;
-
-    // Accetta varianti: lat/lon, lat/lng, e GeoJSON location.coordinates [lon, lat]
-    const coords = Array.isArray(ev?.location?.coordinates) ? ev.location.coordinates : null;
-
-    const latRaw =
-      ev?.lat ?? ev?.Lat ?? ev?.latitude ??
-      (coords ? coords[1] : undefined);
-
-    const lonRaw =
-      ev?.lon ?? ev?.lng ?? ev?.Lon ?? ev?.longitude ??
-      (coords ? coords[0] : undefined);
-
-    const lat = typeof latRaw === "string" ? parseFloat(latRaw.replace(",", ".")) : latRaw;
-    const lon = typeof lonRaw === "string" ? parseFloat(lonRaw.replace(",", ".")) : lonRaw;
-
-    if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
-
-    // Colore coerente con legenda / badge
-    let fill = "#4a90e2"; // future default
-    if (statusRaw === "imminent") fill = "#f5a623";
-    else if (statusRaw === "ongoing") fill = "#d0021b";
-    else if (statusRaw === "concluded") fill = "#999999";
-
-    // Marker come cerchio colorato
-    const m = L.circleMarker([lat, lon], {
-      radius: 10,
-      weight: 2,
-      color: "#ffffff",
-      fillColor: fill,
-      fillOpacity: 1
-    });
-
-    const when = formatEventDate(ev);
-    const title = ev?.title || "";
-    m.bindPopup(`<b>${title}</b>${when ? "<br/>" + when : ""}`);
-
-    markers.push(m);
-
-    // B2.2 — collega marker all'evento per click su card
-    if (ev?._id) {
-      markersById[ev._id] = m;
-    }
+    const m = addMapMarkerForEvent(ev);
+    if (m) markers.push(m);
   }
 
-  // Aggiungi tutti i marker e adatta la vista
+  // Adatta la vista ai marker presenti
   if (markers.length) {
-    markers.forEach(m => cluster.addLayer(m));
     try {
       const group = L.featureGroup(markers);
       map.fitBounds(group.getBounds().pad(0.1));
     } catch {}
   }
 }
+
 
 
 // >>> PATCH: funzione di rendering card arricchita (region/country, prezzo+currency + stato)
@@ -971,6 +996,7 @@ return `
   await loadEvents();
   await refreshPrivateEvents();
 });
+
 
 
 
