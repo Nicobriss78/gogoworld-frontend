@@ -87,6 +87,31 @@ function hookFreePrice(form) {
   chkFree?.addEventListener("change", applyFreeState);
   applyFreeState(); // inizializza stato UI
 }
+// --- PATCH Evento privato / accessCode (organizzatore) ---
+function hookPrivateVisibility(form) {
+  if (!form) return;
+
+  const selVisibility = form.querySelector('select[name="visibility"]');
+  const privateBox = document.getElementById("privateOptions");
+  const accessInput = form.querySelector('input[name="accessCode"]');
+
+  function applyPrivateState() {
+    if (!selVisibility || !privateBox) return;
+    const isPriv = selVisibility.value === "private";
+
+    privateBox.style.display = isPriv ? "block" : "none";
+
+    if (accessInput) {
+      accessInput.disabled = !isPriv;
+      if (!isPriv) {
+        accessInput.value = "";
+      }
+    }
+  }
+
+  selVisibility?.addEventListener("change", applyPrivateState);
+  applyPrivateState(); // inizializza stato UI
+}
 
 // Renderizza un’etichetta stato compatta (ongoing/imminent/future/concluded)
 function renderStatus(status) {
@@ -443,7 +468,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
     const rawDateEnd = get("dateEnd");
     const dateEndStr = rawDateEnd ? combineDateAndTime(rawDateEnd, get("timeEnd")) : "";
     const payload = {
-      // Base
+// Base
       title: get("title"),
       description: get("description"),
 
@@ -455,6 +480,10 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
       visibility: get("visibility") || "public",
       language: get("language") || "it",
       target: get("target") || "tutti",
+
+      // Evento privato (solo se visibility === "private")
+      isPrivate: (get("visibility") === "private"),
+      accessCode: (get("accessCode") || "").trim() || undefined,
 
       // Localizzazione separata
       venueName: get("venueName"),
@@ -509,6 +538,11 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
     if (p.dateEnd && p.dateStart && new Date(p.dateEnd) < new Date(p.dateStart)) {
       errors.push("Data fine precedente alla data inizio");
     }
+      if (p.visibility === "private") {
+    if (!p.accessCode || String(p.accessCode).trim().length < 4) {
+      errors.push("Per un evento privato è necessario un codice di accesso (min 4 caratteri)");
+    }
+  }
     if (!p.isFree && typeof p.price === "number" && p.price < 0) {
       errors.push("Prezzo non valido");
     }
@@ -919,7 +953,7 @@ if (action === "promote") {
     });
   }
 
-  // Create (PATCH: attiva pannello + submit)
+// Create (PATCH: attiva pannello + submit)
   if (btnCreate) {
     btnCreate.addEventListener("click", () => {
       if (!panel) return;
@@ -929,6 +963,7 @@ if (action === "promote") {
         const first = form?.querySelector('input[name="title"]');
         first && first.focus();
         hookFreePrice(form);
+        hookPrivateVisibility(form); // <-- nuova patch
       } else {
         panel.style.display = "none";
       }
@@ -1226,6 +1261,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
