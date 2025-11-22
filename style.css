@@ -838,6 +838,59 @@ body {
   background-color: #d0021b;
 }
 
+/* ======================================================
+   Eventi privati — area partecipante
+   ====================================================== */
+#privateEventsBlock {
+  border-radius: 8px;
+  padding: 0.5rem 0;
+}
+
+#privateEventsBlock .private-code-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+#privateEventsBlock .private-code-row input {
+  flex: 1;
+}
+
+#togglePrivateList.private-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.private-events-list {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding-left: 0;
+  border-radius: 6px;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+}
+
+.private-events-list li {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.private-events-list li:last-child {
+  border-bottom: none;
+}
+
+.private-events-list li:hover {
+  background: #f0f4ff;
+}
+
+.private-events-list li.empty {
+  color: #777;
+  cursor: default;
+}
 
 
 
