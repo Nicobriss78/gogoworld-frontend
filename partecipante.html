@@ -87,9 +87,24 @@
     </section>
     <!-- /PATCH -->
     <!-- Mappa eventi -->
-    <section id="mapSection">
-      <div id="map"></div>
-    </section>
+<section id="mapSection">
+        <h2>Mappa eventi</h2>
+        <div id="map"></div>
+
+        <!-- B2.3 — Legenda colori stato evento -->
+        <div id="mapLegend" class="map-legend">
+          <span class="legend-item">
+            <span class="legend-dot legend-dot-ongoing"></span>In corso
+          </span>
+          <span class="legend-item">
+            <span class="legend-dot legend-dot-imminent"></span>Imminente
+          </span>
+          <span class="legend-item">
+            <span class="legend-dot legend-dot-future"></span>In arrivo
+          </span>
+        </div>
+      </section>
+
     <!-- Container non utilizzato ma lasciato per non rimuovere codice -->
     <section id="eventsList" class="events-list"></section>
 
@@ -184,6 +199,7 @@ setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area)
 <script type="module" src="js/notifications.js"></script>
 </body>
 </html>
+
 
 
 
