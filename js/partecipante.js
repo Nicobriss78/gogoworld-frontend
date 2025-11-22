@@ -354,6 +354,43 @@ const mapEl = document.getElementById("map");
 let map, cluster;
 // B2.2 — mappa: dizionario per trovare il marker a partire dall'ID evento
 let markersById = {};
+// B2.3 — helper: status evento → colore marker per la mappa
+function getEventStatusForMap(ev) {
+  const raw = String(ev?.status || "").toLowerCase();
+  if (
+    raw === "future" ||
+    raw === "imminent" ||
+    raw === "ongoing" ||
+    raw === "concluded" ||
+    raw === "past"
+  ) {
+    return raw;
+  }
+
+  // Fallback minimo se manca lo status: prova a dedurre rispetto a oggi
+  try {
+    const now = Date.now();
+    const start = ev?.dateStart || ev?.date || ev?.startDate;
+    const end = ev?.dateEnd || ev?.endDate;
+    const startMs = start ? Date.parse(start) : NaN;
+    const endMs = end ? Date.parse(end) : NaN;
+
+    if (Number.isFinite(endMs) && endMs < now) return "past";
+    if (Number.isFinite(startMs) && startMs > now) return "future";
+  } catch (_) {}
+
+  return "future";
+}
+
+function buildMarkerIcon(ev) {
+  const status = getEventStatusForMap(ev);
+  const statusClass = status ? `status-${status}` : "status-unknown";
+  return L.divIcon({
+    className: `status-marker ${statusClass}`,
+    iconSize: [22, 22],
+    html: '<span class="status-marker-inner"></span>'
+  });
+}
 
 if (mapEl && window.L) {
   map = L.map("map").setView([41.8719, 12.5674], 6); // Italia
@@ -487,8 +524,11 @@ if (cluster && map && Array.isArray(res?.events)) {
     const lat = typeof latRaw === "string" ? parseFloat(latRaw.replace(",", ".")) : latRaw;
     const lon = typeof lonRaw === "string" ? parseFloat(lonRaw.replace(",", ".")) : lonRaw;
 
-    if (Number.isFinite(lat) && Number.isFinite(lon)) {
-      const m = L.marker([lat, lon]);
+if (Number.isFinite(lat) && Number.isFinite(lon)) {
+      // B2.3 — icona personalizzata in base allo stato evento
+      const markerIcon = buildMarkerIcon(ev);
+      const m = L.marker([lat, lon], { icon: markerIcon });
+
       const when = formatEventDate(ev);
       const title = ev?.title || "";
       m.bindPopup(`<b>${title}</b>${when ? "<br/>" + when : ""}`);
@@ -739,6 +779,7 @@ return `
   // Prima lista
   loadEvents();
 });
+
 
 
 
