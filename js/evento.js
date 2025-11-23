@@ -474,10 +474,11 @@ const btnDM = document.getElementById("btnDMOrganizzatore");
 if (btnDM && evOrganizerId) {
   btnDM.href = `messages.html?to=${encodeURIComponent(evOrganizerId)}&returnTo=${ret}`;
 }
-// --- Chat privata: verifica lock senza codice & sblocco ---
+// --- Chat evento: logica UX definitiva ---
 const unlockBox = document.getElementById("unlockBox");
 const unlockCode = document.getElementById("unlockCode");
 const btnUnlock = document.getElementById("btnUnlock");
+
 // GATE CHAT: approvazione + stato evento + activeFrom/activeUntil
 const appr = String(ev?.approvalStatus || "").toLowerCase();
 const evStatus = getEventStatus(ev);
@@ -490,32 +491,30 @@ const isPast = evStatus === "past";
 // - non "past"
 const chatEligible = (appr === "approved") && timeChatAllowed && !isPast;
 
-// Mostra/nascondi / disabilita bottone chat e box sblocco coerentemente
+// UX del bottone "Apri chat evento"
 if (!btnChat) {
-  // niente bottone → nascondiamo eventuale box sblocco
+  // niente bottone → nascondiamo eventuale box sblocco (se rimasto nel DOM)
   if (unlockBox) unlockBox.style.display = "none";
-} else if (!chatEligible) {
-  // chat NON disponibile:
-  // - evento non ancora in finestra chat
-  // - evento non approvato
-  // - evento fuori finestra o passato
+} else if (isPast) {
+  // Evento completamente passato → niente chat
+  btnChat.style.display = "none";
   btnChat.disabled = true;
   btnChat.classList.add("btn-disabled");
-
-  if (isPast) {
-    // sugli eventi "past" la chat sparisce del tutto
-    btnChat.style.display = "none";
-    if (unlockBox) unlockBox.style.display = "none";
-  } else {
-    // future / imminent con chat non ancora attiva → bottone visibile ma disabilitato
-    btnChat.style.display = "";
-    if (unlockBox) unlockBox.style.display = "none";
-  }
-} else {
-  // chat eleggibile → lasciamo a checkChatAccess la gestione lock/sblocco
+  if (unlockBox) unlockBox.style.display = "none";
+} else if (!chatEligible) {
+  // Evento non approvato o fuori finestra chat → bottone visibile ma disabilitato
+  btnChat.disabled = true;
+  btnChat.classList.add("btn-disabled");
+  btnChat.textContent = "Chat non ancora attiva";
   btnChat.style.display = "";
+  if (unlockBox) unlockBox.style.display = "none";
+} else {
+  // Chat eleggibile: stato base → attivo. Eventuali lock aggiuntivi vengono gestiti da checkChatAccess
   btnChat.disabled = false;
   btnChat.classList.remove("btn-disabled");
+  btnChat.textContent = "💬 Apri chat evento";
+  btnChat.style.display = "";
+  if (unlockBox) unlockBox.style.display = "none";
 }
 
 
@@ -1058,6 +1057,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
