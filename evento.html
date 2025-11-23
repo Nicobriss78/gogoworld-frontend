@@ -10,13 +10,18 @@
 </head>
 <body>
   <main class="container event-detail">
-    <header class="app-header">
+<header class="app-header">
       <h1 id="eventTitle">Evento</h1>
+      <span id="badgePrivate"
+            style="display:none; background:#555; color:#fff; padding:4px 8px; border-radius:6px; font-size:.8rem; margin-left:.5rem;">
+        🔒 Privato
+      </span>
     </header>
 <nav class="toolbar" id="eventActions" style="display:flex; gap:.5rem; margin:.5rem 0;">
   <a id="btnChatEvento" class="btn" href="#">💬 Apri chat evento</a>
   <a id="btnDMOrganizzatore" class="btn btn-secondary" href="#">✉️ Scrivi all’organizzatore</a>
 </nav>
+
     <section id="eventDetails" class="event-details">
       <!-- PATCH: contenitori semantici per i nuovi campi -->
       <div id="eventMeta"></div> <!-- visibilità, lingua, target -->
@@ -80,6 +85,7 @@
 
 </body>
 </html>
+
 
 
 
