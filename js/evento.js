@@ -343,7 +343,14 @@ const statusRaw = (me?.status || me?.user?.status || "").toString().toLowerCase(
 const statusLabel = statusRaw ? (statusRaw[0].toUpperCase() + statusRaw.slice(1)) : "";
 
     elTitle.textContent = ev.title || "Evento";
-
+const badgePriv = document.getElementById("badgePrivate");
+    if (badgePriv) {
+      if (ev.isPrivate) {
+        badgePriv.style.display = "inline-block";
+      } else {
+        badgePriv.style.display = "none";
+      }
+    }
     // --- Rendering per sezioni se i contenitori esistono; altrimenti fallback monolitico ---
     const sMeta = document.getElementById("eventMeta");
     const sSched = document.getElementById("eventSchedule");
@@ -1057,6 +1064,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
