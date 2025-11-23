@@ -333,15 +333,25 @@ const back = q("btnBackToEvent");
     back.style.display = "none";
   }
 
- q("txt").disabled = !(current.canSend || forceSendEnabled());
- q("sendBtn").disabled = !(current.canSend || forceSendEnabled());
-// Se la chat è scaduta (oltre la fine +24h) disabilita comunque
-if (current.activeUntil && new Date() > new Date(current.activeUntil)) {
- q("txt").disabled = true;
- q("sendBtn").disabled = true;
- q("roomWindow").textContent = "Chat non più attiva (evento concluso).";
- }
+const txt = q("txt");
+  const sendBtn = q("sendBtn");
+  const lockedMsg = q("lockedMsg");
+
+  const canWrite = (current.canSend || forceSendEnabled());
+
+  if (txt) txt.disabled = !canWrite;
+  if (sendBtn) sendBtn.disabled = !canWrite;
+  if (lockedMsg) lockedMsg.style.display = canWrite ? "none" : "block";
+
+  // Se la chat è scaduta (oltre la fine +24h) disabilita comunque
+  if (current.activeUntil && new Date() > new Date(current.activeUntil)) {
+    if (txt) txt.disabled = true;
+    if (sendBtn) sendBtn.disabled = true;
+    if (lockedMsg) lockedMsg.style.display = "block";
+    q("roomWindow").textContent = "Chat non più attiva (evento concluso).";
+  }
 }
+
 
 async function loadMessages(before) {
   if (!current.roomId) return;
