@@ -293,35 +293,50 @@ function renderEventCard(ev) {
   // PATCH: normalizza status/visibility, niente default a "approved"
   const st = (ev.approvalStatus ?? ev.status ?? "").toLowerCase() || "-";
   const vis = (ev.visibility ?? "").toLowerCase() || "-";
+  const isPrivate = vis === "private";
+
+  const actionsHtml = (() => {
+    const parts = [];
+    if (st === "pending" || st === "rejected") {
+      parts.push(`<button class="btn" data-action="approve" data-id="${ev._id}">Approve</button>`);
+    }
+    if (st === "approved") {
+      parts.push(`<button class="btn" data-action="unapprove" data-id="${ev._id}">Unapprove</button>`);
+    }
+    if (st !== "blocked") {
+      parts.push(`<button class="btn" data-action="block" data-id="${ev._id}">Block</button>`);
+    } else {
+      parts.push(`<button class="btn" data-action="unblock" data-id="${ev._id}">Unblock</button>`);
+    }
+    parts.push(`<button class="btn" data-action="reject" data-id="${ev._id}">Reject</button>`);
+    parts.push(`<button class="btn" data-action="force-delete" data-id="${ev._id}">Force Delete</button>`);
+    parts.push(`<button class="btn" data-action="close-award" data-id="${ev._id}">Chiudi & premia</button>`);
+    return parts.join("");
+  })();
+
+  const privTools = isPrivate
+    ? `
+      <div class="priv-code-tools">
+        <span class="muted">Codice privato:</span>
+        <span class="muted" data-priv-code-for="${ev._id}">non caricato</span>
+        <button class="btn" data-action="show-priv-code" data-id="${ev._id}">Mostra codice</button>
+        <button class="btn" data-action="rotate-priv-code" data-id="${ev._id}">Nuovo codice</button>
+      </div>
+    `
+    : "";
 
   card.innerHTML = `
     <h3>${ev.title || "-"}</h3>
     <div class="muted">${ev.city || "-"}, ${ev.region || "-"}, ${ev.country || "-"}</div>
     <div>${badge(st)} <span class="muted">•</span> ${vis} <span class="muted">•</span> ${fmtDate(ev.dateStart)} → ${fmtDate(ev.dateEnd)}</div>
-<div class="actions">
-      ${(() => {
-        const parts = [];
-        if (st === "pending" || st === "rejected") {
-          parts.push(`<button class="btn" data-action="approve" data-id="${ev._id}">Approve</button>`);
-        }
-        if (st === "approved") {
-          parts.push(`<button class="btn" data-action="unapprove" data-id="${ev._id}">Unapprove</button>`);
-        }
-        if (st !== "blocked") {
-          parts.push(`<button class="btn" data-action="block" data-id="${ev._id}">Block</button>`);
-        } else {
-          parts.push(`<button class="btn" data-action="unblock" data-id="${ev._id}">Unblock</button>`);
-        }
-        parts.push(`<button class="btn" data-action="reject" data-id="${ev._id}">Reject</button>`);
-        parts.push(`<button class="btn" data-action="force-delete" data-id="${ev._id}">Force Delete</button>`);
-        parts.push(`<button class="btn" data-action="close-award" data-id="${ev._id}">Chiudi & premia</button>`);
-        return parts.join("");
-      })()}
+    <div class="actions">
+      ${actionsHtml}
     </div>
-    </div>
+    ${privTools}
   `;
   return card;
 }
+
 
 async function loadEvents() {
 const seq = ++evRequestSeq; // prendi un token progressivo
@@ -362,9 +377,52 @@ elEvList?.addEventListener("click", async (e) => {
   if (!btn) return;
   const id = btn.getAttribute("data-id");
   const action = btn.getAttribute("data-action");
+
+  // Gestione speciale: codice evento privato (admin)
+  if (action === "show-priv-code" || action === "rotate-priv-code") {
+    btn.disabled = true;
+    btn.classList.add("is-busy");
+    try {
+      if (action === "show-priv-code") {
+        const res = await callApi(`/api/events/${id}/access-code`, {
+          method: "GET",
+          headers: { ...authHeaders() },
+        });
+        const out = await res.json().catch(() => ({}));
+        if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore recupero codice");
+        const span = document.querySelector(`[data-priv-code-for="${id}"]`);
+        if (span) span.textContent = out.accessCode || "(vuoto)";
+        showAlert("Codice privato caricato", "success", { autoHideMs: 1800 });
+      } else {
+        const ok = confirm(
+          "Generare un nuovo codice per questo evento?\n" +
+          "Chi ha già sbloccato l'evento resta dentro, ma il vecchio codice non sarà più valido."
+        );
+        if (!ok) return;
+        const res = await callApi(`/api/events/${id}/access-code/rotate`, {
+          method: "POST",
+          headers: { ...authHeaders(), "Content-Type": "application/json" },
+        });
+        const out = await res.json().catch(() => ({}));
+        if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore rigenerazione codice");
+        const span = document.querySelector(`[data-priv-code-for="${id}"]`);
+        if (span) span.textContent = out.newCode || "(vuoto)";
+        showAlert("Nuovo codice generato", "success", { autoHideMs: 2000 });
+      }
+    } catch (err) {
+      showAlert(err?.message || "Errore gestione codice evento", "error");
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove("is-busy");
+    }
+    return; // non proseguire con la logica approve/block/...
+  }
+
+  // --- logica esistente per approve / block / ecc. ---
   // evita doppi click
   btn.disabled = true;
   btn.classList.add("is-busy");
+
   const pathMap = {
     "approve": `/admin/events/${id}/approve`,
     "unapprove": `/admin/events/${id}/unapprove`,
@@ -372,19 +430,26 @@ elEvList?.addEventListener("click", async (e) => {
     "block": `/admin/events/${id}/block`,
     "unblock": `/admin/events/${id}/unblock`,
     "close-award": `/events/${id}/close`,
- 
   };
+
   try {
     if (action === "force-delete") {
-      if (!confirm("Confermi l'eliminazione definitiva dell'evento?")) return;
-      const res = await callApi(`/admin/events/${id}/force`, { method: "DELETE", headers: { ...authHeaders(), "Content-Type": "application/json" } });
+      if (!confirm("Confermi l'eliminazione definitiva dell'evento?")) {
+        btn.disabled = false;
+        btn.classList.remove("is-busy");
+        return;
+      }
+      const res = await callApi(`/admin/events/${id}/force`, {
+        method: "DELETE",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+      });
       const out = await res.json().catch(() => ({}));
       if (!res.ok || !out?.ok) throw new Error(out?.error || "Force delete fallita");
       showAlert("Evento eliminato", "success");
     } else {
       // Azione speciale: chiusura evento + award ai partecipanti
       if (action === "close-award") {
-     const res = await callApi(pathMap[action], {
+        const res = await callApi(pathMap[action], {
           method: "PUT",
           headers: { ...authHeaders(), "Content-Type": "application/json" },
         });
@@ -392,10 +457,8 @@ elEvList?.addEventListener("click", async (e) => {
         if (!res.ok || !out?.ok) throw new Error(out?.error || "Chiusura/award fallita");
         const awarded = (typeof out.awarded === "number") ? out.awarded : (out?.awarded ?? "?");
         showAlert(`Evento chiuso. Premi assegnati: ${awarded}`, "success");
-        // Refresh KPI+lista e termina ramo
         await loadEvents();
         await loadKpis();
-        // ripristina stato bottone prima di uscire dal ramo
         btn.disabled = false;
         btn.classList.remove("is-busy");
         return;
@@ -411,14 +474,14 @@ elEvList?.addEventListener("click", async (e) => {
         const reason = prompt("Motivo del blocco:");
         if (!reason || !reason.trim()) { showAlert("Motivo obbligatorio", "error"); return; }
         body.reason = reason.trim();
-}
-// su approve / unblock azzeri motivo/notes per evitare che rimanga quello precedente
-if (action === "approve" || action === "unblock") {
-body.reason = "";
-body.notes = "";
-}
+      }
+      // su approve / unblock azzeri motivo/notes per evitare che rimanga quello precedente
+      if (action === "approve" || action === "unblock") {
+        body.reason = "";
+        body.notes = "";
+      }
 
-     const res = await callApi(pathMap[action], {
+      const res = await callApi(pathMap[action], {
         method: "POST",
         headers: { ...authHeaders(), "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -427,14 +490,14 @@ body.notes = "";
       if (!res.ok || !out?.ok) throw new Error(out?.error || "Azione fallita");
       showAlert("Azione completata", "success");
     }
-    // Refresh
+
+    // Refresh lista + KPI
     await loadEvents();
     await loadKpis();
-    // ripristina stato bottone (successo)
-  btn.disabled = false;
-  btn.classList.remove("is-busy");
+
+    btn.disabled = false;
+    btn.classList.remove("is-busy");
   } catch (err) {
-    // ripristina stato bottone (errore)
     btn.disabled = false;
     btn.classList.remove("is-busy");
     showAlert(err?.message || "Errore azione admin", "error");
