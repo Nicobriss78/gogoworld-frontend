@@ -59,20 +59,29 @@
           </select>
         </label><br/>
 
-        <!-- PATCH: opzioni evento privato -->
+<!-- PATCH: opzioni evento privato -->
         <div id="privateOptions" style="display:none; margin-bottom: 0.5rem;">
           <label>Codice evento privato
-            <input type="text"
-                   name="accessCode"
-                   id="accessCodeInput"
-                   maxlength="32"
-                   placeholder="Es. FESTA123" />
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.15rem;">
+              <input type="text"
+                     name="accessCode"
+                     id="accessCodeInput"
+                     maxlength="32"
+                     placeholder="Es. FESTA123" />
+              <button type="button"
+                      id="btnGenerateAccessCode"
+                      class="btn"
+                      style="padding:0.15rem 0.5rem; font-size:0.8rem;">
+                Genera codice
+              </button>
+            </div>
           </label><br/>
           <small class="help-text">
             Condividi questo codice solo con gli invitati.  
             Se cambi la visibilità da “Privato” a “Pubblico”, il codice verrà ignorato.
           </small>
         </div>
+
 
         <label>Lingua*
 
@@ -265,6 +274,7 @@
 <script type="module" src="js/notifications.js"></script>
 </body>
 </html>
+
 
 
 
