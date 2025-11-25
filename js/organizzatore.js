@@ -87,6 +87,28 @@ function hookFreePrice(form) {
   chkFree?.addEventListener("change", applyFreeState);
   applyFreeState(); // inizializza stato UI
 }
+// Generatore codice evento privato (client-side)
+function generateRandomAccessCode() {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // senza O/0, I/1, ecc.
+  const length = 8;
+  let out = "";
+
+  const cryptoObj = window.crypto || window.msCrypto;
+  if (cryptoObj && cryptoObj.getRandomValues) {
+    const buf = new Uint32Array(length);
+    cryptoObj.getRandomValues(buf);
+    for (let i = 0; i < length; i++) {
+      out += alphabet[buf[i] % alphabet.length];
+    }
+  } else {
+    for (let i = 0; i < length; i++) {
+      const idx = Math.floor(Math.random() * alphabet.length);
+      out += alphabet[idx];
+    }
+  }
+
+  return out;
+}
 // --- PATCH Evento privato / accessCode (organizzatore) ---
 function hookPrivateVisibility(form) {
   if (!form) return;
@@ -94,6 +116,7 @@ function hookPrivateVisibility(form) {
   const selVisibility = form.querySelector('select[name="visibility"]');
   const privateBox = document.getElementById("privateOptions");
   const accessInput = form.querySelector('input[name="accessCode"]');
+  const btnGenerateCode = document.getElementById("btnGenerateAccessCode");
 
   function applyPrivateState() {
     if (!selVisibility || !privateBox) return;
@@ -111,7 +134,24 @@ function hookPrivateVisibility(form) {
 
   selVisibility?.addEventListener("change", applyPrivateState);
   applyPrivateState(); // inizializza stato UI
+
+  // Gestione click "Genera codice"
+  if (btnGenerateCode && accessInput) {
+    btnGenerateCode.addEventListener("click", () => {
+      // se non è già privato, imposta a privato e aggiorna la UI
+      if (selVisibility && selVisibility.value !== "private") {
+        selVisibility.value = "private";
+        applyPrivateState();
+      }
+
+      accessInput.disabled = false;
+      accessInput.value = generateRandomAccessCode();
+      accessInput.focus();
+      accessInput.select();
+    });
+  }
 }
+
 
 // Renderizza un’etichetta stato compatta (ongoing/imminent/future/concluded)
 function renderStatus(status) {
@@ -1261,6 +1301,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
