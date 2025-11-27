@@ -110,17 +110,10 @@ function render(list = []) {
             alert("Non puoi inviare messaggi a un utente che hai bloccato.");
             return;
           }
-          } else {
-    actionsHtml = `
-      <div class="user-actions">
-        <button class="btn btn-primary" data-action="msg" data-user="${u._id}">Messaggia</button>
-        <button class="btn" data-action="profile" data-user="${u._id}">Profilo</button>
-        <button class="btn btn-secondary" data-action="block" data-user="${u._id}">Blocca</button>
-      </div>
-    `;
-  }
           if (hasBlockedMe) {
-            alert("Questo utente ti ha bloccato, non puoi inviargli messaggi.");
+            alert(
+              "Questo utente ti ha bloccato, non puoi inviargli messaggi."
+            );
             return;
           }
           const res = await openOrJoinDM(targetUserId);
