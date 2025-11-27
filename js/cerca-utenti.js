@@ -110,6 +110,12 @@ function render(list = []) {
             alert("Non puoi inviare messaggi a un utente che hai bloccato.");
             return;
           }
+          if (action === "profile") {
+          // apre il profilo pubblico in una nuova pagina
+          location.href = `user-public.html?userId=${targetUserId}`;
+          return;
+        }
+
           if (hasBlockedMe) {
             alert(
               "Questo utente ti ha bloccato, non puoi inviargli messaggi."
