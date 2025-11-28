@@ -892,6 +892,60 @@ body {
   cursor: default;
 }
 
+/* === Profilo pubblico: bacheca attività (feed) === */
+
+.activity-list {
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.activity-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.25rem 0.15rem;
+  border-bottom: 1px solid #eee;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 1.5rem;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.activity-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-title {
+  font-size: 0.92rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.activity-meta {
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+@media (max-width: 640px) {
+  .activity-item {
+    padding: 0.35rem 0.15rem;
+  }
+}
+
 
 
 
