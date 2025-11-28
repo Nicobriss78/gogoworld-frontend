@@ -70,11 +70,12 @@
 </head>
 
 <body>
-  <div class="admin-wrap">
+<div class="admin-wrap">
     <header class="admin-header">
       <div class="admin-title">Admin Dashboard</div>
+
       <nav class="admin-tabs" id="adminTabs">
-<!-- Dropdown Sezioni -->
+        <!-- Dropdown Sezioni -->
         <span class="menu-group">
           <button type="button" id="sectionsMenuBtn" class="menu-toggle">Sezioni ▾</button>
           <span class="menu-dropdown" id="sectionsMenu">
@@ -88,15 +89,17 @@
             <button type="button" data-tab="banners">Banner</button>
           </span>
         </span>
-       <span id="currentTabLabel" class="menu-current">Attuale: Eventi</span>
+        <span id="currentTabLabel" class="menu-current">Attuale: Eventi</span>
       </nav>
-           <span id="currentTabLabel" class="menu-current">Attuale: Eventi</span>
-     </nav>
-     <a href="pages/cerca-utenti.html" class="btn">🔎 Cerca</a>
-     <button id="btnAdminLogout" class="btn">Logout</button>
-     </header>
 
-      <button id="btnAdminLogout" class="btn">Logout</button>
+      <!-- Toolbar header: profilo + cambio ruolo + cerca + logout -->
+      <div class="admin-toolbar">
+        <button id="btnAdminProfile" class="btn">Profilo</button>
+        <button id="btnAdminAsOrganizer" class="btn">Entra come organizzatore</button>
+        <button id="btnAdminAsParticipant" class="btn">Entra come partecipante</button>
+        <a href="pages/cerca-utenti.html" class="btn">🔎 Cerca</a>
+        <button id="btnAdminLogout" class="btn">Logout</button>
+      </div>
     </header>
 
     <!-- KPI -->
