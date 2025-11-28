@@ -106,13 +106,21 @@ function renderProfile(profile) {
     bioEl.textContent = "Nessuna bio disponibile.";
   }
 
-  followersEl.textContent = profile.followersCount ?? 0;
+followersEl.textContent = profile.followersCount ?? 0;
   followingEl.textContent = profile.followingCount ?? 0;
 
   const isFollowing = !!profile.isFollowing;
   followBtn.dataset.following = isFollowing ? "1" : "0";
   followBtn.textContent = isFollowing ? "Smetti di seguire" : "Segui";
+
+  // Se sto guardando me stesso (self=1 nell'URL) → niente bottone Follow
+  const qs = new URLSearchParams(location.search);
+  const isSelf = qs.get("self") === "1";
+  if (isSelf) {
+    followBtn.style.display = "none";
+  }
 }
+
 
 // --- rendering attività ---
 
