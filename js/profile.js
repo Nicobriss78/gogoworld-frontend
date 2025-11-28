@@ -54,6 +54,26 @@ async function setReturnButton() {
     btn.href = "/partecipante.html";
   }
 }
+// --- setta il bottone "Vedi la mia bacheca pubblica" ---
+async function setMyPublicBoardLink() {
+  const btn = document.getElementById("btnMyPublic");
+  if (!btn) return;
+
+  try {
+    const me = await whoami(localStorage.getItem("token"));
+    const id = me?.user?._id;
+    if (!id) {
+      btn.style.display = "none";
+      return;
+    }
+    // Link diretto alla vista pubblica di se stessi
+    btn.href = `/user/user-public.html?userId=${encodeURIComponent(id)}&self=1`;
+  } catch (e) {
+    console.warn(e);
+    btn.style.display = "none";
+  }
+}
+
 // --- nodes ---
 const basicForm = $("#basicForm");
 const privacyForm = $("#privacyForm");
@@ -235,4 +255,9 @@ privacyForm?.addEventListener("submit", async (e) => {
 reloadBtn?.addEventListener("click", loadProfile);
 
 // --- bootstrap ---
-document.addEventListener("DOMContentLoaded", () => { setReturnButton(); loadProfile(); });
+document.addEventListener("DOMContentLoaded", () => {
+  setReturnButton();
+  setMyPublicBoardLink();
+  loadProfile();
+});
+
