@@ -164,26 +164,24 @@ function renderActivityList(items) {
   }
   emptyEl.style.display = "none";
 
-  for (const item of items) {
+for (const item of items) {
     const li = document.createElement("li");
     li.className = "activity-item";
-    li.style.padding = ".35rem 0";
-    li.style.display = "flex";
-    li.style.gap = ".5rem";
 
     const icon = document.createElement("div");
+    icon.className = "activity-icon";
     icon.textContent = iconForType(item.type);
-    icon.style.width = "1.5rem";
-    icon.style.textAlign = "center";
 
     const payload = item.payload || item.meta || {};
     const main = document.createElement("div");
+    main.className = "activity-main";
+
     const title = document.createElement("div");
+    title.className = "activity-title";
     title.textContent = labelForType(item.type, payload);
-    title.style.fontWeight = "500";
 
     const meta = document.createElement("div");
-    meta.className = "muted";
+    meta.className = "activity-meta muted";
     const date = item.createdAt ? new Date(item.createdAt) : null;
     const dateStr = date ? date.toLocaleString("it-IT") : "";
     meta.textContent = dateStr;
@@ -195,6 +193,7 @@ function renderActivityList(items) {
     li.appendChild(main);
     listEl.appendChild(li);
   }
+
 }
 
 // --- LOAD ---
