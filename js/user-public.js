@@ -5,6 +5,8 @@ const BACKEND_ORIGIN = "https://gogoworld-api.onrender.com";
 
 const $ = (sel) => document.querySelector(sel);
 const alerts = $("#alerts");
+const QS = new URLSearchParams(location.search);
+const IS_SELF = QS.get("self") === "1";
 
 function showAlert(msg, type = "error", ms = 3000) {
   const div = document.createElement("div");
@@ -165,8 +167,11 @@ function renderActivityList(items) {
 
   privateEl.style.display = "none";
 
-  listEl.innerHTML = "";
+listEl.innerHTML = "";
   if (!items || !items.length) {
+    emptyEl.textContent = IS_SELF
+      ? "Ancora nessuna attività registrata sulla tua bacheca."
+      : "Nessuna attività da mostrare.";
     emptyEl.style.display = "block";
     return;
   }
