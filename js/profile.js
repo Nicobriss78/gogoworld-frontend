@@ -67,7 +67,7 @@ async function setMyPublicBoardLink() {
       return;
     }
     // Link diretto alla vista pubblica di se stessi
-    btn.href = `/user/user-public.html?userId=${encodeURIComponent(id)}&self=1`;
+    btn.href = `/pages/user-public.html?userId=${encodeURIComponent(id)}&self=1`;
   } catch (e) {
     console.warn(e);
     btn.style.display = "none";
