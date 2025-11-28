@@ -271,15 +271,28 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  const qs = new URLSearchParams(location.search);
+  const isSelf = qs.get("self") === "1";
+
   const backBtn = $("#btnBack");
-  if (backBtn && history.length > 1) {
-    backBtn.onclick = (e) => {
-      e.preventDefault();
-      history.back();
-    };
+  if (backBtn) {
+    if (isSelf) {
+      // Se sto guardando la mia bacheca, tornare al mio profilo
+      backBtn.textContent = "Torna al mio profilo";
+      backBtn.href = "/profile.html";
+      backBtn.onclick = null;
+    } else if (history.length > 1) {
+      backBtn.onclick = (e) => {
+        e.preventDefault();
+        history.back();
+      };
+    }
   }
 
   loadAll(userId);
 
-  $("#followBtn")?.addEventListener("click", () => onFollowClick(userId));
+  const followBtn = $("#followBtn");
+  if (!isSelf && followBtn) {
+    followBtn.addEventListener("click", () => onFollowClick(userId));
+  }
 });
