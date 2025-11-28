@@ -901,6 +901,40 @@ async function boot() {
     setTimeout(() => (window.location.href = "login.html"), 800);
     return;
   }
+  // --- Toolbar admin: profilo + entra come partecipante/organizzatore ---
+  try {
+    const meUser = me?.user;
+
+    // Profilo personale (da qui poi può andare alla sua bacheca pubblica)
+    const btnProfile = document.getElementById("btnAdminProfile");
+    if (btnProfile) {
+      btnProfile.addEventListener("click", () => {
+        // Torna poi a admin.html
+        window.location.href = "profile.html?returnTo=admin.html";
+      });
+    }
+
+    // Entra come organizzatore
+    const btnAsOrg = document.getElementById("btnAdminAsOrganizer");
+    if (btnAsOrg) {
+      btnAsOrg.addEventListener("click", () => {
+        try { localStorage.setItem("desiredRole", "organizer"); } catch {}
+        window.location.href = "organizzatore.html";
+      });
+    }
+
+    // Entra come partecipante
+    const btnAsPar = document.getElementById("btnAdminAsParticipant");
+    if (btnAsPar) {
+      btnAsPar.addEventListener("click", () => {
+        try { localStorage.setItem("desiredRole", "participant"); } catch {}
+        window.location.href = "partecipante.html";
+      });
+    }
+  } catch (e) {
+    console.warn("Admin toolbar wiring error", e);
+  }
+
 // Wire: Logout admin
   const btnLogout = document.getElementById("btnAdminLogout");
   if (btnLogout) {
