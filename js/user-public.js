@@ -276,15 +276,25 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const qs = new URLSearchParams(location.search);
+const qs = new URLSearchParams(location.search);
   const isSelf = qs.get("self") === "1";
+  const ret = qs.get("returnTo");
 
   const backBtn = $("#btnBack");
   if (backBtn) {
     if (isSelf) {
       // Se sto guardando la mia bacheca, tornare al mio profilo
       backBtn.textContent = "Torna al mio profilo";
-      backBtn.href = "/profile.html";
+
+      // Di base torna al profilo
+      let href = "/profile.html";
+
+      // Se ho un contesto di ritorno, lo propago
+      if (ret) {
+        href += `?returnTo=${encodeURIComponent(ret)}`;
+      }
+
+      backBtn.href = href;
       backBtn.onclick = null;
     } else if (history.length > 1) {
       backBtn.onclick = (e) => {
