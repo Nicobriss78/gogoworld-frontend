@@ -55,15 +55,15 @@ function liTemplate(u) {
         Hai bloccato questo utente
       </div>
     `;
-} else {
+  } else {
     actionsHtml = `
       <div class="user-actions">
         <button class="btn btn-primary" data-action="msg" data-user="${u._id}">Messaggia</button>
-        <button class="btn" data-action="profile" data-user="${u._id}">Profilo</button>
         <button class="btn btn-secondary" data-action="block" data-user="${u._id}">Blocca</button>
       </div>
     `;
   }
+
   return `
     <div class="user-line"
          data-user-id="${u._id}"
@@ -71,14 +71,18 @@ function liTemplate(u) {
          data-has-blocked-me="${hasBlockedMe ? "1" : "0"}">
       ${avatar}
       <div class="user-info">
-        <div class="name">${u.name || "Utente"}</div>
-        <div class="meta">${meta || ""}</div>
+        <button class="user-name-btn"
+                data-action="profile"
+                data-user="${u._id}"
+                style="all:unset;cursor:pointer;display:block;text-align:left;">
+          <div class="name">${u.name || "Utente"}</div>
+          <div class="meta">${meta || ""}</div>
+        </button>
       </div>
       ${actionsHtml}
     </div>
   `;
 }
-
 
 
 function render(list = []) {
@@ -93,7 +97,8 @@ function render(list = []) {
     li.innerHTML = liTemplate(u);
     ul.appendChild(li);
   }
-// bind pulsanti azione (Messaggia / Blocca / Sblocca)
+
+  // bind pulsanti azione (Messaggia / Profilo / Blocca / Sblocca)
   ul.querySelectorAll("button[data-action]").forEach((btn) => {
     btn.onclick = async () => {
       const action = btn.getAttribute("data-action");
@@ -110,12 +115,6 @@ function render(list = []) {
             alert("Non puoi inviare messaggi a un utente che hai bloccato.");
             return;
           }
-          if (action === "profile") {
-          // apre il profilo pubblico in una nuova pagina
-          location.href = `user-public.html?userId=${targetUserId}`;
-          return;
-        }
-
           if (hasBlockedMe) {
             alert(
               "Questo utente ti ha bloccato, non puoi inviargli messaggi."
@@ -126,6 +125,12 @@ function render(list = []) {
           if (res?.ok && res.data?.roomId) {
             location.href = `rooms.html?roomId=${res.data.roomId}`;
           }
+          return;
+        }
+
+        if (action === "profile") {
+          // apre il profilo pubblico in una nuova pagina
+          location.href = `user-public.html?userId=${targetUserId}`;
           return;
         }
 
@@ -157,7 +162,6 @@ function render(list = []) {
     };
   });
 }
-
 
 async function doSearch(q) {
   const rows = await searchUsers(q);
