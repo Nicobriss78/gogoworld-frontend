@@ -66,13 +66,24 @@ async function setMyPublicBoardLink() {
       btn.style.display = "none";
       return;
     }
-    // Link diretto alla vista pubblica di se stessi
-    btn.href = `/pages/user-public.html?userId=${encodeURIComponent(id)}&self=1`;
+
+    // Legge l'eventuale returnTo dall'URL del profilo
+    const qs = new URLSearchParams(location.search);
+    const ret = qs.get("returnTo");
+
+    // Link diretto alla vista pubblica di se stessi,
+    // con propagazione del contesto di ritorno (se presente)
+    let href = `/pages/user-public.html?userId=${encodeURIComponent(id)}&self=1`;
+    if (ret) {
+      href += `&returnTo=${encodeURIComponent(ret)}`;
+    }
+    btn.href = href;
   } catch (e) {
     console.warn(e);
     btn.style.display = "none";
   }
 }
+
 
 // --- nodes ---
 const basicForm = $("#basicForm");
