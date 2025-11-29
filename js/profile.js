@@ -296,8 +296,46 @@ privacyForm?.addEventListener("submit", async (e) => {
   showAlert("Privacy aggiornata");
 });
 
+// --- carica i conteggi follower/seguiti nella card "Connessioni" ---
+async function loadFollowStats() {
+  const followersEl = document.getElementById("myFollowersCount");
+  const followingEl = document.getElementById("myFollowingCount");
+  if (!followersEl || !followingEl) return;
+
+  try {
+    // Ricavo il mio id utente
+    const me = await whoami(localStorage.getItem("token"));
+    const id = me?.user?._id;
+    if (!id) return;
+
+    const token = localStorage.getItem("token") || "";
+    const headers = {
+      ...(token ? { Authorization: "Bearer " + token } : {}),
+    };
+
+    // Chiamo lo stesso endpoint usato nel profilo pubblico
+    let res = await fetch(`${API_PREFIX}/users/${id}/public`, { headers });
+    if (res.status === 404) {
+      // Fallback diretto al backend Render
+      res = await fetch(`${BACKEND_ORIGIN}${API_PREFIX}/users/${id}/public`, { headers });
+    }
+
+    const json = await res.json().catch(() => null);
+    if (!json || json.ok === false) return;
+
+    const data = json.data || {};
+    followersEl.textContent = data.followersCount ?? 0;
+    followingEl.textContent = data.followingCount ?? 0;
+  } catch (e) {
+    console.warn("Impossibile caricare i dati follower/seguiti", e);
+  }
+}
+
 // --- reload ---
-reloadBtn?.addEventListener("click", loadProfile);
+reloadBtn?.addEventListener("click", () => {
+  loadProfile();
+  loadFollowStats();
+});
 
 // --- bootstrap ---
 document.addEventListener("DOMContentLoaded", () => {
