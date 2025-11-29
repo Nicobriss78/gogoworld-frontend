@@ -307,20 +307,24 @@ if (btnRooms) {
   });
 }
 
-  const allList = document.getElementById("allEventsList");
-  const myList = document.getElementById("myEventsList");
-  const btnFilters = document.getElementById("btnApplyFilters");
-  const btnLogout = document.getElementById("btnLogout");
-  const btnSwitchRole = document.getElementById("btnSwitchRole");
-  // --- Eventi privati: codice invito + lista locale ---
-  const inviteInput = document.getElementById("inviteCodeInput");
-  const btnApplyInvite = document.getElementById("btnApplyInvite");
-  const privateListEl = document.getElementById("privateEventsList");
-  const privateToggleBtn = document.getElementById("togglePrivateList");
-  let PRIVATE_LS_KEY = "gogo_private_event_ids";
+ const allList = document.getElementById("allEventsList");
+ const followingList = document.getElementById("followingEventsList");
+ const myList = document.getElementById("myEventsList");
+ const btnFilters = document.getElementById("btnApplyFilters");
+ const btnLogout = document.getElementById("btnLogout");
+ const btnSwitchRole = document.getElementById("btnSwitchRole");
+ // --- Eventi privati: codice invito + lista locale ---
+ const inviteInput = document.getElementById("inviteCodeInput");
+ const btnApplyInvite = document.getElementById("btnApplyInvite");
+ const privateListEl = document.getElementById("privateEventsList");
+ const privateToggleBtn = document.getElementById("togglePrivateList");
+ let PRIVATE_LS_KEY = "gogo_private_event_ids";
+ 
+ let privateEventIds = [];
+ let privateEvents = [];
+ // Elenco ID utenti che seguo (riempito da /users/me)
+ let followingIds = new Set();
 
-  let privateEventIds = [];
-  let privateEvents = [];
 
   function loadPrivateIds() {
     try {
@@ -525,14 +529,26 @@ if (btnRooms) {
     }
       if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
     }
-   // >>> CHIAVE PER-EUTENTE per eventi privati
-    const myUserId = me?._id || me?.user?._id || null;
-    if (myUserId) {
-      // chiave tipo: gogo_private_event_ids_64fa...
-      PRIVATE_LS_KEY = `gogo_private_event_ids_${myUserId}`;
-    }
+ // >>> CHIAVE PER-UTENTE per eventi privati
+ const myUserId = me?._id || me?.user?._id || null;
+ if (myUserId) {
+ // chiave tipo: gogo_private_event_ids_64fa...
+ PRIVATE_LS_KEY = `gogo_private_event_ids_${myUserId}`;
+ }
+ 
+ // >>> Elenco utenti che seguo (per lista eventi dei seguiti)
+ const rawFollowing = me?.following || me?.user?.following || [];
+ if (Array.isArray(rawFollowing)) {
+ followingIds = new Set(
+ rawFollowing
+ .map(u => (u && (u._id || u.id || u)) || null)
+ .filter(Boolean)
+ .map(String)
+ );
+ }
+ 
+ } catch {
 
-  } catch {
     // nessun blocco della UI se /users/me fallisce: lo gestirà loadEvents()
   }
  await maybeShowProfileNag(token);
@@ -738,17 +754,30 @@ if (mapEl && window.L) {
         return ta - tb;
       }
 
-const notJoinedSorted = Array.isArray(notJoined)
-        ? [...notJoined].sort(sortEventsForParticipant)
-        : [];
+ const notJoinedSorted = Array.isArray(notJoined)
+ ? [...notJoined].sort(sortEventsForParticipant)
+ : [];
+ 
+ const joined = res.events.filter(ev => joinedIds.has(ev._id));
+ let joinedSorted = Array.isArray(joined)
+ ? [...joined].sort(sortEventsForParticipant)
+ : [];
+ 
+ // Cx — Eventi organizzati da utenti che seguo
+ let followingSorted = [];
+ if (followingList && followingIds && followingIds.size && Array.isArray(res.events)) {
+ const followingEvents = res.events.filter(ev => {
+ const org = ev?.organizer;
+ const orgId = org && (org._id || org.id || org);
+ if (!orgId) return false;
+ return followingIds.has(String(orgId));
+ });
+ followingSorted = [...followingEvents].sort(sortEventsForParticipant);
+ }
+ 
+ // Bx — includi anche eventuali eventi privati sbloccati a cui partecipo
+ loadPrivateIds();
 
-      const joined = res.events.filter(ev => joinedIds.has(ev._id));
-      let joinedSorted = Array.isArray(joined)
-        ? [...joined].sort(sortEventsForParticipant)
-        : [];
-
-      // Bx — includi anche eventuali eventi privati sbloccati a cui partecipo
-      loadPrivateIds();
       if (Array.isArray(privateEventIds) && privateEventIds.length && myId) {
         const joinedSet = new Set(joinedSorted.map(ev => ev._id));
 
@@ -856,15 +885,22 @@ return `
         `;
       };
 
-// Popola lista "tutti" (ordinata)
-      allList.innerHTML = notJoinedSorted.length
-        ? notJoinedSorted.map(ev => renderCard(ev, false)).join("")
-        : "<p>Nessun evento disponibile.</p>";
-
-      // Popola lista "a cui partecipo" (ordinata)
-      myList.innerHTML = joinedSorted.length
-        ? joinedSorted.map(ev => renderCard(ev, true)).join("")
-        : "<p>Nessun evento a cui partecipi.</p>";
+ // Popola lista "tutti" (ordinata)
+ allList.innerHTML = notJoinedSorted.length
+ ? notJoinedSorted.map(ev => renderCard(ev, false)).join("")
+ : "<p>Nessun evento disponibile.</p>";
+ 
+ // Popola lista "Eventi delle persone che segui"
+ if (followingList) {
+ followingList.innerHTML = followingSorted.length
+ ? followingSorted.map(ev => renderCard(ev, false)).join("")
+ : "<p>Nessun evento dai tuoi seguiti.</p>";
+ }
+ 
+ // Popola lista "a cui partecipo" (ordinata)
+ myList.innerHTML = joinedSorted.length
+ ? joinedSorted.map(ev => renderCard(ev, true)).join("")
+ : "<p>Nessun evento a cui partecipi.</p>";
 
       // C1.1 — Auto-focus solo al primo caricamento, senza filtri e se l'utente non ha già scrollato
       const noFilters =
@@ -1028,6 +1064,7 @@ return `
   await loadEvents();
   await refreshPrivateEvents();
 });
+
 
 
 
