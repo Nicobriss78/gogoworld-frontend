@@ -261,34 +261,43 @@ async function loadAll(userId) {
 
 async function onFollowClick(userId) {
   const btn = $("#followBtn");
+  const followersEl = $("#followersCount");
+  const followingEl = $("#followingCount");
+
+  if (!btn) return;
+
   const currently = btn.dataset.following === "1";
 
+  // Leggo i valori attuali dai contatori
+  const currentFollowers = followersEl ? parseInt(followersEl.textContent, 10) || 0 : 0;
+  const currentFollowing = followingEl ? parseInt(followingEl.textContent, 10) || 0 : 0;
+
   try {
-    let res;
     if (currently) {
-      res = await apiDelete(`/users/${userId}/follow`);
+      const res = await apiDelete(`/users/${userId}/follow`);
       if (!res.data?.ok) {
         showAlert(res.data?.error || "Impossibile smettere di seguire");
         return;
       }
 
-      // UI immediata
-      updateFollowUI(false, res.data.data.followersCount, res.data.data.followingCount);
+      // L'utente ha un follower in meno (io)
+      const newFollowers = Math.max(0, currentFollowers - 1);
+      updateFollowUI(false, newFollowers, currentFollowing);
 
     } else {
-      res = await apiPost(`/users/${userId}/follow`);
+      const res = await apiPost(`/users/${userId}/follow`);
       if (!res.data?.ok) {
         showAlert(res.data?.error || "Impossibile seguire questo utente");
         return;
       }
 
-      // UI immediata
-      updateFollowUI(true, res.data.data.followersCount, res.data.data.followingCount);
+      // L'utente ha un follower in più (io)
+      const newFollowers = currentFollowers + 1;
+      updateFollowUI(true, newFollowers, currentFollowing);
     }
 
-    // Ricarico in background per sicurezza
+    // Ricarico in background per allineare tutto con il backend
     setTimeout(() => loadAll(userId), 150);
-
   } catch (e) {
     console.warn(e);
     showAlert("Errore di rete, riprova più tardi.");
