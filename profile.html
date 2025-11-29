@@ -84,17 +84,44 @@
     </form>
 </section>
 
-  <!-- === CARD: Connessioni === -->
+<!-- === CARD: Connessioni === -->
   <section class="event-card" id="card-follow">
     <h3 style="margin:0 0 .5rem;">Connessioni</h3>
     <p class="muted" style="margin:0 0 .5rem;">
       Qui vedi quante persone ti seguono e quante ne segui tu.
     </p>
+
     <div class="profile-stats" style="display:flex;gap:1rem;flex-wrap:wrap;">
       <span><strong id="myFollowersCount">0</strong> follower</span>
       <span><strong id="myFollowingCount">0</strong> seguiti</span>
     </div>
+
+    <div class="form-actions" style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+      <button type="button" class="btn btn-secondary" id="btnShowFollowers">
+        Vedi chi ti segue
+      </button>
+      <button type="button" class="btn btn-secondary" id="btnShowFollowing">
+        Vedi chi segui
+      </button>
+    </div>
+
+    <div id="followersBox" class="muted" style="margin-top:.5rem;display:none;">
+      <strong>Follower</strong>
+      <ul id="followersList" class="simple-list" style="margin:.25rem 0 0;padding-left:1rem;"></ul>
+      <p id="followersEmpty" class="muted" style="margin-top:.25rem;display:none;">
+        Nessuno ti segue ancora.
+      </p>
+    </div>
+
+    <div id="followingBox" class="muted" style="margin-top:.5rem;display:none;">
+      <strong>Seguiti</strong>
+      <ul id="followingList" class="simple-list" style="margin:.25rem 0 0;padding-left:1rem;"></ul>
+      <p id="followingEmpty" class="muted" style="margin-top:.25rem;display:none;">
+        Non stai ancora seguendo nessuno.
+      </p>
+    </div>
   </section>
+
 
   <!-- === CARD: Privacy DM === -->
   <section class="event-card" id="card-privacy">
