@@ -115,6 +115,7 @@ followersEl.textContent = profile.followersCount ?? 0;
   followBtn.dataset.following = isFollowing ? "1" : "0";
   followBtn.textContent = isFollowing ? "Smetti di seguire" : "Segui";
 
+
   // Se sto guardando me stesso (self=1 nell'URL) → niente bottone Follow
   const qs = new URLSearchParams(location.search);
   const isSelf = qs.get("self") === "1";
@@ -123,6 +124,27 @@ followersEl.textContent = profile.followersCount ?? 0;
   }
 }
 
+// --- UI helper follow/unfollow ---
+function updateFollowUI(isFollowing, followersCount, followingCount) {
+  const btn = $("#followBtn");
+  const hint = $("#followHint");
+  const followersEl = $("#followersCount");
+  const followingEl = $("#followingCount");
+
+  if (!btn) return;
+
+  btn.dataset.following = isFollowing ? "1" : "0";
+  btn.textContent = isFollowing ? "Smetti di seguire" : "Segui";
+
+  if (hint) {
+    hint.textContent = isFollowing
+      ? "Stai seguendo questo utente."
+      : "Segui questo utente per vedere la sua bacheca.";
+  }
+
+  if (followersEl) followersEl.textContent = followersCount ?? 0;
+  if (followingEl) followingEl.textContent = followingCount ?? 0;
+}
 
 // --- rendering attività ---
 
@@ -242,25 +264,31 @@ async function onFollowClick(userId) {
   const currently = btn.dataset.following === "1";
 
   try {
+    let res;
     if (currently) {
-      const res = await apiDelete(`/users/${userId}/follow`);
+      res = await apiDelete(`/users/${userId}/follow`);
       if (!res.data?.ok) {
         showAlert(res.data?.error || "Impossibile smettere di seguire");
         return;
       }
-      btn.dataset.following = "0";
-      btn.textContent = "Segui";
+
+      // UI immediata
+      updateFollowUI(false, res.data.data.followersCount, res.data.data.followingCount);
+
     } else {
-      const res = await apiPost(`/users/${userId}/follow`);
+      res = await apiPost(`/users/${userId}/follow`);
       if (!res.data?.ok) {
         showAlert(res.data?.error || "Impossibile seguire questo utente");
         return;
       }
-      btn.dataset.following = "1";
-      btn.textContent = "Smetti di seguire";
+
+      // UI immediata
+      updateFollowUI(true, res.data.data.followersCount, res.data.data.followingCount);
     }
-    // ricarica profilo per aggiornare contatori
-    await loadAll(userId);
+
+    // Ricarico in background per sicurezza
+    setTimeout(() => loadAll(userId), 150);
+
   } catch (e) {
     console.warn(e);
     showAlert("Errore di rete, riprova più tardi.");
