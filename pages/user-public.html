@@ -24,18 +24,24 @@
         <img id="profileAvatar" class="avatar-lg" alt="Avatar utente"
              style="width:96px;height:96px;border-radius:50%;border:1px solid #ddd;object-fit:cover;display:none;" />
       </div>
-      <div class="profile-main">
+<div class="profile-main">
         <h2 id="profileName" style="margin:0 0 .25rem;">Utente</h2>
         <div id="profileMeta" class="muted" style="margin-bottom:.35rem;"></div>
         <div id="profileRole" class="badge" style="margin-bottom:.5rem;"></div>
-        <div class="profile-stats" style="display:flex;gap:1rem;flex-wrap:wrap;">
-          <span><strong id="followersCount">0</strong> follower</span>
-          <span><strong id="followingCount">0</strong> seguiti</span>
+
+        <div id="connectionsBox">
+          <div class="muted" style="font-size:.8rem;margin:0 0 .15rem;">Connessioni</div>
+          <div class="profile-stats" style="display:flex;gap:1rem;flex-wrap:wrap;">
+            <span><strong id="followersCount">0</strong> follower</span>
+            <span><strong id="followingCount">0</strong> seguiti</span>
+          </div>
         </div>
       </div>
       <div class="profile-actions">
         <button id="followBtn" class="btn btn-primary">Segui</button>
+        <p id="followHint" class="muted" style="margin-top:.35rem;font-size:.8rem;"></p>
       </div>
+
     </div>
 
     <div class="profile-bio" style="margin-top:.75rem;">
