@@ -946,6 +946,53 @@ body {
   }
 }
 
+/* === A9.3 — pannello notifiche === */
+#notiPanel.noti-panel {
+  position: fixed;
+  top: 65px;
+  right: 10px;
+  width: 260px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 2px solid #444;
+  border-radius: 8px;
+  padding: 10px;
+  z-index: 9999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.noti-item {
+  border-bottom: 1px solid #ddd;
+  padding: 6px 0;
+}
+
+.noti-title {
+  font-weight: bold;
+  margin: 0;
+  font-size: .95rem;
+}
+
+.noti-msg {
+  margin: 0;
+  color: #333;
+  line-height: 1.2;
+  font-size: .9rem;
+}
+
+.noti-date {
+  font-size: .75rem;
+  color: #777;
+  margin-top: 2px;
+}
+
+.noti-empty {
+  text-align: center;
+  padding: 10px;
+  color: #666;
+  font-size: .9rem;
+}
+
 
 
 
