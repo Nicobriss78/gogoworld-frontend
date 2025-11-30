@@ -239,6 +239,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   // --- Badge "Room" con guard token e stop definitivo su 401 ---
   const badgeRooms = document.getElementById("roomsBadge");
   let _roomsBadgeInterval = null;
+  // === A9.3 — Notifiche in-app ===
+const btnNotifications = document.getElementById("btnNotifications");
+const notiBadge = document.getElementById("notiBadge");
+let _notiInterval = null;
+let _notiDisabled = false;
+
+// Crea pannello dropdown notifiche
+let notiPanel = document.createElement("div");
+notiPanel.id = "notiPanel";
+notiPanel.className = "noti-panel";
+notiPanel.style.display = "none";
+document.body.appendChild(notiPanel);
+
   let _roomsBadgeDisabled = false; // flag di kill
 
   function _hideRoomsBadge() {
@@ -290,13 +303,90 @@ if (!r || r.ok === false || r.status === 401) {
     return;
   }
 }
+  // === A9.3 — Poll notifiche non lette ===
+  async function pollNotifications() {
+    if (_notiDisabled) return;
+
+    const t = localStorage.getItem("token");
+    if (!t) {
+      _notiDisabled = true;
+      if (notiBadge) notiBadge.style.display = "none";
+      return;
+    }
+
+    try {
+      const res = await apiGet("/notifications/mine?limit=30&unreadOnly=1", t);
+
+      if (!res || res.ok === false || res.status === 401) {
+        _notiDisabled = true;
+        if (notiBadge) notiBadge.style.display = "none";
+        return;
+      }
+
+      const unread = res?.unreadCount || 0;
+      if (notiBadge) {
+        notiBadge.textContent = unread;
+        notiBadge.style.display = unread ? "inline-block" : "none";
+      }
+    } catch (err) {
+      _notiDisabled = true;
+      if (notiBadge) notiBadge.style.display = "none";
+    }
+  }
+
+
 
 
   // Avvia PRIMA l'intervallo, poi la prima chiamata (così al primo 401 l'interval esiste già)
   _roomsBadgeInterval = setInterval(pollRoomsBadge, 20000);
   pollRoomsBadge();
+  // === A9.3 — avvia polling notifiche
+_notiInterval = setInterval(pollNotifications, 20000);
+pollNotifications();
+
 // PATCH: handler bottone Room con returnTo coerente
 const btnRooms = document.getElementById("btnRooms");
+// === A9.3 — apertura pannello notifiche ===
+if (btnNotifications && notiPanel) {
+  btnNotifications.addEventListener("click", async () => {
+    if (!token) return;
+
+    // Carica tutte le notifiche
+    try {
+      const res = await apiGet("/notifications/mine?limit=50", token);
+      const list = res?.notifications || [];
+
+      notiPanel.innerHTML = list.length
+        ? list
+            .map((n) => {
+              const title = n.title || "";
+              const msg = n.message || "";
+              const date = n.createdAt
+                ? new Date(n.createdAt).toLocaleString()
+                : "";
+              return `
+                <div class="noti-item">
+                  <p class="noti-title">${title}</p>
+                  <p class="noti-msg">${msg}</p>
+                  <p class="noti-date">${date}</p>
+                </div>
+              `;
+            })
+            .join("")
+        : `<p class="noti-empty">Nessuna notifica</p>`;
+
+      notiPanel.style.display =
+        notiPanel.style.display === "none" ? "block" : "none";
+
+      // Segna tutte come lette
+      await apiPost("/notifications/read-all", {}, token);
+
+      pollNotifications(); // aggiorna badge subito
+    } catch (err) {
+      console.error("notifiche", err);
+    }
+  });
+}
 if (btnRooms) {
   btnRooms.addEventListener("click", (e) => {
     // Se vogliamo solo passare il returnTo ora (la selezione stanza la gestiremo in rooms.js)
@@ -1064,6 +1154,7 @@ return `
   await loadEvents();
   await refreshPrivateEvents();
 });
+
 
 
 
