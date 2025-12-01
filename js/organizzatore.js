@@ -208,6 +208,19 @@ document.addEventListener("DOMContentLoaded", () => {
   localStorage.getItem("accessToken");
 const btnProfile = document.getElementById("btnProfileLink");
 const badgeRooms = document.getElementById("roomsBadge");
+
+// === A9.3.2 Notifiche in-app ===
+const btnNotifications = document.getElementById("btnNotifications");
+const notiBadge = document.getElementById("notiBadge");
+let _notiInterval = null;
+let _notiDisabled = false;
+
+let notiPanel = document.createElement("div");
+notiPanel.id = "notiPanel";
+notiPanel.className = "noti-panel";
+notiPanel.style.display = "none";
+document.body.appendChild(notiPanel);
+
 let _roomsBadgeInterval = null;
 let _roomsBadgeDisabled = false;
 
@@ -257,9 +270,43 @@ async function pollRoomsBadge() {
   }
 }
 
+// === A9.3.2 — Poll notifiche non lette ===
+async function pollNotifications() {
+  if (_notiDisabled) return;
+
+  const t = localStorage.getItem("token");
+  if (!t) {
+    _notiDisabled = true;
+    if (notiBadge) notiBadge.style.display = "none";
+    return;
+  }
+
+  try {
+    const res = await apiGet("/notifications/mine?limit=30&unreadOnly=1", t);
+
+    if (!res || res.ok === false || res.status === 401) {
+      _notiDisabled = true;
+      if (notiBadge) notiBadge.style.display = "none";
+      return;
+    }
+
+    const unread = res?.unreadCount || 0;
+    if (notiBadge) {
+      notiBadge.textContent = unread;
+      notiBadge.style.display = unread ? "inline-block" : "none";
+    }
+  } catch (err) {
+    _notiDisabled = true;
+    if (notiBadge) notiBadge.style.display = "none";
+  }
+}
+
 _roomsBadgeInterval = setInterval(pollRoomsBadge, 20000);
 pollRoomsBadge();
 
+// === A9.3.2 — avvia polling notifiche
+_notiInterval = setInterval(pollNotifications, 20000);
+pollNotifications();
 if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/organizzatore.html")}`;
 
   if (!token) {
@@ -333,6 +380,49 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   const myPromosTable = document.getElementById("myPromosTable");
   const myPromosFilterStatus = document.getElementById("myPromosFilterStatus");
   const myPromosFilterPlacement = document.getElementById("myPromosFilterPlacement");
+  // === A9.3.2 — apertura pannello notifiche ===
+  if (btnNotifications && notiPanel) {
+    btnNotifications.addEventListener("click", async () => {
+      const tokenNow = localStorage.getItem("token");
+      if (!tokenNow) return;
+
+      try {
+        const res = await apiGet("/notifications/mine?limit=50", tokenNow);
+        const list = res?.notifications || [];
+
+        notiPanel.innerHTML = list.length
+          ? list
+              .map((n) => {
+                const title = n.title || "";
+                const msg = n.message || "";
+                const date = n.createdAt
+                  ? new Date(n.createdAt).toLocaleString()
+                  : "";
+                return `
+                  <div class="noti-item">
+                    <p class="noti-title">${title}</p>
+                    <p class="noti-msg">${msg}</p>
+                    <p class="noti-date">${date}</p>
+                  </div>
+                `;
+              })
+              .join("")
+          : `<p class="noti-empty">Nessuna notifica</p>`;
+
+        notiPanel.style.display =
+          notiPanel.style.display === "none" ? "block" : "none";
+
+        // Segna tutte come lette
+        await apiPost("/notifications/read-all", {}, tokenNow);
+        pollNotifications();
+      } catch (err) {
+        console.error("[notifiche organizer]", err);
+      }
+    });
+  }
+
+  // PATCH: bottone Importa CSV
+  const btnImportCsv = document.getElementById("btnImportCsv");
 
   // PATCH: bottone Importa CSV
   const btnImportCsv = document.getElementById("btnImportCsv");
@@ -1301,6 +1391,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
