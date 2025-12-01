@@ -423,9 +423,6 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
 
   // PATCH: bottone Importa CSV
   const btnImportCsv = document.getElementById("btnImportCsv");
-
-  // PATCH: bottone Importa CSV
-  const btnImportCsv = document.getElementById("btnImportCsv");
   
   // PATCH: riferimenti al pannello di creazione e form
   const panel = document.getElementById("createEventPanel");
@@ -1391,6 +1388,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
