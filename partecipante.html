@@ -34,7 +34,7 @@
       <span class="gw-ico">🔎</span>
     </a>
 
-    <button class="gw-iconbtn" id="btnGeo" title="Posizione">
+<button class="gw-iconbtn" id="btnGeo" title="Posizione" aria-label="Posizione">
       <span class="gw-ico">📍</span>
     </button>
 
@@ -76,7 +76,9 @@
 
     <div class="gw-carousel-wrap">
       <div id="allEventsList" class="gw-carousel"></div>
-      <div class="gw-rail" data-rail-for="allEventsList"><div class="gw-thumb"></div></div>
+<div class="gw-scrollrail" data-rail-for="allEventsList">
+  <div class="gw-scrollthumb"></div>
+   </div>   
     </div>
   </section>
 
@@ -88,7 +90,9 @@
 
     <div class="gw-carousel-wrap">
       <div id="myEventsList" class="gw-carousel"></div>
-      <div class="gw-rail" data-rail-for="myEventsList"><div class="gw-thumb"></div></div>
+<div class="gw-scrollrail" data-rail-for="myEventsList">
+  <div class="gw-scrollthumb"></div>
+</div>  
     </div>
   </section>
 </section>
@@ -283,3 +287,4 @@ setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area)
 <script type="module" src="js/notifications.js"></script>
 </body>
 </html>
+
