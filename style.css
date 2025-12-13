@@ -1217,3 +1217,32 @@ body {
   background: #fff;
 }
 .gw-navitem--home .gw-ico{ width: 26px; height: 26px; }
+/* =========================================================
+   UI v2 — Scroll Rail (drag) per caroselli Home
+   ========================================================= */
+
+.gw-scrollrail{
+  height: 10px;
+  background: rgba(17,24,39,.10);
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
+  touch-action: pan-x;
+}
+
+.gw-scrollthumb{
+  height: 100%;
+  width: 22%;
+  background: rgba(17,24,39,.22);
+  border-radius: 999px;
+  transform: translateX(0);
+  transition: transform 60ms linear;
+}
+
+/* quando l’utente sta trascinando */
+.gw-scrollrail.is-dragging .gw-scrollthumb{
+  background: rgba(200,58,58,.45); /* rosso soft */
+  transition: none;
+}
+
