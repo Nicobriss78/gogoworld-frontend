@@ -807,6 +807,94 @@ function autoFocusOnRelevantEvent() {
   }
 }
 
+// ==============================
+// UI v2 — ScrollRail (sync + drag)
+// ==============================
+function setupScrollRails() {
+  const rails = document.querySelectorAll(".gw-scrollrail[data-rail-for]");
+  if (!rails.length) return;
+
+  rails.forEach((rail) => {
+    const listId = rail.getAttribute("data-rail-for");
+    const list = document.getElementById(listId);
+    const thumb = rail.querySelector(".gw-scrollthumb");
+    if (!list || !thumb) return;
+
+    let dragging = false;
+    let startX = 0;
+    let startLeft = 0;
+
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+    const syncThumb = () => {
+      const maxScroll = list.scrollWidth - list.clientWidth;
+      const railW = rail.clientWidth;
+
+      if (maxScroll <= 0 || railW <= 0) {
+        thumb.style.width = "100%";
+        thumb.style.transform = "translateX(0px)";
+        return;
+      }
+
+      const ratio = list.clientWidth / list.scrollWidth;
+      const thumbW = clamp(Math.round(railW * ratio), 28, railW);
+      thumb.style.width = `${thumbW}px`;
+
+      const maxThumbX = railW - thumbW;
+      const p = list.scrollLeft / maxScroll;
+      const x = Math.round(maxThumbX * p);
+      thumb.style.transform = `translateX(${x}px)`;
+    };
+
+    list.addEventListener("scroll", syncThumb, { passive: true });
+    window.addEventListener("resize", syncThumb);
+
+    const onPointerDown = (e) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      dragging = true;
+      rail.classList.add("is-dragging");
+
+      startX = e.clientX;
+      const m = /translateX\(([-0-9.]+)px\)/.exec(thumb.style.transform || "");
+      startLeft = m ? parseFloat(m[1]) : 0;
+
+      try { rail.setPointerCapture(e.pointerId); } catch {}
+      e.preventDefault();
+    };
+
+    const onPointerMove = (e) => {
+      if (!dragging) return;
+
+      const railW = rail.clientWidth;
+      const thumbW = thumb.getBoundingClientRect().width;
+      const maxThumbX = railW - thumbW;
+
+      const dx = e.clientX - startX;
+      const newX = clamp(startLeft + dx, 0, maxThumbX);
+
+      const p = maxThumbX > 0 ? (newX / maxThumbX) : 0;
+      const maxScroll = list.scrollWidth - list.clientWidth;
+      list.scrollLeft = Math.round(maxScroll * p);
+
+      e.preventDefault();
+    };
+
+    const onPointerUp = (e) => {
+      if (!dragging) return;
+      dragging = false;
+      rail.classList.remove("is-dragging");
+      try { rail.releasePointerCapture(e.pointerId); } catch {}
+      e.preventDefault();
+    };
+
+    rail.addEventListener("pointerdown", onPointerDown);
+    rail.addEventListener("pointermove", onPointerMove);
+    rail.addEventListener("pointerup", onPointerUp);
+    rail.addEventListener("pointercancel", onPointerUp);
+
+    syncThumb();
+  });
+}
 
   async function loadEvents(filters = {}) {
   allList.innerHTML = `<article class="gw-rail"><div class="gw-thumb"></div><div class="content"><h3 class="title">Caricamento…</h3><div class="meta"><span>Sto recuperando gli eventi</span></div></div></article>`;
@@ -1279,7 +1367,7 @@ const renderCard = (ev, includeLeave) => {
   // Inizializza
   hookFilters();
 
-  // Prima lista + eventuali eventi privati già sbloccati
-  await loadEvents();
-  await refreshPrivateEvents();
-});
+// Prima lista + eventuali eventi privati già sbloccati
+await loadEvents();
+setupScrollRails();
+await refreshPrivateEvents();
