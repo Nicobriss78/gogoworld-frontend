@@ -14,22 +14,85 @@
 </head>
 <body>
   <main class="container participant">
-    <header class="app-header">
-      <h1>Eventi disponibili</h1>
-<nav class="toolbar">
-  <button id="btnSwitchRole" class="btn">Cambia ruolo</button>
-<a href="messages.html" class="btn">✉️ Messaggi <span id="messagesBadge" class="badge" style="display:none">0</span></a>
-<a id="btnRooms" href="pages/rooms.html" class="btn">💬 Room <span id="roomsBadge" class="badge" style="display:none">0</span></a>
-  <a href="pages/cerca-utenti.html" class="btn">🔎 Cerca</a>
-  <a id="btnNotifications" class="btn">🔔 Notifiche <span id="notiBadge" class="badge" style="display:none">0</span></a>
-  <button id="btnLogout" class="btn btn-secondary">Logout</button>
-</nav>
+<header class="gw-topbar">
+  <!-- Riga 1: saluto + logo -->
+  <div class="gw-topbar-row gw-topbar-row--title">
+    <div class="gw-greeting">
+      <div class="gw-hello">Ciao <span id="gwUserName">👤</span></div>
+      <div class="gw-status" id="gwUserStatus">Partecipante</div>
+    </div>
 
-      <nav class="toolbar" style="display:flex; justify-content:flex-end; gap:.5rem; margin-top:.25rem;">
-  <a id="btnProfileLink" class="btn btn-secondary" href="#">Profilo</a>
-</nav>
-      
-    </header>
+    <div class="gw-brand">
+      <!-- TODO: metteremo il tuo logo reale -->
+      <span class="gw-brandtext">GoGoWorld.life</span>
+    </div>
+  </div>
+
+  <!-- Riga 2: azioni -->
+  <div class="gw-topbar-row gw-topbar-row--actions">
+    <a class="gw-iconbtn" href="pages/cerca-utenti.html" title="Cerca" aria-label="Cerca">
+      <span class="gw-ico">🔎</span>
+    </a>
+
+    <button class="gw-iconbtn" id="btnGeo" title="Posizione">
+      <span class="gw-ico">📍</span>
+    </button>
+
+    <a class="gw-iconbtn" href="messages.html" title="Messaggi" aria-label="Messaggi">
+      <span class="gw-ico">✉️</span>
+      <span id="messagesBadge" class="gw-badge" style="display:none">0</span>
+    </a>
+
+<button class="gw-iconbtn" id="btnNotifications" title="Notifiche" aria-label="Notifiche">
+  <span class="gw-ico">🔔</span>
+  <span id="notiBadge" class="gw-badge" style="display:none">0</span>
+</button>
+
+
+    <button class="gw-iconbtn" id="btnHamburger" title="Menu" aria-label="Menu">
+      <span class="gw-ico">≡</span>
+    </button>
+  </div>
+
+  <!-- Menu hamburger -->
+  <div id="gwMenu" class="gw-menu" style="display:none">
+    <a href="pages/cerca-utenti.html">Cerca utente</a>
+    <a href="#" id="btnPrivateEvents">Eventi privati</a>
+    <a href="#" id="btnGuide">Guida partecipante</a>
+    <a href="#" id="btnSwitchRole">Cambia ruolo</a>
+    <a href="#" id="btnLogout" class="danger">Logout</a>
+  </div>
+</header>
+<!-- HOME (tra topbar e bottom bar) -->
+<section class="gw-home">
+  <!-- BLOCCO A (50%) -->
+  <section class="gw-block">
+    <div class="gw-block-head">
+      <h2 class="gw-block-title">Eventi generali</h2>
+    </div>
+
+    <!-- Banner inline (lo lasciamo vivo) -->
+    <section id="banner-events-inline" class="banner-slot" style="margin:8px 0;"></section>
+
+    <div class="gw-carousel-wrap">
+      <div id="allEventsList" class="gw-carousel"></div>
+      <div class="gw-rail" data-rail-for="allEventsList"><div class="gw-thumb"></div></div>
+    </div>
+  </section>
+
+  <!-- BLOCCO B (50%) -->
+  <section class="gw-block">
+    <div class="gw-block-head">
+      <h2 class="gw-block-title">Eventi a cui partecipo</h2>
+    </div>
+
+    <div class="gw-carousel-wrap">
+      <div id="myEventsList" class="gw-carousel"></div>
+      <div class="gw-rail" data-rail-for="myEventsList"><div class="gw-thumb"></div></div>
+    </div>
+  </section>
+</section>
+    <section class="legacy" style="display:none">
     <!-- Filtri -->
     <section class="filters">
       <input id="filterTitle" type="text" placeholder="Titolo" />
@@ -119,7 +182,6 @@
             <span class="legend-dot legend-dot-future"></span>In arrivo
           </span>
         </div>
-      </section>
 
 <!-- Container non utilizzato ma lasciato per non rimuovere codice -->
     <section id="eventsList" class="events-list"></section>
@@ -127,16 +189,18 @@
     <!-- Sezione: eventi dalle persone che segui -->
     <h2>Eventi delle persone che segui</h2>
     <section id="followingEventsList" class="events-list"></section>
+</section>
+<nav class="gw-bottomnav">
+  <a class="gw-navitem" href="partecipante-mappa.html" title="Mappa"><span>🗺️</span></a>
+  <a class="gw-navitem" href="partecipante-seguiti-eventi.html" title="Eventi seguiti"><span>🧭</span></a>
 
- <!-- Container richiesti da partecipante.js -->
- <h2>Tutti gli eventi</h2>
- <!-- B1/2 banner placement: events_list_inline -->
- <section id="banner-events-inline" class="banner-slot" ...tyle="margin:12px 0;padding:8px 0;border-radius:8px;"></section>
- <section id="allEventsList" class="events-list"></section>
+  <a class="gw-navitem gw-navitem--home is-active" href="partecipante.html" title="Home">
+    <span>⌂</span>
+  </a>
 
- <h2>Eventi a cui partecipo</h2>
- <section id="myEventsList" class="events-list"></section>
-
+  <a class="gw-navitem" href="partecipante-seguiti-utenti.html" title="Utenti seguiti"><span>👥</span></a>
+  <a class="gw-navitem" href="profilo.html" title="Profilo"><span>☺</span></a>
+</nav>
     <footer class="app-footer">
       GoGoWorld.life – Area Partecipante
     </footer>
@@ -219,36 +283,3 @@ setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area)
 <script type="module" src="js/notifications.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
