@@ -993,21 +993,227 @@ body {
   font-size: .9rem;
 }
 
+/* =========================================================
+   UI v2 — Partecipante (Home) — Toolbar + BottomBar + Blocchi A/B
+   (append-only, non rompe legacy)
+   ========================================================= */
 
+:root{
+  /* colori “brand” (base) */
+  --gw-blue: #2C5AA0;
+  --gw-red: #C83A3A;
+  --gw-gray: #9AA3AF;
 
+  --gw-bg: #ffffff;
+  --gw-surface: #ffffff;
+  --gw-text: #111827;
+  --gw-muted: #6b7280;
+  --gw-border: #E5E7EB;
 
+  --gw-shadow: 0 6px 18px rgba(17,24,39,.08);
+  --gw-radius: 16px;
 
+  /* altezze barre fisse (NOTA punto 3) */
+  --gw-topbar-h: 96px; /* topbar a 2 righe */
+  --gw-bottomnav-h: 72px; /* bottom bar */
+}
 
+/* Assicura una base “pulita” per le nuove sezioni senza toccare legacy */
+.gw-topbar,
+.gw-bottomnav{
+  font-family: Arial, sans-serif;
+}
 
+/* ---------- TOPBAR (fissa) ---------- */
+.gw-topbar{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 999;
+  background: var(--gw-surface);
+  border-bottom: 1px solid var(--gw-border);
+  padding-top: env(safe-area-inset-top);
+}
 
+.gw-topbar-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 10px 14px;
+}
 
+.gw-topbar-row--title{ padding-bottom: 6px; }
+.gw-topbar-row--actions{ gap: 8px; }
 
+.gw-greeting{ display:flex; flex-direction:column; gap:2px; }
+.gw-hello{ font-size:14px; color: var(--gw-muted); line-height: 1.1; }
+.gw-status{ font-size:13px; color: var(--gw-muted); line-height: 1.1; }
 
+.gw-brand{ display:flex; align-items:center; gap:10px; }
+.gw-brand img{ width:28px; height:28px; border-radius:8px; display:block; }
+.gw-brandtext{ font-weight:700; letter-spacing:.2px; color: var(--gw-blue); }
 
+.gw-iconbtn{
+  width:44px; height:44px;
+  border-radius:14px;
+  border:1px solid var(--gw-border);
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.gw-iconbtn:active{ transform: scale(.98); }
 
+.gw-ico{
+  width:22px; height:22px;
+  display:block;
+  color: var(--gw-gray);
+}
+.gw-ico.is-active{ color: var(--gw-red); }
 
+.gw-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--gw-red);
+  color:#fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  margin-left: 6px;
+}
 
+/* ---------- HOME (spazi corretti per barre fisse) ---------- */
+/* NOTA punto 3: questo risolve la sovrapposizione top/bottom */
+.gw-home{
+  background: var(--gw-bg);
+  padding-top: calc(var(--gw-topbar-h) + 10px);
+  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 10px);
+}
 
+.gw-block{ padding: 12px; }
+.gw-block-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom: 10px;
+}
+.gw-block-title{
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  color: var(--gw-text);
+}
 
+/* ---------- CAROUSEL “snap” ---------- */
+.gw-carousel-wrap{
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 8px;
+}
 
+.gw-carousel{
+  display:flex;
+  gap: 12px;
+  padding: 2px;
+}
 
+.gw-carousel-wrap::-webkit-scrollbar{ height: 8px; }
+.gw-carousel-wrap::-webkit-scrollbar-thumb{ background: rgba(17,24,39,.12); border-radius: 999px; }
+.gw-carousel-wrap::-webkit-scrollbar-track{ background: transparent; }
+
+/* Card evento */
+.gw-rail{
+  flex: 0 0 78%;
+  scroll-snap-align: center;
+  background: var(--gw-surface);
+  border: 1px solid var(--gw-border);
+  border-radius: var(--gw-radius);
+  box-shadow: var(--gw-shadow);
+  overflow: hidden;
+  min-height: 150px;
+}
+
+/* area locandina */
+.gw-thumb{
+  height: 84px;
+  background: #f3f4f6;
+  border-bottom: 1px solid var(--gw-border);
+}
+
+.gw-rail .content{ padding: 10px 12px 12px; }
+.gw-rail .title{
+  font-weight: 800;
+  font-size: 14px;
+  margin: 0 0 6px;
+  color: var(--gw-text);
+}
+.gw-rail .meta{
+  font-size: 12px;
+  color: var(--gw-muted);
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.gw-rail .actions{
+  display:flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* ---------- BOTTOM NAV (fissa) ---------- */
+.gw-bottomnav{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 999;
+  background: var(--gw-surface);
+  border-top: 1px solid var(--gw-border);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.gw-bottomnav .inner{
+  height: var(--gw-bottomnav-h);
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  padding: 8px 10px;
+}
+
+.gw-navitem{
+  width: 64px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap: 6px;
+  text-decoration:none;
+  color: var(--gw-gray);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.gw-navitem .gw-ico{ width: 24px; height: 24px; }
+
+.gw-navitem.is-active{ color: var(--gw-red); }
+.gw-navitem.is-active .gw-ico{ color: var(--gw-red); }
+
+/* Home centrale più grande */
+.gw-navitem--home{ transform: translateY(-8px); }
+.gw-navitem--home .pill{
+  width: 62px; height: 62px;
+  border-radius: 22px;
+  border: 1px solid var(--gw-border);
+  box-shadow: var(--gw-shadow);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: #fff;
+}
+.gw-navitem--home .gw-ico{ width: 26px; height: 26px; }
