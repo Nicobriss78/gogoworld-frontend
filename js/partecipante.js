@@ -1369,5 +1369,7 @@ const renderCard = (ev, includeLeave) => {
 
 // Prima lista + eventuali eventi privati già sbloccati
 await loadEvents();
-setupScrollRails();
-await refreshPrivateEvents();
+  setupScrollRails();
+  await refreshPrivateEvents();
+});
+
