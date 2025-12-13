@@ -403,6 +403,38 @@ if (btnRooms) {
  const btnFilters = document.getElementById("btnApplyFilters");
  const btnLogout = document.getElementById("btnLogout");
  const btnSwitchRole = document.getElementById("btnSwitchRole");
+  // --- UI v2: Hamburger menu (topbar) ---
+ const btnHamburger = document.getElementById("btnHamburger");
+ const gwMenu = document.getElementById("gwMenu");
+ const btnGuide = document.getElementById("btnGuide");
+ const btnPrivateEventsMenu = document.getElementById("btnPrivateEvents");
+  // --- UI v2: Geolocalizzazione (solo toggle UI per ora) ---
+ const btnGeo = document.getElementById("btnGeo");
+ const GEO_UI_KEY = "gogoworld_geo_ui_enabled";
+  // ==============================
+// UI v2 — GEO toggle (solo UI)
+// ==============================
+function setGeoUiState(enabled) {
+  if (!btnGeo) return;
+
+  const ico = btnGeo.querySelector(".gw-ico");
+  if (ico) {
+    ico.classList.toggle("is-active", !!enabled);
+  }
+
+  try {
+    localStorage.setItem(GEO_UI_KEY, enabled ? "1" : "0");
+  } catch {}
+}
+
+function getGeoUiState() {
+  try {
+    return localStorage.getItem(GEO_UI_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
  // --- Eventi privati: codice invito + lista locale ---
  const inviteInput = document.getElementById("inviteCodeInput");
  const btnApplyInvite = document.getElementById("btnApplyInvite");
@@ -751,35 +783,33 @@ if (mapEl && window.L) {
   map.addLayer(cluster);
 }
 
-// C1.1 — Auto-focus sugli eventi imminenti/ongoing/futuri nella lista "Tutti gli eventi"
-  function autoFocusOnRelevantEvent() {
-    try {
-      // Se l'utente ha già scrollato, non forzare alcun movimento
-      if (window.scrollY > 20) return;
+// C1.1 — Auto-focus sugli eventi imminenti/ongoing/futuri nel CAROUSEL "Tutti gli eventi"
+function autoFocusOnRelevantEvent() {
+  try {
+    const container = document.getElementById("allEventsList");
+    if (!container) return;
 
-      const container = document.getElementById("allEventsList");
-      if (!container) return;
+    // Se l’utente ha già interagito (scroll orizzontale) non forzare
+    // (non possiamo leggere facilmente lo swipe, quindi evitiamo forzature aggressive)
+    const statusOrder = ["imminent", "ongoing", "future"];
+    let targetCard = null;
 
-      const statusOrder = ["imminent", "ongoing", "future"];
-      let targetCard = null;
-
-      for (const st of statusOrder) {
-        targetCard = container.querySelector(`.event-card[data-status="${st}"]`);
-        if (targetCard) break;
-      }
-      // Se non troviamo nulla (lista vuota), non facciamo niente
-      if (!targetCard) return;
-
-      const rect = targetCard.getBoundingClientRect();
-      const newTop = rect.top + window.scrollY - 8; // piccolo margine
-      window.scrollTo({ top: newTop, behavior: "auto" });
-    } catch (err) {
-      console.debug("[autoFocus] skip:", err);
+    for (const st of statusOrder) {
+      targetCard = container.querySelector(`.event-card[data-status="${st}"]`);
+      if (targetCard) break;
     }
+    if (!targetCard) return;
+
+    // Centro nel carousel
+    targetCard.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
+  } catch (err) {
+    console.debug("[autoFocus] skip:", err);
   }
+}
+
 
   async function loadEvents(filters = {}) {
-    allList.innerHTML = "<p>Caricamento...</p>";
+  allList.innerHTML = `<article class="gw-rail"><div class="gw-thumb"></div><div class="content"><h3 class="title">Caricamento…</h3><div class="meta"><span>Sto recuperando gli eventi</span></div></div></article>`;
     myList.innerHTML = "";
 
     try {
@@ -920,60 +950,77 @@ if (cluster && map && Array.isArray(res?.events)) {
 
 
 
-// >>> PATCH: funzione di rendering card arricchita (region/country, prezzo+currency + stato)
-      const renderCard = (ev, includeLeave) => {
-        const priceStr = ev.isFree
-          ? "Gratuito"
-          : (ev.price != null ? `${ev.price} ${ev.currency || "EUR"}` : "-");
-        const whereLine = `${ev.city || ""}${ev.region ? " • " + ev.region : ""}${ev.country ? " • " + ev.country : ""}`;
+// >>> UI v2: rendering card per Home (carosello orizzontale)
+const renderCard = (ev, includeLeave) => {
+  const rawStatus = String(ev?.status || "").toLowerCase();
 
-        // Stato evento normalizzato
-        const rawStatus = String(ev?.status || "").toLowerCase();
-        const canJoin =
-          rawStatus === "future" ||
-          rawStatus === "imminent" ||
-          rawStatus === "ongoing";
-        const isConcluded = rawStatus === "concluded";
-        const isPast = rawStatus === "past";
+  const priceStr = ev?.isFree
+    ? "Gratuito"
+    : (ev?.price != null ? `${ev.price} ${ev.currency || "EUR"}` : "-");
 
-        // Base: il pulsante "Dettagli" è sempre presente
-        let actionsHtml =
-          `<button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>`;
+  const whereLine =
+    `${ev.city || ""}` +
+    `${ev.region ? " • " + ev.region : ""}` +
+    `${ev.country ? " • " + ev.country : ""}`;
 
-        if (includeLeave) {
-          // Lista "A cui partecipo"
-          if (!isPast) {
-            // Sugli eventi passati non ha senso mostrare "Annulla"
-            actionsHtml +=
-              ` <button class="btn btn-secondary" data-id="${ev._id}" data-action="leave">Annulla</button>`;
-          }
-        } else {
-          // Lista "Tutti gli eventi"
-          if (canJoin) {
-            actionsHtml +=
-              ` <button class="btn btn-primary" data-id="${ev._id}" data-action="join">Partecipa</button>`;
-          } else if (isConcluded || isPast) {
-            // Stato concluso/past → solo etichetta informativa disabilitata
-            const label = isPast ? "Evento passato" : "Evento concluso";
-            actionsHtml +=
-              ` <button class="btn btn-secondary btn-disabled" type="button" disabled>${label}</button>`;
-          }
-        }
+  const when = formatEventDate(ev);
 
-return `
-          <div class="event-card" data-status="${rawStatus}" data-event-id="${ev._id}">
-            <h3>${ev.title}</h3>
-            ${renderStatus(ev.status)}
-            <p>${whereLine} ${formatEventDate(ev)}</p>
-            <p class="meta"><strong>Categoria:</strong> ${ev.category || ""}${ev.subcategory ? " • " + ev.subcategory : ""}</p>
-            <p class="meta"><strong>Lingua/Target:</strong> ${ev.language || ""}${ev.target ? " • " + ev.target : ""}</p>
-            <p class="meta"><strong>Prezzo:</strong> ${priceStr}</p>
-            <div class="event-actions">
-              ${actionsHtml}
-            </div>
-          </div>
-        `;
-      };
+  const canJoin = rawStatus === "future" || rawStatus === "imminent" || rawStatus === "ongoing";
+  const isConcluded = rawStatus === "concluded";
+  const isPast = rawStatus === "past";
+
+  // Azioni: Dettagli sempre, poi join/leave
+  let actionsHtml =
+    `<button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>`;
+
+  if (includeLeave) {
+    if (!isPast) {
+      actionsHtml +=
+        ` <button class="btn btn-secondary" data-id="${ev._id}" data-action="leave">Annulla</button>`;
+    }
+  } else {
+    if (canJoin) {
+      actionsHtml +=
+        ` <button class="btn btn-primary" data-id="${ev._id}" data-action="join">Partecipa</button>`;
+    } else if (isConcluded || isPast) {
+      const label = isPast ? "Evento passato" : "Evento concluso";
+      actionsHtml +=
+        ` <button class="btn btn-secondary btn-disabled" type="button" disabled>${label}</button>`;
+    }
+  }
+
+  // UI v2: gw-rail + gw-thumb + content/title/meta/actions
+  return `
+    <article class="gw-rail event-card" data-status="${rawStatus}" data-event-id="${ev._id}">
+      <div class="gw-thumb"></div>
+
+      <div class="content">
+        <h3 class="title">${ev.title || "(Senza titolo)"}</h3>
+        ${renderStatus(ev.status)}
+        <div class="meta">
+          ${whereLine ? `<span>${whereLine}</span>` : ""}
+          ${when ? `<span>${when}</span>` : ""}
+        </div>
+
+        <div class="meta" style="margin-top:6px;">
+          <span><strong>Categoria:</strong> ${ev.category || ""}${ev.subcategory ? " • " + ev.subcategory : ""}</span>
+        </div>
+
+        <div class="meta" style="margin-top:4px;">
+          <span><strong>Lingua/Target:</strong> ${ev.language || ""}${ev.target ? " • " + ev.target : ""}</span>
+        </div>
+
+        <div class="meta" style="margin-top:4px;">
+          <span><strong>Prezzo:</strong> ${priceStr}</span>
+        </div>
+
+        <div class="actions">
+          ${actionsHtml}
+        </div>
+      </div>
+    </article>
+  `;
+};
 
  // Popola lista "tutti" (ordinata)
  allList.innerHTML = notJoinedSorted.length
@@ -1146,6 +1193,88 @@ return `
       window.location.href = "index.html";
     });
   }
+// ==============================
+  // UI v2 — Hamburger menu behavior
+  // ==============================
+  const closeGwMenu = () => {
+    if (!gwMenu) return;
+    gwMenu.style.display = "none";
+    try { btnHamburger?.setAttribute("aria-expanded", "false"); } catch {}
+  };
+
+  const toggleGwMenu = () => {
+    if (!gwMenu) return;
+    const isOpen = gwMenu.style.display === "block";
+    gwMenu.style.display = isOpen ? "none" : "block";
+    try { btnHamburger?.setAttribute("aria-expanded", String(!isOpen)); } catch {}
+  };
+
+  // Toggle menu su click hamburger
+  if (btnHamburger && gwMenu) {
+    btnHamburger.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleGwMenu();
+    });
+
+    // Click dentro menu: non chiudere “per sbaglio”
+    gwMenu.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
+    // Click fuori: chiude
+    document.addEventListener("click", () => closeGwMenu());
+
+    // ESC: chiude
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeGwMenu();
+    });
+  }
+
+  // Voce menu: Eventi privati (per ora mostra la sezione legacy)
+  if (btnPrivateEventsMenu) {
+    btnPrivateEventsMenu.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeGwMenu();
+
+      const legacy = document.querySelector("section.legacy");
+      if (legacy) {
+        legacy.style.display = legacy.style.display === "none" ? "block" : "none";
+        legacy.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        alert("Sezione Eventi privati non trovata (legacy).");
+      }
+    });
+  }
+
+  // Voce menu: Guida partecipante (placeholder)
+  if (btnGuide) {
+    btnGuide.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeGwMenu();
+      alert("Guida partecipante: in arrivo 🙂");
+    });
+  }
+  // ==============================
+  // UI v2 — GEO toggle wiring
+  // ==============================
+  if (btnGeo) {
+    setGeoUiState(getGeoUiState());
+
+    btnGeo.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const nowEnabled = !getGeoUiState();
+      setGeoUiState(nowEnabled);
+
+      if (nowEnabled) {
+        console.log("[GEO] UI enabled (permessi GPS verranno gestiti più avanti)");
+      } else {
+        console.log("[GEO] UI disabled");
+      }
+    });
+  }
 
   // Inizializza
   hookFilters();
@@ -1154,34 +1283,3 @@ return `
   await loadEvents();
   await refreshPrivateEvents();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
