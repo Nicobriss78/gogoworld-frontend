@@ -1482,3 +1482,56 @@ body {
   outline: 2px solid rgba(0,0,0,.10);
 }
 
+/* =========================================================
+   HOTFIX HOME v2 — viewport mobile + card actions visibili
+   (append-only override)
+   ========================================================= */
+
+/* 1) Home 50/50 con viewport "dinamico" (evita sfasamenti address bar) */
+.gw-home{
+  height: calc(100dvh - var(--gw-topbar-h) - var(--gw-bottombar-h));
+  height: calc(100vh - var(--gw-topbar-h) - var(--gw-bottombar-h)); /* fallback */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* blocchi 50/50 stabili */
+.gw-block{
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* il carosello deve poter "contenere" le card senza tagli verticali */
+.gw-carousel-wrap{
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden; /* ok: scroll solo orizzontale */
+}
+
+/* 2) Card: layout a colonna, actions sempre in basso */
+.gw-rail{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* resta ok (niente sbordi grafici) */
+}
+
+.gw-rail .content{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.gw-rail .actions{
+  margin-top: auto;
+  padding-top: 8px;
+}
+
