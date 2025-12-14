@@ -1412,3 +1412,42 @@ body {
 .gw-menu a.danger{
   color: #b91c1c;
 }
+
+/* =========================================================
+   HOME — Card con actions SEMPRE visibili (footer fisso)
+   ========================================================= */
+
+.gw-carousel-wrap .gw-rail{
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+/* Contenuto: prende tutto lo spazio sopra le azioni e può scrollare */
+.gw-carousel-wrap .gw-rail .content{
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 12px !important;
+}
+
+/* Azioni: footer fisso dentro la card (sempre visibile) */
+.gw-carousel-wrap .gw-rail .actions{
+  flex: 0 0 auto !important;
+  position: relative !important; /* NON sticky: fisso per struttura, non per scroll */
+  margin: 0 !important;
+  padding: 10px 12px 12px !important;
+  background: var(--gw-surface, #fff) !important;
+  border-top: 1px solid var(--gw-border, rgba(0,0,0,.10)) !important;
+  display: flex !important;
+  gap: 10px !important;
+}
+
+/* Bottoni: sempre affiancati e leggibili su mobile */
+.gw-carousel-wrap .gw-rail .actions .btn{
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
