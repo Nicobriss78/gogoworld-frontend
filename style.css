@@ -1276,3 +1276,139 @@ body {
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
+/* =========================================================
+   HOME — RECOVERY PATCH (append-only)
+   Fix: bottomnav, hamburger menu, scrollrail, card cut
+   ========================================================= */
+
+/* ---------- Bottom bar: usa il markup reale (senza .inner) ---------- */
+:root{
+  --gw-bottombar-h: 64px;
+  --gw-topbar-h: 72px;
+}
+
+/* nav fisso in basso, orizzontale */
+.gw-bottomnav{
+  position: fixed !important;
+  left: 0; right: 0; bottom: 0;
+  z-index: 9999;
+  height: calc(var(--gw-bottombar-h) + env(safe-area-inset-bottom));
+  padding: 6px 8px env(safe-area-inset-bottom);
+  background: #fff;
+  border-top: 1px solid rgba(0,0,0,.08);
+  display: flex !important;
+  align-items: center;
+  justify-content: space-around;
+  box-sizing: border-box;
+}
+
+/* item: SOLO icona, niente colonna */
+.gw-bottomnav .gw-navitem{
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 14px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-direction: row !important;
+  gap: 0 !important;
+  text-decoration: none;
+}
+
+/* home centrale più grande */
+.gw-bottomnav .gw-navitem--home{
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(0,0,0,.08);
+  background: #fff;
+  transform: translateY(-6px);
+}
+
+/* ---------- Layout Home: evita tagli + spazio per bottom bar ---------- */
+.gw-home{
+  height: calc(100dvh - var(--gw-topbar-h) - var(--gw-bottombar-h));
+  height: calc(100vh - var(--gw-topbar-h) - var(--gw-bottombar-h)); /* fallback */
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gw-block{
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gw-carousel-wrap{
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+
+/* nasconde la scrollbar orizzontale “brutta” */
+.gw-carousel-wrap::-webkit-scrollbar{ height: 0 !important; }
+.gw-carousel-wrap{ scrollbar-width: none; }
+.gw-carousel-wrap::-webkit-scrollbar-thumb{ background: transparent !important; }
+
+/* card: niente taglio azioni */
+.gw-rail{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+.gw-rail .content{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.gw-rail .actions{
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+/* ---------- Rimuove le due “barre” sotto i blocchi (scrollrail) ---------- */
+.gw-scrollrail{ display: none !important; }
+
+/* ---------- Menu hamburger: torna dropdown verticale ---------- */
+.gw-topbar{ position: sticky; top: 0; z-index: 1000; background:#fff; }
+
+.gw-menu{
+  position: absolute;
+  top: var(--gw-topbar-h);
+  right: 10px;
+  left: 10px;
+  max-width: 360px;
+  margin-left: auto;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: 14px;
+  box-shadow: 0 14px 30px rgba(0,0,0,.12);
+  padding: 8px;
+  z-index: 2000;
+}
+
+.gw-menu a{
+  display: block;
+  padding: 12px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #111827;
+  font-weight: 700;
+}
+
+.gw-menu a:hover{
+  background: rgba(0,0,0,.05);
+}
+
+.gw-menu a.danger{
+  color: #b91c1c;
+}
