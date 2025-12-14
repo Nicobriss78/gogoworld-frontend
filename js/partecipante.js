@@ -621,58 +621,51 @@ function getGeoUiState() {
       window.location.href = "evento.html";
     });
   }
+// 👉 Home v2: usa SOLO la topbar (niente "welcomeMsg" legacy in pagina)
+  try {
+    const me = await apiGet("/users/me", token);
 
-  // 👉 Benvenuto: creato UNA sola volta qui (non dentro loadEvents)
- try {
-  const me = await apiGet("/users/me", token);
-  // Fallback doppio: supporta payload piatto {name,email} e annidato {user:{…}}
-  const name =
-    me?.name ||
-    me?.user?.name ||
-    me?.email ||
-    me?.user?.email ||
-    "utente";
-   // CHIP STATUS: ricava lo status (fallback compatibile con payload legacy)
-  const statusRaw = (me?.status || me?.user?.status || "").toString().toLowerCase();
-  const statusLabel = statusRaw ? (statusRaw[0].toUpperCase() + statusRaw.slice(1)) : "";
-    if (!document.getElementById("welcomeMsg")) {
-      const main = document.querySelector("main") || document.body;
-      const p = document.createElement("p");
-      p.id = "welcomeMsg";
-      p.className = "welcome";
-      p.textContent = `Benvenuto, ${name}! Sei nella tua area Partecipante.`;
-      // CHIP STATUS: aggiungi badge di stato accanto al benvenuto
-    if (statusRaw) {
-      const chip = document.createElement("span");
-      chip.className = `chip status-chip chip-${statusRaw}`;
-      chip.textContent = statusLabel; // es. Novizio, Esploratore, Veterano, Ambassador
-      p.appendChild(document.createTextNode(" "));
-      p.appendChild(chip);
-    }
-      if (main.firstChild) main.insertBefore(p, main.firstChild); else main.appendChild(p);
-    }
- // >>> CHIAVE PER-UTENTE per eventi privati
- const myUserId = me?._id || me?.user?._id || null;
- if (myUserId) {
- // chiave tipo: gogo_private_event_ids_64fa...
- PRIVATE_LS_KEY = `gogo_private_event_ids_${myUserId}`;
- }
- 
- // >>> Elenco utenti che seguo (per lista eventi dei seguiti)
- const rawFollowing = me?.following || me?.user?.following || [];
- if (Array.isArray(rawFollowing)) {
- followingIds = new Set(
- rawFollowing
- .map(u => (u && (u._id || u.id || u)) || null)
- .filter(Boolean)
- .map(String)
- );
- }
- 
- } catch {
+    const name =
+      me?.name ||
+      me?.user?.name ||
+      me?.email ||
+      me?.user?.email ||
+      "Utente";
 
-    // nessun blocco della UI se /users/me fallisce: lo gestirà loadEvents()
+    const statusRaw = (me?.status || me?.user?.status || "").toString().toLowerCase();
+    const statusLabel = statusRaw
+      ? (statusRaw[0].toUpperCase() + statusRaw.slice(1))
+      : "Partecipante";
+
+    // Scrive nella topbar v2
+    const topName = document.getElementById("gwUserName");
+    if (topName) topName.textContent = name;
+
+    const topStatus = document.getElementById("gwUserStatus");
+    if (topStatus) {
+      topStatus.textContent = statusLabel || "Partecipante";
+    }
+
+    // >>> CHIAVE PER-UTENTE per eventi privati
+    const myUserId = me?._id || me?.user?._id || null;
+    if (myUserId) {
+      PRIVATE_LS_KEY = `gogo_private_event_ids_${myUserId}`;
+    }
+
+    // >>> Elenco utenti che seguo (per lista eventi dei seguiti)
+    const rawFollowing = me?.following || me?.user?.following || [];
+    if (Array.isArray(rawFollowing)) {
+      followingIds = new Set(
+        rawFollowing
+          .map(u => (u && (u._id || u.id || u)) || null)
+          .filter(Boolean)
+          .map(String)
+      );
+    }
+  } catch {
+    // non bloccare UI: loadEvents gestirà eventuali errori
   }
+
  await maybeShowProfileNag(token);
 
   // >>> PATCH: popola tendine filtri
@@ -1372,4 +1365,5 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
