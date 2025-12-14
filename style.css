@@ -994,12 +994,11 @@ body {
 }
 
 /* =========================================================
-   UI v2 — Partecipante (Home) — Toolbar + BottomBar + Blocchi A/B
-   (append-only, non rompe legacy)
+   UI v2 — Partecipante Home (FINAL) — Opzione A
+   Topbar FIXED + BottomNav FIXED + Home 50/50 stabile (mobile/desktop)
    ========================================================= */
 
 :root{
-  /* colori “brand” (base) */
   --gw-blue: #2C5AA0;
   --gw-red: #C83A3A;
   --gw-gray: #9AA3AF;
@@ -1013,18 +1012,18 @@ body {
   --gw-shadow: 0 6px 18px rgba(17,24,39,.08);
   --gw-radius: 16px;
 
-  /* altezze barre fisse (NOTA punto 3) */
+  /* altezze coerenti con opzione A */
   --gw-topbar-h: 96px; /* topbar a 2 righe */
-  --gw-bottomnav-h: 72px; /* bottom bar */
+  --gw-bottomnav-h: 72px; /* bottomnav fissa */
+  --gw-gap: 10px;
 }
 
-/* Assicura una base “pulita” per le nuove sezioni senza toccare legacy */
 .gw-topbar,
 .gw-bottomnav{
   font-family: Arial, sans-serif;
 }
 
-/* ---------- TOPBAR (fissa) ---------- */
+/* ---------- TOPBAR (FIXED) ---------- */
 .gw-topbar{
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -1040,7 +1039,6 @@ body {
   justify-content:space-between;
   padding: 10px 14px;
 }
-
 .gw-topbar-row--title{ padding-bottom: 6px; }
 .gw-topbar-row--actions{ gap: 8px; }
 
@@ -1065,11 +1063,7 @@ body {
 }
 .gw-iconbtn:active{ transform: scale(.98); }
 
-.gw-ico{
-  width:22px; height:22px;
-  display:block;
-  color: var(--gw-gray);
-}
+.gw-ico{ width:22px; height:22px; display:block; color: var(--gw-gray); }
 .gw-ico.is-active{ color: var(--gw-red); }
 
 .gw-badge{
@@ -1088,87 +1082,7 @@ body {
   margin-left: 6px;
 }
 
-/* ---------- HOME (spazi corretti per barre fisse) ---------- */
-/* NOTA punto 3: questo risolve la sovrapposizione top/bottom */
-.gw-home{
-  background: var(--gw-bg);
-  padding-top: calc(var(--gw-topbar-h) + 10px);
-  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 10px);
-}
-
-.gw-block{ padding: 12px; }
-.gw-block-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom: 10px;
-}
-.gw-block-title{
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: .2px;
-  color: var(--gw-text);
-}
-
-/* ---------- CAROUSEL “snap” ---------- */
-.gw-carousel-wrap{
-  overflow-x:auto;
-  overflow-y:hidden;
-  -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 8px;
-}
-
-.gw-carousel{
-  display:flex;
-  gap: 12px;
-  padding: 2px;
-}
-
-.gw-carousel-wrap::-webkit-scrollbar{ height: 8px; }
-.gw-carousel-wrap::-webkit-scrollbar-thumb{ background: rgba(17,24,39,.12); border-radius: 999px; }
-.gw-carousel-wrap::-webkit-scrollbar-track{ background: transparent; }
-
-/* Card evento */
-.gw-rail{
-  flex: 0 0 78%;
-  scroll-snap-align: center;
-  background: var(--gw-surface);
-  border: 1px solid var(--gw-border);
-  border-radius: var(--gw-radius);
-  box-shadow: var(--gw-shadow);
-  overflow: hidden;
-  min-height: 150px;
-}
-
-/* area locandina */
-.gw-thumb{
-  height: 84px;
-  background: #f3f4f6;
-  border-bottom: 1px solid var(--gw-border);
-}
-
-.gw-rail .content{ padding: 10px 12px 12px; }
-.gw-rail .title{
-  font-weight: 800;
-  font-size: 14px;
-  margin: 0 0 6px;
-  color: var(--gw-text);
-}
-.gw-rail .meta{
-  font-size: 12px;
-  color: var(--gw-muted);
-  display:flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.gw-rail .actions{
-  display:flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-/* ---------- BOTTOM NAV (fissa) ---------- */
+/* ---------- BOTTOM NAV (FIXED) ---------- */
 .gw-bottomnav{
   position: fixed;
   left: 0; right: 0; bottom: 0;
@@ -1200,11 +1114,9 @@ body {
 }
 
 .gw-navitem .gw-ico{ width: 24px; height: 24px; }
-
 .gw-navitem.is-active{ color: var(--gw-red); }
 .gw-navitem.is-active .gw-ico{ color: var(--gw-red); }
 
-/* Home centrale più grande */
 .gw-navitem--home{ transform: translateY(-8px); }
 .gw-navitem--home .pill{
   width: 62px; height: 62px;
@@ -1217,10 +1129,130 @@ body {
   background: #fff;
 }
 .gw-navitem--home .gw-ico{ width: 26px; height: 26px; }
-/* =========================================================
-   UI v2 — Scroll Rail (drag) per caroselli Home
-   ========================================================= */
 
+/* ---------- HOME (50/50 stabile + viewport mobile corretto) ---------- */
+/* Niente calc “sottrai barre”: usiamo height:100dvh e padding per lasciare spazio a barre FIXED */
+.gw-home{
+  height: 100dvh;
+  height: 100vh; /* fallback */
+  box-sizing: border-box;
+  background: var(--gw-bg);
+
+  /* spazio reale per topbar + bottomnav */
+  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top) + 10px);
+  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 10px);
+  padding-left: 10px;
+  padding-right: 10px;
+
+  display:flex;
+  flex-direction: column;
+  gap: var(--gw-gap);
+}
+
+.gw-block{
+  flex: 1;
+  min-height: 0;
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.gw-block-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom: 10px;
+}
+.gw-block-title{
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  color: var(--gw-text);
+}
+
+/* ---------- CAROUSEL (A e B identici) ---------- */
+.gw-carousel-wrap{
+  flex: 1;
+  min-height: 0;
+
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling: touch;
+
+  /* IMPORTANT: stretch verticale delle card (evita taglio bottoni) */
+  display:flex;
+  align-items: stretch;
+  gap: 12px;
+
+  scroll-snap-type: x mandatory;
+  padding-bottom: 8px;
+}
+
+/* se esiste ancora un wrapper interno .gw-carousel, lo rendiamo innocuo */
+.gw-carousel{
+  display:flex;
+  align-items: stretch;
+  gap: 12px;
+}
+
+/* Card evento */
+.gw-rail{
+  flex: 0 0 78%;
+  max-width: 78%;
+  scroll-snap-align: center;
+
+  background: var(--gw-surface);
+  border: 1px solid var(--gw-border);
+  border-radius: var(--gw-radius);
+  box-shadow: var(--gw-shadow);
+
+  /* layout colonna per tenere actions in basso */
+  height: 100%;
+  display:flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* locandina */
+.gw-thumb{
+  flex: 0 0 auto;
+  height: 84px;
+  background: #f3f4f6;
+  border-bottom: 1px solid var(--gw-border);
+}
+
+.gw-rail .content{
+  flex: 1;
+  min-height: 0;
+  display:flex;
+  flex-direction: column;
+  padding: 10px 12px 12px;
+}
+
+.gw-rail .title{
+  font-weight: 800;
+  font-size: 14px;
+  margin: 0 0 6px;
+  color: var(--gw-text);
+}
+
+.gw-rail .meta{
+  font-size: 12px;
+  color: var(--gw-muted);
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gw-rail .actions{
+  margin-top: auto;
+  padding-top: 10px;
+  display:flex;
+  gap: 10px;
+}
+
+/* ---------- ScrollRail custom (se la usi) ---------- */
 .gw-scrollrail{
   height: 10px;
   background: rgba(17,24,39,.10);
@@ -1240,298 +1272,7 @@ body {
   transition: transform 60ms linear;
 }
 
-/* quando l’utente sta trascinando */
 .gw-scrollrail.is-dragging .gw-scrollthumb{
-  background: rgba(200,58,58,.45); /* rosso soft */
+  background: rgba(200,58,58,.45);
   transition: none;
 }
-
-/* =========================================================
-   GoGoWorld UI v2 — Layout variables + Home 50/50 + Menus
-   (append-only overrides)
-   ========================================================= */
-
-:root{
-  --gw-topbar-h: 72px; /* topbar (2 righe) */
-  --gw-bottombar-h: 64px; /* bottom nav */
-  --gw-gap: 10px;
-  --gw-radius: 16px;
-  --gw-border: rgba(0,0,0,.08);
-  --gw-shadow: 0 10px 28px rgba(0,0,0,.10);
-}
-
-/* ---------- TOPBAR (compatta) ---------- */
-.gw-topbar{
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: #fff;
-  border-bottom: 1px solid var(--gw-border);
-}
-
-/* due righe compatte */
-.gw-topbar-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: var(--gw-gap);
-  padding: 6px 10px; /* compatta */
-}
-
-.gw-topbar-row.top{
-  height: 40px; /* riga saluto/logo */
-}
-
-.gw-topbar-row.bottom{
-  height: 32px; /* riga icone */
-  justify-content: space-around;
-  padding-top: 4px;
-  padding-bottom: 6px;
-}
-
-/* testo saluto/brand più compatto */
-#welcomeMsg{
-  font-weight: 700;
-  line-height: 1.1;
-}
-.gw-status{
-  font-size: .9rem;
-  opacity: .75;
-  line-height: 1.1;
-}
-.gw-brand{
-  font-weight: 700;
-  letter-spacing: .2px;
-  white-space: nowrap;
-}
-
-/* bottoni icone */
-.gw-iconbtn{
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
-  border: 1px solid var(--gw-border);
-  background: #fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:0;
-}
-.gw-ico{
-  display:block;
-  width: 22px;
-  height: 22px;
-}
-
-/* stato attivo (geo ecc.) */
-.gw-ico.is-active{
-  filter: saturate(1.2);
-}
-
-/* ---------- HAMBURGER DROPDOWN ---------- */
-.gw-menu{
-  position: absolute;
-  right: 10px;
-  top: var(--gw-topbar-h);
-  z-index: 999;
-  width: min(280px, 92vw);
-  background: #fff;
-  border: 1px solid var(--gw-border);
-  border-radius: 14px;
-  box-shadow: var(--gw-shadow);
-  padding: 8px;
-  display: none; /* JS lo mette a block */
-}
-
-.gw-menu a{
-  display:block;
-  padding: 10px 10px;
-  border-radius: 10px;
-  text-decoration:none;
-  color: inherit;
-}
-
-.gw-menu a:hover{
-  background: rgba(0,0,0,.05);
-}
-
-/* ---------- HOME (50/50 sempre visibile) ---------- */
-.gw-home{
-  height: calc(100vh - var(--gw-topbar-h) - var(--gw-bottombar-h));
-  display:flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-/* ogni blocco prende metà */
-.gw-block{
-  flex: 1;
-  min-height: 0; /* CRUCIALE: evita che un blocco spinga l’altro */
-  display:flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* header blocco */
-.gw-block-header{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-}
-.gw-block-header h2{
-  margin: 0;
-  font-size: 1.05rem;
-}
-
-/* carosello (contenitore reale dello scroll) */
-.gw-carousel-wrap{
-  flex: 1;
-  min-height: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  display:flex;
-  gap: 12px;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-
-  /* NASCONDI scrollbar nativa: resta SOLO la rail custom */
-  scrollbar-width: none;
-}
-.gw-carousel-wrap::-webkit-scrollbar{
-  height: 0;
-}
-
-/* contenitore interno (se presente) */
-.gw-carousel{
-  display:flex;
-  gap: 12px;
-}
-
-/* le card che renderizzi da JS (gw-rail.event-card) devono “snap” */
-.gw-carousel-wrap .event-card{
-  scroll-snap-align: start;
-  flex: 0 0 82%;
-  max-width: 82%;
-}
-
-/* ---------- ScrollRail custom (fix RGBA) ---------- */
-.gw-scrollrail{
-  height: 10px;
-  background: rgba(17,24,39, 0.10);
-  border-radius: 999px;
-  position: relative;
-  overflow: hidden;
-  margin-top: 2px;
-  touch-action: pan-x;
-}
-
-.gw-scrollthumb{
-  height: 100%;
-  width: 22%;
-  background: rgba(17,24,39, 0.22);
-  border-radius: 999px;
-  transform: translateX(0);
-  transition: transform 60ms linear;
-}
-
-.gw-scrollrail.is-dragging .gw-scrollthumb{
-  background: rgba(200,58,58, 0.45);
-  transition: none;
-}
-
-/* ---------- BOTTOM NAV (orizzontale + compatta) ---------- */
-.gw-bottomnav{
-  position: sticky;
-  bottom: 0;
-  z-index: 100;
-  height: var(--gw-bottombar-h);
-  background: #fff;
-  border-top: 1px solid var(--gw-border);
-  display:flex;
-  align-items:center;
-  justify-content: space-around;
-  padding: 6px 8px;
-  box-sizing: border-box;
-}
-
-.gw-navitem{
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-decoration:none;
-}
-
-/* HOME centrale più grande */
-.gw-navitem--home{
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  border: 1px solid var(--gw-border);
-  background: #fff;
-  transform: translateY(-4px);
-}
-
-/* opzionale: evidenzia item attivo se usi classi */
-.gw-navitem.is-active{
-  outline: 2px solid rgba(0,0,0,.10);
-}
-
-/* =========================================================
-   HOTFIX HOME v2 — viewport mobile + card actions visibili
-   (append-only override)
-   ========================================================= */
-
-/* 1) Home 50/50 con viewport "dinamico" (evita sfasamenti address bar) */
-.gw-home{
-  height: calc(100dvh - var(--gw-topbar-h) - var(--gw-bottombar-h));
-  height: calc(100vh - var(--gw-topbar-h) - var(--gw-bottombar-h)); /* fallback */
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-/* blocchi 50/50 stabili */
-.gw-block{
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* il carosello deve poter "contenere" le card senza tagli verticali */
-.gw-carousel-wrap{
-  flex: 1;
-  min-height: 0;
-  overflow-x: auto;
-  overflow-y: hidden; /* ok: scroll solo orizzontale */
-}
-
-/* 2) Card: layout a colonna, actions sempre in basso */
-.gw-rail{
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* resta ok (niente sbordi grafici) */
-}
-
-.gw-rail .content{
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-.gw-rail .actions{
-  margin-top: auto;
-  padding-top: 8px;
-}
-
