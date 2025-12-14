@@ -1093,32 +1093,6 @@ return `
       </div>
     </article>
   `;
-
-        <h3 class="title">${ev.title || "(Senza titolo)"}</h3>
-        ${renderStatus(ev.status)}
-        <div class="meta">
-          ${whereLine ? `<span>${whereLine}</span>` : ""}
-          ${when ? `<span>${when}</span>` : ""}
-        </div>
-
-        <div class="meta" style="margin-top:6px;">
-          <span><strong>Categoria:</strong> ${ev.category || ""}${ev.subcategory ? " • " + ev.subcategory : ""}</span>
-        </div>
-
-        <div class="meta" style="margin-top:4px;">
-          <span><strong>Lingua/Target:</strong> ${ev.language || ""}${ev.target ? " • " + ev.target : ""}</span>
-        </div>
-
-        <div class="meta" style="margin-top:4px;">
-          <span><strong>Prezzo:</strong> ${priceStr}</span>
-        </div>
-
-        <div class="actions">
-          ${actionsHtml}
-        </div>
-      </div>
-    </article>
-  `;
 };
 
  // Popola lista "tutti" (ordinata)
@@ -1383,6 +1357,7 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
 
