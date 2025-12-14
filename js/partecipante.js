@@ -1050,32 +1050,50 @@ const renderCard = (ev, includeLeave) => {
   const isConcluded = rawStatus === "concluded";
   const isPast = rawStatus === "past";
 
-  // Azioni: Dettagli sempre, poi join/leave
-  let actionsHtml =
-    `<button class="btn btn-primary" data-id="${ev._id}" data-action="details">Dettagli</button>`;
+// Azioni: in card lasciamo SOLO un’icona "Info" (Dettagli)
+  // Partecipa/Annulla vive nella pagina dettaglio evento (evento.html)
+  const infoHtml = `
+    <button class="gw-info-btn"
+      type="button"
+      title="Dettagli evento"
+      aria-label="Dettagli evento"
+      data-id="${ev._id}"
+      data-action="details">ℹ️</button>
+  `;
 
-  if (includeLeave) {
-    if (!isPast) {
-      actionsHtml +=
-        ` <button class="btn btn-secondary" data-id="${ev._id}" data-action="leave">Annulla</button>`;
-    }
-  } else {
-    if (canJoin) {
-      actionsHtml +=
-        ` <button class="btn btn-primary" data-id="${ev._id}" data-action="join">Partecipa</button>`;
-    } else if (isConcluded || isPast) {
-      const label = isPast ? "Evento passato" : "Evento concluso";
-      actionsHtml +=
-        ` <button class="btn btn-secondary btn-disabled" type="button" disabled>${label}</button>`;
-    }
-  }
 
   // UI v2: gw-rail + gw-thumb + content/title/meta/actions
-  return `
+return `
     <article class="gw-rail event-card" data-status="${rawStatus}" data-event-id="${ev._id}">
-      <div class="gw-thumb"></div>
+      ${infoHtml}
 
-      <div class="content">
+      <div class="gw-card-scroll">
+        <div class="gw-thumb"></div>
+
+        <div class="content">
+          <h3 class="title">${ev.title || "(Senza titolo)"}</h3>
+          ${renderStatus(ev.status)}
+          <div class="meta">
+            ${whereLine ? `<span>${whereLine}</span>` : ""}
+            ${when ? `<span>${when}</span>` : ""}
+          </div>
+
+          <div class="meta" style="margin-top:6px;">
+            <span><strong>Categoria:</strong> ${ev.category || ""}${ev.subcategory ? " • " + ev.subcategory : ""}</span>
+          </div>
+
+          <div class="meta" style="margin-top:4px;">
+            <span><strong>Lingua/Target:</strong> ${ev.language || ""}${ev.target ? " • " + ev.target : ""}</span>
+          </div>
+
+          <div class="meta" style="margin-top:4px;">
+            <span><strong>Prezzo:</strong> ${priceStr}</span>
+          </div>
+        </div>
+      </div>
+    </article>
+  `;
+
         <h3 class="title">${ev.title || "(Senza titolo)"}</h3>
         ${renderStatus(ev.status)}
         <div class="meta">
@@ -1365,5 +1383,6 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
