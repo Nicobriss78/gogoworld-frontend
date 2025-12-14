@@ -1015,7 +1015,7 @@ body {
   /* altezze coerenti con opzione A */
   --gw-topbar-h: 96px; /* topbar a 2 righe */
   --gw-bottomnav-h: 72px; /* bottomnav fissa */
-  --gw-gap: 10px;
+  --gw-gap: 8px;
 }
 
 .gw-topbar,
@@ -1139,8 +1139,8 @@ body {
   background: var(--gw-bg);
 
   /* spazio reale per topbar + bottomnav */
-  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top) + 10px);
-  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 10px);
+  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top) + 6px);
+  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 6px);
   padding-left: 10px;
   padding-right: 10px;
 
@@ -1154,15 +1154,15 @@ body {
   min-height: 0;
   display:flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 12px;
+  gap: 6px;
+  padding: 8px;
 }
 
 .gw-block-head{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 .gw-block-title{
   font-size: 15px;
@@ -1225,9 +1225,11 @@ body {
 .gw-rail .content{
   flex: 1;
   min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display:flex;
   flex-direction: column;
-  padding: 10px 12px 12px;
+  padding: 10px 12px 8px;
 }
 
 .gw-rail .title{
@@ -1247,10 +1249,16 @@ body {
 
 .gw-rail .actions{
   margin-top: auto;
-  padding-top: 10px;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: var(--gw-surface);
+  border-top: 1px solid var(--gw-border);
+  padding: 10px 12px 12px;
   display:flex;
   gap: 10px;
 }
+
 
 /* ---------- ScrollRail custom (se la usi) ---------- */
 .gw-scrollrail{
@@ -1277,177 +1285,5 @@ body {
   transition: none;
 }
 
-/* =========================================================
-   HOME — RECOVERY PATCH (append-only)
-   Fix: bottomnav, hamburger menu, scrollrail, card cut
-   ========================================================= */
 
-/* ---------- Bottom bar: usa il markup reale (senza .inner) ---------- */
-:root{
-  --gw-bottombar-h: 64px;
-  --gw-topbar-h: 72px;
-}
 
-/* nav fisso in basso, orizzontale */
-.gw-bottomnav{
-  position: fixed !important;
-  left: 0; right: 0; bottom: 0;
-  z-index: 9999;
-  height: calc(var(--gw-bottombar-h) + env(safe-area-inset-bottom));
-  padding: 6px 8px env(safe-area-inset-bottom);
-  background: #fff;
-  border-top: 1px solid rgba(0,0,0,.08);
-  display: flex !important;
-  align-items: center;
-  justify-content: space-around;
-  box-sizing: border-box;
-}
-
-/* item: SOLO icona, niente colonna */
-.gw-bottomnav .gw-navitem{
-  width: 44px !important;
-  height: 44px !important;
-  border-radius: 14px;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  flex-direction: row !important;
-  gap: 0 !important;
-  text-decoration: none;
-}
-
-/* home centrale più grande */
-.gw-bottomnav .gw-navitem--home{
-  width: 56px !important;
-  height: 56px !important;
-  border-radius: 16px !important;
-  border: 1px solid rgba(0,0,0,.08);
-  background: #fff;
-  transform: translateY(-6px);
-}
-
-/* ---------- Layout Home: evita tagli + spazio per bottom bar ---------- */
-.gw-home{
-  height: calc(100dvh - var(--gw-topbar-h) - var(--gw-bottombar-h));
-  height: calc(100vh - var(--gw-topbar-h) - var(--gw-bottombar-h)); /* fallback */
-  padding: 10px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.gw-block{
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.gw-carousel-wrap{
-  flex: 1;
-  min-height: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 8px;
-}
-
-/* nasconde la scrollbar orizzontale “brutta” */
-.gw-carousel-wrap::-webkit-scrollbar{ height: 0 !important; }
-.gw-carousel-wrap{ scrollbar-width: none; }
-.gw-carousel-wrap::-webkit-scrollbar-thumb{ background: transparent !important; }
-
-/* card: niente taglio azioni */
-.gw-rail{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-.gw-rail .content{
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-.gw-rail .actions{
-  margin-top: auto;
-  padding-top: 8px;
-}
-
-/* ---------- Rimuove le due “barre” sotto i blocchi (scrollrail) ---------- */
-.gw-scrollrail{ display: none !important; }
-
-/* ---------- Menu hamburger: torna dropdown verticale ---------- */
-.gw-topbar{ position: sticky; top: 0; z-index: 1000; background:#fff; }
-
-.gw-menu{
-  position: absolute;
-  top: var(--gw-topbar-h);
-  right: 10px;
-  left: 10px;
-  max-width: 360px;
-  margin-left: auto;
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.10);
-  border-radius: 14px;
-  box-shadow: 0 14px 30px rgba(0,0,0,.12);
-  padding: 8px;
-  z-index: 2000;
-}
-
-.gw-menu a{
-  display: block;
-  padding: 12px 12px;
-  border-radius: 12px;
-  text-decoration: none;
-  color: #111827;
-  font-weight: 700;
-}
-
-.gw-menu a:hover{
-  background: rgba(0,0,0,.05);
-}
-
-.gw-menu a.danger{
-  color: #b91c1c;
-}
-
-/* =========================================================
-   HOME — Card con actions SEMPRE visibili (footer fisso)
-   ========================================================= */
-
-.gw-carousel-wrap .gw-rail{
-  height: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
-}
-
-/* Contenuto: prende tutto lo spazio sopra le azioni e può scrollare */
-.gw-carousel-wrap .gw-rail .content{
-  flex: 1 1 auto !important;
-  min-height: 0 !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 12px !important;
-}
-
-/* Azioni: footer fisso dentro la card (sempre visibile) */
-.gw-carousel-wrap .gw-rail .actions{
-  flex: 0 0 auto !important;
-  position: relative !important; /* NON sticky: fisso per struttura, non per scroll */
-  margin: 0 !important;
-  padding: 10px 12px 12px !important;
-  background: var(--gw-surface, #fff) !important;
-  border-top: 1px solid var(--gw-border, rgba(0,0,0,.10)) !important;
-  display: flex !important;
-  gap: 10px !important;
-}
-
-/* Bottoni: sempre affiancati e leggibili su mobile */
-.gw-carousel-wrap .gw-rail .actions .btn{
-  flex: 1 1 0 !important;
-  min-width: 0 !important;
-  white-space: nowrap !important;
-}
