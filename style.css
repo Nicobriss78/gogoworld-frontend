@@ -1246,3 +1246,239 @@ body {
   transition: none;
 }
 
+/* =========================================================
+   GoGoWorld UI v2 — Layout variables + Home 50/50 + Menus
+   (append-only overrides)
+   ========================================================= */
+
+:root{
+  --gw-topbar-h: 72px; /* topbar (2 righe) */
+  --gw-bottombar-h: 64px; /* bottom nav */
+  --gw-gap: 10px;
+  --gw-radius: 16px;
+  --gw-border: rgba(0,0,0,.08);
+  --gw-shadow: 0 10px 28px rgba(0,0,0,.10);
+}
+
+/* ---------- TOPBAR (compatta) ---------- */
+.gw-topbar{
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid var(--gw-border);
+}
+
+/* due righe compatte */
+.gw-topbar-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: var(--gw-gap);
+  padding: 6px 10px; /* compatta */
+}
+
+.gw-topbar-row.top{
+  height: 40px; /* riga saluto/logo */
+}
+
+.gw-topbar-row.bottom{
+  height: 32px; /* riga icone */
+  justify-content: space-around;
+  padding-top: 4px;
+  padding-bottom: 6px;
+}
+
+/* testo saluto/brand più compatto */
+#welcomeMsg{
+  font-weight: 700;
+  line-height: 1.1;
+}
+.gw-status{
+  font-size: .9rem;
+  opacity: .75;
+  line-height: 1.1;
+}
+.gw-brand{
+  font-weight: 700;
+  letter-spacing: .2px;
+  white-space: nowrap;
+}
+
+/* bottoni icone */
+.gw-iconbtn{
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid var(--gw-border);
+  background: #fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+}
+.gw-ico{
+  display:block;
+  width: 22px;
+  height: 22px;
+}
+
+/* stato attivo (geo ecc.) */
+.gw-ico.is-active{
+  filter: saturate(1.2);
+}
+
+/* ---------- HAMBURGER DROPDOWN ---------- */
+.gw-menu{
+  position: absolute;
+  right: 10px;
+  top: var(--gw-topbar-h);
+  z-index: 999;
+  width: min(280px, 92vw);
+  background: #fff;
+  border: 1px solid var(--gw-border);
+  border-radius: 14px;
+  box-shadow: var(--gw-shadow);
+  padding: 8px;
+  display: none; /* JS lo mette a block */
+}
+
+.gw-menu a{
+  display:block;
+  padding: 10px 10px;
+  border-radius: 10px;
+  text-decoration:none;
+  color: inherit;
+}
+
+.gw-menu a:hover{
+  background: rgba(0,0,0,.05);
+}
+
+/* ---------- HOME (50/50 sempre visibile) ---------- */
+.gw-home{
+  height: calc(100vh - var(--gw-topbar-h) - var(--gw-bottombar-h));
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* ogni blocco prende metà */
+.gw-block{
+  flex: 1;
+  min-height: 0; /* CRUCIALE: evita che un blocco spinga l’altro */
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* header blocco */
+.gw-block-header{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.gw-block-header h2{
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+/* carosello (contenitore reale dello scroll) */
+.gw-carousel-wrap{
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display:flex;
+  gap: 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  /* NASCONDI scrollbar nativa: resta SOLO la rail custom */
+  scrollbar-width: none;
+}
+.gw-carousel-wrap::-webkit-scrollbar{
+  height: 0;
+}
+
+/* contenitore interno (se presente) */
+.gw-carousel{
+  display:flex;
+  gap: 12px;
+}
+
+/* le card che renderizzi da JS (gw-rail.event-card) devono “snap” */
+.gw-carousel-wrap .event-card{
+  scroll-snap-align: start;
+  flex: 0 0 82%;
+  max-width: 82%;
+}
+
+/* ---------- ScrollRail custom (fix RGBA) ---------- */
+.gw-scrollrail{
+  height: 10px;
+  background: rgba(17,24,39, 0.10);
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 2px;
+  touch-action: pan-x;
+}
+
+.gw-scrollthumb{
+  height: 100%;
+  width: 22%;
+  background: rgba(17,24,39, 0.22);
+  border-radius: 999px;
+  transform: translateX(0);
+  transition: transform 60ms linear;
+}
+
+.gw-scrollrail.is-dragging .gw-scrollthumb{
+  background: rgba(200,58,58, 0.45);
+  transition: none;
+}
+
+/* ---------- BOTTOM NAV (orizzontale + compatta) ---------- */
+.gw-bottomnav{
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+  height: var(--gw-bottombar-h);
+  background: #fff;
+  border-top: 1px solid var(--gw-border);
+  display:flex;
+  align-items:center;
+  justify-content: space-around;
+  padding: 6px 8px;
+  box-sizing: border-box;
+}
+
+.gw-navitem{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+}
+
+/* HOME centrale più grande */
+.gw-navitem--home{
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  border: 1px solid var(--gw-border);
+  background: #fff;
+  transform: translateY(-4px);
+}
+
+/* opzionale: evidenzia item attivo se usi classi */
+.gw-navitem.is-active{
+  outline: 2px solid rgba(0,0,0,.10);
+}
+
