@@ -1062,6 +1062,39 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 .gw-iconbtn:active{ transform: scale(.98); }
+/* ---------- HAMBURGER MENU (DROPDOWN) ---------- */
+.gw-menu{
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 86px);
+  right: 14px;
+  z-index: 2000;
+
+  width: min(280px, calc(100vw - 28px));
+  background: #fff;
+  border: 1px solid var(--gw-border);
+  border-radius: 14px;
+  box-shadow: var(--gw-shadow);
+
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gw-menu a{
+  display: block;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--gw-blue);
+  font-weight: 700;
+}
+
+.gw-menu a:active{ transform: scale(.99); }
+
+.gw-menu a.danger{
+  color: var(--gw-red);
+}
 
 .gw-ico{ width:22px; height:22px; display:block; color: var(--gw-gray); }
 .gw-ico.is-active{ color: var(--gw-red); }
@@ -1089,7 +1122,15 @@ body {
   z-index: 999;
   background: var(--gw-surface);
   border-top: 1px solid var(--gw-border);
+
+  height: var(--gw-bottomnav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  padding: 8px 10px;
   padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: border-box;
 }
 
 .gw-bottomnav .inner{
@@ -1111,6 +1152,11 @@ body {
   color: var(--gw-gray);
   font-size: 11px;
   font-weight: 700;
+}
+.gw-navitem span{
+  font-size: 22px;
+  line-height: 1;
+  display: block;
 }
 
 .gw-navitem .gw-ico{ width: 24px; height: 24px; }
@@ -1320,6 +1366,7 @@ body {
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
 
 
