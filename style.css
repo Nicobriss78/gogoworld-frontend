@@ -1128,7 +1128,7 @@ body {
   align-items: center;
   justify-content: space-around;
 
-  padding: 8px 10px;
+  padding: 4px 10px;
   padding-bottom: env(safe-area-inset-bottom);
   box-sizing: border-box;
 }
@@ -1138,7 +1138,7 @@ body {
   display:flex;
   align-items:center;
   justify-content:space-around;
-  padding: 8px 10px;
+  padding: 4px 10px;
 }
 
 .gw-navitem{
@@ -1366,6 +1366,7 @@ body {
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
 
 
