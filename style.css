@@ -1015,7 +1015,7 @@ body {
   /* altezze coerenti con opzione A */
   --gw-topbar-h: 96px; /* topbar a 2 righe */
   --gw-bottomnav-h: 44px; /* bottomnav fissa */
-  --gw-gap: 8px;
+  --gw-gap: 6px;
 }
 
 .gw-topbar,
@@ -1185,8 +1185,8 @@ body {
   background: var(--gw-bg);
 
   /* spazio reale per topbar + bottomnav */
-  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top) + 6px);
-  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 6px);
+  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top) + 2px);
+  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 2px);
   padding-left: 10px;
   padding-right: 10px;
 
@@ -1200,21 +1200,22 @@ body {
   min-height: 0;
   display:flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 8px;
+  gap: 4px;
+  padding: 6px;
 }
 
 .gw-block-head{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
 }
 .gw-block-title{
   font-size: 15px;
   font-weight: 800;
   letter-spacing: .2px;
   color: var(--gw-text);
+  margin: 0;
 }
 
 /* ---------- CAROUSEL (A e B identici) ---------- */
@@ -1232,7 +1233,7 @@ body {
   gap: 12px;
 
   scroll-snap-type: x mandatory;
-  padding-bottom: 8px;
+  padding-bottom: 2px;
 }
 
 /* se esiste ancora un wrapper interno .gw-carousel, lo rendiamo innocuo */
@@ -1380,6 +1381,7 @@ body {
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
 
 
