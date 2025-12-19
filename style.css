@@ -1247,7 +1247,7 @@ body {
   flex: 0 0 78%;
   max-width: 78%;
   scroll-snap-align: center;
-
+  box-sizing: border-box;
   background: var(--gw-surface);
   border: 1px solid var(--gw-border);
   border-radius: var(--gw-radius);
@@ -1266,8 +1266,8 @@ body {
   }
 
   .gw-rail{
-    flex: 0 0 calc(100% - 16px);
-    max-width: calc(100% - 16px);
+    flex: 0 0 100%;
+    max-width: 100%;
     scroll-snap-align: start;
     box-sizing: border-box;
   }
@@ -1380,6 +1380,7 @@ body {
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
 
 
