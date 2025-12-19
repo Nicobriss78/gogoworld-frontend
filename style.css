@@ -1259,29 +1259,14 @@ body {
   flex-direction: column;
   overflow: hidden;
 }
-/* MOBILE: niente carosello (lista verticale) + card 100% */
-@media (max-width: 768px){
-  .gw-carousel-wrap{
-    overflow-x: hidden;
-    overflow-y: auto;
-    scroll-snap-type: none;
-    flex-direction: column;
-    gap: 10px;
-    padding-bottom: 0;
-  }
-
-  /* se esiste ancora un wrapper interno .gw-carousel */
-  .gw-carousel{
-    flex-direction: column;
-  }
-
+@media (max-width: 640px){
   .gw-rail{
-    flex: 0 0 auto;
+    flex: 0 0 100%;
     max-width: 100%;
-    width: 100%;
-    scroll-snap-align: unset;
+    scroll-snap-align: start;
   }
 }
+
 /* locandina */
 .gw-thumb{
   flex: 0 0 auto;
@@ -1388,6 +1373,7 @@ body {
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
 
 
