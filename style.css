@@ -1218,6 +1218,12 @@ body {
   margin: 0;
   line-heigth: 1.1;
 }
+/* Fix: azzera i margini default degli heading dentro l’header del blocco */
+.gw-block-head h1,
+.gw-block-head h2,
+.gw-block-head h3{
+  margin: 0;
+}
 
 /* ---------- CAROUSEL (A e B identici) ---------- */
 .gw-carousel-wrap{
@@ -1382,6 +1388,7 @@ body {
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
 
 
