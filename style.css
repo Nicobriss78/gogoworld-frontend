@@ -1260,12 +1260,19 @@ body {
   overflow: hidden;
 }
 @media (max-width: 640px){
+  .gw-carousel-wrap{
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
   .gw-rail{
-    flex: 0 0 100%;
-    max-width: 100%;
+    flex: 0 0 calc(100% - 16px);
+    max-width: calc(100% - 16px);
     scroll-snap-align: start;
+    box-sizing: border-box;
   }
 }
+
 
 /* locandina */
 .gw-thumb{
@@ -1373,6 +1380,7 @@ body {
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
 
 
