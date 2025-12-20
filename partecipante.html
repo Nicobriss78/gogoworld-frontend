@@ -72,8 +72,6 @@
     </div>
 
     <!-- Banner inline (lo lasciamo vivo) -->
-    <section id="banner-events-inline" class="banner-slot" style="margin:8px 0;"></section>
-
 <div id="allEventsList" class="gw-carousel-wrap"></div>
 <div class="gw-scrollrail" data-rail-for="allEventsList">
   <div class="gw-scrollthumb"></div>
@@ -208,80 +206,23 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
   <script type="module" src="js/partecipante.js"></script>
-  <script>
-    // Listener globale per retry API (503/502/504)
-    window.addEventListener("api:status", (e) => {
-      const { phase, attempt, status } = e.detail || {};
-      if (phase === "retry") {
-        try {
-          showAlert(`⏳ Server in riattivazione… (tentativo ${attempt})`, "info", { autoHideMs: 1500 });
-        } catch {
-          console.info("Server in riattivazione… tentativo", attempt, "status", status);
-        }
-      }
-    });
-    // ------------------------------------------------------------
-    // B1/2 — Banner widget (placement: events_list_inline)
-    // ------------------------------------------------------------
-    (function () {
-      let lastId = null;
-     function getApiBase() {
-     if (window.API_BASE && typeof window.API_BASE === "string") return window.API_BASE;
-     return "/api";
-     }
+<script>
+  // Listener globale per messaggi di stato API (lo teniamo)
+  window.addEventListener("api:status", (e) => {
+    const { phase, attempt, status } = (e && e.detail) || {};
+    if (phase === "retry") {
+      try {
+        showAlert(`⏳ Server in riattivazione… (tentativo ${attempt})`, "info", { autoHideMs: 1500 });
+      } catch {}
+      console.info("Server in riattivazione… tentativo", attempt, "status", status);
+    }
+  });
+</script>
 
-
-      async function loadBanner(placement, mountId, area) {
-        try {
-          const api = getApiBase();
-          const params = new URLSearchParams({ placement });
-          if (area && area.country) params.append("country", area.country);
-          if (area && area.region) params.append("region", area.region);
-
-         const res = await fetch(`${api}/banners/active?` + params.toString() + `&_=${Date.now()}`, { method: "GET", cache: "no-store" });
-         const mount = document.getElementById(mountId);
-         if (res.status === 204) {
-         if (mount) mount.innerHTML = "";
-         lastId = null;
-         return;
-         }
-         const json = await res.json().catch(() => null);
-         if (!json || !json.ok || !json.data) {
-         if (mount) mount.innerHTML = "";
-         lastId = null;
-         return;
-         }
-
-         const b = json.data;
-         if (!mount) return;
-         const clickHref = `${api}/banners/${encodeURIComponent(b.id)}/click?redirect=1`;
-         if (lastId === b.id) return;
-         lastId = b.id;
-         mount.innerHTML = `
-         <a href="${clickHref}" class="banner-card" rel="nofollow noopener" style="display:block;text-decoration:none;">
-         <img src="${b.imageUrl}" alt="${b.title}" style="width:100%;height:auto;display:block;border-radius:8px;" />
-         <span class="banner-label" style="display:block;margin-top:6px;font-size:.9rem;color:#555;">${b.title}</span>
-         </a>
-         `;
-
-        } catch (err) {
-          console.warn("[banner] events_list_inline load error:", err);
-        }
-      }
-
-document.addEventListener("DOMContentLoaded", () => {
-const area = { country: "IT" };
-loadBanner("events_list_inline", "banner-events-inline", area);
-// ruota ogni 30s chiedendo al server l’active corrente
-setInterval(() => loadBanner("events_list_inline", "banner-events-inline", area), 30000);
-});
-})();
-
-
-  </script>
   <!-- Badge Messaggi/Room -->
 <script type="module" src="js/notifications.js"></script>
 </body>
 </html>
+
 
 
