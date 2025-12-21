@@ -1029,6 +1029,40 @@ if (cluster && map && Array.isArray(res?.events)) {
   }
 }
 
+// --- Banner inline (come card nel carosello "Eventi generali") ---
+const BANNER_PLACEMENT_EVENTS_INLINE = "events_list_inline";
+
+const renderBannerCard = (b) => {
+  const id = String(b?.id || b?._id || "");
+  const title = b?.title || "Promozione";
+  const img = b?.imageUrl || b?.image || "";
+  const type = String(b?.type || "").toUpperCase();
+  const kicker =
+    type === "SPONSOR" ? "Sponsor" :
+    type === "HOUSE" ? "Comunicazione" :
+    "Promo";
+
+  // click tracking + redirect server-side
+  const clickHref = id
+    ? `/api/banners/${encodeURIComponent(id)}/click?redirect=1`
+    : (b?.targetUrl || "#");
+
+  const bgStyle = img ? ` style="background-image:url('${img}');"` : "";
+
+  return `
+    <article class="gw-rail event-card gw-banner-card" data-banner-id="${id}">
+      <a class="gw-banner-link" href="${clickHref}" aria-label="${title}">
+        <div class="gw-thumb"${bgStyle}></div>
+        <div class="content">
+          <div class="meta" style="margin-top:0;">
+            <span><strong>${kicker}</strong></span>
+          </div>
+          <h3 class="title">${title}</h3>
+        </div>
+      </a>
+    </article>
+  `;
+};
 
 
 // >>> UI v2: rendering card per Home (carosello orizzontale)
@@ -1095,10 +1129,48 @@ return `
   `;
 };
 
- // Popola lista "tutti" (ordinata)
- allList.innerHTML = notJoinedSorted.length
- ? notJoinedSorted.map(ev => renderCard(ev, false)).join("")
- : "<p>Nessun evento disponibile.</p>";
+// Popola lista "tutti" (ordinata) + banner inline dopo la prima card
+let bannerItem = null;
+
+try {
+  const qsB = new URLSearchParams();
+  qsB.set("placement", BANNER_PLACEMENT_EVENTS_INLINE);
+
+  const country = (filters && typeof filters === "object" && filters.country) ? String(filters.country) : "";
+  const region =
+    (filters && typeof filters === "object" && (filters.region || filters.regionSel))
+      ? String(filters.region || filters.regionSel)
+      : "";
+
+  if (country) qsB.set("country", country);
+  if (region) qsB.set("region", region);
+
+  const br = await apiGet(`/banners/active?${qsB.toString()}`, token);
+
+  // apiGet con 204 torna ok:true, status:204 e data:"" → lo ignoriamo
+  if (br?.ok && br.status !== 204 && br?.data) {
+    bannerItem = { __kind: "banner", ...(br.data || {}) };
+  }
+} catch {
+  // silenzioso: se banner fallisce, non deve rompere la lista eventi
+}
+
+const allItems = [...notJoinedSorted];
+
+if (bannerItem) {
+  // Inserisci dopo la prima card (index 1), oppure come prima se lista vuota
+  const insertAt = allItems.length >= 1 ? 1 : 0;
+  allItems.splice(insertAt, 0, bannerItem);
+}
+
+const renderRailItem = (item, includeLeave) => {
+  if (item && item.__kind === "banner") return renderBannerCard(item);
+  return renderCard(item, includeLeave);
+};
+
+allList.innerHTML = allItems.length
+  ? allItems.map(it => renderRailItem(it, false)).join("")
+  : "<p>Nessun evento disponibile.</p>";
  
  // Popola lista "Eventi delle persone che segui"
  if (followingList) {
@@ -1357,6 +1429,7 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
 
