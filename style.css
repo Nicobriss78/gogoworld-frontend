@@ -1013,7 +1013,7 @@ body {
   --gw-radius: 16px;
 
   /* altezze coerenti con opzione A */
-  --gw-topbar-h: 96px; /* topbar a 2 righe */
+  --gw-topbar-h: 88px; /* topbar a 2 righe */
   --gw-bottomnav-h: 44px; /* bottomnav fissa */
   --gw-gap: 6px;
 }
@@ -1040,7 +1040,10 @@ body {
   padding: 10px 14px;
 }
 .gw-topbar-row--title{ padding-bottom: 6px; }
-.gw-topbar-row--actions{ gap: 8px; }
+.gw-topbar-row--actions{
+  gap: 8px;
+  padding: 6px 14px; /* prima era ereditato 10px 14px */
+}
 
 .gw-greeting{ display:flex; flex-direction:column; gap:2px; }
 .gw-hello{ font-size:14px; color: var(--gw-muted); line-height: 1.1; }
@@ -1062,10 +1065,17 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 .gw-iconbtn:active{ transform: scale(.98); }
+/* Topbar row 2: icone un filo più piccole */
+.gw-topbar-row--actions .gw-iconbtn{
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
 /* ---------- HAMBURGER MENU (DROPDOWN) ---------- */
 .gw-menu{
   position: fixed;
-  top: calc(env(safe-area-inset-top) + 86px);
+  top: calc(env(safe-area-inset-top) + 78px);
   right: 14px;
   z-index: 2000;
 
@@ -1410,6 +1420,7 @@ body {
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
 
 
