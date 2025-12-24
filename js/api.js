@@ -131,6 +131,33 @@ export async function getMyProfile(token) {
 export async function updateMyProfile(body = {}, token) {
   return apiPut("/profile/me", body, token ?? getToken());
 }
+// === Banner pubblici (batch) ===
+/**
+ * Recupera un batch di banner attivi per placement/area.
+ * @param {Object} opts
+ * @param {string} opts.placement - es. "events_list_inline"
+ * @param {string|null} opts.country - ISO2 (es. "IT"), opzionale
+ * @param {string|null} opts.region - es. "Basilicata", opzionale
+ * @param {number} opts.limit - dimensione batch (default 8)
+ */
+export async function getActiveBannersBatch(
+  { placement, country = null, region = null, limit = 8 } = {},
+  token
+) {
+  if (!placement) {
+    return { ok: false, error: "NO_PLACEMENT" };
+  }
+
+  const q = [];
+  q.push(`placement=${encodeURIComponent(placement)}`);
+  if (country) q.push(`country=${encodeURIComponent(country)}`);
+  if (region) q.push(`region=${encodeURIComponent(region)}`);
+  if (limit) q.push(`limit=${encodeURIComponent(limit)}`);
+
+  const qs = q.length ? `?${q.join("&")}` : "";
+  return apiGet(`/banners/active-batch${qs}`, token ?? getToken());
+}
+
 export async function getPublicProfile(userId) {
   return apiGet(`/profile/${userId}`);
 }
