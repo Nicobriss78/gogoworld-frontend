@@ -1,7 +1,7 @@
 // frontend/js/home-banners.js
 import { apiGet } from "./api.js";
 
-export const BANNER_PLACEMENT_EVENTS_INLINE = "events_inline";
+export const BANNER_PLACEMENT_EVENTS_INLINE = "events_list_inline";
 
 /**
  * Restituisce un item banner nel formato:
