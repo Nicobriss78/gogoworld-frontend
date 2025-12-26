@@ -4,67 +4,57 @@ import { apiGet } from "./api.js";
 export const BANNER_PLACEMENT_EVENTS_INLINE = "events_inline";
 
 /**
- * Ritorna HTML card banner.
- * Manteniamo tracking click server-side (POST /banners/:id/click) come nel codice attuale.
+ * Restituisce un item banner nel formato:
+ * { __kind: "banner", ...data }
+ * oppure null se non disponibile.
+ *
+ * Mantiene la tua logica:
+ * - usa filters.country e (filters.region || filters.regionSel)
+ * - apiGet può tornare ok:true, status:204, data:"" => ignorare
  */
-export function renderBannerCard(b) {
-  if (!b) return "";
-  const title = b.title || "Sponsor";
-  const subtitle = b.subtitle || "";
-  const cta = b.ctaText || "Scopri";
-  const id = b._id || "";
+export async function fetchInlineBannerItem(filters, token) {
+  let bannerItem = null;
 
-  return `
-    <article class="gw-rail gw-banner" data-kind="banner" data-banner-id="${id}">
-      <div class="gw-card-scroll">
-        <div class="gw-thumb"></div>
-        <div class="content">
-          <h3 class="title">${title}</h3>
-          ${subtitle ? `<div class="meta"><span>${subtitle}</span></div>` : ""}
-          <div class="meta" style="margin-top:8px;">
-            <button class="btn" type="button" data-action="banner-click" data-banner-id="${id}">${cta}</button>
-          </div>
-        </div>
-      </div>
-    </article>
-  `;
+  try {
+    const qsB = new URLSearchParams();
+    qsB.set("placement", BANNER_PLACEMENT_EVENTS_INLINE);
+
+    const country =
+      (filters && typeof filters === "object" && filters.country) ? String(filters.country) : "";
+
+    const region =
+      (filters && typeof filters === "object" && (filters.region || filters.regionSel))
+        ? String(filters.region || filters.regionSel)
+        : "";
+
+    if (country) qsB.set("country", country);
+    if (region) qsB.set("region", region);
+
+    const br = await apiGet(`/banners/active?${qsB.toString()}`, token);
+
+    // apiGet con 204 torna ok:true, status:204 e data:"" → lo ignoriamo
+    if (br?.ok && br.status !== 204 && br?.data) {
+      bannerItem = { __kind: "banner", ...(br.data || {}) };
+    }
+  } catch {
+    // silenzioso: se banner fallisce, non deve rompere la lista eventi
+  }
+
+  return bannerItem;
 }
 
 /**
- * Applica la logica attuale:
- * - prende 1 banner "active" per placement
- * - targeting country/region
- * - lo inserisce DOPO la prima card (se c'è almeno 1 evento)
- * Ritorna una lista items dove items può includere {__kind:'banner', ...}.
+ * Inserisce il banner dopo la prima card (index 1), oppure come prima se lista vuota.
+ * Ritorna un NUOVO array (non muta quello originale).
  */
-export async function applyInlineBanner({ events, country, region }) {
-  const base = Array.isArray(events) ? events : [];
-  if (base.length === 0) return base;
+export function injectInlineBanner(notJoinedSorted, bannerItem) {
+  const allItems = Array.isArray(notJoinedSorted) ? [...notJoinedSorted] : [];
 
-  // fetch banner attivo (logica attuale semplice)
-  const qs = new URLSearchParams({
-    placement: BANNER_PLACEMENT_EVENTS_INLINE,
-    country: country || "",
-    region: region || "",
-    __ts: String(Date.now()),
-  });
-
-  let bannerItem = null;
-  try {
-    const r = await apiGet(`/banners/active?${qs.toString()}`);
-    if (r?.ok && r?.banner) {
-      bannerItem = { __kind: "banner", ...r.banner };
-    }
-  } catch {
-    // silenzioso: se fallisce, niente banner
+  if (bannerItem) {
+    const insertAt = allItems.length >= 1 ? 1 : 0;
+    allItems.splice(insertAt, 0, bannerItem);
   }
 
-  if (!bannerItem) return base;
-
-  // injection dopo la prima card
-  const out = [];
-  out.push(base[0]);
-  out.push(bannerItem);
-  for (let i = 1; i < base.length; i++) out.push(base[i]);
-  return out;
+  return allItems;
 }
+
