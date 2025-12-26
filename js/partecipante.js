@@ -10,6 +10,7 @@ import { apiGet, apiPost, getMyProfile } from "./api.js";
 import { getRoomsUnreadCount } from "./api.js";
 import { sortEventsForParticipant } from "./core/event-sorting.js";
 import { renderEventCard } from "./home-cards.js";
+import { applyInlineBanner, renderBannerCard } from "./home-banners.js";
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -1341,6 +1342,7 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
 
