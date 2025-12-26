@@ -24,7 +24,8 @@ export function getStartTime(ev) {
  * 2) startDate ascending
  */
 export function sortEventsForParticipant(events) {
-  return [...(events || [])].sort((a, b) => {
+  const arr = Array.isArray(events) ? events : [];
+  return [...arr].sort((a, b) => {
     const pa = getStatusPriority(a?.status);
     const pb = getStatusPriority(b?.status);
     if (pa !== pb) return pa - pb;
