@@ -9,6 +9,7 @@
 import { apiGet, apiPost, getMyProfile } from "./api.js";
 import { getRoomsUnreadCount } from "./api.js";
 import { sortEventsForParticipant } from "./core/event-sorting.js";
+import { renderEventCard } from "./home-cards.js";
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -1039,68 +1040,6 @@ const renderBannerCard = (b) => {
 
 
 // >>> UI v2: rendering card per Home (carosello orizzontale)
-const renderCard = (ev, includeLeave) => {
-  const rawStatus = String(ev?.status || "").toLowerCase();
-
-  const priceStr = ev?.isFree
-    ? "Gratuito"
-    : (ev?.price != null ? `${ev.price} ${ev.currency || "EUR"}` : "-");
-
-  const whereLine =
-    `${ev.city || ""}` +
-    `${ev.region ? " • " + ev.region : ""}` +
-    `${ev.country ? " • " + ev.country : ""}`;
-
-  const when = formatEventDate(ev);
-
-  const canJoin = rawStatus === "future" || rawStatus === "imminent" || rawStatus === "ongoing";
-  const isConcluded = rawStatus === "concluded";
-  const isPast = rawStatus === "past";
-
-// Azioni: in card lasciamo SOLO un’icona "Info" (Dettagli)
-  // Partecipa/Annulla vive nella pagina dettaglio evento (evento.html)
-  const infoHtml = `
-    <button class="gw-info-btn"
-      type="button"
-      title="Dettagli evento"
-      aria-label="Dettagli evento"
-      data-id="${ev._id}"
-      data-action="details">ℹ️</button>
-  `;
-
-
-  // UI v2: gw-rail + gw-thumb + content/title/meta/actions
-return `
-    <article class="gw-rail event-card" data-status="${rawStatus}" data-event-id="${ev._id}">
-      ${infoHtml}
-
-      <div class="gw-card-scroll">
-        <div class="gw-thumb"></div>
-
-        <div class="content">
-          <h3 class="title">${ev.title || "(Senza titolo)"}</h3>
-          ${renderStatus(ev.status)}
-          <div class="meta">
-            ${whereLine ? `<span>${whereLine}</span>` : ""}
-            ${when ? `<span>${when}</span>` : ""}
-          </div>
-
-          <div class="meta" style="margin-top:6px;">
-            <span><strong>Categoria:</strong> ${ev.category || ""}${ev.subcategory ? " • " + ev.subcategory : ""}</span>
-          </div>
-
-          <div class="meta" style="margin-top:4px;">
-            <span><strong>Lingua/Target:</strong> ${ev.language || ""}${ev.target ? " • " + ev.target : ""}</span>
-          </div>
-
-          <div class="meta" style="margin-top:4px;">
-            <span><strong>Prezzo:</strong> ${priceStr}</span>
-          </div>
-        </div>
-      </div>
-    </article>
-  `;
-};
 
 // Popola lista "tutti" (ordinata) + banner inline dopo la prima card
 let bannerItem = null;
@@ -1138,7 +1077,7 @@ if (bannerItem) {
 
 const renderRailItem = (item, includeLeave) => {
   if (item && item.__kind === "banner") return renderBannerCard(item);
-  return renderCard(item, includeLeave);
+return renderEventCard(item, includeLeave);
 };
 
 allList.innerHTML = allItems.length
@@ -1148,13 +1087,13 @@ allList.innerHTML = allItems.length
  // Popola lista "Eventi delle persone che segui"
  if (followingList) {
  followingList.innerHTML = followingSorted.length
- ? followingSorted.map(ev => renderCard(ev, false)).join("")
+ ? followingSorted.map(ev => renderEventCard(ev, false)).join("")
  : "<p>Nessun evento dai tuoi seguiti.</p>";
  }
  
  // Popola lista "a cui partecipo" (ordinata)
  myList.innerHTML = joinedSorted.length
- ? joinedSorted.map(ev => renderCard(ev, true)).join("")
+ ? joinedSorted.map(ev => renderEventCard(ev, true)).join("")
  : "<p>Nessun evento a cui partecipi.</p>";
 
       // C1.1 — Auto-focus solo al primo caricamento, senza filtri e se l'utente non ha già scrollato
@@ -1402,6 +1341,7 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
 
