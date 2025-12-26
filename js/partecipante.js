@@ -11,6 +11,7 @@ import { getRoomsUnreadCount } from "./api.js";
 import { sortEventsForParticipant } from "./core/event-sorting.js";
 import { renderEventCard } from "./home-cards.js";
 import { applyInlineBanner, renderBannerCard } from "./home-banners.js";
+import { fetchInlineBannerItem, injectInlineBanner } from "./home-banners.js";
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -1043,42 +1044,12 @@ const renderBannerCard = (b) => {
 // >>> UI v2: rendering card per Home (carosello orizzontale)
 
 // Popola lista "tutti" (ordinata) + banner inline dopo la prima card
-let bannerItem = null;
-
-try {
-  const qsB = new URLSearchParams();
-  qsB.set("placement", BANNER_PLACEMENT_EVENTS_INLINE);
-
-  const country = (filters && typeof filters === "object" && filters.country) ? String(filters.country) : "";
-  const region =
-    (filters && typeof filters === "object" && (filters.region || filters.regionSel))
-      ? String(filters.region || filters.regionSel)
-      : "";
-
-  if (country) qsB.set("country", country);
-  if (region) qsB.set("region", region);
-
-  const br = await apiGet(`/banners/active?${qsB.toString()}`, token);
-
-  // apiGet con 204 torna ok:true, status:204 e data:"" → lo ignoriamo
-  if (br?.ok && br.status !== 204 && br?.data) {
-    bannerItem = { __kind: "banner", ...(br.data || {}) };
-  }
-} catch {
-  // silenzioso: se banner fallisce, non deve rompere la lista eventi
-}
-
-const allItems = [...notJoinedSorted];
-
-if (bannerItem) {
-  // Inserisci dopo la prima card (index 1), oppure come prima se lista vuota
-  const insertAt = allItems.length >= 1 ? 1 : 0;
-  allItems.splice(insertAt, 0, bannerItem);
-}
+const bannerItem = await fetchInlineBannerItem(filters, token);
+const allItems = injectInlineBanner(notJoinedSorted, bannerItem);
 
 const renderRailItem = (item, includeLeave) => {
   if (item && item.__kind === "banner") return renderBannerCard(item);
-return renderEventCard(item, includeLeave);
+  return renderEventCard(item, includeLeave);
 };
 
 allList.innerHTML = allItems.length
@@ -1342,6 +1313,7 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
 
