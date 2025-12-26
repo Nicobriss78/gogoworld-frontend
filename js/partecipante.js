@@ -8,6 +8,7 @@
 
 import { apiGet, apiPost, getMyProfile } from "./api.js";
 import { getRoomsUnreadCount } from "./api.js";
+import { sortEventsForParticipant } from "./core/event-sorting.js";
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -925,35 +926,7 @@ function setupScrollRails() {
       });
       // C1.1 — Ordinamento eventi per partecipante:
       // future → imminent → ongoing → concluded → past, con data di inizio crescente
-      const statusPriority = {
-        future: 1,
-        imminent: 2,
-        ongoing: 3,
-        concluded: 4,
-        past: 5
-      };
 
-      function getStatusPriority(ev) {
-        const s = String(ev?.status || "").toLowerCase();
-        return statusPriority[s] || 99;
-      }
-
-      function getStartTime(ev) {
-        // Usiamo gli stessi campi della formatEventDate, ma in forma timestamp
-        const raw = ev?.dateStart || ev?.date || ev?.startDate;
-        if (!raw) return Number.POSITIVE_INFINITY;
-        const t = new Date(raw).getTime();
-        return Number.isFinite(t) ? t : Number.POSITIVE_INFINITY;
-      }
-
-      function sortEventsForParticipant(a, b) {
-        const pa = getStatusPriority(a);
-        const pb = getStatusPriority(b);
-        if (pa !== pb) return pa - pb;
-        const ta = getStartTime(a);
-        const tb = getStartTime(b);
-        return ta - tb;
-      }
 
  const notJoinedSorted = Array.isArray(notJoined)
  ? [...notJoined].sort(sortEventsForParticipant)
@@ -1429,6 +1402,7 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
 
