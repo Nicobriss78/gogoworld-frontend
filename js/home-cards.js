@@ -38,14 +38,16 @@ function renderStatus(status) {
 export const renderEventCard = (ev, includeLeave) => {
   const rawStatus = String(ev?.status || "").toLowerCase();
 // Immagine cover evento (supporto robusto a più nomi campo)
-  const coverUrl =
-    ev?.imageUrl ||
-    ev?.coverUrl ||
-    ev?.cover ||
-    ev?.image ||
-    ev?.thumbUrl ||
-    ev?.thumbnailUrl ||
-    "";
+const coverUrl =
+  ev?.coverImage ||
+  (Array.isArray(ev?.images) && ev.images[0]) ||
+  ev?.imageUrl ||
+  ev?.coverUrl ||
+  ev?.cover ||
+  ev?.image ||
+  ev?.thumbUrl ||
+  ev?.thumbnailUrl ||
+  "";
 
   const thumbStyle = coverUrl
     ? `style="background-image:url('${coverUrl}'); background-size:cover; background-position:center;"`
