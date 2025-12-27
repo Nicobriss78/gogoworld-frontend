@@ -883,7 +883,41 @@ function setupScrollRails() {
 // --- MAPPA: aggiorna marker su cluster (map.js) ---
 participantMap.updateFromEvents(res?.events || []);
 // >>> UI v2: rendering card per Home (carosello orizzontale)
+// --- Banner: rendering card (inline) ---
+const renderBannerCard = (b) => {
+  const id = String(b?.id || b?._id || "");
+  const title = b?.title || "Promozione";
+  const img = b?.imageUrl || b?.image || "";
+  const type = String(b?.type || "").toUpperCase();
 
+  const kicker =
+    type === "SPONSOR" ? "Sponsor" :
+    type === "HOUSE" ? "Comunicazione" :
+    "Promo";
+
+  // Se hai un endpoint click con redirect, ok. Altrimenti usa targetUrl
+  const clickHref = id
+    ? `/api/banners/${encodeURIComponent(id)}/click?redirect=1`
+    : (b?.targetUrl || "#");
+
+  const bgStyle = img
+    ? ` style="background-image:url('${img}'); background-size:cover; background-position:center;"`
+    : "";
+
+  return `
+    <article class="gw-rail event-card gw-banner-card" data-banner-id="${id}">
+      <a class="gw-banner-link" href="${clickHref}" aria-label="${title}">
+        <div class="gw-thumb"${bgStyle}></div>
+        <div class="content">
+          <div class="meta" style="margin-top:0;">
+            <span><strong>${kicker}</strong></span>
+          </div>
+          <h3 class="title">${title}</h3>
+        </div>
+      </a>
+    </article>
+  `;
+};
 // Popola lista "tutti" (ordinata) + SLOT banner (dopo prima card, poi ogni 2)
 const allItems = injectBannerSlots(notJoinedSorted);
 
@@ -1152,6 +1186,7 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
 
