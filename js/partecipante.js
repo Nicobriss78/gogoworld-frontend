@@ -10,8 +10,11 @@ import { apiGet, apiPost, getMyProfile } from "./api.js";
 import { getRoomsUnreadCount } from "./api.js";
 import { sortEventsForParticipant } from "./core/event-sorting.js";
 import { renderEventCard } from "./home-cards.js";
-import { fetchInlineBannerItem, injectInlineBanner } from "./home-banners.js";
-
+import {
+  injectBannerSlots,
+  renderBannerSlotHTML,
+  activateHomeBannerSlots
+} from "./home-banners.js";
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
   const { autoHideMs = 0 } = opts;
@@ -1042,18 +1045,28 @@ const renderBannerCard = (b) => {
 
 // >>> UI v2: rendering card per Home (carosello orizzontale)
 
-// Popola lista "tutti" (ordinata) + banner inline dopo la prima card
-const bannerItem = await fetchInlineBannerItem(filters, token);
-const allItems = injectInlineBanner(notJoinedSorted, bannerItem);
+// Popola lista "tutti" (ordinata) + SLOT banner (dopo prima card, poi ogni 2)
+const allItems = injectBannerSlots(notJoinedSorted);
 
 const renderRailItem = (item, includeLeave) => {
-  if (item && item.__kind === "banner") return renderBannerCard(item);
+  if (item && item.__kind === "banner-slot") return renderBannerSlotHTML();
+  if (item && item.__kind === "banner") return renderBannerCard(item); // fallback/compat
   return renderEventCard(item, includeLeave);
 };
 
 allList.innerHTML = allItems.length
   ? allItems.map(it => renderRailItem(it, false)).join("")
   : "<p>Nessun evento disponibile.</p>";
+
+// Attiva rotazione banner SOLO se lo slot è visibile (IntersectionObserver)
+activateHomeBannerSlots({
+  container: allList,
+  country: (me?.country || ""),
+  region: (me?.region || ""),
+  token,
+  renderBannerCard
+});
+
  
  // Popola lista "Eventi delle persone che segui"
  if (followingList) {
@@ -1312,6 +1325,7 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
 
