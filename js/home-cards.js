@@ -37,6 +37,19 @@ function renderStatus(status) {
 // >>> UI v2: rendering card per Home (carosello orizzontale)
 export const renderEventCard = (ev, includeLeave) => {
   const rawStatus = String(ev?.status || "").toLowerCase();
+// Immagine cover evento (supporto robusto a più nomi campo)
+  const coverUrl =
+    ev?.imageUrl ||
+    ev?.coverUrl ||
+    ev?.cover ||
+    ev?.image ||
+    ev?.thumbUrl ||
+    ev?.thumbnailUrl ||
+    "";
+
+  const thumbStyle = coverUrl
+    ? `style="background-image:url('${coverUrl}'); background-size:cover; background-position:center;"`
+    : "";
 
   const priceStr = ev?.isFree
     ? "Gratuito"
@@ -64,7 +77,7 @@ export const renderEventCard = (ev, includeLeave) => {
       ${infoHtml}
 
       <div class="gw-card-scroll">
-        <div class="gw-thumb"></div>
+<div class="gw-thumb" ${thumbStyle}></div>
 
         <div class="content">
           <h3 class="title">${ev.title || "(Senza titolo)"}</h3>
