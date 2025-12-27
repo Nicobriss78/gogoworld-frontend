@@ -454,6 +454,10 @@ function getGeoUiState() {
  let privateEvents = [];
  // Elenco ID utenti che seguo (riempito da /users/me)
  let followingIds = new Set();
+ // >>> Profilo normalizzato (usato da più funzioni, evita doppie chiamate /users/me)
+ let myUserId = null;
+ let meCountry = "";
+ let meRegion = "";
 
 
   function loadPrivateIds() {
@@ -625,6 +629,9 @@ participantMap.addPrivateEventsIfMissing(privateEvents);
 // 👉 Home v2: usa SOLO la topbar (niente "welcomeMsg" legacy in pagina)
   try {
     const me = await apiGet("/users/me", token);
+     myUserId = me?._id || me?.user?._id || null;
+     meCountry = (me?.country || me?.user?.country || "");
+     meRegion = (me?.region || me?.user?.region || "");
 
     const name =
       me?.name ||
@@ -647,11 +654,11 @@ participantMap.addPrivateEventsIfMissing(privateEvents);
       topStatus.textContent = statusLabel || "Partecipante";
     }
 
-    // >>> CHIAVE PER-UTENTE per eventi privati
-    const myUserId = me?._id || me?.user?._id || null;
-    if (myUserId) {
-      PRIVATE_LS_KEY = `gogo_private_event_ids_${myUserId}`;
-    }
+// >>> CHIAVE PER-UTENTE per eventi privati
+if (myUserId) {
+  PRIVATE_LS_KEY = `gogo_private_event_ids_${myUserId}`;
+}
+
 
     // >>> Elenco utenti che seguo (per lista eventi dei seguiti)
     const rawFollowing = me?.following || me?.user?.following || [];
@@ -800,8 +807,7 @@ function setupScrollRails() {
       if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
 
       // Recupera anche i miei per marcare join/leave
-      const me = await apiGet("/users/me", token);
-      const myId = me?._id;
+      const myId = myUserId;
       const joinedIds = new Set();
       if (Array.isArray(res?.events)) {
         for (const ev of res.events) {
@@ -934,8 +940,8 @@ allList.innerHTML = allItems.length
 // Attiva rotazione banner SOLO se lo slot è visibile (IntersectionObserver)
 activateHomeBannerSlots({
   container: allList,
-  country: (me?.country || ""),
-  region: (me?.region || ""),
+  country: meCountry,
+  region: meRegion,
   token,
   renderBannerCard
 });
@@ -1186,6 +1192,7 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
 
