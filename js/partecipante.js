@@ -797,8 +797,11 @@ function setupScrollRails() {
 }
 
   async function loadEvents(filters = {}) {
-  allList.innerHTML = `<article class="gw-rail"><div class="gw-thumb"></div><div class="content"><h3 class="title">Caricamento…</h3><div class="meta"><span>Sto recuperando gli eventi</span></div></div></article>`;
-    myList.innerHTML = "";
+if (allList) {
+  allList.innerHTML = `<article class="gw-rail"><div class="...><span>Sto recuperando gli eventi</span></div></div></article>`;
+}
+if (myList) myList.innerHTML = "";
+
 
     try {
     const qs = new URLSearchParams(filters);
@@ -923,28 +926,30 @@ const renderBannerCard = (b) => {
       </a>
     </article>
   `;
-};
+};      
 // Popola lista "tutti" (ordinata) + SLOT banner (dopo prima card, poi ogni 2)
-const allItems = injectBannerSlots(notJoinedSorted);
+if (allList) {
+  const allItems = injectBannerSlots(notJoinedSorted);
 
-const renderRailItem = (item, includeLeave) => {
-  if (item && item.__kind === "banner-slot") return renderBannerSlotHTML();
-  if (item && item.__kind === "banner") return renderBannerCard(item); // fallback/compat
-  return renderEventCard(item, includeLeave);
-};
+  const renderRailItem = (item, includeLeave) => {
+    if (item && item.__kind === "banner-slot") return renderBannerSlotHTML();
+    if (item && item.__kind === "banner") return renderBannerCard(item); // fallback/compat
+    return renderEventCard(item, includeLeave);
+  };
 
-allList.innerHTML = allItems.length
-  ? allItems.map(it => renderRailItem(it, false)).join("")
-  : "<p>Nessun evento disponibile.</p>";
+  allList.innerHTML = allItems.length
+    ? allItems.map(it => renderRailItem(it, false)).join("")
+    : "<p>Nessun evento disponibile.</p>";
 
-// Attiva rotazione banner SOLO se lo slot è visibile (IntersectionObserver)
-activateHomeBannerSlots({
-  container: allList,
-  country: meCountry,
-  region: meRegion,
-  token,
-  renderBannerCard
-});
+  // Attiva rotazione banner SOLO se lo slot è visibile (IntersectionObserver)
+  activateHomeBannerSlots({
+    container: allList,
+    country: meCountry,
+    region: meRegion,
+    token,
+    renderBannerCard
+  });
+}
 
  
  // Popola lista "Eventi delle persone che segui"
@@ -954,10 +959,12 @@ activateHomeBannerSlots({
  : "<p>Nessun evento dai tuoi seguiti.</p>";
  }
  
- // Popola lista "a cui partecipo" (ordinata)
- myList.innerHTML = joinedSorted.length
- ? joinedSorted.map(ev => renderEventCard(ev, true)).join("")
- : "<p>Nessun evento a cui partecipi.</p>";
+// Popola lista "a cui partecipo" (ordinata)
+if (myList) {
+  myList.innerHTML = joinedSorted.length
+    ? joinedSorted.map(ev => renderEventCard(ev, true)).join("")
+    : "<p>Nessun evento a cui partecipi.</p>";
+}
 
       // C1.1 — Auto-focus solo al primo caricamento, senza filtri e se l'utente non ha già scrollato
       const noFilters =
@@ -1192,6 +1199,7 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
 
