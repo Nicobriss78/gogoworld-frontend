@@ -15,6 +15,8 @@ import {
   renderBannerSlotHTML,
   activateHomeBannerSlots
 } from "./home-banners.js";
+import { createParticipantMap } from "./map.js";
+
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
   const { autoHideMs = 0 } = opts;
@@ -531,15 +533,8 @@ function getGeoUiState() {
     privateEvents = results;
     savePrivateIds(privateEvents.map((ev) => ev._id));
     renderPrivateList();
-    // Aggiunge in mappa anche gli eventi privati sbloccati (se hanno coordinate)
-    if (cluster && map && Array.isArray(privateEvents)) {
-      for (const ev of privateEvents) {
-        if (!ev?._id) continue;
-        // se esiste già un marker (es. evento ora reso pubblico) non lo duplico
-        if (markersById[ev._id]) continue;
-        addMapMarkerForEvent(ev);
-      }
-    }
+// Aggiunge in mappa anche gli eventi privati sbloccati (se hanno coordinate)
+participantMap.addPrivateEventsIfMissing(privateEvents);
 
   }
 
@@ -676,112 +671,11 @@ function getGeoUiState() {
 
   // >>> PATCH: popola tendine filtri
   populateFilterOptions();
-// --- MAPPA: init Leaflet + MarkerCluster (se presente #map e libreria L) ---
-const mapEl = document.getElementById("map");
-let map, cluster;
-// B2.2 — mappa: dizionario per trovare il marker a partire dall'ID evento
-let markersById = {};
-// Helper: aggiunge un marker sulla mappa per un singolo evento
-function addMapMarkerForEvent(ev) {
-  if (!cluster || !map || !ev) return null;
 
-  // stato normalizzato (future/imminent/ongoing/concluded/past)
-  const statusRaw = String(ev?.status || "").toLowerCase();
-  if (statusRaw === "past") return null; // niente marker per eventi completamente passati
-
-  // Geo: supporta sia lat/lon diretti che GeoJSON location.coordinates [lon, lat]
-  const coords = Array.isArray(ev?.location?.coordinates)
-    ? ev.location.coordinates
-    : null;
-
-  const latRaw =
-    ev?.lat ?? ev?.Lat ?? ev?.latitude ??
-    (coords ? coords[1] : undefined);
-
-  const lonRaw =
-    ev?.lon ?? ev?.lng ?? ev?.Lon ?? ev?.longitude ??
-    (coords ? coords[0] : undefined);
-
-  const lat = typeof latRaw === "string" ? parseFloat(latRaw.replace(",", ".")) : latRaw;
-  const lon = typeof lonRaw === "string" ? parseFloat(lonRaw.replace(",", ".")) : lonRaw;
-
-  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
-
-  // Colore coerente con legenda
-  let fill = "#4a90e2"; // future
-  if (statusRaw === "imminent") fill = "#f5a623";
-  else if (statusRaw === "ongoing") fill = "#d0021b";
-  else if (statusRaw === "concluded") fill = "#999999";
-
-  const m = L.circleMarker([lat, lon], {
-    radius: 10,
-    weight: 2,
-    color: "#ffffff",
-    fillColor: fill,
-    fillOpacity: 1
-  });
-
-  const when = formatEventDate(ev);
-  const title = ev?.title || "";
-  m.bindPopup(`<b>${title}</b>${when ? "<br/>" + when : ""}`);
-
-  cluster.addLayer(m);
-
-  if (ev?._id) {
-    markersById[ev._id] = m;
-  }
-
-  return m;
-}
-
-// B2.3 — helper: status evento → stringa normalizzata
-function getEventStatusForMap(ev) {
-  const raw = String(ev?.status || "").toLowerCase();
-  if (
-    raw === "future" ||
-    raw === "imminent" ||
-    raw === "ongoing" ||
-    raw === "concluded" ||
-    raw === "past"
-  ) {
-    return raw;
-  }
-
-  // Fallback minimo se manca lo status: prova a dedurre rispetto a oggi
-  try {
-    const now = Date.now();
-    const start = ev?.dateStart || ev?.date || ev?.startDate;
-    const end = ev?.dateEnd || ev?.endDate;
-    const startMs = start ? Date.parse(start) : NaN;
-    const endMs = end ? Date.parse(end) : NaN;
-
-    if (Number.isFinite(endMs) && endMs < now) return "past";
-    if (Number.isFinite(startMs) && startMs > now) return "future";
-  } catch (_) {}
-
-  return "future";
-}
-
-// (attualmente non usato, ma lo teniamo pronto)
-function buildMarkerIcon(ev) {
-  const status = getEventStatusForMap(ev);
-  const statusClass = status ? `status-${status}` : "status-unknown";
-  return L.divIcon({
-    className: `status-marker ${statusClass}`,
-    iconSize: [22, 22],
-    html: '<span class="status-marker-inner"></span>'
-  });
-}
-
-if (mapEl && window.L) {
-  map = L.map("map").setView([41.8719, 12.5674], 6); // Italia
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap contributors"
-  }).addTo(map);
-  cluster = L.markerClusterGroup();
-  map.addLayer(cluster);
-}
-
+// --- MAPPA: init (estratta in map.js) ---
+const participantMap = createParticipantMap({ mapId: "map" });
+participantMap.init();
+  
 // C1.1 — Auto-focus sugli eventi imminenti/ongoing/futuri nel CAROUSEL "Tutti gli eventi"
 function autoFocusOnRelevantEvent() {
   try {
@@ -986,63 +880,8 @@ function setupScrollRails() {
         joinedSorted = [...joinedSorted].sort(sortEventsForParticipant);
       }
 
-// --- MAPPA: aggiorna marker su cluster ---
-if (cluster && map && Array.isArray(res?.events)) {
-  cluster.clearLayers();
-  // reset mappa ID → marker
-  markersById = {};
-  const markers = [];
-
-  for (const ev of res.events) {
-    const m = addMapMarkerForEvent(ev);
-    if (m) markers.push(m);
-  }
-
-  // Adatta la vista ai marker presenti
-  if (markers.length) {
-    try {
-      const group = L.featureGroup(markers);
-      map.fitBounds(group.getBounds().pad(0.1));
-    } catch {}
-  }
-}
-
-// --- Banner inline (come card nel carosello "Eventi generali") ---
-const BANNER_PLACEMENT_EVENTS_INLINE = "events_list_inline";
-
-const renderBannerCard = (b) => {
-  const id = String(b?.id || b?._id || "");
-  const title = b?.title || "Promozione";
-  const img = b?.imageUrl || b?.image || "";
-  const type = String(b?.type || "").toUpperCase();
-  const kicker =
-    type === "SPONSOR" ? "Sponsor" :
-    type === "HOUSE" ? "Comunicazione" :
-    "Promo";
-
-  // click tracking + redirect server-side
-  const clickHref = id
-    ? `/api/banners/${encodeURIComponent(id)}/click?redirect=1`
-    : (b?.targetUrl || "#");
-
-  const bgStyle = img ? ` style="background-image:url('${img}');"` : "";
-
-  return `
-    <article class="gw-rail event-card gw-banner-card" data-banner-id="${id}">
-      <a class="gw-banner-link" href="${clickHref}" aria-label="${title}">
-        <div class="gw-thumb"${bgStyle}></div>
-        <div class="content">
-          <div class="meta" style="margin-top:0;">
-            <span><strong>${kicker}</strong></span>
-          </div>
-          <h3 class="title">${title}</h3>
-        </div>
-      </a>
-    </article>
-  `;
-};
-
-
+// --- MAPPA: aggiorna marker su cluster (map.js) ---
+participantMap.updateFromEvents(res?.events || []);
 // >>> UI v2: rendering card per Home (carosello orizzontale)
 
 // Popola lista "tutti" (ordinata) + SLOT banner (dopo prima card, poi ogni 2)
@@ -1104,26 +943,14 @@ activateHomeBannerSlots({
     const btn = e.target.closest("button[data-action]");
 
     // 🔹 Nessun bottone azione: interpretiamo il click come "focus su mappa"
-    if (!btn) {
-      const card = e.target.closest(".event-card");
-      if (card && map && markersById) {
-        const evId = card.getAttribute("data-event-id");
-        const marker = evId ? markersById[evId] : null;
-
-        if (marker && typeof marker.getLatLng === "function") {
-          const latLng = marker.getLatLng();
-          try {
-            // Zoom minimo 8, per non restare troppo lontani
-            const targetZoom = Math.max(map.getZoom() || 0, 8);
-            map.setView(latLng, targetZoom, { animate: true });
-            marker.openPopup();
-          } catch (err) {
-            console.debug("[map focus] errore centratura:", err);
-          }
-        }
-      }
-      return; // importantissimo: non proseguiamo con la logica bottoni
-    }
+if (!btn) {
+  const card = e.target.closest(".event-card");
+  if (card) {
+    const evId = card.getAttribute("data-event-id");
+    participantMap.focusOnEventId(evId);
+  }
+  return;
+}
 
     // 🔹 Da qui in poi: logica esistente per i bottoni (details / join / leave)
     const id = btn.getAttribute("data-id");
@@ -1325,6 +1152,7 @@ await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 });
+
 
 
 
