@@ -1,7 +1,7 @@
 // frontend/js/map.js
 // Leaflet + MarkerCluster — estratto da partecipante.js (UI v2)
 
-export function createParticipantMap({ mapId = "map" } = {}) {
+export function createParticipantMap({ mapId = "map", onSelectEvent = null } = {}) {
   const mapEl = document.getElementById(mapId);
 
   let map = null;
@@ -9,6 +9,16 @@ export function createParticipantMap({ mapId = "map" } = {}) {
 
   // dizionario: eventId -> marker
   let markersById = {};
+// callback (impostabile anche dopo)
+  let _onSelectEvent = (typeof onSelectEvent === "function") ? onSelectEvent : null;
+
+  function setOnSelectEvent(fn) {
+    _onSelectEvent = (typeof fn === "function") ? fn : null;
+  }
+
+  function emitSelect(ev) {
+    try { _onSelectEvent && _onSelectEvent(ev); } catch {}
+  }
 
   function formatEventDate(ev) {
     try {
@@ -81,7 +91,7 @@ export function createParticipantMap({ mapId = "map" } = {}) {
     const when = formatEventDate(ev);
     const title = ev?.title || "";
     m.bindPopup(`<b>${title}</b>${when ? "<br/>" + when : ""}`);
-
+    m.on("click", () => emitSelect(ev));
     cluster.addLayer(m);
 
     if (ev?._id) {
@@ -147,13 +157,15 @@ export function createParticipantMap({ mapId = "map" } = {}) {
     } catch {}
   }
 
-  return {
+return {
     init,
     updateFromEvents,
     addPrivateEventsIfMissing,
     focusOnEventId,
+    setOnSelectEvent,
     get map() { return map; },
     get cluster() { return cluster; },
     get markersById() { return markersById; }
   };
+
 }
