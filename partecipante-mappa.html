@@ -63,130 +63,58 @@
     <a href="#" id="btnLogout" class="danger">Logout</a>
   </div>
 </header>
-<!-- HOME (tra topbar e bottom bar) -->
-<section class="gw-home">
-  <!-- BLOCCO A (50%) -->
+<!-- MAPPA (tra topbar e bottom bar) -->
+<section class="gw-map">
+  <!-- BLOCCO 1: MAPPA -->
   <section class="gw-block">
     <div class="gw-block-head">
-      <h2 class="gw-block-title">Eventi generali</h2>
+      <h2 class="gw-block-title">Mappa eventi</h2>
     </div>
 
-    <!-- Banner inline (lo lasciamo vivo) -->
-<div id="allEventsList" class="gw-carousel-wrap"></div>
-<div class="gw-scrollrail" data-rail-for="allEventsList">
-  <div class="gw-scrollthumb"></div>
-</div>
-  </section>
-
-  <!-- BLOCCO B (50%) -->
-  <section class="gw-block">
-    <div class="gw-block-head">
-      <h2 class="gw-block-title">Eventi a cui partecipo</h2>
-    </div>
-
-<div id="myEventsList" class="gw-carousel-wrap"></div>
-<div class="gw-scrollrail" data-rail-for="myEventsList">
-  <div class="gw-scrollthumb"></div>
-</div>
-  </section>
-</section>
-    <section class="legacy" style="display:none">
-    <!-- Filtri -->
-    <section class="filters">
-      <input id="filterTitle" type="text" placeholder="Titolo" />
-      <input id="filterCity" type="text" placeholder="Città" />
-      <!-- AGGIUNTE -->
-      <input id="filterRegion" type="text" placeholder="Regione" />
-      <input id="filterDateStart" type="date" placeholder="Data inizio" />
-      <input id="filterDateEnd" type="date" placeholder="Data fine" />
-
-      <!-- PATCH: filtri a tendina coerenti con nuovo schema -->
-      <select id="filterCategory" title="Categoria">
-        <option value="">Categoria</option>
-      </select>
-      <select id="filterSubcategory" title="Sottocategoria">
-        <option value="">Sottocategoria</option>
-      </select>
-      <select id="filterLanguage" title="Lingua">
-        <option value="">Lingua</option>
-        <option value="it">Italiano</option>
-        <option value="en">Inglese</option>
-        <option value="fr">Francese</option>
-        <option value="de">Tedesco</option>
-        <option value="es">Spagnolo</option>
-        <option value="other">Altro</option>
-      </select>
-      <select id="filterTarget" title="Target">
-        <option value="">Target</option>
-        <option value="tutti">Tutti</option>
-        <option value="famiglie">Famiglie</option>
-        <option value="18+">18+</option>
-        <option value="professionisti">Professionisti</option>
-      </select>
-      <select id="filterCountry" title="Paese">
-        <option value="">Paese</option>
-        <option value="IT">Italia</option>
-        <option value="FR">Francia</option>
-        <option value="DE">Germania</option>
-        <option value="ES">Spagna</option>
-        <option value="GB">Regno Unito</option>
-        <option value="US">USA</option>
-        <option value="other">Altro</option>
-      </select>
-      <select id="filterRegionSelect" title="Regione (Italia)">
-        <option value="">Regione (IT)</option>
-      </select>
-
-      <button id="btnApplyFilters" class="btn">Filtra</button>
-    </section>
-<!-- Banner “Completa profilo” -->
-    <section id="profileNag" class="alert info" style="display:none; margin:.5rem 0;"></section>
-
-    <!-- Eventi privati: codice invito + menù a tendina -->
-    <section id="privateEventsBlock" style="margin:0.5rem 0;">
-      <div class="private-code-row">
-        <input
-          id="inviteCodeInput"
-          type="text"
-          placeholder="Hai un codice per un evento privato?"
-          autocomplete="off"
-        />
-        <button id="btnApplyInvite" class="btn">Sblocca evento</button>
-      </div>
-
-      <button id="togglePrivateList" class="btn btn-secondary private-toggle">
-        🔒 Eventi privati (<span id="privateCount">0</span>)
-      </button>
-
-      <ul id="privateEventsList" class="private-events-list" style="display:none;"></ul>
-    </section>
-    <!-- /Eventi privati -->
-
-    <!-- Mappa eventi -->
     <section id="mapSection">
       <div id="map"></div>
     </section>
 
+    <!-- Legenda (resta sotto la mappa) -->
+    <div id="mapLegend" class="map-legend">
+      <span class="legend-item">
+        <span class="legend-dot legend-dot-ongoing"></span>In corso
+      </span>
+      <span class="legend-item">
+        <span class="legend-dot legend-dot-imminent"></span>Imminente
+      </span>
+      <span class="legend-item">
+        <span class="legend-dot legend-dot-future"></span>In arrivo
+      </span>
+    </div>
+  </section>
 
-        <!-- B2.3 — Legenda colori stato evento -->
-        <div id="mapLegend" class="map-legend">
-          <span class="legend-item">
-            <span class="legend-dot legend-dot-ongoing"></span>In corso
-          </span>
-          <span class="legend-item">
-            <span class="legend-dot legend-dot-imminent"></span>Imminente
-          </span>
-          <span class="legend-item">
-            <span class="legend-dot legend-dot-future"></span>In arrivo
-          </span>
-        </div>
+  <!-- BLOCCO 2: EVENTO SELEZIONATO -->
+  <section class="gw-block">
+    <div class="gw-block-head">
+      <h2 class="gw-block-title">Evento selezionato</h2>
+    </div>
 
-<!-- Container non utilizzato ma lasciato per non rimuovere codice -->
-    <section id="eventsList" class="events-list"></section>
+    <div id="mapSelectedEvent" class="gw-map-empty">
+      Seleziona un evento sulla mappa per vedere i dettagli qui.
+    </div>
+  </section>
 
-    <!-- Sezione: eventi dalle persone che segui -->
-    <h2>Eventi delle persone che segui</h2>
-    <section id="followingEventsList" class="events-list"></section>
+  <!-- BLOCCO 3: CHAT EVENTO -->
+  <section class="gw-block">
+    <div class="gw-block-head">
+      <h2 class="gw-block-title">Chat evento</h2>
+    </div>
+
+    <div id="mapChatPanel" class="gw-map-empty">
+      Seleziona un evento per aprire la chat qui sotto.
+    </div>
+
+    <div id="mapChatComposer" style="display:none">
+      <input id="mapChatInput" type="text" placeholder="Scrivi un messaggio..." autocomplete="off" />
+      <button id="mapChatSend" class="btn">Invia</button>
+    </div>
+  </section>
 </section>
 <nav class="gw-bottomnav">
   <a class="gw-navitem is-active" href="partecipante-mappa.html" title="Mappa"><span>🗺️</span></a>
