@@ -1191,14 +1191,28 @@ if (!btn) {
     });
   }
 
-  // Inizializza
-  hookFilters();
+// Inizializza
+hookFilters();
 
-// Prima lista + eventuali eventi privati già sbloccati
-await loadEvents();
+// Avvio per-pagina (Home vs Mappa)
+const isHomePage = !!document.getElementById("allEventsList");
+const isMapPage = !!document.getElementById("map");
+
+if (isHomePage) {
+  // HOME
+  await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
+}
+
+if (isMapPage) {
+  // MAPPA (qui NON deve partire la logica Home)
+  // Se già la inizializzi altrove, puoi anche lasciare solo questo guard.
+  createParticipantMap({ mapId: "map" });
+}
+
 });
+
 
 
 
