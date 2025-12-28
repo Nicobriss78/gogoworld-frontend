@@ -687,17 +687,20 @@ const participantMap = createParticipantMap({
   onSelectEvent: handleMapEventSelect
 });
 participantMap.init();
+
+// Chat embedded nella pagina Mappa (blocchi sotto la mappa)
+const mapChat = createEmbeddedEventChat({
+  panelId: "mapChatPanel",
+  composerId: "mapChatComposer",
+  inputId: "mapChatInput",
+  sendId: "mapChatSend"
+});
+
 function handleMapEventSelect(ev) {
   if (!ev) return;
 
-  // Siamo davvero nella pagina mappa?
-  const mapSelected = document.getElementById("mapSelectedEvent");
-  const mapChatPanel = document.getElementById("mapChatPanel");
-  const mapChatComposer = document.getElementById("mapChatComposer");
-  const mapChatInput = document.getElementById("mapChatInput");
-  const mapChatSend = document.getElementById("mapChatSend");
-
   // BLOCCO 2 — dettaglio evento selezionato
+  const mapSelected = document.getElementById("mapSelectedEvent");
   if (mapSelected) {
     mapSelected.innerHTML = `
       <div class="gw-map-selected-wrap">
@@ -706,34 +709,15 @@ function handleMapEventSelect(ev) {
     `;
   }
 
-  // BLOCCO 3 — chat evento selezionato (MVP = CTA + composer)
+  // BLOCCO 3 — chat evento selezionato (embedded, stesse API di rooms.js)
+  const mapChatPanel = document.getElementById("mapChatPanel");
   if (mapChatPanel) {
-    const returnTo = location.pathname.split("/").pop() || "partecipante-mappa.html";
-    const href = `pages/rooms.html?returnTo=${encodeURIComponent(returnTo)}&eventId=${encodeURIComponent(ev._id)}`;
-
-    mapChatPanel.innerHTML = `
-      <div class="gw-map-chat-head">
-        <p class="gw-muted" style="margin:0;">
-          Chat evento: <strong>${ev?.title || "Evento"}</strong>
-        </p>
-        <a class="btn" href="${href}">💬 Apri chat evento</a>
-      </div>
-    `;
+    mapChat.openForEvent(ev._id, ev?.title || "Evento");
   }
 
-  // Composer visibile (per step successivo: invio messaggio in-page)
+  // Il composer viene gestito da map-chat.js (abilita/disabilita input in base a canSend)
+  const mapChatComposer = document.getElementById("mapChatComposer");
   if (mapChatComposer) mapChatComposer.style.display = "flex";
-
-  // (per ora non inviamo davvero qui: solo UX)
-  if (mapChatSend && mapChatInput) {
-    mapChatSend.onclick = () => {
-      const txt = (mapChatInput.value || "").trim();
-      if (!txt) return;
-      alert("Invio in-page chat: lo colleghiamo subito dopo (ora usa 'Apri chat evento').");
-      mapChatInput.value = "";
-      mapChatInput.focus();
-    };
-  }
 }
 
   
@@ -1266,6 +1250,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
