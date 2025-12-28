@@ -1234,6 +1234,68 @@ body {
 .gw-block-head h3{
   margin: 0;
 }
+/* ---------- MAPPA (3 blocchi 1/3) - SCOPED ---------- */
+body.gw-page-map .gw-map{
+  height: 100dvh;
+  height: 100vh; /* fallback */
+  box-sizing: border-box;
+  background: var(--gw-bg);
+  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom, 0px) + 8px);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--gw-gap);
+}
+
+/* i 3 blocchi devono dividersi lo spazio disponibile */
+body.gw-page-map .gw-map .gw-block{
+  flex: 1;
+  min-height: 0; /* fondamentale per far funzionare gli overflow interni */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* BLOCCO MAPPA: la mappa prende lo spazio “elastico” */
+body.gw-page-map #mapSection{
+  flex: 1;
+  min-height: 0;
+}
+body.gw-page-map #map{
+  height: 100%;
+  width: 100%;
+  min-height: 160px; /* evita “mappa minuscola” */
+  border-radius: 14px;
+}
+
+/* BLOCCO CHAT: input sempre visibile, messaggi scrollano */
+body.gw-page-map #mapChatPanel{
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px;
+  border: 1px solid var(--gw-border);
+  border-radius: 14px;
+  background: #fff;
+}
+
+body.gw-page-map #mapChatComposer{
+  flex: 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  padding-top: 8px;
+  background: var(--gw-bg);
+}
+
+body.gw-page-map #mapChatComposer input,
+body.gw-page-map #mapChatComposer textarea{
+  flex: 1;
+  min-width: 0;
+}
 
 /* ---------- CAROUSEL (A e B identici) ---------- */
 .gw-carousel-wrap{
@@ -1420,100 +1482,3 @@ body {
   background: rgba(200,58,58,.45);
   transition: none;
 }
-/* =========================================================
-   Partecipante — Layout base per pagine con topbar/bottomnav FIXED
-   (partecipante-mappa.html, e in futuro anche privati ecc.)
-   Struttura: <main class="container participant">
-   ========================================================= */
-
-.container.participant{
-  height: 100dvh;
-  height: 100vh; /* fallback */
-  box-sizing: border-box;
-
-  /* spazio reale per barre FIXED */
-  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top) + 2px);
-  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 2px);
-  
-  display: flex;
-  flex-direction: column;
-  gap: var(--gw-gap);
-  overflow: hidden;
-}
-
-/* Il footer in queste pagine è superfluo e spesso crea “spinta” visiva */
-.container.participant .app-footer{
-  display: none;
-}
-
-/* =========================================================
-   Partecipante — MAPPA a 3 blocchi (1/3 + scroll interno)
-   Pagina: partecipante-mappa.html
-   Selettore: .container.participant .gw-map
-   ========================================================= */
-
-.container.participant .gw-map{
-  flex: 1 1 auto; /* prende lo spazio tra topbar e bottomnav */
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow: hidden;
-}
-
-/* 3 blocchi = 1/3 ciascuno */
-.container.participant .gw-map > .gw-block{
-  flex: 1 1 0;
-  min-height: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-/* disattiva sticky SOLO qui */
-.container.participant .gw-map #mapSection{
-  position: relative;
-  top: auto;
-  z-index: auto;
-  background: transparent;
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-/* la mappa deve riempire il blocco (override del tuo #map { height:420px }) */
-.container.participant .gw-map #map{
-  height: 100%;
-  min-height: 0;
-  margin: 0;
-}
-
-/* Dettaglio: scroll interno */
-.container.participant .gw-map #mapSelectedEvent{
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: auto;
-}
-
-/* Chat: scroll interno + composer fisso */
-.container.participant .gw-map #mapChatPanel{
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.container.participant .gw-map .gw-map-chat-messages{
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: auto;
-}
-
-.container.participant .gw-map #mapChatComposer{
-  flex: 0 0 auto;
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.container.participant .gw-map #mapChatInput{ flex: 1 1 auto; }
