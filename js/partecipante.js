@@ -681,8 +681,60 @@ if (myUserId) {
   populateFilterOptions();
 
 // --- MAPPA: init (estratta in map.js) ---
-const participantMap = createParticipantMap({ mapId: "map" });
+const participantMap = createParticipantMap({
+  mapId: "map",
+  onSelectEvent: handleMapEventSelect
+});
 participantMap.init();
+function handleMapEventSelect(ev) {
+  if (!ev) return;
+
+  // Siamo davvero nella pagina mappa?
+  const mapSelected = document.getElementById("mapSelectedEvent");
+  const mapChatPanel = document.getElementById("mapChatPanel");
+  const mapChatComposer = document.getElementById("mapChatComposer");
+  const mapChatInput = document.getElementById("mapChatInput");
+  const mapChatSend = document.getElementById("mapChatSend");
+
+  // BLOCCO 2 — dettaglio evento selezionato
+  if (mapSelected) {
+    mapSelected.innerHTML = `
+      <div class="gw-map-selected-wrap">
+        ${renderEventCard(ev, false)}
+      </div>
+    `;
+  }
+
+  // BLOCCO 3 — chat evento selezionato (MVP = CTA + composer)
+  if (mapChatPanel) {
+    const returnTo = location.pathname.split("/").pop() || "partecipante-mappa.html";
+    const href = `pages/rooms.html?returnTo=${encodeURIComponent(returnTo)}&eventId=${encodeURIComponent(ev._id)}`;
+
+    mapChatPanel.innerHTML = `
+      <div class="gw-map-chat-head">
+        <p class="gw-muted" style="margin:0;">
+          Chat evento: <strong>${ev?.title || "Evento"}</strong>
+        </p>
+        <a class="btn" href="${href}">💬 Apri chat evento</a>
+      </div>
+    `;
+  }
+
+  // Composer visibile (per step successivo: invio messaggio in-page)
+  if (mapChatComposer) mapChatComposer.style.display = "flex";
+
+  // (per ora non inviamo davvero qui: solo UX)
+  if (mapChatSend && mapChatInput) {
+    mapChatSend.onclick = () => {
+      const txt = (mapChatInput.value || "").trim();
+      if (!txt) return;
+      alert("Invio in-page chat: lo colleghiamo subito dopo (ora usa 'Apri chat evento').");
+      mapChatInput.value = "";
+      mapChatInput.focus();
+    };
+  }
+}
+
   
 // C1.1 — Auto-focus sugli eventi imminenti/ongoing/futuri nel CAROUSEL "Tutti gli eventi"
 function autoFocusOnRelevantEvent() {
@@ -1213,6 +1265,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
