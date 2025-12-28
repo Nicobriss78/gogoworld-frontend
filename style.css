@@ -1421,24 +1421,48 @@ body {
   transition: none;
 }
 /* =========================================================
-   Partecipante — MAPPA a 3 blocchi (1/3 + scroll interno)
-   Pagina: partecipante-mappa.html
-   Struttura: <main class="container participant"> ... <section class="gw-map"> ... </section>
+   Partecipante — Layout base per pagine con topbar/bottomnav FIXED
+   (partecipante-mappa.html, e in futuro anche privati ecc.)
+   Struttura: <main class="container participant">
    ========================================================= */
 
-.participant .gw-map{
-  /* blocco tra topbar e bottomnav: non deve crescere oltre viewport */
+.container.participant{
+  height: 100dvh;
+  height: 100vh; /* fallback */
+  box-sizing: border-box;
+
+  /* spazio reale per barre FIXED */
+  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top) + 2px);
+  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 2px);
+  
+  display: flex;
+  flex-direction: column;
+  gap: var(--gw-gap);
+  overflow: hidden;
+}
+
+/* Il footer in queste pagine è superfluo e spesso crea “spinta” visiva */
+.container.participant .app-footer{
+  display: none;
+}
+
+/* =========================================================
+   Partecipante — MAPPA a 3 blocchi (1/3 + scroll interno)
+   Pagina: partecipante-mappa.html
+   Selettore: .container.participant .gw-map
+   ========================================================= */
+
+.container.participant .gw-map{
+  flex: 1 1 auto; /* prende lo spazio tra topbar e bottomnav */
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
   overflow: hidden;
-
-  /* altezza disponibile = viewport - topbar - bottomnav - footer (se presente) */
-  height: calc(100dvh - var(--gw-topbar-h, 112px) - var(--gw-bottomnav-h, 64px) - 40px);
 }
 
-/* ogni blocco prende 1/3 dello spazio e non deve espandersi */
-.participant .gw-map > .gw-block{
+/* 3 blocchi = 1/3 ciascuno */
+.container.participant .gw-map > .gw-block{
   flex: 1 1 0;
   min-height: 0;
   overflow: hidden;
@@ -1446,9 +1470,8 @@ body {
   flex-direction: column;
 }
 
-/* ----- BLOCCO 1: MAPPA ----- */
 /* disattiva sticky SOLO qui */
-.participant .gw-map #mapSection{
+.container.participant .gw-map #mapSection{
   position: relative;
   top: auto;
   z-index: auto;
@@ -1457,23 +1480,22 @@ body {
   min-height: 0;
 }
 
-/* la mappa deve stare dentro il blocco (no height:420px) */
-.participant .gw-map #map{
+/* la mappa deve riempire il blocco (override del tuo #map { height:420px }) */
+.container.participant .gw-map #map{
   height: 100%;
   min-height: 0;
   margin: 0;
 }
 
-/* ----- BLOCCO 2: DETTAGLIO ----- */
-.participant .gw-map #mapSelectedEvent{
+/* Dettaglio: scroll interno */
+.container.participant .gw-map #mapSelectedEvent{
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
 }
 
-/* ----- BLOCCO 3: CHAT ----- */
-/* pannello chat: cresce solo dentro */
-.participant .gw-map #mapChatPanel{
+/* Chat: scroll interno + composer fisso */
+.container.participant .gw-map #mapChatPanel{
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
@@ -1481,19 +1503,17 @@ body {
   flex-direction: column;
 }
 
-/* lista messaggi: scroll interno */
-.participant .gw-map .gw-map-chat-messages{
+.container.participant .gw-map .gw-map-chat-messages{
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
 }
 
-/* composer sempre visibile, non fa crescere il blocco */
-.participant .gw-map #mapChatComposer{
+.container.participant .gw-map #mapChatComposer{
   flex: 0 0 auto;
   display: flex;
   gap: 8px;
   margin-top: 8px;
 }
-.participant .gw-map #mapChatInput{ flex: 1 1 auto; }
 
+.container.participant .gw-map #mapChatInput{ flex: 1 1 auto; }
