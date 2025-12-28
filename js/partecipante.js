@@ -16,6 +16,7 @@ import {
   activateHomeBannerSlots
 } from "./home-banners.js";
 import { createParticipantMap } from "./map.js";
+import { createEmbeddedEventChat } from "./map-chat.js";
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -1265,6 +1266,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
