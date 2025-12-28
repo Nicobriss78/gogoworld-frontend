@@ -538,7 +538,8 @@ function getGeoUiState() {
     savePrivateIds(privateEvents.map((ev) => ev._id));
     renderPrivateList();
 // Aggiunge in mappa anche gli eventi privati sbloccati (se hanno coordinate)
-participantMap.addPrivateEventsIfMissing(privateEvents);
+
+// participantMap.addPrivateEventsIfMissing(privateEvents);
 
   }
 
@@ -858,6 +859,7 @@ if (myList) myList.innerHTML = "";
  }
  
  // Bx — includi anche eventuali eventi privati sbloccati a cui partecipo
+/*
  loadPrivateIds();
 
       if (Array.isArray(privateEventIds) && privateEventIds.length && myId) {
@@ -888,7 +890,7 @@ if (myList) myList.innerHTML = "";
         // ri-ordina dopo aver aggiunto gli eventi privati
         joinedSorted = [...joinedSorted].sort(sortEventsForParticipant);
       }
-
+*/
 // --- MAPPA: aggiorna marker su cluster (map.js) ---
 participantMap.updateFromEvents(res?.events || []);
 // >>> UI v2: rendering card per Home (carosello orizzontale)
@@ -1205,12 +1207,13 @@ if (isHomePage) {
   await refreshPrivateEvents();
 }
 
-// MAPPA (serve loadEvents per popolare i marker)
+// MAPPA (solo eventi pubblici)
 if (isMapPage && !isHomePage) {
   await loadEvents();
-  await refreshPrivateEvents(); // aggiunge anche marker privati sbloccati, se presenti
 }
+
 });
+
 
 
 
