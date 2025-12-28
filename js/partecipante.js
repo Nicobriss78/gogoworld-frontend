@@ -1194,24 +1194,24 @@ if (!btn) {
 // Inizializza
 hookFilters();
 
-// Avvio per-pagina (Home vs Mappa)
+// Avvio per-pagina
 const isHomePage = !!document.getElementById("allEventsList");
 const isMapPage = !!document.getElementById("map");
 
+// HOME
 if (isHomePage) {
-  // HOME
   await loadEvents();
   setupScrollRails();
   await refreshPrivateEvents();
 }
 
-if (isMapPage) {
-  // MAPPA (qui NON deve partire la logica Home)
-  // Se già la inizializzi altrove, puoi anche lasciare solo questo guard.
-  createParticipantMap({ mapId: "map" });
+// MAPPA (serve loadEvents per popolare i marker)
+if (isMapPage && !isHomePage) {
+  await loadEvents();
+  await refreshPrivateEvents(); // aggiunge anche marker privati sbloccati, se presenti
 }
-
 });
+
 
 
 
