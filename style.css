@@ -1234,91 +1234,59 @@ body {
 .gw-block-head h3{
   margin: 0;
 }
-/* MAPPA (pagina dedicata) */
-body.gw-page-map main.container.participant{
-  /* evita che l’header fixed e la bottom bar coprano i contenuti */
-  padding-top: var(--gw-topbar-h);
-  padding-bottom: var(--gw-bottomnav-h);
-}
+/* =========================== MAPPA PARTECIPANTE (layout reale) =========================== */
 
-/* disattiva lo sticky globale di mapSection SOLO in pagina mappa */
-body.gw-page-map .participant #mapSection{
-  position: static;
-  top: auto;
-}
-
-/* layout 3 blocchi: ognuno prende 1/3 dello spazio visibile */
-body.gw-page-map .gw-map{
-  height: calc(100dvh - var(--gw-topbar-h) - var(--gw-bottomnav-h));
+/* Il tuo <main id="mapSection" class="gw-map"> */
+#mapSection{
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 12px;
-  overflow: hidden; /* niente “crescita infinita” */
-}
-
-body.gw-page-map .gw-map .gw-block{
-  flex: 1;
-  min-height: 0; /* fondamentale per scroll interno */
-  display: flex;
-  flex-direction: column;
-}
-
-/* wrapper interno dei blocchi (aggiunto in HTML) */
-body.gw-page-map .gw-map .gw-block-body{
-  flex: 1;
+  padding: 12px 14px;
   min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
-/* MAPPA: fa riempire il blocco, senza altezza fissa 420px */
-body.gw-page-map #mapSection{
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-body.gw-page-map #map{
-  flex: 1;
-  min-height: 0;
-  height: auto !important; /* override del vecchio height:420px */
+/* MAPPA: più grande e stabile */
+#map{
   width: 100%;
+  height: 42vh;
+  min-height: 240px;
+  max-height: 420px;
   border-radius: 14px;
   overflow: hidden;
 }
 
-/* DETTAGLIO EVENTO: scroll se contenuto lungo */
-body.gw-page-map #mapSelectedEvent{
-  flex: 1;
+/* DETTAGLIO: per ora resta VISIBILE (come oggi).
+   Quando faremo l’ibrido “info”, lo renderemo drawer con una classe toggle. */
+#selectedEventSection{
   min-height: 0;
-  overflow: auto;
 }
 
-/* CHAT: messaggi scrollano, composer resta sempre visibile */
-body.gw-page-map .gw-map-chat .gw-block-body{
+/* CHAT: deve essere un contenitore flex che “trattiene” input e scroll messaggi */
+#chatRoomSection{
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  min-height: 0;
-}
-
-body.gw-page-map #mapChatPanel{
-  flex: 1;
-  min-height: 0;
-  overflow: auto;
-}
-
-body.gw-page-map #mapChatComposer{
-  flex: 0 0 auto;
-  display: flex;
   gap: 8px;
-  margin-top: 6px;
 }
 
-body.gw-page-map #mapChatComposer input{
+/* Area messaggi: scorre */
+#mapChatRoom{
+  flex: 1;
+  min-height: 140px;
+  max-height: 28vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 6px;
+}
+
+/* Composer: resta sempre visibile sotto */
+#mapChatComposer{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#mapChatComposer input{
   flex: 1;
   min-width: 0;
 }
@@ -1508,86 +1476,3 @@ body.gw-page-map #mapChatComposer input{
   background: rgba(200,58,58,.45);
   transition: none;
 }
-/* ============================================================
-   GW MAPPA - LAYOUT IBRIDO (Mappa + Chat) + Drawer Dettaglio
-   (PATCH CHIRURGICA - fine file)
-============================================================ */
-
-/* blocca lo scroll pagina quando il drawer è aperto */
-body.gw-lock {
-  overflow: hidden;
-}
-
-/* header chat con bottone info a destra */
-.gw-chat-head,
-.gw-detail-head{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-/* overlay */
-.gw-detail-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 9998;
-}
-
-/* drawer dettaglio: fuori flusso, scroll interno */
-.gw-detail-drawer{
-  position: fixed;
-  left: 12px;
-  right: 12px;
-
-  /* lascia spazio alla topbar e alla bottom bar */
-  top: 92px;
-  bottom: 92px;
-
-  z-index: 9999;
-  display: none;
-
-  overflow: hidden;
-}
-
-/* quando aperto */
-.gw-detail-drawer.is-open{
-  display: flex;
-  flex-direction: column;
-}
-
-/* corpo del dettaglio scrolla, header resta fisso */
-.gw-detail-drawer .gw-block__body{
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  min-height: 0;
-}
-
-/* mappa: un po’ più alta, ma non enorme */
-#map{
-  height: clamp(260px, 38vh, 420px);
-}
-
-/* chat: impedisci crescita infinita e abilita scroll contenuti */
-.gw-chat-panel{
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-/* se il contenitore messaggi è dentro #mapChatPanel, lo facciamo scrollare */
-#mapChatPanel{
-  flex: 1;
-  min-height: 0;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* il form (input+invio) resta sempre visibile */
-.gw-chat-panel form{
-  flex: 0 0 auto;
-}
-
-
-
