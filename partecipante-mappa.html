@@ -84,27 +84,30 @@
   </div>
 </section>
 
-  <!-- BLOCCO 2: EVENTO SELEZIONATO -->
-<section class="gw-block">
-<header class="gw-block__head gw-detail-head">
-  <h2>Evento selezionato</h2>
+<!-- BLOCCO 2: DETTAGLIO EVENTO (DRAWER - nascosto) -->
+  <div id="gwDetailOverlay" class="gw-detail-overlay" hidden></div>
 
-  <button type="button"
-          id="btnCloseDetail"
-          class="gw-info-btn gw-detail-close"
-          aria-label="Chiudi dettaglio">
-    ✕
-  </button>
-</header>
+  <aside id="gwDetailDrawer"
+         class="gw-detail-drawer"
+         hidden
+         aria-hidden="true">
+    <header class="gw-detail-drawer__head">
+      <h2>Evento selezionato</h2>
 
+      <button type="button"
+              id="btnCloseDetail"
+              class="gw-info-btn gw-detail-close"
+              aria-label="Chiudi dettaglio">
+        ✕
+      </button>
+    </header>
 
-  <div class="gw-block-body">
-    <div id="mapSelectedEvent" class="gw-selected-box">
-      Seleziona un evento sulla mappa per vedere i dettagli qui.
+    <div class="gw-detail-drawer__body">
+      <div id="mapSelectedEvent" class="gw-selected-box">
+        Seleziona un evento sulla mappa per vedere i dettagli qui.
+      </div>
     </div>
-  </div>
-</section>
-
+  </aside>
 <!-- BLOCCO 3: CHAT ROOM -->
 <section class="gw-block gw-chat-panel">
   <header class="gw-block__head gw-chat-head">
