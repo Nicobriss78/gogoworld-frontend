@@ -66,55 +66,57 @@
 <!-- MAPPA (tra topbar e bottom bar) -->
 <section class="gw-map">
   <!-- BLOCCO 1: MAPPA -->
-  <section class="gw-block">
-    <div class="gw-block-head">
-      <h2 class="gw-block-title">Mappa eventi</h2>
-    </div>
+<section class="gw-block">
+  <header class="gw-block-head">
+    <h2 class="gw-block-title">Mappa eventi</h2>
+  </header>
 
-    <section id="mapSection">
-      <div id="map"></div>
-    </section>
+  <div class="gw-block-body">
+    <div id="mapSection">
+      <div id="map" class="map-area"></div>
 
-    <!-- Legenda (resta sotto la mappa) -->
-    <div id="mapLegend" class="map-legend">
-      <span class="legend-item">
-        <span class="legend-dot legend-dot-ongoing"></span>In corso
-      </span>
-      <span class="legend-item">
-        <span class="legend-dot legend-dot-imminent"></span>Imminente
-      </span>
-      <span class="legend-item">
-        <span class="legend-dot legend-dot-future"></span>In arrivo
-      </span>
+      <div class="gw-legend">
+        <span class="lg in-corso">●</span> In corso
+        <span class="lg imminente">●</span> Imminente
+        <span class="lg in-arrivo">●</span> In arrivo
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- BLOCCO 2: EVENTO SELEZIONATO -->
-  <section class="gw-block">
-    <div class="gw-block-head">
-      <h2 class="gw-block-title">Evento selezionato</h2>
-    </div>
+<section class="gw-block">
+  <header class="gw-block-head">
+    <h2 class="gw-block-title">Evento selezionato</h2>
+  </header>
 
-    <div id="mapSelectedEvent" class="gw-map-empty">
+  <div class="gw-block-body">
+    <div id="mapSelectedEvent" class="gw-selected-box">
       Seleziona un evento sulla mappa per vedere i dettagli qui.
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- BLOCCO 3: CHAT EVENTO -->
-  <section class="gw-block">
-    <div class="gw-block-head">
-      <h2 class="gw-block-title">Chat evento</h2>
-    </div>
+<section class="gw-block gw-map-chat">
+  <header class="gw-block-head">
+    <h2 class="gw-block-title">Chat evento</h2>
+  </header>
 
-    <div id="mapChatPanel" class="gw-map-empty">
+  <div class="gw-block-body">
+    <div id="mapChatHeader" class="gw-chat-subtitle">
       Seleziona un evento per aprire la chat qui sotto.
     </div>
 
-    <div id="mapChatComposer" style="display:none">
-      <input id="mapChatInput" type="text" placeholder="Scrivi un messaggio..." autocomplete="off" />
-      <button id="mapChatSend" class="btn">Invia</button>
-    </div>
-  </section>
+    <div id="mapChatPanel" class="gw-chat-panel"></div>
+
+    <form id="mapChatComposer" class="gw-chat-composer" autocomplete="off">
+      <input id="mapChatInput" type="text" placeholder="Scrivi un messaggio..." />
+      <button id="mapChatSend" type="submit" class="btn primary">Invia</button>
+    </form>
+  </div>
+</section>
+
 </section>
 <nav class="gw-bottomnav">
   <a class="gw-navitem is-active" href="partecipante-mappa.html" title="Mappa"><span>🗺️</span></a>
