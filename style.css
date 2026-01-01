@@ -1508,5 +1508,86 @@ body.gw-page-map #mapChatComposer input{
   background: rgba(200,58,58,.45);
   transition: none;
 }
+/* ============================================================
+   GW MAPPA - LAYOUT IBRIDO (Mappa + Chat) + Drawer Dettaglio
+   (PATCH CHIRURGICA - fine file)
+============================================================ */
+
+/* blocca lo scroll pagina quando il drawer è aperto */
+body.gw-lock {
+  overflow: hidden;
+}
+
+/* header chat con bottone info a destra */
+.gw-chat-head,
+.gw-detail-head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* overlay */
+.gw-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 9998;
+}
+
+/* drawer dettaglio: fuori flusso, scroll interno */
+.gw-detail-drawer{
+  position: fixed;
+  left: 12px;
+  right: 12px;
+
+  /* lascia spazio alla topbar e alla bottom bar */
+  top: 92px;
+  bottom: 92px;
+
+  z-index: 9999;
+  display: none;
+
+  overflow: hidden;
+}
+
+/* quando aperto */
+.gw-detail-drawer.is-open{
+  display: flex;
+  flex-direction: column;
+}
+
+/* corpo del dettaglio scrolla, header resta fisso */
+.gw-detail-drawer .gw-block__body{
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+}
+
+/* mappa: un po’ più alta, ma non enorme */
+#map{
+  height: clamp(260px, 38vh, 420px);
+}
+
+/* chat: impedisci crescita infinita e abilita scroll contenuti */
+.gw-chat-panel{
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* se il contenitore messaggi è dentro #mapChatPanel, lo facciamo scrollare */
+#mapChatPanel{
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* il form (input+invio) resta sempre visibile */
+.gw-chat-panel form{
+  flex: 0 0 auto;
+}
+
 
 
