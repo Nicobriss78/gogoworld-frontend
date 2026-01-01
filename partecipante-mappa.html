@@ -86,9 +86,17 @@
 
   <!-- BLOCCO 2: EVENTO SELEZIONATO -->
 <section class="gw-block">
-  <header class="gw-block-head">
-    <h2 class="gw-block-title">Evento selezionato</h2>
-  </header>
+<header class="gw-block__head gw-detail-head">
+  <h2>Evento selezionato</h2>
+
+  <button type="button"
+          id="btnCloseDetail"
+          class="gw-info-btn gw-detail-close"
+          aria-label="Chiudi dettaglio">
+    ✕
+  </button>
+</header>
+
 
   <div class="gw-block-body">
     <div id="mapSelectedEvent" class="gw-selected-box">
@@ -97,10 +105,17 @@
   </div>
 </section>
 
-  <!-- BLOCCO 3: CHAT EVENTO -->
-<section class="gw-block gw-map-chat">
-  <header class="gw-block-head">
-    <h2 class="gw-block-title">Chat evento</h2>
+<!-- BLOCCO 3: CHAT ROOM -->
+<section class="gw-block gw-chat-panel">
+  <header class="gw-block__head gw-chat-head">
+    <h2>Chat evento</h2>
+
+    <button type="button"
+            id="btnOpenDetail"
+            class="gw-info-btn gw-chat-info"
+            aria-label="Apri dettaglio evento">
+      ℹ️
+    </button>
   </header>
 
   <div class="gw-block-body">
@@ -147,6 +162,34 @@
       console.info("Server in riattivazione… tentativo", attempt, "status", status);
     }
   });
+</script>
+<script>
+  (function () {
+    const openBtn = document.getElementById("btnOpenDetail");
+    const closeBtn = document.getElementById("btnCloseDetail");
+    const drawer = document.getElementById("gwDetailDrawer");
+    const overlay = document.getElementById("gwDetailOverlay");
+
+    if (!openBtn || !closeBtn || !drawer || !overlay) return;
+
+    function openDrawer() {
+      drawer.classList.add("is-open");
+      drawer.setAttribute("aria-hidden", "false");
+      overlay.hidden = false;
+      document.body.classList.add("gw-lock");
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove("is-open");
+      drawer.setAttribute("aria-hidden", "true");
+      overlay.hidden = true;
+      document.body.classList.remove("gw-lock");
+    }
+
+    openBtn.addEventListener("click", openDrawer);
+    closeBtn.addEventListener("click", closeDrawer);
+    overlay.addEventListener("click", closeDrawer);
+  })();
 </script>
 
   <!-- Badge Messaggi/Room -->
