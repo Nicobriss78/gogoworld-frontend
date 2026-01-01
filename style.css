@@ -1234,90 +1234,94 @@ body {
 .gw-block-head h3{
   margin: 0;
 }
-/* MAPPA partecipante (3 blocchi) */
+/* MAPPA (pagina dedicata) */
 body.gw-page-map main.container.participant{
-  display:flex;
-  flex-direction:column;
-  min-height:100vh;
+  /* evita che l’header fixed e la bottom bar coprano i contenuti */
+  padding-top: var(--gw-topbar-h);
+  padding-bottom: var(--gw-bottomnav-h);
 }
 
+/* disattiva lo sticky globale di mapSection SOLO in pagina mappa */
+body.gw-page-map .participant #mapSection{
+  position: static;
+  top: auto;
+}
+
+/* layout 3 blocchi: ognuno prende 1/3 dello spazio visibile */
 body.gw-page-map .gw-map{
-  flex:1;
-  min-height:0; /* fondamentale */
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  padding:12px;
-  overflow:hidden; /* blocca la pagina, scroll solo nei pannelli */
+  height: calc(100dvh - var(--gw-topbar-h) - var(--gw-bottomnav-h));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  overflow: hidden; /* niente “crescita infinita” */
 }
 
-/* i 3 blocchi si dividono lo spazio disponibile */
 body.gw-page-map .gw-map .gw-block{
-  flex:1 1 0;
-  min-height:0; /* fondamentale */
-  display:flex;
-  flex-direction:column;
+  flex: 1;
+  min-height: 0; /* fondamentale per scroll interno */
+  display: flex;
+  flex-direction: column;
 }
 
-/* contenuto del blocco: deve poter “stringersi” */
-body.gw-page-map .gw-map .gw-block .gw-block-body{
-  flex:1;
-  min-height:0; /* fondamentale */
-  overflow:hidden;
+/* wrapper interno dei blocchi (aggiunto in HTML) */
+body.gw-page-map .gw-map .gw-block-body{
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* --- BLOCCO 1: MAPPA --- */
-body.gw-page-map #mapSection .gw-block-body{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+/* MAPPA: fa riempire il blocco, senza altezza fissa 420px */
+body.gw-page-map #mapSection{
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 body.gw-page-map #map{
-  flex:1;
-  min-height:0;
-  width:100%;
-  border-radius:14px;
-  overflow:hidden;
+  flex: 1;
+  min-height: 0;
+  height: auto !important; /* override del vecchio height:420px */
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
 }
 
-/* --- BLOCCO 2: DETTAGLIO EVENTO --- */
+/* DETTAGLIO EVENTO: scroll se contenuto lungo */
 body.gw-page-map #mapSelectedEvent{
-  flex:1;
-  min-height:0;
-  overflow:auto; /* scroll interno se il dettaglio è lungo */
-  -webkit-overflow-scrolling:touch;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 }
 
-/* --- BLOCCO 3: CHAT --- */
-body.gw-page-map #chatSection .gw-block-body{
-  display:flex;
-  flex-direction:column;
-  min-height:0;
+/* CHAT: messaggi scrollano, composer resta sempre visibile */
+body.gw-page-map .gw-map-chat .gw-block-body{
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 body.gw-page-map #mapChatPanel{
-  flex:1;
-  min-height:0;
-  overflow:auto; /* scroll dei messaggi */
-  -webkit-overflow-scrolling:touch;
-  padding-right:6px; /* evita testo sotto scrollbar */
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 }
 
-/* composer sempre visibile in basso nel blocco chat */
 body.gw-page-map #mapChatComposer{
-  flex:0 0 auto;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  margin-top:10px;
+  flex: 0 0 auto;
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
 }
 
 body.gw-page-map #mapChatComposer input{
-  flex:1;
-  min-width:0;
+  flex: 1;
+  min-width: 0;
 }
-
 
 /* ---------- CAROUSEL (A e B identici) ---------- */
 .gw-carousel-wrap{
@@ -1504,4 +1508,5 @@ body.gw-page-map #mapChatComposer input{
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
