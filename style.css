@@ -146,12 +146,12 @@ body {
   border-radius: 6px;
 }
 
-/* B2.1 – Mappa fissa in alto nella pagina Partecipante */
+/* B2.1 – (UI v2) NON usare sticky su #mapSection: topbar è FIXED e lo copre */
 .participant #mapSection {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  background: #fff;
+  position: static;
+  top: auto;
+  z-index: auto;
+  background: transparent;
 }
 
 
@@ -1234,6 +1234,31 @@ body {
 .gw-block-head h3{
   margin: 0;
 }
+/* ---------- PAGINA MAPPA: spazio reale per topbar + bottomnav FIXED ---------- */
+body.gw-page-map > main.container.participant{
+  height: 100dvh;
+  height: 100vh; /* fallback */
+  box-sizing: border-box;
+
+  /* lascia spazio alla topbar fixed (evita "taglio" in alto) */
+  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top) + 2px);
+
+  /* lascia spazio alla bottomnav fixed */
+  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 2px);
+
+  /* lo scroll deve avvenire nel contenuto, non sotto le barre fixed */
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+}
+
+body.gw-page-map .gw-map{
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
 /* =========================== MAPPA PARTECIPANTE (layout reale) =========================== */
 
 /* Il tuo <main id="mapSection" class="gw-map"> */
@@ -1476,3 +1501,4 @@ body {
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
