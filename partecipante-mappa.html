@@ -183,6 +183,7 @@
     if (!openBtn || !closeBtn || !drawer || !overlay) return;
 
     function openDrawer() {
+      drawer.hidden = false;
       drawer.classList.add("is-open");
       drawer.setAttribute("aria-hidden", "false");
       overlay.hidden = false;
@@ -194,6 +195,7 @@
       drawer.setAttribute("aria-hidden", "true");
       overlay.hidden = true;
       document.body.classList.remove("gw-lock");
+      drawer.hidden = true;
     }
 
     openBtn.addEventListener("click", openDrawer);
