@@ -117,7 +117,11 @@ export function createEmbeddedEventChat({
     const input = q(inputId);
     const send = q(sendId);
     if (!input || !send) return;
-
+// ✅ Evita refresh pagina (il composer è un <form>)
+    const composer = q(composerId);
+    if (composer) {
+    composer.onsubmit = (e) => e.preventDefault();
+    }
     send.onclick = async () => {
       if (!state.roomId || !state.canSend) return;
       const val = (input.value || "").trim();
