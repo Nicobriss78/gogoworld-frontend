@@ -1013,7 +1013,7 @@ body {
   --gw-radius: 16px;
 
   /* altezze coerenti con opzione A */
-  --gw-topbar-h: 88px; /* topbar a 2 righe */
+  --gw-topbar-h: 104px; /* topbar a 2 righe */
   --gw-bottomnav-h: 44px; /* bottomnav fissa */
   --gw-gap: 6px;
 }
@@ -1214,12 +1214,13 @@ body {
   padding: 6px;
 }
 
-.gw-block-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom: 0px;
-}
+ .gw-block-head,
+ .gw-block__head{
+   display:flex;
+   align-items:center;
+   justify-content:space-between;
+   margin-bottom: 0px;
+ }
 .gw-block-title{
   font-size: 15px;
   font-weight: 800;
@@ -1229,11 +1230,26 @@ body {
   line-heigth: 1.1;
 }
 /* Fix: azzera i margini default degli heading dentro l’header del blocco */
-.gw-block-head h1,
-.gw-block-head h2,
-.gw-block-head h3{
-  margin: 0;
+ .gw-block-head h1,
+ .gw-block-head h2,
+ .gw-block-head h3,
+ .gw-block__head h1,
+ .gw-block__head h2,
+ .gw-block__head h3{
+   margin: 0;
+ }
+/* Chat head: icona info dentro la testata (non overlay assoluto) */
+.gw-chat-head .gw-info-btn{
+  position: static;
+  top: auto;
+  right: auto;
+  z-index: auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  flex: 0 0 auto;
 }
+
 /* ---------- PAGINA MAPPA: spazio reale per topbar + bottomnav FIXED ---------- */
 body.gw-page-map > main.container.participant{
   height: 100dvh;
@@ -1501,4 +1517,5 @@ body.gw-page-map .gw-map{
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
