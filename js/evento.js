@@ -327,6 +327,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnToggle = document.getElementById("btnToggleParticipation");
 
   const desiredRole = sessionStorage.getItem("desiredRole") || "participant";
+  // Contesto di provenienza (impostato quando apro evento.html dal drawer MAPPA)
+  const fromView = sessionStorage.getItem("fromView"); // es. "map"
+  const returnTo = sessionStorage.getItem("returnTo"); // es. "partecipante-mappa.html"
+  const forceHideChatBtn = (fromView === "map");
+
+  // Anti-flicker: se arrivo dalla MAPPA, nascondo subito il bottone chat (prima di qualsiasi await)
+  if (forceHideChatBtn) {
+    const btnChatEarly = document.getElementById("btnChatEvento");
+    if (btnChatEarly) btnChatEarly.style.display = "none";
+  }
 // Contesto di provenienza (impostato quando si apre evento.html dal drawer MAPPA)
   const fromView = sessionStorage.getItem("fromView"); // es. "map"
   const returnTo = sessionStorage.getItem("returnTo"); // es. "partecipante-mappa.html"
@@ -504,7 +514,11 @@ const chatEligible = (appr === "approved") && timeChatAllowed && !isPast;
 if (!btnChat) {
   // niente bottone → nascondiamo eventuale box sblocco (se rimasto nel DOM)
   if (unlockBox) unlockBox.style.display = "none";
-} else if (isPast) {
+ } else if (forceHideChatBtn) {
+  // Arrivo da MAPPA/Chat embedded → bottone "Apri chat evento" sempre nascosto
+  btnChat.style.display = "none";
+  if (unlockBox) unlockBox.style.display = "none";
+ } else if (isPast) {
   // Evento completamente passato → niente chat
   btnChat.style.display = "none";
   btnChat.disabled = true;
@@ -515,14 +529,14 @@ if (!btnChat) {
   btnChat.disabled = true;
   btnChat.classList.add("btn-disabled");
   btnChat.textContent = "Chat non ancora attiva";
-  btnChat.style.display = "";
+  btnChat.style.display = forceHideChatBtn ? "none" : "";
   if (unlockBox) unlockBox.style.display = "none";
 } else {
   // Chat eleggibile: stato base → attivo. Eventuali lock aggiuntivi vengono gestiti da checkChatAccess
   btnChat.disabled = false;
   btnChat.classList.remove("btn-disabled");
   btnChat.textContent = "💬 Apri chat evento";
-  btnChat.style.display = "";
+  btnChat.style.display = forceHideChatBtn ? "none" : "";
   if (unlockBox) unlockBox.style.display = "none";
 }
 
@@ -769,26 +783,35 @@ try {
   }
 
 btnBack.addEventListener("click", () => {
-// Se abbiamo un return target (es. arriviamo dalla MAPPA), torniamo lì
-if (returnTo) {
-  const focusId = sessionStorage.getItem("returnEventId");
-  sessionStorage.removeItem("fromView");
-  sessionStorage.removeItem("returnTo");
-  sessionStorage.removeItem("returnEventId");
+  const role = sessionStorage.getItem("desiredRole");
+  window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
+});
+``` 7
 
-  if (focusId) {
-    const sep = returnTo.includes("?") ? "&" : "?";
-    window.location.href = `${returnTo}${sep}focusEventId=${encodeURIComponent(focusId)}`;
-  } else {
-    window.location.href = returnTo;
-  }
-  return;
-}
+### Sostituisci tutto il listener con questo:
+```js
+  btnBack.addEventListener("click", () => {
+    // Se abbiamo un return target (es. arriviamo dalla MAPPA), torniamo lì mantenendo focus sull’evento
+    if (returnTo) {
+      const focusId = sessionStorage.getItem("returnEventId");
+      sessionStorage.removeItem("fromView");
+      sessionStorage.removeItem("returnTo");
+      sessionStorage.removeItem("returnEventId");
+
+      if (focusId) {
+        const sep = returnTo.includes("?") ? "&" : "?";
+        window.location.href = `${returnTo}${sep}focusEventId=${encodeURIComponent(focusId)}`;
+      } else {
+        window.location.href = returnTo;
+      }
+      return;
+    }
 
     // fallback: comportamento attuale (ruolo -> home relativa)
     const role = sessionStorage.getItem("desiredRole");
     window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
   });
+
 
 });
 
@@ -1090,6 +1113,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
