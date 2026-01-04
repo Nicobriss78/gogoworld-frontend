@@ -769,13 +769,21 @@ try {
   }
 
 btnBack.addEventListener("click", () => {
-    // Se abbiamo un return target (es. arriviamo dalla MAPPA), torniamo lì
-    if (returnTo) {
-      sessionStorage.removeItem("fromView");
-      sessionStorage.removeItem("returnTo");
-      window.location.href = returnTo;
-      return;
-    }
+// Se abbiamo un return target (es. arriviamo dalla MAPPA), torniamo lì
+if (returnTo) {
+  const focusId = sessionStorage.getItem("returnEventId");
+  sessionStorage.removeItem("fromView");
+  sessionStorage.removeItem("returnTo");
+  sessionStorage.removeItem("returnEventId");
+
+  if (focusId) {
+    const sep = returnTo.includes("?") ? "&" : "?";
+    window.location.href = `${returnTo}${sep}focusEventId=${encodeURIComponent(focusId)}`;
+  } else {
+    window.location.href = returnTo;
+  }
+  return;
+}
 
     // fallback: comportamento attuale (ruolo -> home relativa)
     const role = sessionStorage.getItem("desiredRole");
@@ -1082,6 +1090,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
