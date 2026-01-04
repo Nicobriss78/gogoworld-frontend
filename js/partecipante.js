@@ -930,6 +930,29 @@ if (myList) myList.innerHTML = "";
 */
 // --- MAPPA: aggiorna marker su cluster (map.js) ---
 participantMap.updateFromEvents(res?.events || []);
+      // --- MAPPA: restore focus su evento quando rientro da evento.html (focusEventId in querystring) ---
+try {
+  const mapEl = document.getElementById("map");
+  if (mapEl) {
+    const url = new URL(window.location.href);
+    const focusId = url.searchParams.get("focusEventId") || "";
+
+    if (focusId && Array.isArray(res?.events)) {
+      const evBack = res.events.find(e => String(e?._id) === String(focusId));
+      if (evBack) {
+        // 1) centra e apre popup marker
+        try { participantMap.focusOnEventId(focusId); } catch {}
+        // 2) seleziona evento (popola drawer + apre chat embedded)
+        try { handleMapEventSelect(evBack); } catch {}
+      }
+
+      // pulizia URL: evita re-trigger su refresh
+      url.searchParams.delete("focusEventId");
+      window.history.replaceState({}, "", url.toString());
+    }
+  }
+} catch {}
+
 // >>> UI v2: rendering card per Home (carosello orizzontale)
 // --- Banner: rendering card (inline) ---
 const renderBannerCard = (b) => {
@@ -1265,6 +1288,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
