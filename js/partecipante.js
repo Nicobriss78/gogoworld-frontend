@@ -1052,13 +1052,15 @@ if (action === "details") {
   // (serve a: nascondere "Apri chat evento" e far tornare "Torna alla lista" su MAPPA)
   const isMapPage = document.body.classList.contains("gw-page-map");
   const fromMapDrawer = !!btn.closest("#mapSelectedEvent");
-  if (isMapPage && fromMapDrawer) {
+if (isMapPage && fromMapDrawer) {
   sessionStorage.setItem("fromView", "map");
   sessionStorage.setItem("returnTo", "partecipante-mappa.html");
-  } else {
+  sessionStorage.setItem("returnEventId", id);
+} else {
   sessionStorage.removeItem("fromView");
   sessionStorage.removeItem("returnTo");
-  }
+}
+
 
   window.location.href = "evento.html";
   return;
@@ -1263,6 +1265,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
