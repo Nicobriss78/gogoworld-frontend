@@ -35,7 +35,7 @@ function renderStatus(status) {
 }
 
 // >>> UI v2: rendering card per Home (carosello orizzontale)
-export const renderEventCard = (ev, includeLeave) => {
+ export const renderEventCard = (ev, includeLeave, opts = {}) => {
   const rawStatus = String(ev?.status || "").toLowerCase();
 // Immagine cover evento (supporto robusto a più nomi campo)
 const coverUrl =
@@ -63,15 +63,23 @@ const coverUrl =
     `${ev.country ? " • " + ev.country : ""}`;
 
   const when = formatEventDate(ev);
+  // Variante bottone dettagli:
+  // - default: ℹ️ (Dettagli evento)
+  // - plus: + (Più dettagli / apri scheda completa)
+  const detailsVariant = String(opts?.detailsVariant || "info").toLowerCase();
+  const detailsIsPlus = detailsVariant === "plus";
+  const detailsIcon = detailsIsPlus ? "+" : "ℹ️";
+  const detailsTitle = detailsIsPlus ? "Più dettagli" : "Dettagli evento";
+  const detailsBtnClass = detailsIsPlus ? "gw-info-btn gw-info-plus" : "gw-info-btn";
 
-  // Azioni: in card lasciamo SOLO un’icona "Info" (Dettagli)
+  // Azioni: in card lasciamo SOLO un’icona "Dettagli" (variante: ℹ️ o +)
   const infoHtml = `
-    <button class="gw-info-btn"
-      type="button"
-      title="Dettagli evento"
-      aria-label="Dettagli evento"
-      data-id="${ev._id}"
-      data-action="details">ℹ️</button>
+  <button class="${detailsBtnClass}"
+  type="button"
+  title="${detailsTitle}"
+  aria-label="${detailsTitle}"
+  data-id="${ev._id}"
+  data-action="details">${detailsIcon}</button>
   `;
 
   return `
