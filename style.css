@@ -1487,6 +1487,13 @@ body.gw-page-map .gw-map{
   justify-content: center;
   cursor: pointer;
 }
+/* Variante "più dettagli" (usata nel drawer MAPPA): + rosso come logout */
+.gw-info-btn.gw-info-plus{
+  color: var(--gw-red);
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 1;
+}
 
 .gw-info-btn:active{
   transform: scale(0.98);
@@ -1517,5 +1524,6 @@ body.gw-page-map .gw-map{
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
 
