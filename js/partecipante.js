@@ -704,7 +704,7 @@ function handleMapEventSelect(ev) {
   if (mapSelected) {
     mapSelected.innerHTML = `
       <div class="gw-map-selected-wrap">
-        ${renderEventCard(ev, false)}
+      ${renderEventCard(ev, false, { detailsVariant: "plus" })}     
       </div>
     `;
   }
@@ -1045,11 +1045,24 @@ if (!btn) {
     const cardEl = btn.closest(".event-card");
     const evTitleText = cardEl?.querySelector("h3")?.textContent?.trim() || "";
 
-    if (action === "details") {
-      sessionStorage.setItem("selectedEventId", id);
-      window.location.href = "evento.html";
-      return;
-    }
+if (action === "details") {
+  sessionStorage.setItem("selectedEventId", id);
+
+  // Se il click arriva dal drawer della MAPPA, memorizza contesto di ritorno
+  // (serve a: nascondere "Apri chat evento" e far tornare "Torna alla lista" su MAPPA)
+  const isMapPage = document.body.classList.contains("gw-page-map");
+  const fromMapDrawer = !!btn.closest("#mapSelectedEvent");
+  if (isMapPage && fromMapDrawer) {
+  sessionStorage.setItem("fromView", "map");
+  sessionStorage.setItem("returnTo", "partecipante-mappa.html");
+  } else {
+  sessionStorage.removeItem("fromView");
+  sessionStorage.removeItem("returnTo");
+  }
+
+  window.location.href = "evento.html";
+  return;
+}
 
     if (action === "join") {
       try {
@@ -1250,6 +1263,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
