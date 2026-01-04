@@ -327,7 +327,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnToggle = document.getElementById("btnToggleParticipation");
 
   const desiredRole = sessionStorage.getItem("desiredRole") || "participant";
-
+// Contesto di provenienza (impostato quando si apre evento.html dal drawer MAPPA)
+  const fromView = sessionStorage.getItem("fromView"); // es. "map"
+  const returnTo = sessionStorage.getItem("returnTo"); // es. "partecipante-mappa.html"
   try {
     const [detail, me] = await Promise.all([
       apiGet(`/events/${eventId}`, token),
@@ -755,15 +757,31 @@ try {
       });
     }
     applyEventStateUI(ev, { isOwner });
+    // Se arrivo dalla MAPPA/CHAT, il bottone "Apri chat evento" è ridondante
+    if (fromView === "map") {
+      const btnChatEvento = document.getElementById("btnChatEvento");
+      if (btnChatEvento) btnChatEvento.style.display = "none";
+    }
+
   } catch (err) {
     elDetails.innerHTML = `<p class="error">Errore: ${escapeHtml(err.message)}</p>`;
     showAlert(err?.message || "Si è verificato un errore", "error", { autoHideMs: 4000 });
   }
 
-  btnBack.addEventListener("click", () => {
+btnBack.addEventListener("click", () => {
+    // Se abbiamo un return target (es. arriviamo dalla MAPPA), torniamo lì
+    if (returnTo) {
+      sessionStorage.removeItem("fromView");
+      sessionStorage.removeItem("returnTo");
+      window.location.href = returnTo;
+      return;
+    }
+
+    // fallback: comportamento attuale (ruolo -> home relativa)
     const role = sessionStorage.getItem("desiredRole");
     window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
   });
+
 });
 
 // TODO UI/UX Overhaul:
@@ -1064,6 +1082,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
