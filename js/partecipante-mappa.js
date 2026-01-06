@@ -6,6 +6,7 @@ import { apiGet } from "./api.js";
 import { renderEventCard } from "./home-cards.js";
 import { createParticipantMap } from "./map.js";
 import { createEmbeddedEventChat } from "./map-chat.js";
+import { showAlert } from "./participant-shared.js";
 
 /* =========================
    ANCHOR: MAPPA_ALERT_FALLBACK
@@ -96,6 +97,68 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Topbar (nome + status)
   await hydrateTopbar(token);
+/* =========================
+     ANCHOR: MAPPA_MENU_MIN
+     ========================= */
+  const btnHamburger = document.getElementById("btnHamburger");
+  const gwMenu = document.getElementById("gwMenu");
+  const btnLogout = document.getElementById("btnLogout");
+  const btnSwitchRole = document.getElementById("btnSwitchRole");
+  const btnGuide = document.getElementById("btnGuide");
+  const btnPrivateEventsMenu = document.getElementById("btnPrivateEvents");
+
+  const closeGwMenu = () => {
+    if (gwMenu) gwMenu.style.display = "none";
+  };
+
+  if (btnHamburger && gwMenu) {
+    btnHamburger.addEventListener("click", () => {
+      gwMenu.style.display = gwMenu.style.display === "none" ? "block" : "none";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!gwMenu.contains(e.target) && e.target !== btnHamburger) closeGwMenu();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeGwMenu();
+    });
+  }
+
+  if (btnGuide) {
+    btnGuide.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeGwMenu();
+      alert("Guida partecipante (placeholder).");
+    });
+  }
+
+  if (btnSwitchRole) {
+    btnSwitchRole.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeGwMenu();
+      sessionStorage.setItem("desiredRole", "organizer");
+      window.location.href = "organizzatore.html";
+    });
+  }
+
+  if (btnPrivateEventsMenu) {
+    btnPrivateEventsMenu.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeGwMenu();
+      // Per ora rimandiamo alla HOME (privati li spacchettiamo in una pagina dedicata più avanti)
+      window.location.href = "partecipante.html";
+    });
+  }
+
+  if (btnLogout) {
+    btnLogout.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeGwMenu();
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    });
+  }
 
   // Init mappa
   const participantMap = createParticipantMap({
@@ -110,6 +173,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     composerId: "mapChatComposer",
     inputId: "mapChatInput",
     sendId: "mapChatSend"
+  });
+/* =========================
+     ANCHOR: MAPPA_ACTIONS_DELEGATION
+     ========================= */
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+
+    const action = btn.getAttribute("data-action");
+    const id = btn.getAttribute("data-id");
+
+    // Agiamo SOLO su bottoni che stanno nel drawer dettaglio MAPPA
+    const fromMapDrawer = !!btn.closest("#mapSelectedEvent");
+    if (!fromMapDrawer) return;
+
+    // × Chiudi drawer (solo UI, chat resta)
+    if (action === "close-detail") {
+      if (typeof window.gwCloseMapDetailDrawer === "function") {
+        window.gwCloseMapDetailDrawer();
+      }
+      return;
+    }
+
+    // + Vai ai dettagli completi (evento.html)
+    if (action === "details") {
+      sessionStorage.setItem("selectedEventId", id);
+
+      // contesto ritorno su MAPPA
+      sessionStorage.setItem("fromView", "map");
+      sessionStorage.setItem("returnTo", "partecipante-mappa.html");
+      sessionStorage.setItem("returnEventId", id);
+
+      window.location.href = "evento.html";
+      return;
+    }
   });
 
   /* =========================
@@ -146,7 +244,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         sessionStorage.removeItem("returnEventId");
       }
     } catch (err) {
-      showAlertFallback(err?.message || "Errore nel caricamento eventi (MAPPA)", "error", { autoHideMs: 4000 });
+showAlert(err?.message || "Errore nel caricamento eventi (MAPPA)", "error", { autoHideMs: 4000 });
     }
   }
 
