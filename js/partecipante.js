@@ -704,7 +704,7 @@ function handleMapEventSelect(ev) {
   if (mapSelected) {
     mapSelected.innerHTML = `
       <div class="gw-map-selected-wrap">
-      ${renderEventCard(ev, false, { detailsVariant: "plus" })}     
+${renderEventCard(ev, false, { detailsVariant: "plus", showCloseDetail: true })}
       </div>
     `;
   }
@@ -1067,6 +1067,25 @@ if (!btn) {
     if (btn.disabled || btn.dataset.loading === "1") return;
     const cardEl = btn.closest(".event-card");
     const evTitleText = cardEl?.querySelector("h3")?.textContent?.trim() || "";
+// 🔹 Chiudi SOLO il blocco dettaglio (drawer MAPPA), senza uscire dalla chat e senza resettare l’evento
+    if (action === "close-detail") {
+      const isMapPage = document.body.classList.contains("gw-page-map");
+      const fromMapDrawer = !!btn.closest("#mapSelectedEvent");
+      if (isMapPage && fromMapDrawer) {
+        // Preferisci la funzione globale se esiste (la esporremo in partecipante-mappa.html)
+        if (typeof window.gwCloseMapDetailDrawer === "function") {
+          window.gwCloseMapDetailDrawer();
+        } else {
+          // Fallback DOM-safe (nessun reset chat/evento)
+          const drawer = document.getElementById("mapDetailDrawer");
+          const overlay = document.getElementById("mapDetailOverlay");
+          if (drawer) drawer.hidden = true;
+          if (overlay) overlay.hidden = true;
+          document.body.classList.remove("gw-lock");
+        }
+      }
+      return;
+    }
 
 if (action === "details") {
   sessionStorage.setItem("selectedEventId", id);
@@ -1288,6 +1307,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
