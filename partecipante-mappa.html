@@ -197,7 +197,8 @@
       document.body.classList.remove("gw-lock");
       drawer.hidden = true;
     }
-
+// Esposto per poter chiudere il drawer anche da altri moduli (es. click sulla "×" accanto al "+")
+    window.gwCloseMapDetailDrawer = closeDrawer;
     openBtn.addEventListener("click", openDrawer);
     closeBtn.addEventListener("click", closeDrawer);
     overlay.addEventListener("click", closeDrawer);
