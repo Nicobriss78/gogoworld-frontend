@@ -337,9 +337,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const btnChatEarly = document.getElementById("btnChatEvento");
     if (btnChatEarly) btnChatEarly.style.display = "none";
   }
-// Contesto di provenienza (impostato quando si apre evento.html dal drawer MAPPA)
-  const fromView = sessionStorage.getItem("fromView"); // es. "map"
-  const returnTo = sessionStorage.getItem("returnTo"); // es. "partecipante-mappa.html"
+
   try {
     const [detail, me] = await Promise.all([
       apiGet(`/events/${eventId}`, token),
@@ -783,14 +781,6 @@ try {
   }
 
 btnBack.addEventListener("click", () => {
-  const role = sessionStorage.getItem("desiredRole");
-  window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
-});
-``` 7
-
-### Sostituisci tutto il listener con questo:
-```js
-  btnBack.addEventListener("click", () => {
     // Se abbiamo un return target (es. arriviamo dalla MAPPA), torniamo lì mantenendo focus sull’evento
     if (returnTo) {
       const focusId = sessionStorage.getItem("returnEventId");
@@ -1113,6 +1103,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
