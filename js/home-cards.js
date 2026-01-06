@@ -72,15 +72,36 @@ const coverUrl =
   const detailsTitle = detailsIsPlus ? "Più dettagli" : "Dettagli evento";
   const detailsBtnClass = detailsIsPlus ? "gw-info-btn gw-info-plus" : "gw-info-btn";
 
-  // Azioni: in card lasciamo SOLO un’icona "Dettagli" (variante: ℹ️ o +)
+// Azioni:
+  // - sempre: bottone "Dettagli" (variante: ℹ️ o +)
+  // - opzionale: bottone "Chiudi dettaglio" (×) accanto al +, stesso stile/colore del +
+  const showCloseDetail = Boolean(opts?.showCloseDetail);
+
+  // Wrapper posizionato in alto a destra; i bottoni sono "static" per evitare collisioni con eventuali CSS assoluti
   const infoHtml = `
-  <button class="${detailsBtnClass}"
-  type="button"
-  title="${detailsTitle}"
-  aria-label="${detailsTitle}"
-  data-id="${ev._id}"
-  data-action="details">${detailsIcon}</button>
+    <div class="gw-card-actions" style="position:absolute; top:10px; right:10px; display:flex; gap:6px; z-index:2;">
+      <button class="${detailsBtnClass}"
+        style="position:static;"
+        type="button"
+        title="${detailsTitle}"
+        aria-label="${detailsTitle}"
+        data-id="${ev._id}"
+        data-action="details">${detailsIcon}</button>
+
+      ${
+        (showCloseDetail && detailsIsPlus)
+          ? `<button class="gw-info-btn gw-info-plus"
+              style="position:static;"
+              type="button"
+              title="Chiudi dettaglio"
+              aria-label="Chiudi dettaglio"
+              data-id="${ev._id}"
+              data-action="close-detail">×</button>`
+          : ``
+      }
+    </div>
   `;
+
 
   return `
     <article class="gw-rail event-card" data-status="${rawStatus}" data-event-id="${ev._id}">
