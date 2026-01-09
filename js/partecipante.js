@@ -682,42 +682,56 @@ if (myUserId) {
   populateFilterOptions();
 
 // --- MAPPA: init (estratta in map.js) ---
-const participantMap = createParticipantMap({
-  mapId: "map",
-  onSelectEvent: handleMapEventSelect
-});
-participantMap.init();
+// LEGACY MAPPA DISABLED: la MAPPA ora vive in js/partecipante-mappa.js
+// Per riattivare temporaneamente la legacy, metti a true:
+const ENABLE_LEGACY_MAPPA = false;
 
-// Chat embedded nella pagina Mappa (blocchi sotto la mappa)
-const mapChat = createEmbeddedEventChat({
-  panelId: "mapChatPanel",
-  composerId: "mapChatComposer",
-  inputId: "mapChatInput",
-  sendId: "mapChatSend"
-});
+let participantMap = null;
+let mapChat = null;
 
 function handleMapEventSelect(ev) {
-  if (!ev) return;
+  // legacy disabled: funzione lasciata qui solo per compatibilità
+  if (!ENABLE_LEGACY_MAPPA) return;
+}
 
-  // BLOCCO 2 — dettaglio evento selezionato
-  const mapSelected = document.getElementById("mapSelectedEvent");
-  if (mapSelected) {
-    mapSelected.innerHTML = `
-      <div class="gw-map-selected-wrap">
-${renderEventCard(ev, false, { detailsVariant: "plus", showCloseDetail: true })}
-      </div>
-    `;
-  }
+if (ENABLE_LEGACY_MAPPA) {
+  participantMap = createParticipantMap({
+    mapId: "map",
+    onSelectEvent: handleMapEventSelect
+  });
+  participantMap.init();
 
-  // BLOCCO 3 — chat evento selezionato (embedded, stesse API di rooms.js)
-  const mapChatPanel = document.getElementById("mapChatPanel");
-  if (mapChatPanel) {
-    mapChat.openForEvent(ev._id, ev?.title || "Evento");
-  }
+  // Chat embedded nella pagina Mappa (blocchi sotto la mappa)
+  mapChat = createEmbeddedEventChat({
+    panelId: "mapChatPanel",
+    composerId: "mapChatComposer",
+    inputId: "mapChatInput",
+    sendId: "mapChatSend"
+  });
 
-  // Il composer viene gestito da map-chat.js (abilita/disabilita input in base a canSend)
-  const mapChatComposer = document.getElementById("mapChatComposer");
-  if (mapChatComposer) mapChatComposer.style.display = "flex";
+  // override reale (solo se legacy attiva)
+  handleMapEventSelect = function (ev) {
+    if (!ev) return;
+
+    // BLOCCO 2 — dettaglio evento selezionato
+    const mapSelected = document.getElementById("mapSelectedEvent");
+    if (mapSelected) {
+      mapSelected.innerHTML = `
+        <div class="gw-map-selected-wrap">
+          ${renderEventCard(ev, false, { detailsVariant: "plus", showCloseDetail: true })}
+        </div>
+      `;
+    }
+
+    // BLOCCO 3 — chat evento selezionato (embedded)
+    const mapChatPanel = document.getElementById("mapChatPanel");
+    if (mapChatPanel) {
+      mapChat.openForEvent(ev._id, ev?.title || "Evento");
+    }
+
+    const mapChatComposer = document.getElementById("mapChatComposer");
+    if (mapChatComposer) mapChatComposer.style.display = "flex";
+  };
 }
 
   
@@ -929,29 +943,30 @@ if (myList) myList.innerHTML = "";
       }
 */
 // --- MAPPA: aggiorna marker su cluster (map.js) ---
-participantMap.updateFromEvents(res?.events || []);
-      // --- MAPPA: restore focus su evento quando rientro da evento.html (focusEventId in querystring) ---
-try {
-  const mapEl = document.getElementById("map");
-  if (mapEl) {
-    const url = new URL(window.location.href);
-    const focusId = url.searchParams.get("focusEventId") || "";
+// LEGACY MAPPA DISABLED: la MAPPA è stata estratta in js/partecipante-mappa.js
+if (participantMap && typeof participantMap.updateFromEvents === "function") {
+  participantMap.updateFromEvents(res?.events || []);
 
-    if (focusId && Array.isArray(res?.events)) {
-      const evBack = res.events.find(e => String(e?._id) === String(focusId));
-      if (evBack) {
-        // 1) centra e apre popup marker
-        try { participantMap.focusOnEventId(focusId); } catch {}
-        // 2) seleziona evento (popola drawer + apre chat embedded)
-        try { handleMapEventSelect(evBack); } catch {}
+  // restore focus su evento quando rientro da evento.html (focusEventId in querystring)
+  try {
+    const mapEl = document.getElementById("map");
+    if (mapEl) {
+      const url = new URL(window.location.href);
+      const focusId = url.searchParams.get("focusEventId") || "";
+
+      if (focusId && Array.isArray(res?.events)) {
+        const evBack = res.events.find(e => String(e?._id) === String(focusId));
+        if (evBack) {
+          try { participantMap.focusOnEventId(focusId); } catch {}
+          try { handleMapEventSelect(evBack); } catch {}
+        }
+
+        url.searchParams.delete("focusEventId");
+        window.history.replaceState({}, "", url.toString());
       }
-
-      // pulizia URL: evita re-trigger su refresh
-      url.searchParams.delete("focusEventId");
-      window.history.replaceState({}, "", url.toString());
     }
-  }
-} catch {}
+  } catch {}
+}
 
 // >>> UI v2: rendering card per Home (carosello orizzontale)
 // --- Banner: rendering card (inline) ---
@@ -1056,8 +1071,9 @@ if (!btn) {
   const card = e.target.closest(".event-card");
   if (card) {
     const evId = card.getAttribute("data-event-id");
-    participantMap.focusOnEventId(evId);
-  }
+if (participantMap && typeof participantMap.focusOnEventId === "function" && evId) {
+      participantMap.focusOnEventId(evId);
+    }  }
   return;
 }
 
@@ -1307,6 +1323,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
