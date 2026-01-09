@@ -6,42 +6,8 @@ import { apiGet } from "./api.js";
 import { renderEventCard } from "./home-cards.js";
 import { createParticipantMap } from "./map.js";
 import { createEmbeddedEventChat } from "./map-chat.js";
-import { showAlert } from "./participant-shared.js";
+import { showAlert } from "/js/participant-shared.js";
 
-/* =========================
-   ANCHOR: MAPPA_ALERT_FALLBACK
-   ========================= */
-function showAlertFallback(message, type = "error", opts = {}) {
-  // Se esiste una showAlert globale (es. da participant-shared.js), usala
-  if (typeof window.showAlert === "function") {
-    window.showAlert(message, type, opts);
-    return;
-  }
-
-  // Fallback minimale (non rompe la pagina)
-  const { autoHideMs = 0 } = opts;
-  const main = document.querySelector("main") || document.body;
-
-  let box = document.getElementById("alertBox");
-  if (!box) {
-    box = document.createElement("div");
-    box.id = "alertBox";
-    main.prepend(box);
-    box.setAttribute("role", "status");
-    box.setAttribute("aria-live", "polite");
-  }
-
-  const t = type === "success" ? "success" : type === "error" ? "error" : "info";
-  box.className = `alert ${t}`;
-  box.textContent = message;
-
-  if (autoHideMs > 0) {
-    if (box._hideTimer) clearTimeout(box._hideTimer);
-    box._hideTimer = setTimeout(() => {
-      if (box && box.parentNode) box.parentNode.removeChild(box);
-    }, autoHideMs);
-  }
-}
 
 /* =========================
    ANCHOR: MAPPA_TOPBAR
