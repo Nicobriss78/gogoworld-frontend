@@ -6,7 +6,7 @@ import { apiGet } from "./api.js";
 import { renderEventCard } from "./home-cards.js";
 import { createParticipantMap } from "./map.js";
 import { createEmbeddedEventChat } from "./map-chat.js";
-import { showAlert } from "/js/partecipant-shared.js";
+import { showAlert } from "/js/participant-shared.js";
 
 
 /* =========================
