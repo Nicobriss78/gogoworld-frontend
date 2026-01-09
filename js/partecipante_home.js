@@ -11,7 +11,7 @@ import {
   activateHomeBannerSlots
 } from "./home-banners.js";
 
-import { showAlert, maybeShowProfileNag } from "./partecipant-shared.js";
+import { showAlert, maybeShowProfileNag } from "./participant-shared.js";
 
 // -----------------------------
 // Stato
