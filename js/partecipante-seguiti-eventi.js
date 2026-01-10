@@ -8,6 +8,8 @@
 import { apiGet, apiPost } from "./api.js";
 import { renderEventCard } from "./home-cards.js";
 import { showAlert } from "./participant-shared.js";
+// Memorizzo l'id dell'utente loggato (serve per capire se "Partecipo" su un evento)
+let ME_ID = null;
 
 /* =========================
    ANCHOR: FOLLOWING_TOPBAR
@@ -15,6 +17,8 @@ import { showAlert } from "./participant-shared.js";
 async function hydrateTopbar(token) {
   try {
     const me = await apiGet("/users/me", token);
+     // id utente loggato (formati possibili: root o me.user)
+    ME_ID = me?._id || me?.user?._id || me?.id || me?.user?.id || null;
     const name =
       me?.name ||
       me?.user?.name ||
@@ -209,18 +213,17 @@ function renderFollowingBlocks(events) {
     return;
   }
 
-  // calcolo joined: se l'evento contiene participants[] e include il mio id
+// joined: se l'evento contiene participants[] e include ME_ID
   // fallback: se "joined" arriva già pronto dal BE, lo usiamo.
-  const myId =
-    (arr[0]?.__me && arr[0].__me._id) || // non previsto, ma harmless
-    null;
-
   const isJoined = (ev) => {
     if (typeof ev?.joined === "boolean") return ev.joined;
+
     const parts = ev?.participants;
-    if (!myId || !Array.isArray(parts)) return false;
-    return parts.some(p => String(p?._id || p) === String(myId));
+    if (!ME_ID || !Array.isArray(parts)) return false;
+
+    return parts.some(p => String(p?._id || p) === String(ME_ID));
   };
+
 
   // group by organizer
   const groups = new Map();
