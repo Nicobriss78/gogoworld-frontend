@@ -109,17 +109,6 @@
        ========================= -->
 
   <!-- Listener globale per messaggi di stato API (come nelle altre pagine) -->
-  <script>
-    window.addEventListener("api:status", (e) => {
-      const { phase, attempt, status } = (e && e.detail) || {};
-      if (phase === "retry") {
-        try {
-          showAlert(`⏳ Server in riattivazione… (tentativo ${attempt})`, "info", { autoHideMs: 1500 });
-        } catch {}
-        console.info("Server in riattivazione… tentativo", attempt, "status", status);
-      }
-    });
-  </script>
 
   <!-- Controller pagina (File 4) -->
   <script type="module" src="js/partecipante-seguiti-eventi.js"></script>
