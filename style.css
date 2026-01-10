@@ -1524,16 +1524,6 @@ body.gw-page-map .gw-map{
   background: rgba(200,58,58,.45);
   transition: none;
 }
-/* === FIX viewport background per schede partecipante === */
-.gw-app {
-  min-height: 100vh;
-  background: #ffffff;
-}
-
-.gw-page {
-  min-height: 100vh;
-  background: #ffffff;
-}
 
 
 
