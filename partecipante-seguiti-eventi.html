@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <title>GoGoWorld.life – Eventi seguiti</title>
+
+  <!-- CSS (stesso asset usato dalle altre pagine Partecipante) -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <!-- =========================
+       ANCHOR: TOPBAR
+       ========================= -->
+  <header class="gw-topbar">
+    <!-- Riga 1: saluto + logo -->
+    <div class="gw-topbar-row gw-topbar-row--title">
+      <div class="gw-greeting">
+        <div class="gw-hello">Ciao <span id="gwUserName">👤</span></div>
+        <div class="gw-status" id="gwUserStatus">Partecipante</div>
+      </div>
+
+      <div class="gw-brand">
+        <span class="gw-brandtext">GoGoWorld.life</span>
+      </div>
+    </div>
+
+    <!-- Riga 2: azioni -->
+    <div class="gw-topbar-row gw-topbar-row--actions">
+      <a class="gw-iconbtn"
+         href="pages/cerca-utenti.html" title="Cerca" aria-label="Cerca">
+        <span class="gw-ico">🔎</span>
+      </a>
+
+      <button class="gw-iconbtn" id="btnGeo" title="Posizione" aria-label="Posizione">
+        <span class="gw-ico">📍</span>
+      </button>
+
+      <a class="gw-iconbtn" href="messages.html" title="Messaggi" aria-label="Messaggi">
+        <span class="gw-ico">✉️</span>
+        <span id="messagesBadge" class="gw-badge" style="display:none">0</span>
+      </a>
+
+      <button class="gw-iconbtn" id="btnNotifications" title="Notifiche" aria-label="Notifiche">
+        <span class="gw-ico">🔔</span>
+        <span id="notiBadge" class="gw-badge" style="display:none">0</span>
+      </button>
+
+      <button class="gw-iconbtn" id="btnHamburger" title="Menu" aria-label="Menu">
+        <span class="gw-ico">≡</span>
+      </button>
+    </div>
+
+    <!-- Menu hamburger -->
+    <div id="gwMenu" class="gw-menu" style="display:none">
+      <a href="pages/cerca-utenti.html">Cerca utente</a>
+      <a href="#" id="btnPrivateEvents">Eventi privati</a>
+      <a href="#" id="btnGuide">Guida partecipante</a>
+      <a href="#" id="btnSwitchRole">Cambia ruolo</a>
+      <a href="#" id="btnLogout" class="danger">Logout</a>
+    </div>
+  </header>
+
+  <!-- =========================
+       ANCHOR: FOLLOWING_EVENTS_MAIN
+       ========================= -->
+  <main class="gw-shell">
+    <!-- Corpo pagina: blocchi verticali per organizer, ciascuno con carousel orizzontale -->
+    <section class="gw-following-events">
+      <div class="gw-block">
+        <div class="gw-block-head">
+          <h2 class="gw-block-title">Eventi degli utenti che segui</h2>
+        </div>
+
+        <div class="gw-block-body">
+          <!-- Qui renderizzeremo N blocchi (uno per organizer) -->
+          <div id="followingEventsContainer"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         ANCHOR: BOTTOMNAV
+         ========================= -->
+    <nav class="gw-bottomnav">
+      <a class="gw-navitem" href="partecipante-mappa.html" title="Mappa"><span>🗺️</span></a>
+
+      <a class="gw-navitem is-active" href="partecipante-seguiti-eventi.html" title="Eventi seguiti">
+        <span>🧭</span>
+      </a>
+
+      <a class="gw-navitem gw-navitem--home" href="partecipante.html" title="Home">
+        <span>⌂</span>
+      </a>
+
+      <a class="gw-navitem" href="partecipante-seguiti-utenti.html" title="Utenti seguiti"><span>👥</span></a>
+      <a class="gw-navitem" href="profilo.html" title="Profilo"><span>☺</span></a>
+    </nav>
+
+    <footer class="app-footer">
+      GoGoWorld.life – Area Partecipante
+    </footer>
+  </main>
+
+  <!-- =========================
+       ANCHOR: SCRIPTS
+       ========================= -->
+
+  <!-- Listener globale per messaggi di stato API (come nelle altre pagine) -->
+  <script>
+    window.addEventListener("api:status", (e) => {
+      const { phase, attempt, status } = (e && e.detail) || {};
+      if (phase === "retry") {
+        try {
+          showAlert(`⏳ Server in riattivazione… (tentativo ${attempt})`, "info", { autoHideMs: 1500 });
+        } catch {}
+        console.info("Server in riattivazione… tentativo", attempt, "status", status);
+      }
+    });
+  </script>
+
+  <!-- Controller pagina (File 4) -->
+  <script type="module" src="js/partecipante-seguiti-eventi.js"></script>
+
+  <!-- Badge Messaggi/Room -->
+  <script type="module" src="js/notifications.js"></script>
+</body>
+</html>
