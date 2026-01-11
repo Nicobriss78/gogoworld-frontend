@@ -340,7 +340,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   await hydrateTopbar(token);
-  initHamburgerMenu();
+// initHamburgerMenu(); // DISATTIVATO: hamburger gestito da shared-ui.js (evita doppio-binding)
   initActionsDelegation(token);
 
   // Load events (seguiti) — BE già filtra i past e popola organizer.name
