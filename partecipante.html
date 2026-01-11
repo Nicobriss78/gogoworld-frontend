@@ -205,6 +205,11 @@
   </main>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <script type="module">
+  import { initSharedTopbarUI } from "./js/shared-ui.js";
+  initSharedTopbarUI();
+</script>
+
   <script type="module" src="js/partecipante.js"></script>
 <script>
   // Listener globale per messaggi di stato API (lo teniamo)
@@ -223,6 +228,7 @@
 <script type="module" src="js/notifications.js"></script>
 </body>
 </html>
+
 
 
 
