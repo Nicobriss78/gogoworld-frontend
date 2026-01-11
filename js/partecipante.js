@@ -410,7 +410,7 @@ if (btnRooms) {
     // (niente preventDefault: lasciamo navigare normalmente)
   });
 }
-
+}
  const allList = document.getElementById("allEventsList");
  const followingList = document.getElementById("followingEventsList");
  const myList = document.getElementById("myEventsList");
@@ -1330,6 +1330,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
