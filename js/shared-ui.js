@@ -67,16 +67,24 @@ function initHamburgerMenu() {
   const gwMenu = document.getElementById("gwMenu");
   if (!btnHamburger || !gwMenu) return;
 
-  const closeGwMenu = () => {
+const closeGwMenu = () => {
     gwMenu.style.display = "none";
     try { btnHamburger.setAttribute("aria-expanded", "false"); } catch {}
   };
 
-  const toggleGwMenu = () => {
-    const isOpen = gwMenu.style.display === "block";
-    gwMenu.style.display = isOpen ? "none" : "block";
-    try { btnHamburger.setAttribute("aria-expanded", String(!isOpen)); } catch {}
+  const isMenuOpen = () => {
+    // più robusto di gwMenu.style.display (che può essere vuoto)
+    const cur = window.getComputedStyle(gwMenu).display;
+    return cur !== "none";
   };
+
+  const toggleGwMenu = () => {
+    const open = isMenuOpen();
+    // .gw-menu è disegnato per display:flex nel tuo CSS
+    gwMenu.style.display = open ? "none" : "flex";
+    try { btnHamburger.setAttribute("aria-expanded", String(!open)); } catch {}
+  };
+
 
   btnHamburger.addEventListener("click", (e) => {
     e.preventDefault();
