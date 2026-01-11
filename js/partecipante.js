@@ -248,6 +248,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   // --- Badge "Room" con guard token e stop definitivo su 401 ---
   const badgeRooms = document.getElementById("roomsBadge");
   let _roomsBadgeInterval = null;
+ // ==============================
+// PATCH: shared-ui source of truth
+// ==============================
+const DISABLE_LEGACY_TOPBAR_UI = true; 
+if (!DISABLE_LEGACY_TOPBAR_UI) {  
   // === A9.3 — Notifiche in-app ===
 const btnNotifications = document.getElementById("btnNotifications");
 const notiBadge = document.getElementById("notiBadge");
@@ -1220,6 +1225,7 @@ if (isMapPage && fromMapDrawer) {
       window.location.href = "index.html";
     });
   }
+if (!DISABLE_LEGACY_TOPBAR_UI) {
 // ==============================
   // UI v2 — Hamburger menu behavior
   // ==============================
@@ -1282,6 +1288,7 @@ if (isMapPage && fromMapDrawer) {
       alert("Guida partecipante: in arrivo 🙂");
     });
   }
+  }
   // ==============================
   // UI v2 — GEO toggle wiring
   // ==============================
@@ -1323,6 +1330,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
