@@ -86,11 +86,11 @@ const closeGwMenu = () => {
   };
 
 
-  btnHamburger.addEventListener("click", (e) => {
+btnHamburger.addEventListener("click", (e) => {
     e.preventDefault();
-    e.stopPropagation();
+    e.stopImmediatePropagation(); // blocca eventuali altri listener sull’hamburger
     toggleGwMenu();
-  });
+  }, { capture: true }); // prende il click prima di altri listener in bubble
 
   gwMenu.addEventListener("click", (e) => e.stopPropagation());
 
