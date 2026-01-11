@@ -63,6 +63,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Topbar (nome + status)
   await hydrateTopbar(token);
+   // ==============================
+// PATCH: shared-ui source of truth
+// ==============================
+const DISABLE_LEGACY_TOPBAR_UI = true;
+if (!DISABLE_LEGACY_TOPBAR_UI) {
 /* =========================
      ANCHOR: MAPPA_MENU_MIN
      ========================= */
@@ -125,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.location.href = "login.html";
     });
   }
-
+ }
   // Init mappa
   const participantMap = createParticipantMap({
     mapId: "map",
