@@ -158,17 +158,28 @@ function initMenuActions() {
 
 /* ANCHOR: SHARED_UI_TOPBAR */
 export function initSharedTopbarUI() {
-  // Notifiche
-  const btnNotifications = document.getElementById("btnNotifications");
-  if (btnNotifications) {
-    btnNotifications.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      toggleNotificationsPanel();
-    });
-  }
+  const boot = () => {
+    // Notifiche
+    const btnNotifications = document.getElementById("btnNotifications");
+    if (btnNotifications && !btnNotifications.dataset.gwBound) {
+      btnNotifications.dataset.gwBound = "1";
+      btnNotifications.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleNotificationsPanel();
+      });
+    }
 
-  // Hamburger + voci menu
-  initHamburgerMenu();
-  initMenuActions();
+    // Hamburger + voci menu
+    initHamburgerMenu();
+    initMenuActions();
+  };
+
+  // Se il DOM non è ancora pronto, aspettiamo
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot, { once: true });
+  } else {
+    boot();
+  }
 }
+
