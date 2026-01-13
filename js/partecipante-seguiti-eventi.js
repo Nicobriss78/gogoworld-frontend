@@ -250,9 +250,9 @@ function renderFollowingBlocks(events) {
       const count = list.length;
 
       const railId = `followingRail_${idx}`;
-      const cardsHtml = list
-        .map(ev => renderFollowingCard(ev, isJoined(ev)))
-        .join("");
+const cardsHtml = list
+  .map(ev => `<div class="gw-rail">${renderFollowingCard(ev)}</div>`)
+  .join("");
 
       return `
         <section class="gw-block" style="margin-top:14px;">
@@ -260,12 +260,15 @@ function renderFollowingBlocks(events) {
             <h2 class="gw-block-title">${g.orgName} <span style="opacity:.75;">(${count})</span></h2>
           </div>
 
-          <div id="${railId}" class="gw-carousel-wrap">
-            ${cardsHtml}
-          </div>
-          <div class="gw-scrollrail" data-rail-for="${railId}">
-            <div class="gw-scrollthumb"></div>
-          </div>
+<div id="${railId}" class="gw-carousel-wrap">
+  <div class="gw-carousel">
+    ${cardsHtml}
+  </div>
+</div>
+<div class="gw-scrollrail" data-rail-for="${railId}">
+  <div class="gw-scrollthumb"></div>
+</div>
+
         </section>
       `;
     })
