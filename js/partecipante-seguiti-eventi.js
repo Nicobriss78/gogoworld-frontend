@@ -191,8 +191,8 @@ function renderFollowingCard(ev, joined = false) {
          data-id="${ev._id}"
          style="margin-top:8px; width:100%;">Partecipa</button>`;
 
-  return `
-    <div class="gw-following-card-wrap" style="position:relative;">
+return `
+    <div class="gw-rail gw-following-card-wrap" style="position:relative;">
       ${badgeHtml}
       ${base}
       ${cta}
