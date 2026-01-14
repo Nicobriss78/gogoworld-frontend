@@ -1374,6 +1374,34 @@ body.gw-page-map .gw-map{
   flex-direction: column;
   overflow: hidden;
 }
+/* --- FOLLOWED EVENTS: card dentro .gw-carousel-wrap (pagina Eventi Seguiti) --- */
+/* Vincola la larghezza delle card, evitando “schede infinite” (caso NicoBriss) */
+.gw-carousel-wrap {
+  scroll-snap-type: x mandatory;
+}
+
+.gw-following-card-wrap {
+  flex: 0 0 86%;
+  max-width: 86%;
+  min-width: 260px;
+  box-sizing: border-box;
+  scroll-snap-align: start;
+}
+
+/* la card deve riempire il wrapper, senza allargare il carosello */
+.gw-following-card-wrap .event-card {
+  width: 100%;
+  min-width: 0;
+}
+
+/* su schermi più grandi: card a dimensione “card” */
+@media (min-width: 768px) {
+  .gw-following-card-wrap {
+    flex: 0 0 360px;
+    max-width: 360px;
+    min-width: 320px;
+  }
+}
 @media (max-width: 640px){
   .gw-carousel-wrap{
     padding-left: 8px;
@@ -1524,6 +1552,7 @@ body.gw-page-map .gw-map{
   background: rgba(200,58,58,.45);
   transition: none;
 }
+
 
 
 
