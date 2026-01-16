@@ -56,10 +56,19 @@ async function hydrateTopbar(token) {
 }
 
 async function loadFollowing(token) {
-  container.innerHTML = "<p>Caricamento...</p>";
+container.innerHTML = `
+  <div class="gw-state gw-state--loading">
+    Caricamento...
+  </div>
+`;
 
   if (!ME_ID) {
-    container.innerHTML = "<p>Impossibile determinare l'utente loggato.</p>";
+container.innerHTML = `
+  <div class="gw-state gw-state--error">
+    <strong>Errore</strong>
+    Impossibile determinare l'utente loggato.
+  </div>
+`;
     return;
   }
 
@@ -69,7 +78,12 @@ async function loadFollowing(token) {
   const users = Array.isArray(res) ? res : (res?.data || []);
 
   if (!users.length) {
-    container.innerHTML = "<p>Non segui ancora nessun utente.</p>";
+container.innerHTML = `
+  <div class="gw-state gw-state--empty">
+    <strong>Nessun risultato</strong>
+    Non segui ancora nessun utente.
+  </div>
+`;
     return;
   }
 
@@ -115,7 +129,12 @@ function renderUsers(users, token) {
 
       card.remove();
       if (!container.children.length) {
-        container.innerHTML = "<p>Non segui ancora nessun utente.</p>";
+container.innerHTML = `
+  <div class="gw-state gw-state--empty">
+    <strong>Nessun risultato</strong>
+    Non segui ancora nessun utente.
+  </div>
+`;
       }
     });
 
