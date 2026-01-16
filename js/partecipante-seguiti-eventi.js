@@ -207,11 +207,17 @@ function renderFollowingBlocks(events) {
   const container = document.getElementById("followingEventsContainer");
   if (!container) return;
 
-  const arr = Array.isArray(events) ? events : [];
+const arr = Array.isArray(events) ? events : [];
   if (!arr.length) {
-    container.innerHTML = `<p>Nessun evento dai tuoi seguiti.</p>`;
+    container.innerHTML = `
+      <div class="gw-state gw-state--empty">
+        <strong>Nessun risultato</strong>
+        Nessun evento dai tuoi seguiti.
+      </div>
+    `;
     return;
   }
+
 
 // joined: se l'evento contiene participants[] e include ME_ID
   // fallback: se "joined" arriva già pronto dal BE, lo usiamo.
@@ -345,6 +351,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   await hydrateTopbar(token);
 // initHamburgerMenu(); // DISATTIVATO: hamburger gestito da shared-ui.js (evita doppio-binding)
   initActionsDelegation(token);
+const followingContainer = document.getElementById("followingEventsContainer");
+  if (followingContainer) {
+    followingContainer.innerHTML = `
+      <div class="gw-state gw-state--loading">
+        Caricamento...
+      </div>
+    `;
+  }
 
   // Load events (seguiti) — BE già filtra i past e popola organizer.name
   try {
@@ -354,7 +368,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       throw new Error("Formato eventi non valido");
     }
     renderFollowingBlocks(events);
-  } catch (err) {
+} catch (err) {
     showAlert(err?.message || "Errore nel caricamento eventi seguiti", "error", { autoHideMs: 4000 });
+
+    const followingContainer = document.getElementById("followingEventsContainer");
+    if (followingContainer) {
+      followingContainer.innerHTML = `
+        <div class="gw-state gw-state--error">
+          <strong>Errore</strong>
+          ${escapeHtml(err?.message || "Errore nel caricamento eventi seguiti")}
+        </div>
+      `;
+    }
   }
+
 });
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
