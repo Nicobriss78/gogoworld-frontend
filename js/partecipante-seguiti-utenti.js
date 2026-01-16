@@ -1,96 +1,133 @@
-// =====================================
-// P1 – Utenti seguiti (Partecipante)
-// =====================================
+// frontend/js/partecipante-seguiti-utenti.js
+// Scheda "Utenti seguiti" (UI v2)
+// - usa GET /users/me per id utente loggato
+// - usa GET /users/:id/following per lista
+// - usa DELETE /users/:id/follow per unfollow
 
 import { apiGet, apiDelete } from "./api.js";
-import { getCurrentUser } from "./auth.js";
+import { showAlert } from "./participant-shared.js";
 
 const container = document.getElementById("followingUsersContainer");
+let ME_ID = null;
 
-init();
+boot();
 
-async function init() {
+async function boot() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  await hydrateTopbar(token);
+  await loadFollowing(token);
+}
+
+async function hydrateTopbar(token) {
   try {
-    const me = await getCurrentUser();
-    if (!me || !me._id) {
-      container.innerHTML = "<p>Impossibile determinare l'utente.</p>";
-      return;
-    }
+    const me = await apiGet("/users/me", token);
 
-    loadFollowingUsers(me._id);
-  } catch (err) {
-    console.error("Errore inizializzazione utenti seguiti:", err);
-    container.innerHTML = "<p>Errore di caricamento.</p>";
+    // id utente loggato (robusto come nelle altre schede)
+    ME_ID = me?._id || me?.user?._id || me?.id || me?.user?.id || null;
+
+    const name =
+      me?.name ||
+      me?.user?.name ||
+      me?.email ||
+      me?.user?.email ||
+      "Utente";
+
+    const statusRaw = (me?.status || me?.user?.status || "")
+      .toString()
+      .toLowerCase();
+
+    const statusLabel = statusRaw
+      ? statusRaw[0].toUpperCase() + statusRaw.slice(1)
+      : "Partecipante";
+
+    const topName = document.getElementById("gwUserName");
+    if (topName) topName.textContent = name;
+
+    const topStatus = document.getElementById("gwUserStatus");
+    if (topStatus) topStatus.textContent = statusLabel || "Partecipante";
+  } catch {
+    // non blocchiamo pagina se fallisce
   }
 }
 
-async function loadFollowingUsers(userId) {
+async function loadFollowing(token) {
   container.innerHTML = "<p>Caricamento...</p>";
 
-  try {
-    const res = await apiGet(`/users/${userId}/following`);
-    const users = res?.data || [];
-
-    if (users.length === 0) {
-      container.innerHTML = "<p>Non segui ancora nessun utente.</p>";
-      return;
-    }
-
-    renderUsers(users);
-  } catch (err) {
-    console.error("Errore caricamento utenti seguiti:", err);
-    container.innerHTML = "<p>Errore nel recupero degli utenti seguiti.</p>";
+  if (!ME_ID) {
+    container.innerHTML = "<p>Impossibile determinare l'utente loggato.</p>";
+    return;
   }
+
+  const res = await apiGet(`/users/${ME_ID}/following`, token);
+
+  // supporta sia { ok:true, data:[...] } che array diretto
+  const users = Array.isArray(res) ? res : (res?.data || []);
+
+  if (!users.length) {
+    container.innerHTML = "<p>Non segui ancora nessun utente.</p>";
+    return;
+  }
+
+  renderUsers(users, token);
 }
 
-function renderUsers(users) {
+function renderUsers(users, token) {
   container.innerHTML = "";
 
-  users.forEach(user => {
+  users.forEach((u) => {
+    const userId = u?._id || u?.id;
+    const name = u?.name || u?.username || "Utente";
+    const meta = u?.city || u?.region || u?.country || "";
+
     const card = document.createElement("div");
-    card.className = "gw-usercard";
+    card.className = "gw-rail";
 
     card.innerHTML = `
-      <div class="gw-usercard-main">
-        <div class="gw-user-avatar">👤</div>
-        <div class="gw-user-info">
-          <div class="gw-user-name">${user.name || "Utente"}</div>
-          <div class="gw-user-meta">${user.city || ""}</div>
+      <div class="content">
+        <div class="title">${escapeHtml(name)}</div>
+        <div class="meta">${escapeHtml(meta)}</div>
+        <div class="actions">
+          <button class="gw-btn" data-view="${userId}">Profilo</button>
+          <button class="gw-btn gw-btn--danger" data-unfollow="${userId}">Smetti di seguire</button>
         </div>
-      </div>
-
-      <div class="gw-usercard-actions">
-        <button class="gw-btn gw-btn--ghost" data-view="${user._id}">
-          Profilo
-        </button>
-        <button class="gw-btn gw-btn--danger" data-unfollow="${user._id}">
-          Smetti di seguire
-        </button>
       </div>
     `;
 
-    // Profilo pubblico
-    card.querySelector("[data-view]").addEventListener("click", () => {
-      window.location.href = `pages/user-public.html?userId=${user._id}`;
+    // Vedi profilo pubblico
+    card.querySelector(`[data-view="${userId}"]`).addEventListener("click", () => {
+      window.location.href = `pages/user-public.html?userId=${encodeURIComponent(userId)}`;
     });
 
     // Unfollow
-    card.querySelector("[data-unfollow]").addEventListener("click", async () => {
+    card.querySelector(`[data-unfollow="${userId}"]`).addEventListener("click", async () => {
       if (!confirm("Vuoi smettere di seguire questo utente?")) return;
 
-      try {
-        await apiDelete(`/users/${user._id}/follow`);
-        card.remove();
+      const r = await apiDelete(`/users/${encodeURIComponent(userId)}/follow`, token);
+      if (r?.ok === false) {
+        showAlert("Errore durante l'operazione.");
+        return;
+      }
 
-        if (container.children.length === 0) {
-          container.innerHTML = "<p>Non segui ancora nessun utente.</p>";
-        }
-      } catch (err) {
-        console.error("Errore unfollow:", err);
-        alert("Errore durante l'operazione.");
+      card.remove();
+      if (!container.children.length) {
+        container.innerHTML = "<p>Non segui ancora nessun utente.</p>";
       }
     });
 
     container.appendChild(card);
   });
+}
+
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
