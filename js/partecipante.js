@@ -1040,12 +1040,13 @@ if (allList) {
   };
 
   allList.innerHTML = allItems.length
-    ? allItems.map(it => renderRailItem(it, false)).join("")
-  <div class="gw-state gw-state--empty">
-    <strong>Nessun risultato</strong>
-    Nessun evento disponibile.
-  </div>
-`;
+    ? allItems.map((it) => renderRailItem(it, false)).join("")
+    : `
+      <div class="gw-state gw-state--empty">
+        <strong>Nessun risultato</strong>
+        Nessun evento disponibile.
+      </div>
+    `;
 
   // Attiva rotazione banner SOLO se lo slot è visibile (IntersectionObserver)
   activateHomeBannerSlots({
@@ -1374,6 +1375,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
