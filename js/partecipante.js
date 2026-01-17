@@ -1370,42 +1370,7 @@ if (isHomePage) {
 }
 
 // MAPPA (solo eventi pubblici)
-if (isMapPage && !isHomePage) {
-  await loadEvents();
-}
-
+  if (isMapPage && !isHomePage) {
+    await loadEvents();
+  }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
