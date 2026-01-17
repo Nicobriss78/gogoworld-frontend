@@ -1111,7 +1111,8 @@ if (followingList) followingList.innerHTML = "";
 if (myList) myList.innerHTML = "";
 
   }
-
+} // END loadEvents
+  
 // Delegation click (tutti / miei + focus su mappa al click sulla card)
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest("button[data-action]");
@@ -1375,6 +1376,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
