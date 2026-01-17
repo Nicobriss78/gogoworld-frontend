@@ -1093,10 +1093,20 @@ if (myList) {
       }
 
     } catch (err) {
-      showAlert(err?.message || "Si è verificato un errore", "error", { autoHideMs: 4000 });
-      allList.innerHTML = `<p class="error">Errore: ${err.message}</p>`;
-      myList.innerHTML = "";
-    }
+showAlert(err?.message || "Si è verificato un errore", "error", { autoHideMs: 4000 });
+
+if (allList) {
+  allList.innerHTML = `
+    <div class="gw-state gw-state--error">
+      <strong>Errore</strong>
+      Si è verificato un errore nel caricamento degli eventi.
+    </div>
+  `;
+}
+
+if (followingList) followingList.innerHTML = "";
+if (myList) myList.innerHTML = "";
+
   }
 
 // Delegation click (tutti / miei + focus su mappa al click sulla card)
@@ -1362,6 +1372,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
