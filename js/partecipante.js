@@ -1373,4 +1373,5 @@ if (isHomePage) {
   if (isMapPage && !isHomePage) {
     await loadEvents();
   }
-});
+
+
