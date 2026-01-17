@@ -1584,6 +1584,18 @@ body.gw-page-map .gw-map{
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
+/* =========================
+   UI v2 – page height helpers
+   ========================= */
+.gw-page{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.gw-home{
+  flex: 1;
+}
 
 
 
