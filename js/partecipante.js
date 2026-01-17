@@ -1373,6 +1373,6 @@ if (isHomePage) {
   if (isMapPage && !isHomePage) {
     await loadEvents();
   }
-  });
+}); // fine DOMContentLoaded
 
 
