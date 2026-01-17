@@ -1070,7 +1070,6 @@ if (followingList) {
     `;
 }
 
- 
 // Popola lista "a cui partecipo" (ordinata)
 if (myList) {
   myList.innerHTML = joinedSorted.length
@@ -1082,7 +1081,6 @@ if (myList) {
       </div>
     `;
 }
-
 
       // C1.1 — Auto-focus solo al primo caricamento, senza filtri e se l'utente non ha già scrollato
       const noFilters =
@@ -1376,6 +1374,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
