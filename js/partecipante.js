@@ -853,11 +853,31 @@ function setupScrollRails() {
   });
 }
 
-  async function loadEvents(filters = {}) {
-if (allList) {
-  allList.innerHTML = `<article class="gw-rail"><div class="...><span>Sto recuperando gli eventi</span></div></div></article>`;
-}
-if (myList) myList.innerHTML = "";
+async function loadEvents(filters = {}) {
+  if (allList) {
+    allList.innerHTML = `
+      <div class="gw-state gw-state--loading">
+        Caricamento eventi...
+      </div>
+    `;
+  }
+
+  if (followingList) {
+    followingList.innerHTML = `
+      <div class="gw-state gw-state--loading">
+        Caricamento...
+      </div>
+    `;
+  }
+
+  if (myList) {
+    myList.innerHTML = `
+      <div class="gw-state gw-state--loading">
+        Caricamento...
+      </div>
+    `;
+  }
+
 
 
     try {
@@ -1021,7 +1041,11 @@ if (allList) {
 
   allList.innerHTML = allItems.length
     ? allItems.map(it => renderRailItem(it, false)).join("")
-    : "<p>Nessun evento disponibile.</p>";
+  <div class="gw-state gw-state--empty">
+    <strong>Nessun risultato</strong>
+    Nessun evento disponibile.
+  </div>
+`;
 
   // Attiva rotazione banner SOLO se lo slot è visibile (IntersectionObserver)
   activateHomeBannerSlots({
@@ -1330,6 +1354,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
