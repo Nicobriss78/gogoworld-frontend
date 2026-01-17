@@ -1332,7 +1332,7 @@ if (!DISABLE_LEGACY_TOPBAR_UI) {
       closeGwMenu();
       alert("Guida partecipante: in arrivo 🙂");
     });
-  }
+  
   }
   // ==============================
   // UI v2 — GEO toggle wiring
@@ -1374,5 +1374,6 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
