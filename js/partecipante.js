@@ -1270,7 +1270,7 @@ if (isMapPage && fromMapDrawer) {
       window.location.href = "index.html";
     });
   }
-if (!DISABLE_LEGACY_TOPBAR_UI) {
+if (DISABLE_LEGACY_TOPBAR_UI) {
 // ==============================
   // UI v2 — Hamburger menu behavior
   // ==============================
@@ -1354,6 +1354,7 @@ if (!DISABLE_LEGACY_TOPBAR_UI) {
       }
     });
   }
+} // fine UI v2 menu wiring
 
 // Inizializza
 hookFilters();
@@ -1374,6 +1375,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
