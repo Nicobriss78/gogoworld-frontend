@@ -1058,27 +1058,31 @@ if (allList) {
 }
 
  
- // Popola lista "Eventi delle persone che segui"
- if (followingList) {
- followingList.innerHTML = followingSorted.length
- ? followingSorted.map(ev => renderEventCard(ev, false)).join("")
-  <div class="gw-state gw-state--empty">
-    <strong>Nessun risultato</strong>
-    Nessun evento dai tuoi seguiti.
-  </div>
-`;
- }
+// Popola lista "Eventi delle persone che segui"
+if (followingList) {
+  followingList.innerHTML = followingSorted.length
+    ? followingSorted.map(ev => renderEventCard(ev, false)).join("")
+    : `
+      <div class="gw-state gw-state--empty">
+        <strong>Nessun risultato</strong>
+        Nessun evento dai tuoi seguiti.
+      </div>
+    `;
+}
+
  
 // Popola lista "a cui partecipo" (ordinata)
 if (myList) {
   myList.innerHTML = joinedSorted.length
     ? joinedSorted.map(ev => renderEventCard(ev, true)).join("")
-  <div class="gw-state gw-state--empty">
-    <strong>Nessun risultato</strong>
-    Nessun evento a cui partecipi.
-  </div>
-`;
+    : `
+      <div class="gw-state gw-state--empty">
+        <strong>Nessun risultato</strong>
+        Nessun evento a cui partecipi.
+      </div>
+    `;
 }
+
 
       // C1.1 — Auto-focus solo al primo caricamento, senza filtri e se l'utente non ha già scrollato
       const noFilters =
@@ -1372,6 +1376,7 @@ if (isMapPage && !isHomePage) {
 }
 
 });
+
 
 
 
