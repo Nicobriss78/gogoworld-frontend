@@ -113,11 +113,19 @@ async function apiFetch(path, { method = "GET", body, token } = {}) {
   return { ok: true, status, ...(data != null ? data : { data: text }) };
 }
 
-// Shortcuts
-export async function apiGet(path, token) { return apiFetch(path, { method: "GET", token }); }
-export async function apiPost(path, body = {}, token){ return apiFetch(path, { method: "POST", body, token }); }
-export async function apiDelete(path, token) { return apiFetch(path, { method: "DELETE", token }); }
-export async function apiPut(path, body = {}, token) { return apiFetch(path, { method: "PUT", body, token }); }
+// Shortcuts (auto-token di default)
+export async function apiGet(path, token) {
+  return apiFetch(path, { method: "GET", token: token ?? getToken() });
+}
+export async function apiPost(path, body = {}, token) {
+  return apiFetch(path, { method: "POST", body, token: token ?? getToken() });
+}
+export async function apiDelete(path, token) {
+  return apiFetch(path, { method: "DELETE", token: token ?? getToken() });
+}
+export async function apiPut(path, body = {}, token) {
+  return apiFetch(path, { method: "PUT", body, token: token ?? getToken() });
+}
 
 // Helper diagnostico ruoli/token
 export async function whoami(token) {
