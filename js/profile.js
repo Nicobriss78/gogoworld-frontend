@@ -1,5 +1,5 @@
 // js/profile.js — C1 Profilo (UI)
-import { getMyProfile, updateMyProfile, whoami } from "./api.js";
+import { getMyProfile, updateMyProfile, whoami, apiGet } from "./api.js";
 // Fallback assoluto al backend Render se il proxy Netlify /api fallisce (404)
 // Mantieni sincronizzato questo valore con netlify.toml
 const BACKEND_ORIGIN = "https://gogoworld-api.onrender.com";
@@ -66,40 +66,6 @@ async function setMyPublicBoardLink() {
       btn.style.display = "none";
       return;
     }
-    // --- carica i conteggi follower/seguiti nella card "Connessioni" ---
-async function loadFollowStats() {
-  const followersEl = document.getElementById("myFollowersCount");
-  const followingEl = document.getElementById("myFollowingCount");
-  if (!followersEl || !followingEl) return;
-
-  try {
-    // Ricavo il mio id utente
-    const me = await whoami(localStorage.getItem("token"));
-    const id = me?.user?._id;
-    if (!id) return;
-
-    const token = localStorage.getItem("token") || "";
-    const headers = {
-      ...(token ? { Authorization: "Bearer " + token } : {}),
-    };
-
-    // Chiamo l'endpoint già usato dal profilo pubblico
-    let res = await fetch(`${API_PREFIX}/users/${id}/public`, { headers });
-    if (res.status === 404) {
-      // Fallback diretto al backend Render
-      res = await fetch(`${BACKEND_ORIGIN}${API_PREFIX}/users/${id}/public`, { headers });
-    }
-
-    const json = await res.json().catch(() => null);
-    if (!json || json.ok === false) return;
-
-    const data = json.data || {};
-    followersEl.textContent = data.followersCount ?? 0;
-    followingEl.textContent = data.followingCount ?? 0;
-  } catch (e) {
-    console.warn("Impossibile caricare i dati follower/seguiti", e);
-  }
-}
 
     // Legge l'eventuale returnTo dall'URL del profilo
     const qs = new URLSearchParams(location.search);
@@ -303,27 +269,15 @@ async function loadFollowStats() {
   if (!followersEl || !followingEl) return;
 
   try {
-    // Ricavo il mio id utente
     const me = await whoami(localStorage.getItem("token"));
     const id = me?.user?._id;
     if (!id) return;
 
-    const token = localStorage.getItem("token") || "";
-    const headers = {
-      ...(token ? { Authorization: "Bearer " + token } : {}),
-    };
+    // usa api.js (token auto)
+    const res = await apiGet(`/users/${id}/public`);
+    if (!res || res.ok === false) return;
 
-    // Chiamo lo stesso endpoint usato nel profilo pubblico
-    let res = await fetch(`${API_PREFIX}/users/${id}/public`, { headers });
-    if (res.status === 404) {
-      // Fallback diretto al backend Render
-      res = await fetch(`${BACKEND_ORIGIN}${API_PREFIX}/users/${id}/public`, { headers });
-    }
-
-    const json = await res.json().catch(() => null);
-    if (!json || json.ok === false) return;
-
-    const data = json.data || {};
+    const data = res.data || {};
     followersEl.textContent = data.followersCount ?? 0;
     followingEl.textContent = data.followingCount ?? 0;
   } catch (e) {
@@ -381,11 +335,8 @@ async function loadFollowersList() {
       ...(token ? { Authorization: "Bearer " + token } : {}),
     };
 
-    let res = await fetch(`${API_PREFIX}/users/${id}/followers`, { headers });
-    if (res.status === 404) {
-      res = await fetch(`${BACKEND_ORIGIN}${API_PREFIX}/users/${id}/followers`, { headers });
-    }
-    const json = await res.json().catch(() => null);
+    const json = await apiGet(`/users/${id}/followers`);
+
     listEl.innerHTML = "";
     if (!json || json.ok === false) {
       emptyEl.textContent = "Impossibile caricare i follower.";
@@ -468,11 +419,8 @@ async function loadFollowingList() {
       ...(token ? { Authorization: "Bearer " + token } : {}),
     };
 
-    let res = await fetch(`${API_PREFIX}/users/${id}/following`, { headers });
-    if (res.status === 404) {
-      res = await fetch(`${BACKEND_ORIGIN}${API_PREFIX}/users/${id}/following`, { headers });
-    }
-    const json = await res.json().catch(() => null);
+    const json = await apiGet(`/users/${id}/following`);
+
     listEl.innerHTML = "";
     if (!json || json.ok === false) {
       emptyEl.textContent = "Impossibile caricare i seguiti.";
