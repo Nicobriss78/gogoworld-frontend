@@ -196,28 +196,33 @@ for (const item of items) {
 
 async function loadAll(userId) {
   // Profilo pubblico
-  const profRes = await apiGet(`/users/${userId}/public`);
-  if (!profRes.data || profRes.data.ok === false) {
-    showAlert(profRes.data?.error || "Impossibile caricare il profilo");
+const profRes = await apiGet(`/users/${userId}/public`);
+  if (!profRes || profRes.ok === false) {
+    showAlert(profRes?.message || profRes?.error || "Impossibile caricare il profilo");
     return;
   }
-  renderProfile(profRes.data.data);
+
+  // Con api.js: il payload utente è in profRes.data
+  renderProfile(profRes.data);
 
   // Bacheca attività
-  const actRes = await apiGet(`/users/${userId}/activity`);
-  if (actRes.status === 403 && actRes.data?.error === "activity_private") {
+const actRes = await apiGet(`/users/${userId}/activity`);
+
+  // Caso bacheca privata
+  if (actRes && actRes.ok === false && actRes.status === 403 && actRes.error === "activity_private") {
     $("#activityPrivate").style.display = "block";
     $("#activityList").innerHTML = "";
     $("#activityEmpty").style.display = "none";
     return;
   }
-  if (!actRes.data || actRes.data.ok === false) {
-    showAlert(actRes.data?.error || "Impossibile caricare la bacheca");
+
+  if (!actRes || actRes.ok === false) {
+    showAlert(actRes?.message || actRes?.error || "Impossibile caricare la bacheca");
     return;
   }
-  renderActivityList(actRes.data.data || []);
-}
 
+  // Con api.js: lista in actRes.data
+  renderActivityList(actRes.data || []);
 // --- FOLLOW / UNFOLLOW ---
 
 async function onFollowClick(userId) {
@@ -236,10 +241,12 @@ async function onFollowClick(userId) {
   try {
     if (currently) {
       const res = await apiDelete(`/users/${userId}/follow`);
-      if (!res.data?.ok) {
-        showAlert(res.data?.error || "Impossibile smettere di seguire");
-        return;
-      }
+const res = await apiDelete(`/users/${userId}/follow`);
+if (!res || res.ok === false) {
+  showAlert(res?.message || res?.error || "Impossibile smettere di seguire");
+  return;
+}
+
 
       // L'utente ha un follower in meno (io)
       const newFollowers = Math.max(0, currentFollowers - 1);
@@ -247,10 +254,11 @@ async function onFollowClick(userId) {
 
     } else {
       const res = await apiPost(`/users/${userId}/follow`);
-      if (!res.data?.ok) {
-        showAlert(res.data?.error || "Impossibile seguire questo utente");
-        return;
-      }
+const res = await apiPost(`/users/${userId}/follow`);
+if (!res || res.ok === false) {
+  showAlert(res?.message || res?.error || "Impossibile seguire questo utente");
+  return;
+}
 
       // L'utente ha un follower in più (io)
       const newFollowers = currentFollowers + 1;
