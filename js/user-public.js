@@ -1,6 +1,6 @@
 // js/user-public.js — Profilo pubblico + bacheca attività (stile social B)
+import { apiGet, apiPost, apiDelete } from "./api.js";
 
-const API_PREFIX = "/api";
 const BACKEND_ORIGIN = "https://gogoworld-api.onrender.com";
 
 const $ = (sel) => document.querySelector(sel);
@@ -21,46 +21,7 @@ function getUserIdFromUrl() {
   return qs.get("userId") || "";
 }
 
-async function apiGet(path) {
-  const token = localStorage.getItem("token") || "";
-  const headers = token ? { Authorization: "Bearer " + token } : {};
-  // primo tentativo: proxy /api
-  let res = await fetch(API_PREFIX + path, { headers });
-  if (res.status === 404) {
-    // fallback diretto al backend (come pattern generale della piattaforma)
-    res = await fetch(BACKEND_ORIGIN + API_PREFIX + path, { headers });
-  }
-  const data = await res.json().catch(() => null);
-  return { status: res.status, data };
-}
 
-async function apiPost(path) {
-  const token = localStorage.getItem("token") || "";
-  const headers = {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: "Bearer " + token } : {}),
-  };
-  let res = await fetch(API_PREFIX + path, { method: "POST", headers });
-  if (res.status === 404) {
-    res = await fetch(BACKEND_ORIGIN + API_PREFIX + path, { method: "POST", headers });
-  }
-  const data = await res.json().catch(() => null);
-  return { status: res.status, data };
-}
-
-async function apiDelete(path) {
-  const token = localStorage.getItem("token") || "";
-  const headers = {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: "Bearer " + token } : {}),
-  };
-  let res = await fetch(API_PREFIX + path, { method: "DELETE", headers });
-  if (res.status === 404) {
-    res = await fetch(BACKEND_ORIGIN + API_PREFIX + path, { method: "DELETE", headers });
-  }
-  const data = await res.json().catch(() => null);
-  return { status: res.status, data };
-}
 
 // --- rendering profilo ---
 
