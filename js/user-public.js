@@ -223,6 +223,7 @@ const actRes = await apiGet(`/users/${userId}/activity`);
 
   // Con api.js: lista in actRes.data
   renderActivityList(actRes.data || []);
+  } // END loadAll
 // --- FOLLOW / UNFOLLOW ---
 
 async function onFollowClick(userId) {
@@ -240,8 +241,7 @@ async function onFollowClick(userId) {
 
   try {
     if (currently) {
-      const res = await apiDelete(`/users/${userId}/follow`);
-const res = await apiDelete(`/users/${userId}/follow`);
+    const res = await apiDelete(`/users/${userId}/follow`);
 if (!res || res.ok === false) {
   showAlert(res?.message || res?.error || "Impossibile smettere di seguire");
   return;
@@ -253,8 +253,7 @@ if (!res || res.ok === false) {
       updateFollowUI(false, newFollowers, currentFollowing);
 
     } else {
-      const res = await apiPost(`/users/${userId}/follow`);
-const res = await apiPost(`/users/${userId}/follow`);
+    const res = await apiPost(`/users/${userId}/follow`);
 if (!res || res.ok === false) {
   showAlert(res?.message || res?.error || "Impossibile seguire questo utente");
   return;
