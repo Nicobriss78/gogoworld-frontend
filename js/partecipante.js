@@ -913,15 +913,10 @@ async function loadEvents(filters = {}) {
       // future → imminent → ongoing → concluded → past, con data di inizio crescente
 
 
- const notJoinedSorted = Array.isArray(notJoined)
- ? [...notJoined].sort(sortEventsForParticipant)
- : [];
- 
+ const notJoinedSorted = sortEventsForParticipant(notJoined);
  const joined = res.events.filter(ev => joinedIds.has(ev._id));
- let joinedSorted = Array.isArray(joined)
- ? [...joined].sort(sortEventsForParticipant)
- : [];
- 
+ const joinedSorted = sortEventsForParticipant(joined);
+      
  // Cx — Eventi organizzati da utenti che seguo
  let followingSorted = [];
  if (followingList && followingIds && followingIds.size && Array.isArray(res.events)) {
@@ -931,7 +926,7 @@ async function loadEvents(filters = {}) {
  if (!orgId) return false;
  return followingIds.has(String(orgId));
  });
- followingSorted = [...followingEvents].sort(sortEventsForParticipant);
+followingSorted = sortEventsForParticipant(followingEvents);
  }
  
  // Bx — includi anche eventuali eventi privati sbloccati a cui partecipo
@@ -1376,6 +1371,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
