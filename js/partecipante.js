@@ -1109,6 +1109,10 @@ if (myList) myList.innerHTML = "";
 } // END loadEvents
   
 // Delegation click (tutti / miei + focus su mappa al click sulla card)
+const setupEventCardDelegation = () => {
+  if (window.__gwEventCardDelegationInstalled) return;
+  window.__gwEventCardDelegationInstalled = true;
+
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest("button[data-action]");
 
@@ -1214,7 +1218,7 @@ if (isMapPage && fromMapDrawer) {
       }
     }
   });
-
+  };
   // Filtri
   const hookFilters = () => {
     if (!btnFilters) return;
@@ -1354,6 +1358,7 @@ if (DISABLE_LEGACY_TOPBAR_UI) {
 
 // Inizializza
 hookFilters();
+setupEventCardDelegation();
 
 // Avvio per-pagina
 const isHomePage = !!document.getElementById("allEventsList");
@@ -1371,6 +1376,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
