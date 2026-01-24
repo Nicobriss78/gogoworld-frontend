@@ -217,6 +217,16 @@ const profRes = await apiGet(`/users/${userId}/public`);
     return;
   }
   renderProfile(profileData);
+// Se NON lo stai seguendo, non provare a caricare /activity (il backend può rispondere 403)
+  if (!IS_SELF) {
+    const isFollowingNow = ($("#followBtn")?.dataset?.following === "1");
+    if (!isFollowingNow) {
+      $("#activityPrivate").style.display = "block";
+      $("#activityList").innerHTML = "";
+      $("#activityEmpty").style.display = "none";
+      return;
+    }
+  }
 
   // Bacheca attività
 const actRes = await apiGet(`/users/${userId}/activity`);
