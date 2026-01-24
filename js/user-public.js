@@ -34,6 +34,11 @@ function renderProfile(profile) {
   const followersEl = $("#followersCount");
   const followingEl = $("#followingCount");
   const followBtn = $("#followBtn");
+// hardening: se il backend non manda data corretta evito crash
+  if (!profile || typeof profile !== "object") {
+    showAlert("Profilo non valido o non disponibile.");
+    return;
+  }
 
   nameEl.textContent = profile.name || "Utente";
   document.title = `${profile.name || "Profilo"} • GoGoWorld.life`;
@@ -69,18 +74,21 @@ function renderProfile(profile) {
     bioEl.textContent = "Nessuna bio disponibile.";
   }
 
-followersEl.textContent = profile.followersCount ?? 0;
-  followingEl.textContent = profile.followingCount ?? 0;
+if (followersEl) followersEl.textContent = profile.followersCount ?? 0;
+  if (followingEl) followingEl.textContent = profile.followingCount ?? 0;
 
-  const isFollowing = !!profile.isFollowing;
-  followBtn.dataset.following = isFollowing ? "1" : "0";
-  followBtn.textContent = isFollowing ? "Smetti di seguire" : "Segui";
+  if (followBtn) {
+    const isFollowing = !!profile.isFollowing;
+    followBtn.dataset.following = isFollowing ? "1" : "0";
+    followBtn.textContent = isFollowing ? "Smetti di seguire" : "Segui";
+  }
+
 
 
   // Se sto guardando me stesso (self=1 nell'URL) → niente bottone Follow
   const qs = new URLSearchParams(location.search);
   const isSelf = qs.get("self") === "1";
-  if (isSelf) {
+if (isSelf && followBtn) {
     followBtn.style.display = "none";
   }
 }
@@ -202,8 +210,13 @@ const profRes = await apiGet(`/users/${userId}/public`);
     return;
   }
 
-  // Con api.js: il payload utente è in profRes.data
-  renderProfile(profRes.data);
+// Con api.js: di norma profRes.data, ma mi copro da varianti
+  const profileData = profRes.data || profRes.user || profRes.profile || null;
+  if (!profileData) {
+    showAlert("Impossibile leggere i dati del profilo (payload vuoto).");
+    return;
+  }
+  renderProfile(profileData);
 
   // Bacheca attività
 const actRes = await apiGet(`/users/${userId}/activity`);
@@ -223,7 +236,7 @@ const actRes = await apiGet(`/users/${userId}/activity`);
 
   // Con api.js: lista in actRes.data
   renderActivityList(actRes.data || []);
-  } // END loadAll
+} // END loadAll
 // --- FOLLOW / UNFOLLOW ---
 
 async function onFollowClick(userId) {
