@@ -1,30 +1,29 @@
 // js/index.js — gestione Homepage 0
-
-document.addEventListener("DOMContentLoaded", () => {
+import { whoami } from "./api.js";
+document.addEventListener("DOMContentLoaded", async () => {
   // Se già loggato → redirect automatico nell’area coerente
   const token = localStorage.getItem("token");
   if (token) {
-    try {
-      fetch("/api/users/me", { headers: { "Authorization": `Bearer ${token}` } })
-        .then(r => r.ok ? r.json() : null)
-        .then(me => {
-          const serverRole = String((me && (me.role || (me.user && me.user.role))) || "").toLowerCase();
-          if (serverRole === "admin") {
-            window.location.href = "admin.html";
-            return;
-          }
-          const role = (sessionStorage.getItem("desiredRole") || "participant");
-          window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
-        })
-        .catch(() => {
-          const role = (sessionStorage.getItem("desiredRole") || "participant");
-          window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
-        });
-    } catch (e) {
-      const role = (sessionStorage.getItem("desiredRole") || "participant");
-      window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
-    }
+try {
+  const res = await whoami(token);
+  if (!res || res.ok === false) throw new Error(res?.message || "WHOAMI_FAILED");
+
+  const me = (res.user || res.me || res.data || res) || null;
+  const serverRole = String((me && me.role) || "").toLowerCase();
+
+  if (serverRole === "admin") {
+    window.location.href = "admin.html";
     return;
+  }
+
+  const role = (sessionStorage.getItem("desiredRole") || "participant");
+  window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
+} catch (e) {
+  const role = (sessionStorage.getItem("desiredRole") || "participant");
+  window.location.href = role === "organizer" ? "organizzatore.html" : "partecipante.html";
+}
+return;
+
   }
 
   const btnOrganizer = document.getElementById("btnOrganizer");
@@ -45,4 +44,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
 
