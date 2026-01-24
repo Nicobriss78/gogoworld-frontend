@@ -330,8 +330,6 @@ async function loadFollowersList() {
       return;
     }
 
-    };
-
     const json = await apiGet(`/users/${id}/followers`);
 
     listEl.innerHTML = "";
@@ -411,7 +409,6 @@ async function loadFollowingList() {
       return;
     }
 
-    };
 
     const json = await apiGet(`/users/${id}/following`);
 
