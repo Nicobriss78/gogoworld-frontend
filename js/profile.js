@@ -330,9 +330,6 @@ async function loadFollowersList() {
       return;
     }
 
-    const token = localStorage.getItem("token") || "";
-    const headers = {
-      ...(token ? { Authorization: "Bearer " + token } : {}),
     };
 
     const json = await apiGet(`/users/${id}/followers`);
@@ -414,9 +411,6 @@ async function loadFollowingList() {
       return;
     }
 
-    const token = localStorage.getItem("token") || "";
-    const headers = {
-      ...(token ? { Authorization: "Bearer " + token } : {}),
     };
 
     const json = await apiGet(`/users/${id}/following`);
