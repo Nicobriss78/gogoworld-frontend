@@ -25,8 +25,8 @@ async function boot() {
 
 async function hydrateTopbar(token) {
   try {
-    const me = await apiGet("/users/me", token);
-
+const meRes = await apiGet("/users/me", token);
+const me = meRes?.data || meRes?.user || meRes || null;
     // id utente loggato (robusto come nelle altre schede)
     ME_ID = me?._id || me?.user?._id || me?.id || me?.user?.id || null;
 
@@ -71,8 +71,17 @@ container.innerHTML = `
 `;
     return;
   }
+const res = await apiGet(`/users/${ME_ID}/following`, token);
 
-  const res = await apiGet(`/users/${ME_ID}/following`, token);
+if (res?.ok === false) {
+  container.innerHTML = `
+    <div class="gw-state gw-state--error">
+      <strong>Errore</strong>
+      ${escapeHtml(res?.message || res?.error || "Impossibile caricare gli utenti seguiti.")}
+    </div>
+  `;
+  return;
+}
 
   // supporta sia { ok:true, data:[...] } che array diretto
   const users = Array.isArray(res) ? res : (res?.data || []);
@@ -95,6 +104,7 @@ function renderUsers(users, token) {
 
   users.forEach((u) => {
     const userId = u?._id || u?.id;
+    if (!userId) return;
     const name = u?.name || u?.username || "Utente";
     const meta = u?.city || u?.region || u?.country || "";
 
