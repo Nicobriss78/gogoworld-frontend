@@ -6,8 +6,7 @@
 // - Filtri con componenti input standard (date, select, tag)
 // - Notifiche errori/successo tramite componente centralizzato
 
-import { apiGet, apiPost, getMyProfile } from "./api.js";
-import { getRoomsUnreadCount } from "./api.js";
+import { apiGet, apiPost, getMyProfile, getRoomsUnreadCount } from "./api.js";
 import { sortEventsForParticipant } from "./core/event-sorting.js";
 import { renderEventCard } from "./home-cards.js";
 import {
@@ -1376,6 +1375,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
