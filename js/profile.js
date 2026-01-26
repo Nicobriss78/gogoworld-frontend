@@ -89,6 +89,26 @@ async function setMyPublicBoardLink() {
 const basicForm = $("#basicForm");
 const privacyForm = $("#privacyForm");
 const reloadBtn = $("#reloadBtn");
+const profileView = document.getElementById("profileView");
+const profileEdit = document.getElementById("profileEdit");
+const btnEditProfile = document.getElementById("btnEditProfile");
+const btnCancelEdit = document.getElementById("btnCancelEdit");
+
+const avatarView = document.getElementById("avatarView");
+const viewNickname = document.getElementById("viewNickname");
+const viewPlace = document.getElementById("viewPlace");
+const viewBio = document.getElementById("viewBio");
+const viewLanguages = document.getElementById("viewLanguages");
+const viewInterests = document.getElementById("viewInterests");
+const viewSocials = document.getElementById("viewSocials");
+
+const btnMyPublic2 = document.getElementById("btnMyPublic2");
+
+// View-mode: connessioni
+const myFollowersCount_view = document.getElementById("myFollowersCount_view");
+const myFollowingCount_view = document.getElementById("myFollowingCount_view");
+const btnShowFollowers_view = document.getElementById("btnShowFollowers_view");
+const btnShowFollowing_view = document.getElementById("btnShowFollowing_view");
 
 const nickname = $("#nickname");
 const birthYear = $("#birthYear");
