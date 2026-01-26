@@ -410,16 +410,15 @@ async function loadFollowingList_view() {
 
 // --- carica i conteggi follower/seguiti nella card "Connessioni" ---
 async function loadFollowStats() {
-  const followersEl = document.getElementById("myFollowersCount");
-  const followingEl = document.getElementById("myFollowingCount");
+  // aggiorna conteggi follower/seguiti (card Connessioni)
+  const followersEl = document.getElementById("myFollowersCount_view");
+  const followingEl = document.getElementById("myFollowingCount_view");
   if (!followersEl || !followingEl) return;
 
   try {
     const me = await whoami(localStorage.getItem("token"));
     const id = me?.user?._id;
     if (!id) return;
-    if (myFollowersCount_view) myFollowersCount_view.textContent = data.followersCount ?? 0;
-    if (myFollowingCount_view) myFollowingCount_view.textContent = data.followingCount ?? 0;
 
     // usa api.js (token auto)
     const res = await apiGet(`/users/${id}/public`);
