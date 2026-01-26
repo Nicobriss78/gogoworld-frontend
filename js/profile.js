@@ -597,11 +597,38 @@ async function loadFollowingList() {
 reloadBtn?.addEventListener("click", () => {
   loadProfile();
 });
+function hideIfMissing() {
+  // se stai usando l’HTML "vecchio" (senza _view), non deve esplodere nulla.
+  // Questa funzione serve solo a rendere compatibili gli ID _view e non-_view.
+
+  const pairs = [
+    ["myFollowersCount_view", "myFollowersCount"],
+    ["myFollowingCount_view", "myFollowingCount"],
+    ["btnShowFollowers_view", "btnShowFollowers"],
+    ["btnShowFollowing_view", "btnShowFollowing"],
+    ["followersBox_view", "followersBox"],
+    ["followingBox_view", "followingBox"],
+    ["followersList_view", "followersList"],
+    ["followingList_view", "followingList"],
+    ["followersEmpty_view", "followersEmpty"],
+    ["followingEmpty_view", "followingEmpty"],
+  ];
+
+  for (const [viewId, legacyId] of pairs) {
+    const viewEl = document.getElementById(viewId);
+    const legacyEl = document.getElementById(legacyId);
+
+    // Se manca la versione _view ma esiste quella legacy, ok: continueremo a usare la legacy.
+    // Non facciamo clone/append per non sporcare l’HTML: ci basta non rompere nulla.
+    if (!viewEl && legacyEl) continue;
+  }
+}
 
 // --- bootstrap ---
 document.addEventListener("DOMContentLoaded", () => {
   setReturnButton();
   setMyPublicBoardLink();
+  hideIfMissing();
   loadProfile();
   loadFollowStats();
 
