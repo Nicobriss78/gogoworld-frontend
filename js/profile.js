@@ -157,6 +157,108 @@ const dmsFrom = $("#dmsFrom");
 
 // token
 const token = localStorage.getItem("token");
+function showViewMode() {
+  if (profileView) profileView.style.display = "block";
+  if (profileEdit) profileEdit.style.display = "none";
+}
+
+function showEditMode() {
+  if (profileView) profileView.style.display = "none";
+  if (profileEdit) profileEdit.style.display = "block";
+}
+
+function renderProfileView(p) {
+  if (!p) p = {};
+
+  // avatar
+  if (avatarView) {
+    if (p.avatarUrl) {
+      // usa la stessa logica di preview, ma su avatarView
+      const tmp = document.getElementById("avatar-preview"); // riuso funzione già esistente
+      // setAvatarPreview agisce su avatarPreview, quindi qui copiamo la logica in modo semplice:
+      const isUploads = p.avatarUrl.startsWith("/uploads/");
+      const isApiUploads = p.avatarUrl.startsWith("/api/uploads/");
+      let src = isUploads ? (API_PREFIX + p.avatarUrl) : p.avatarUrl;
+      if (!isUploads && !isApiUploads && !/^https?:\/\//i.test(p.avatarUrl)) {
+        src = API_PREFIX + "/" + p.avatarUrl.replace(/^\/+/, "");
+      }
+      avatarView.onerror = () => {
+        const path = src.startsWith(API_PREFIX) ? src : (API_PREFIX + src);
+        avatarView.onerror = null;
+        avatarView.src = BACKEND_ORIGIN + path;
+      };
+      avatarView.src = src;
+      avatarView.style.display = "inline-block";
+    } else {
+      avatarView.style.display = "none";
+    }
+  }
+
+  const nick = (p.nickname || "—").trim();
+  if (viewNickname) viewNickname.textContent = nick || "—";
+
+  const placeParts = [];
+  if (p.city) placeParts.push(p.city);
+  if (p.region) placeParts.push(p.region);
+  if (viewPlace) {
+    if (placeParts.length) {
+      viewPlace.textContent = placeParts.join(" • ");
+      viewPlace.style.display = "block";
+    } else {
+      viewPlace.style.display = "none";
+    }
+  }
+
+  if (viewBio) {
+    const b = (p.bio || "").trim();
+    if (b) {
+      viewBio.textContent = b;
+      viewBio.style.display = "block";
+    } else viewBio.style.display = "none";
+  }
+
+  if (viewLanguages) {
+    const l = joinCSV(p.languages).trim();
+    if (l) {
+      viewLanguages.textContent = "Lingue: " + l;
+      viewLanguages.style.display = "block";
+    } else viewLanguages.style.display = "none";
+  }
+
+  if (viewInterests) {
+    const i = joinCSV(p.interests).trim();
+    if (i) {
+      viewInterests.textContent = "Interessi: " + i;
+      viewInterests.style.display = "block";
+    } else viewInterests.style.display = "none";
+  }
+
+  if (viewSocials) {
+    const s = Array.isArray(p.socials) ? p.socials : [];
+    if (s.length) {
+      viewSocials.innerHTML = "";
+      for (const line of s) {
+        const t = String(line || "").trim();
+        if (!t) continue;
+        const div = document.createElement("div");
+        if (/^https?:\/\//i.test(t)) {
+          const a = document.createElement("a");
+          a.href = t;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.textContent = t;
+          div.appendChild(a);
+        } else {
+          div.textContent = t;
+        }
+        viewSocials.appendChild(div);
+      }
+      viewSocials.style.display = "block";
+    } else {
+      viewSocials.style.display = "none";
+    }
+  }
+}
 
 // --- load profile ---
 async function loadProfile() {
@@ -166,12 +268,13 @@ async function loadProfile() {
     return;
   }
   const p = res.data || {};
-
+  renderProfileView(p);
   nickname.value = p.nickname || "";
   birthYear.value = p.birthYear || "";
   region.value = p.region || "";
   city.value = p.city || "";
 avatarUrl.value = p.avatarUrl || "";
+  
   if (avatarPreview) {
 if (p.avatarUrl) {
   setAvatarPreview(p.avatarUrl);
@@ -281,6 +384,29 @@ privacyForm?.addEventListener("submit", async (e) => {
   }
   showAlert("Privacy aggiornata");
 });
+async function loadFollowersList_view() {
+  // temporaneamente reindirizzo gli ID view verso quelli originali
+  // (clone semplice: copio il contenuto in view dopo il load originale)
+  await loadFollowersList();
+  const srcBox = document.getElementById("followersBox");
+  const dstBox = document.getElementById("followersBox_view");
+  if (srcBox && dstBox) {
+    dstBox.innerHTML = srcBox.innerHTML;
+    dstBox.style.display = srcBox.style.display;
+    dstBox.dataset.open = srcBox.dataset.open || "0";
+  }
+}
+
+async function loadFollowingList_view() {
+  await loadFollowingList();
+  const srcBox = document.getElementById("followingBox");
+  const dstBox = document.getElementById("followingBox_view");
+  if (srcBox && dstBox) {
+    dstBox.innerHTML = srcBox.innerHTML;
+    dstBox.style.display = srcBox.style.display;
+    dstBox.dataset.open = srcBox.dataset.open || "0";
+  }
+}
 
 // --- carica i conteggi follower/seguiti nella card "Connessioni" ---
 async function loadFollowStats() {
@@ -292,6 +418,8 @@ async function loadFollowStats() {
     const me = await whoami(localStorage.getItem("token"));
     const id = me?.user?._id;
     if (!id) return;
+    if (myFollowersCount_view) myFollowersCount_view.textContent = data.followersCount ?? 0;
+    if (myFollowingCount_view) myFollowingCount_view.textContent = data.followingCount ?? 0;
 
     // usa api.js (token auto)
     const res = await apiGet(`/users/${id}/public`);
