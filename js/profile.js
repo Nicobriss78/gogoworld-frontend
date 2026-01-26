@@ -597,7 +597,6 @@ async function loadFollowingList() {
 // --- reload ---
 reloadBtn?.addEventListener("click", () => {
   loadProfile();
-  loadFollowStats();
 });
 
 // --- bootstrap ---
