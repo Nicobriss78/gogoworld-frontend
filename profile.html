@@ -20,7 +20,70 @@
 
   <!-- Alerts -->
   <div id="alerts"></div>
+<!-- === VIEW MODE: Scheda profilo (UI v2) === -->
+  <section class="event-card" id="profileView" style="display:block;">
+    <h3 style="margin:0 0 .5rem;">Il mio profilo</h3>
 
+    <!-- Avatar -->
+    <div class="form-row">
+      <div class="avatar-box">
+        <img id="avatarView" alt="Avatar profilo"
+             style="display:none; width:120px; height:120px; object-fit:cover; border-radius:12px; border:1px solid #ddd;"/>
+      </div>
+    </div>
+
+    <!-- Informazioni pubbliche -->
+    <div class="form-row" style="margin-top:.5rem;">
+      <p class="muted" style="margin:.25rem 0;">Informazioni pubbliche</p>
+      <div style="display:flex;flex-direction:column;gap:.25rem;">
+        <div><strong id="viewNickname">—</strong></div>
+        <div class="muted" id="viewPlace" style="display:none;"></div>
+        <div class="muted" id="viewBio" style="display:none;"></div>
+        <div class="muted" id="viewLanguages" style="display:none;"></div>
+        <div class="muted" id="viewInterests" style="display:none;"></div>
+        <div class="muted" id="viewSocials" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Bacheca -->
+    <div class="form-row" style="margin-top:.75rem;">
+      <p class="muted" style="margin:.25rem 0;">Bacheca</p>
+      <a id="btnMyPublic2" class="btn" href="#">Vedi la mia bacheca pubblica</a>
+    </div>
+
+    <!-- Connessioni (riuso contatori + bottoni esistenti) -->
+    <div class="form-row" style="margin-top:.75rem;">
+      <p class="muted" style="margin:.25rem 0;">Connessioni</p>
+      <div class="profile-stats" style="display:flex;gap:1rem;flex-wrap:wrap;">
+        <span><strong id="myFollowersCount_view">0</strong> follower</span>
+        <span><strong id="myFollowingCount_view">0</strong> seguiti</span>
+      </div>
+
+      <div class="form-actions" style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button type="button" class="btn btn-secondary" id="btnShowFollowers_view">Vedi chi ti segue</button>
+        <button type="button" class="btn btn-secondary" id="btnShowFollowing_view">Vedi chi segui</button>
+      </div>
+
+      <div id="followersBox_view" class="muted" style="margin-top:.5rem;display:none;">
+        <strong>Follower</strong>
+        <ul id="followersList_view" class="simple-list" style="margin:.25rem 0 0;padding-left:1rem;"></ul>
+        <p id="followersEmpty_view" class="muted" style="margin-top:.25rem;display:none;">Nessuno ti segue ancora.</p>
+      </div>
+
+      <div id="followingBox_view" class="muted" style="margin-top:.5rem;display:none;">
+        <strong>Seguiti</strong>
+        <ul id="followingList_view" class="simple-list" style="margin:.25rem 0 0;padding-left:1rem;"></ul>
+        <p id="followingEmpty_view" class="muted" style="margin-top:.25rem;display:none;">Non stai ancora seguendo nessuno.</p>
+      </div>
+    </div>
+
+    <!-- Azione -->
+    <div class="form-actions" style="margin-top:.75rem;">
+      <button type="button" class="btn" id="btnEditProfile">Modifica</button>
+    </div>
+  </section>
+  <!-- === EDIT MODE: Modifica profilo === -->
+  <section id="profileEdit" style="display:none;">
   <!-- === CARD: Dati di base === -->
   <section class="event-card" id="card-basic">
     <h3 style="margin:0 0 .5rem;">Dati di base</h3>
@@ -145,6 +208,10 @@
         <button type="submit" class="btn" id="savePrivacyBtn">Salva privacy</button>
       </div>
     </form>
+  </section>
+<div class="form-actions" style="margin-top:1rem;">
+      <button type="button" class="btn btn-secondary" id="btnCancelEdit">Annulla</button>
+    </div>
   </section>
 
   <footer class="app-footer">© GoGoWorld.life</footer>
