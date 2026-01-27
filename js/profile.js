@@ -56,33 +56,52 @@ async function setReturnButton() {
 }
 // --- setta il bottone "Vedi la mia bacheca pubblica" ---
 async function setMyPublicBoardLink() {
-  const btn = document.getElementById("btnMyPublic");
-  if (!btn) return;
+  // Aggancia QUALSIASI bottone “bacheca pubblica” (anche se non ha l'id)
+  const candidates = [
+    ...document.querySelectorAll('#btnMyPublic, [data-my-public="1"], .js-my-public-board'),
+    ...Array.from(document.querySelectorAll("a,button")).filter(el =>
+      (el.textContent || "").trim().toLowerCase() === "vedi la mia bacheca pubblica"
+    )
+  ];
+
+  // dedup
+  const uniq = Array.from(new Set(candidates));
+  if (!uniq.length) return;
 
   try {
     const me = await whoami(localStorage.getItem("token"));
     const id = me?.user?._id;
+
     if (!id) {
-      btn.style.display = "none";
+      uniq.forEach(el => (el.style.display = "none"));
       return;
     }
 
-    // Legge l'eventuale returnTo dall'URL del profilo
     const qs = new URLSearchParams(location.search);
     const ret = qs.get("returnTo");
 
-    // Link diretto alla vista pubblica di se stessi,
-    // con propagazione del contesto di ritorno (se presente)
     let href = `/pages/user-public.html?userId=${encodeURIComponent(id)}&self=1`;
-    if (ret) {
-      href += `&returnTo=${encodeURIComponent(ret)}`;
-    }
-    btn.href = href;
+    if (ret) href += `&returnTo=${encodeURIComponent(ret)}`;
+
+    uniq.forEach(el => {
+      // se è un <a>, metto href
+      if (el.tagName === "A") {
+        el.href = href;
+        return;
+      }
+      // se è un <button> (o altro), intercetto click e navigo
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        location.href = href;
+      });
+    });
+
   } catch (e) {
     console.warn(e);
-    btn.style.display = "none";
+    uniq.forEach(el => (el.style.display = "none"));
   }
 }
+
 
 
 // --- nodes ---
