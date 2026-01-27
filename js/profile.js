@@ -631,6 +631,29 @@ document.addEventListener("DOMContentLoaded", () => {
   hideIfMissing();
   loadProfile();
   loadFollowStats();
+  // --- VIEW/EDIT toggle ---
+  showViewMode();
+
+  btnEditProfile?.addEventListener("click", () => {
+    showEditMode();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  btnCancelEdit?.addEventListener("click", () => {
+    showViewMode();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // --- Sync link "bacheca pubblica" anche in VIEW ---
+  if (btnMyPublic2) {
+    const topHref = document.getElementById("btnMyPublic")?.href;
+    btnMyPublic2.href = topHref || "#";
+  }
+
+  // --- Bottoni VIEW per liste follower/seguiti ---
+  btnShowFollowers_view?.addEventListener("click", loadFollowersList_view);
+  btnShowFollowing_view?.addEventListener("click", loadFollowingList_view);
+
 
   const btnShowFollowers = document.getElementById("btnShowFollowers");
   const btnShowFollowing = document.getElementById("btnShowFollowing");
