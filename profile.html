@@ -7,212 +7,270 @@
   <title>Profilo • GoGoWorld.life</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
-<body class="container">
-  <header class="app-header">
-    <h1 class="app-title">Profilo</h1>
-    <p class="subtitle">Gestisci il tuo profilo pubblico e le preferenze di messaggistica</p>
+<body>
+  <div class="gw-app">
+    <div class="gw-page">
 
-  </header>
+      <!-- =========================
+           TOPBAR (UI v2)
+           ========================= -->
+      <header class="gw-topbar">
+        <div class="gw-topbar-row gw-topbar-row--title">
+          <div class="gw-greeting">
+            <div class="gw-hello">Ciao <span id="gwUserName">👤</span></div>
+            <div class="gw-status">Partecipante</div>
+          </div>
 
-  <!-- Alerts -->
-  <div id="alerts"></div>
-<!-- === VIEW MODE: Scheda profilo (UI v2) === -->
-  <section class="event-card" id="profileView" style="display:block;">
-    <h3 style="margin:0 0 .5rem;">Il mio profilo</h3>
-
-    <!-- Avatar -->
-    <div class="form-row">
-      <div class="avatar-box">
-        <img id="avatarView" alt="Avatar profilo"
-             style="display:none; width:120px; height:120px; object-fit:cover; border-radius:12px; border:1px solid #ddd;"/>
-      </div>
-    </div>
-
-    <!-- Informazioni pubbliche -->
-    <div class="form-row" style="margin-top:.5rem;">
-      <p class="muted" style="margin:.25rem 0;">Informazioni pubbliche</p>
-      <div style="display:flex;flex-direction:column;gap:.25rem;">
-        <div><strong id="viewNickname">—</strong></div>
-        <div class="muted" id="viewPlace" style="display:none;"></div>
-        <div class="muted" id="viewBio" style="display:none;"></div>
-        <div class="muted" id="viewLanguages" style="display:none;"></div>
-        <div class="muted" id="viewInterests" style="display:none;"></div>
-        <div class="muted" id="viewSocials" style="display:none;"></div>
-      </div>
-    </div>
-
-    <!-- Bacheca -->
-    <div class="form-row" style="margin-top:.75rem;">
-      <p class="muted" style="margin:.25rem 0;">Bacheca</p>
-      <a id="btnMyPublic2" class="btn" href="#">Vedi la mia bacheca pubblica</a>
-    </div>
-
-    <!-- Connessioni (riuso contatori + bottoni esistenti) -->
-    <div class="form-row" style="margin-top:.75rem;">
-      <p class="muted" style="margin:.25rem 0;">Connessioni</p>
-      <div class="profile-stats" style="display:flex;gap:1rem;flex-wrap:wrap;">
-        <span><strong id="myFollowersCount_view">0</strong> follower</span>
-        <span><strong id="myFollowingCount_view">0</strong> seguiti</span>
-      </div>
-
-      <div class="form-actions" style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap;">
-        <button type="button" class="btn btn-secondary" id="btnShowFollowers_view">Vedi chi ti segue</button>
-        <button type="button" class="btn btn-secondary" id="btnShowFollowing_view">Vedi chi segui</button>
-      </div>
-
-      <div id="followersBox_view" class="muted" style="margin-top:.5rem;display:none;">
-        <strong>Follower</strong>
-        <ul id="followersList_view" class="simple-list" style="margin:.25rem 0 0;padding-left:1rem;"></ul>
-        <p id="followersEmpty_view" class="muted" style="margin-top:.25rem;display:none;">Nessuno ti segue ancora.</p>
-      </div>
-
-      <div id="followingBox_view" class="muted" style="margin-top:.5rem;display:none;">
-        <strong>Seguiti</strong>
-        <ul id="followingList_view" class="simple-list" style="margin:.25rem 0 0;padding-left:1rem;"></ul>
-        <p id="followingEmpty_view" class="muted" style="margin-top:.25rem;display:none;">Non stai ancora seguendo nessuno.</p>
-      </div>
-    </div>
-
-    <!-- Azione -->
-    <div class="form-actions" style="margin-top:.75rem;">
-      <button type="button" class="btn" id="btnEditProfile">Modifica</button>
-    </div>
-  </section>
-  <!-- === EDIT MODE: Modifica profilo === -->
-  <section id="profileEdit" style="display:none;">
-  <!-- === CARD: Dati di base === -->
-  <section class="event-card" id="card-basic">
-    <h3 style="margin:0 0 .5rem;">Dati di base</h3>
-    <form id="basicForm" class="form">
-      <div class="grid-2">
-        <div class="form-row">
-          <label for="nickname">Nickname</label>
-          <input id="nickname" name="nickname" type="text" maxlength="40" placeholder="es. NicoB"/>
+          <div class="gw-brand">
+            <span class="gw-brandtext">GoGoWorld.life</span>
+          </div>
         </div>
-        <div class="form-row">
-          <label for="birthYear">Anno di nascita (opz.)</label>
-          <input id="birthYear" name="birthYear" type="number" min="1900" max="2100" placeholder="1978"/>
+
+        <div class="gw-topbar-row gw-topbar-row--actions">
+          <a class="gw-iconbtn" href="pages/cerca-utenti.html" title="Cerca">
+            <span class="gw-ico">🔎</span>
+          </a>
+
+          <button class="gw-iconbtn" id="btnGeo" title="Posizione">
+            <span class="gw-ico">📍</span>
+          </button>
+
+          <a class="gw-iconbtn" href="messages.html" title="Messaggi">
+            <span class="gw-ico">✉️</span>
+            <span id="messagesBadge" class="gw-badge" style="display:none">0</span>
+          </a>
+
+          <button class="gw-iconbtn" id="btnNotifications" title="Notifiche">
+            <span class="gw-ico">🔔</span>
+            <span id="notiBadge" class="gw-badge" style="display:none">0</span>
+          </button>
+
+          <button class="gw-iconbtn" id="btnHamburger" title="Menu">
+            <span class="gw-ico">≡</span>
+          </button>
         </div>
-        <div class="form-row">
-          <label for="region">Regione</label>
-          <input id="region" name="region" type="text" maxlength="60" placeholder="Basilicata"/>
+
+        <div id="gwMenu" class="gw-menu" style="display:none">
+          <a href="pages/cerca-utenti.html">Cerca utente</a>
+          <a href="#" id="btnPrivateEvents">Eventi privati</a>
+          <a href="#" id="btnGuide">Guida partecipante</a>
+          <a href="#" id="btnSwitchRole">Cambia ruolo</a>
+          <a href="#" id="btnLogout" class="danger">Logout</a>
         </div>
-        <div class="form-row">
-          <label for="city">Città (opz.)</label>
-          <input id="city" name="city" type="text" maxlength="120" placeholder="Potenza"/>
-        </div>
-        <div class="form-row">
-   <input id="avatarUrl" name="avatarUrl" type="hidden"/>
-     </div>
-     <div class="form-row">
-     <label for="avatarFile">Avatar</label>
-     <input id="avatarFile" name="avatarFile" type="file" accept="image/*"/>
-     </div>
-     <div class="form-row">
-     <div class="avatar-box">
-     <img id="avatar-preview" alt="Anteprima avatar"
-     style="display:none; max-width:120px; max-height:120px; border-radius:8px; border:1px solid #ddd;"/>
-     </div>
-     </div>
+      </header>
 
-        <div class="form-row">
-          <label for="languages">Lingue (separa con virgola)</label>
-          <input id="languages" name="languages" type="text" placeholder="it, en"/>
-        </div>
-      </div>
+      <!-- =========================
+           MAIN
+           ========================= -->
+      <main class="gw-home">
 
-      <div class="form-row">
-        <label for="socials">Social (uno per riga, opz.)</label>
-        <textarea id="socials" name="socials" rows="3" placeholder="https://instagram.com/...\nhttps://t.me/..."></textarea>
-      </div>
+        <section class="gw-block">
+          <div class="gw-block-head">
+            <h2 class="gw-block-title">Profilo</h2>
+          </div>
 
-      <div class="form-row">
-        <label for="interests">Interessi (separa con virgola, opz.)</label>
-        <input id="interests" name="interests" type="text" placeholder="eventi, arte, musica"/>
-      </div>
+          <div class="gw-block-body">
 
-      <div class="form-row">
-        <label for="bio">Bio (max 1000)</label>
-        <textarea id="bio" name="bio" rows="4" maxlength="1000" placeholder="Racconta qualcosa di te..."></textarea>
-      </div>
+            <!-- Alerts -->
+            <div id="alerts"></div>
 
-      <div class="form-actions">
-        <button type="submit" class="btn" id="saveBasicBtn">Salva profilo</button>
-        <button type="button" class="btn btn-secondary" id="reloadBtn">Ricarica</button>
-      </div>
-    </form>
-</section>
+            <!-- =========================
+                 VIEW MODE
+                 ========================= -->
+            <section id="profileView" style="display:block;">
 
-<!-- === CARD: Connessioni === -->
-  <section class="event-card" id="card-follow">
-    <h3 style="margin:0 0 .5rem;">Connessioni</h3>
-    <p class="muted" style="margin:0 0 .5rem;">
-      Qui vedi quante persone ti seguono e quante ne segui tu.
-    </p>
+              <!-- Avatar -->
+              <div class="form-row">
+                <div class="avatar-box">
+                  <img id="avatarView" alt="Avatar profilo"
+                       style="display:none; width:120px; height:120px; object-fit:cover; border-radius:12px; border:1px solid #ddd;"/>
+                </div>
+              </div>
 
-    <div class="profile-stats" style="display:flex;gap:1rem;flex-wrap:wrap;">
-      <span><strong id="myFollowersCount">0</strong> follower</span>
-      <span><strong id="myFollowingCount">0</strong> seguiti</span>
+              <!-- Informazioni pubbliche -->
+              <div class="form-row" style="margin-top:.5rem;">
+                <p class="muted">Informazioni pubbliche</p>
+                <div style="display:flex;flex-direction:column;gap:.25rem;">
+                  <div><strong id="viewNickname">—</strong></div>
+                  <div class="muted" id="viewPlace" style="display:none;"></div>
+                  <div class="muted" id="viewBio" style="display:none;"></div>
+                  <div class="muted" id="viewLanguages" style="display:none;"></div>
+                  <div class="muted" id="viewInterests" style="display:none;"></div>
+                  <div class="muted" id="viewSocials" style="display:none;"></div>
+                </div>
+              </div>
+
+              <!-- Bacheca -->
+              <div class="form-row" style="margin-top:.75rem;">
+                <p class="muted">Bacheca</p>
+                <a id="btnMyPublic2" class="btn" href="#">Vedi la mia bacheca pubblica</a>
+              </div>
+
+              <!-- Connessioni -->
+              <div class="form-row" style="margin-top:.75rem;">
+                <p class="muted">Connessioni</p>
+
+                <div class="profile-stats" style="display:flex;gap:1rem;flex-wrap:wrap;">
+                  <span><strong id="myFollowersCount_view">0</strong> follower</span>
+                  <span><strong id="myFollowingCount_view">0</strong> seguiti</span>
+                </div>
+
+                <div class="form-actions" style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+                  <button type="button" class="btn btn-secondary" id="btnShowFollowers_view">
+                    Vedi chi ti segue
+                  </button>
+                  <button type="button" class="btn btn-secondary" id="btnShowFollowing_view">
+                    Vedi chi segui
+                  </button>
+                </div>
+
+                <div id="followersBox_view" class="muted" style="margin-top:.5rem;display:none;">
+                  <strong>Follower</strong>
+                  <ul id="followersList_view" class="simple-list"></ul>
+                  <p id="followersEmpty_view" class="muted" style="display:none;">
+                    Nessuno ti segue ancora.
+                  </p>
+                </div>
+
+                <div id="followingBox_view" class="muted" style="margin-top:.5rem;display:none;">
+                  <strong>Seguiti</strong>
+                  <ul id="followingList_view" class="simple-list"></ul>
+                  <p id="followingEmpty_view" class="muted" style="display:none;">
+                    Non stai ancora seguendo nessuno.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Azione -->
+              <div class="form-actions" style="margin-top:.75rem;">
+                <button type="button" class="btn" id="btnEditProfile">Modifica</button>
+              </div>
+            </section>
+
+            <!-- =========================
+                 EDIT MODE
+                 ========================= -->
+            <section id="profileEdit" style="display:none;">
+
+              <!-- CARD: Dati di base -->
+              <section class="event-card" id="card-basic">
+                <h3>Dati di base</h3>
+
+                <form id="basicForm" class="form">
+                  <div class="grid-2">
+                    <div class="form-row">
+                      <label for="nickname">Nickname</label>
+                      <input id="nickname" name="nickname" type="text" maxlength="40"/>
+                    </div>
+
+                    <div class="form-row">
+                      <label for="birthYear">Anno di nascita</label>
+                      <input id="birthYear" name="birthYear" type="number"/>
+                    </div>
+
+                    <div class="form-row">
+                      <label for="region">Regione</label>
+                      <input id="region" name="region" type="text"/>
+                    </div>
+
+                    <div class="form-row">
+                      <label for="city">Città</label>
+                      <input id="city" name="city" type="text"/>
+                    </div>
+
+                    <input id="avatarUrl" name="avatarUrl" type="hidden"/>
+
+                    <div class="form-row">
+                      <label for="avatarFile">Avatar</label>
+                      <input id="avatarFile" name="avatarFile" type="file" accept="image/*"/>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="avatar-box">
+                        <img id="avatar-preview" style="display:none;max-width:120px;border-radius:8px;"/>
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <label for="languages">Lingue</label>
+                      <input id="languages" name="languages" type="text"/>
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <label for="socials">Social</label>
+                    <textarea id="socials" name="socials"></textarea>
+                  </div>
+
+                  <div class="form-row">
+                    <label for="interests">Interessi</label>
+                    <input id="interests" name="interests" type="text"/>
+                  </div>
+
+                  <div class="form-row">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" rows="4"></textarea>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn" id="saveBasicBtn">Salva profilo</button>
+                  </div>
+                </form>
+              </section>
+
+              <!-- CARD: Privacy DM -->
+              <section class="event-card" id="card-privacy">
+                <h3>Messaggi diretti</h3>
+
+                <form id="privacyForm" class="form">
+                  <div class="grid-2">
+                    <div class="form-row">
+                      <label>
+                        <input type="checkbox" id="optInDM"/>
+                        Acconsento a ricevere messaggi diretti
+                      </label>
+                    </div>
+
+                    <div class="form-row">
+                      <label for="dmsFrom">Chi può scrivermi</label>
+                      <select id="dmsFrom" name="dmsFrom">
+                        <option value="everyone">Tutti</option>
+                        <option value="followers">Solo chi mi segue</option>
+                        <option value="nobody">Nessuno</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn" id="savePrivacyBtn">Salva privacy</button>
+                  </div>
+                </form>
+              </section>
+
+              <div class="form-actions" style="margin-top:1rem;">
+                <button type="button" class="btn btn-secondary" id="btnCancelEdit">Annulla</button>
+              </div>
+            </section>
+
+          </div>
+        </section>
+
+        <footer class="app-footer">© GoGoWorld.life</footer>
+      </main>
+
+      <!-- =========================
+           SCRIPTS
+           ========================= -->
+      <script type="module">
+        import { initSharedTopbarUI } from "./js/shared-ui.js";
+        initSharedTopbarUI();
+      </script>
+
+      <script type="module" src="js/profile.js"></script>
+      <script type="module" src="js/notifications.js"></script>
+
     </div>
-
-    <div class="form-actions" style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap;">
-      <button type="button" class="btn btn-secondary" id="btnShowFollowers">
-        Vedi chi ti segue
-      </button>
-      <button type="button" class="btn btn-secondary" id="btnShowFollowing">
-        Vedi chi segui
-      </button>
-    </div>
-
-    <div id="followersBox" class="muted" style="margin-top:.5rem;display:none;">
-      <strong>Follower</strong>
-      <ul id="followersList" class="simple-list" style="margin:.25rem 0 0;padding-left:1rem;"></ul>
-      <p id="followersEmpty" class="muted" style="margin-top:.25rem;display:none;">
-        Nessuno ti segue ancora.
-      </p>
-    </div>
-
-    <div id="followingBox" class="muted" style="margin-top:.5rem;display:none;">
-      <strong>Seguiti</strong>
-      <ul id="followingList" class="simple-list" style="margin:.25rem 0 0;padding-left:1rem;"></ul>
-      <p id="followingEmpty" class="muted" style="margin-top:.25rem;display:none;">
-        Non stai ancora seguendo nessuno.
-      </p>
-    </div>
-  </section>
-
-
-  <!-- === CARD: Privacy DM === -->
-  <section class="event-card" id="card-privacy">
-    <h3 style="margin:0 0 .5rem;">Messaggi diretti</h3>
-    <form id="privacyForm" class="form">
-      <div class="grid-2">
-        <div class="form-row">
-          <label><input type="checkbox" id="optInDM"/> Acconsento a ricevere messaggi diretti</label>
-          <small class="muted">Potrai sempre cambiare idea.</small>
-        </div>
-        <div class="form-row">
-          <label for="dmsFrom">Chi può scrivermi</label>
-          <select id="dmsFrom" name="dmsFrom">
-            <option value="everyone">Tutti</option>
-            <option value="followers">Solo chi mi segue</option>
-            <option value="nobody">Nessuno</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-actions">
-        <button type="submit" class="btn" id="savePrivacyBtn">Salva privacy</button>
-      </div>
-    </form>
-  </section>
-<div class="form-actions" style="margin-top:1rem;">
-      <button type="button" class="btn btn-secondary" id="btnCancelEdit">Annulla</button>
-    </div>
-  </section>
-
-  <footer class="app-footer">© GoGoWorld.life</footer>
-
-  <!-- App -->
-  <script type="module" src="js/profile.js"></script>
+  </div>
 </body>
+
 </html>
