@@ -39,21 +39,7 @@ function joinCSV(arr) {
 function joinLines(arr) {
   return Array.isArray(arr) ? arr.join("\n") : "";
 }
-// --- setta il bottone "Torna alla mia pagina" ---
-async function setReturnButton() {
-  const btn = document.getElementById("btnReturn");
-  if (!btn) return;
-  const qs = new URLSearchParams(location.search);
-  const ret = qs.get("returnTo");
-  if (ret) { btn.href = ret; return; }
-  try {
-    const me = await whoami(localStorage.getItem("token"));
-    const role = String(me?.user?.role || "").toLowerCase();
-    btn.href = role === "organizer" || role === "admin" ? "/organizzatore.html" : "/partecipante.html";
-  } catch {
-    btn.href = "/partecipante.html";
-  }
-}
+
 // --- setta il bottone "Vedi la mia bacheca pubblica" ---
 async function setMyPublicBoardLink() {
   // Aggancia QUALSIASI bottone “bacheca pubblica” (anche se non ha l'id)
@@ -645,7 +631,6 @@ function hideIfMissing() {
 
 // --- bootstrap ---
 document.addEventListener("DOMContentLoaded", () => {
-  setReturnButton();
   setMyPublicBoardLink();
   hideIfMissing();
   loadProfile();
