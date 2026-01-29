@@ -390,28 +390,168 @@ privacyForm?.addEventListener("submit", async (e) => {
   showAlert("Privacy aggiornata");
 });
 async function loadFollowersList_view() {
-  // temporaneamente reindirizzo gli ID view verso quelli originali
-  // (clone semplice: copio il contenuto in view dopo il load originale)
-  await loadFollowersList();
-  const srcBox = document.getElementById("followersBox");
-  const dstBox = document.getElementById("followersBox_view");
-  if (srcBox && dstBox) {
-    dstBox.innerHTML = srcBox.innerHTML;
-    dstBox.style.display = srcBox.style.display;
-    dstBox.dataset.open = srcBox.dataset.open || "0";
+  const box = document.getElementById("followersBox_view");
+  const listEl = document.getElementById("followersList_view");
+  const emptyEl = document.getElementById("followersEmpty_view");
+
+  const otherBox = document.getElementById("followingBox_view");
+  const otherEmpty = document.getElementById("followingEmpty_view");
+
+  if (!box || !listEl || !emptyEl) return;
+
+  // toggle: se è già aperto, chiudi
+  if (box.dataset.open === "1") {
+    box.style.display = "none";
+    box.dataset.open = "0";
+    return;
+  }
+
+  // chiudi l'altra box
+  if (otherBox) {
+    otherBox.style.display = "none";
+    otherBox.dataset.open = "0";
+    if (otherEmpty) otherEmpty.style.display = "none";
+  }
+
+  box.style.display = "block";
+  box.dataset.open = "1";
+  listEl.innerHTML = "";
+  emptyEl.style.display = "none";
+
+  const liLoading = document.createElement("li");
+  liLoading.textContent = "Caricamento…";
+  liLoading.className = "muted";
+  listEl.appendChild(liLoading);
+
+  try {
+    const me = await whoami(localStorage.getItem("token"));
+    const id = me?.user?._id;
+
+    if (!id) {
+      listEl.innerHTML = "";
+      emptyEl.textContent = "Devi essere loggato per vedere chi ti segue.";
+      emptyEl.style.display = "block";
+      return;
+    }
+
+    const json = await apiGet(`/users/${id}/followers`);
+
+    listEl.innerHTML = "";
+    if (!json || json.ok === false) {
+      emptyEl.textContent = "Impossibile caricare i follower.";
+      emptyEl.style.display = "block";
+      return;
+    }
+
+    const arr = json.data || [];
+    if (!arr.length) {
+      emptyEl.textContent = "Nessuno ti segue ancora.";
+      emptyEl.style.display = "block";
+      return;
+    }
+
+    for (const u of arr) {
+      const li = document.createElement("li");
+      const parts = [];
+      if (u.profile?.city) parts.push(u.profile.city);
+      if (u.profile?.region) parts.push(u.profile.region);
+
+      li.textContent = parts.length
+        ? `${u.name || "Utente"} — ${parts.join(" • ")}`
+        : (u.name || "Utente");
+
+      listEl.appendChild(li);
+    }
+  } catch (e) {
+    console.warn("Errore nel caricamento follower (view)", e);
+    listEl.innerHTML = "";
+    emptyEl.textContent = "Errore di rete nel caricamento follower.";
+    emptyEl.style.display = "block";
   }
 }
 
+
 async function loadFollowingList_view() {
-  await loadFollowingList();
-  const srcBox = document.getElementById("followingBox");
-  const dstBox = document.getElementById("followingBox_view");
-  if (srcBox && dstBox) {
-    dstBox.innerHTML = srcBox.innerHTML;
-    dstBox.style.display = srcBox.style.display;
-    dstBox.dataset.open = srcBox.dataset.open || "0";
+  const box = document.getElementById("followingBox_view");
+  const listEl = document.getElementById("followingList_view");
+  const emptyEl = document.getElementById("followingEmpty_view");
+
+  const otherBox = document.getElementById("followersBox_view");
+  const otherEmpty = document.getElementById("followersEmpty_view");
+
+  if (!box || !listEl || !emptyEl) return;
+
+  // toggle: se è già aperto, chiudi
+  if (box.dataset.open === "1") {
+    box.style.display = "none";
+    box.dataset.open = "0";
+    return;
+  }
+
+  // chiudi l'altra box
+  if (otherBox) {
+    otherBox.style.display = "none";
+    otherBox.dataset.open = "0";
+    if (otherEmpty) otherEmpty.style.display = "none";
+  }
+
+  box.style.display = "block";
+  box.dataset.open = "1";
+  listEl.innerHTML = "";
+  emptyEl.style.display = "none";
+
+  const liLoading = document.createElement("li");
+  liLoading.textContent = "Caricamento…";
+  liLoading.className = "muted";
+  listEl.appendChild(liLoading);
+
+  try {
+    const me = await whoami(localStorage.getItem("token"));
+    const id = me?.user?._id;
+
+    if (!id) {
+      listEl.innerHTML = "";
+      emptyEl.textContent = "Devi essere loggato per vedere chi segui.";
+      emptyEl.style.display = "block";
+      return;
+    }
+
+    const json = await apiGet(`/users/${id}/following`);
+
+    listEl.innerHTML = "";
+    if (!json || json.ok === false) {
+      emptyEl.textContent = "Impossibile caricare gli utenti seguiti.";
+      emptyEl.style.display = "block";
+      return;
+    }
+
+    const arr = json.data || [];
+    if (!arr.length) {
+      emptyEl.textContent = "Non stai ancora seguendo nessuno.";
+      emptyEl.style.display = "block";
+      return;
+    }
+
+    for (const u of arr) {
+      const li = document.createElement("li");
+      const parts = [];
+      if (u.profile?.city) parts.push(u.profile.city);
+      if (u.profile?.region) parts.push(u.profile.region);
+
+      li.textContent = parts.length
+        ? `${u.name || "Utente"} — ${parts.join(" • ")}`
+        : (u.name || "Utente");
+
+      listEl.appendChild(li);
+    }
+  } catch (e) {
+    console.warn("Errore nel caricamento following (view)", e);
+    listEl.innerHTML = "";
+    emptyEl.textContent = "Errore di rete nel caricamento utenti seguiti.";
+    emptyEl.style.display = "block";
   }
 }
+
 
 // --- carica i conteggi follower/seguiti nella card "Connessioni" ---
 async function loadFollowStats() {
