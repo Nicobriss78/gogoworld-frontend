@@ -8,6 +8,40 @@ import { createParticipantMap } from "./map.js";
 import { createEmbeddedEventChat } from "./map-chat.js";
 import { showAlert } from "/js/participant-shared.js";
 
+/* =========================
+   ANCHOR: PRIVATI_UNLOCK_FLOW
+   ========================= */
+async function unlockPrivateEventFlow(token, reloadFn) {
+  const code = prompt("Inserisci il codice dell'evento privato:");
+  if (!code) return;
+
+  try {
+    const res = await fetch(`/api/events/private/unlock`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ code: code.trim() }),
+    });
+
+    const json = await res.json().catch(() => null);
+
+    if (!res.ok || !json?.ok) {
+      showAlert(json?.error || json?.message || "Codice non valido o evento non autorizzato.", "error", { autoHideMs: 4000 });
+      return;
+    }
+
+    showAlert("Evento privato sbloccato ✅", "success", { autoHideMs: 2500 });
+
+    if (typeof reloadFn === "function") {
+      await reloadFn();
+    }
+  } catch (e) {
+    console.warn(e);
+    showAlert("Errore di rete durante lo sblocco.", "error", { autoHideMs: 4000 });
+  }
+}
 
 /* =========================
    ANCHOR: MAPPA_TOPBAR
