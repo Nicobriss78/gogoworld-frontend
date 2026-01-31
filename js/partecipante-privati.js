@@ -97,6 +97,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Topbar (nome + status)
   await hydrateTopbar(token);
+/* =========================
+     ANCHOR: PRIVATI_MENU_UNLOCK_BIND
+     ========================= */
+  const btnUnlockPrivate = document.getElementById("btnUnlockPrivate");
+  if (btnUnlockPrivate) {
+    btnUnlockPrivate.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      // chiudi menu hamburger (gestito da shared-ui.js)
+      const gwMenu = document.getElementById("gwMenu");
+      if (gwMenu) gwMenu.style.display = "none";
+
+      await unlockPrivateEventFlow(token, async () => {
+        // ricarica eventi privati e aggiorna marker
+        await loadMapEvents();
+      });
+    });
+  }
+
    // ==============================
 // PATCH: shared-ui source of truth
 // ==============================
