@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GoGoWorld.life – Area Partecipante</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <meta name="robots" content="noindex" />
+  
+</head>
+<body class="gw-page-map">
+  <main class="container participant">
+<header class="gw-topbar">
+  <!-- Riga 1: saluto + logo -->
+  <div class="gw-topbar-row gw-topbar-row--title">
+    <div class="gw-greeting">
+      <div class="gw-hello">Ciao <span id="gwUserName">👤</span></div>
+      <div class="gw-status" id="gwUserStatus">Partecipante</div>
+    </div>
+
+    <div class="gw-brand">
+      <!-- TODO: metteremo il tuo logo reale -->
+      <span class="gw-brandtext">GoGoWorld.life</span>
+    </div>
+  </div>
+
+  <!-- Riga 2: azioni -->
+  <div class="gw-topbar-row gw-topbar-row--actions">
+    <a class="gw-iconbtn" href="pages/cerca-utenti.html" title="Cerca" aria-label="Cerca">
+      <span class="gw-ico">🔎</span>
+    </a>
+
+<button class="gw-iconbtn" id="btnGeo" title="Posizione" aria-label="Posizione">
+      <span class="gw-ico">📍</span>
+    </button>
+
+    <a class="gw-iconbtn" href="messages.html" title="Messaggi" aria-label="Messaggi">
+      <span class="gw-ico">✉️</span>
+      <span id="messagesBadge" class="gw-badge" style="display:none">0</span>
+    </a>
+
+<button class="gw-iconbtn" id="btnNotifications" title="Notifiche" aria-label="Notifiche">
+  <span class="gw-ico">🔔</span>
+  <span id="notiBadge" class="gw-badge" style="display:none">0</span>
+</button>
+
+
+    <button class="gw-iconbtn" id="btnHamburger" title="Menu" aria-label="Menu">
+      <span class="gw-ico">≡</span>
+    </button>
+  </div>
+
+  <!-- Menu hamburger -->
+  <div id="gwMenu" class="gw-menu" style="display:none">
+    <a href="pages/cerca-utenti.html">Cerca utente</a>
+    <a href="#" id="btnPrivateEvents">Eventi privati</a>
+    <a href="#" id="btnGuide">Guida partecipante</a>
+    <a href="#" id="btnSwitchRole">Cambia ruolo</a>
+    <a href="#" id="btnLogout" class="danger">Logout</a>
+  </div>
+</header>
+<!-- MAPPA (tra topbar e bottom bar) -->
+<section class="gw-map">
+  <!-- BLOCCO 1: MAPPA -->
+<section class="gw-block">
+  <header class="gw-block-head">
+    <h2 class="gw-block-title">Eventi privati</h2>
+  </header>
+
+  <div class="gw-block-body">
+    <div id="mapSection">
+      <div id="map" class="map-area"></div>
+
+<div class="map-legend" aria-label="Legenda eventi">
+  <span class="legend-item">
+    <span class="legend-dot legend-dot-ongoing"></span> In corso
+  </span>
+  <span class="legend-item">
+    <span class="legend-dot legend-dot-imminent"></span> Imminente
+  </span>
+  <span class="legend-item">
+    <span class="legend-dot legend-dot-future"></span> In arrivo
+  </span>
+</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- BLOCCO 2: DETTAGLIO EVENTO (DRAWER - nascosto) -->
+  <div id="gwDetailOverlay" class="gw-detail-overlay" hidden></div>
+
+  <aside id="gwDetailDrawer"
+         class="gw-detail-drawer"
+         hidden
+         aria-hidden="true">
+    <header class="gw-detail-drawer__head">
+      <h2>Evento selezionato</h2>
+
+      <button type="button"
+              id="btnCloseDetail"
+              class="gw-info-btn gw-detail-close"
+              aria-label="Chiudi dettaglio">
+        ✕
+      </button>
+    </header>
+
+    <div class="gw-detail-drawer__body">
+      <div id="mapSelectedEvent" class="gw-selected-box">
+        Seleziona un evento sulla mappa per vedere i dettagli qui.
+      </div>
+    </div>
+  </aside>
+<!-- BLOCCO 3: CHAT ROOM -->
+<section class="gw-block gw-chat-panel">
+  <header class="gw-block__head gw-chat-head">
+    <h2>Chat evento</h2>
+
+    <button type="button"
+            id="btnOpenDetail"
+            class="gw-info-btn gw-chat-info"
+            aria-label="Apri dettaglio evento">
+      ℹ️
+    </button>
+  </header>
+
+  <div class="gw-block-body">
+    <div id="mapChatHeader" class="gw-chat-subtitle">
+      Seleziona un evento per aprire la chat qui sotto.
+    </div>
+
+    <div id="mapChatPanel" class="gw-chat-panel"></div>
+
+    <form id="mapChatComposer" class="gw-chat-composer" autocomplete="off">
+      <input id="mapChatInput" type="text" placeholder="Scrivi un messaggio..." />
+      <button id="mapChatSend" type="submit" class="btn primary">Invia</button>
+    </form>
+  </div>
+</section>
+
+</section>
+<nav class="gw-bottomnav">
+  <a class="gw-navitem is-active" href="partecipante-mappa.html" title="Mappa"><span>🗺️</span></a>
+  <a class="gw-navitem" href="partecipante-seguiti-eventi.html" title="Eventi seguiti"><span>🧭</span></a>
+
+  <a class="gw-navitem gw-navitem--home" href="partecipante.html" title="Home">
+    <span>⌂</span>
+  </a>
+
+  <a class="gw-navitem" href="partecipante-seguiti-utenti.html" title="Utenti seguiti"><span>👥</span></a>
+  <a class="gw-navitem" href="profile.html" title="Profilo"><span>☺</span></a>
+</nav>
+    <footer class="app-footer">
+      GoGoWorld.life – Area Partecipante
+    </footer>
+  </main>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<script type="module">
+  import { initSharedTopbarUI } from "./js/shared-ui.js";
+  initSharedTopbarUI();
+</script>
+
+<script type="module" src="/js/partecipante-mappa.js"></script>
+<script>
+  // Listener globale per messaggi di stato API (lo teniamo)
+  window.addEventListener("api:status", (e) => {
+    const { phase, attempt, status } = (e && e.detail) || {};
+    if (phase === "retry") {
+      try {
+        showAlert(`⏳ Server in riattivazione… (tentativo ${attempt})`, "info", { autoHideMs: 1500 });
+      } catch {}
+      console.info("Server in riattivazione… tentativo", attempt, "status", status);
+    }
+  });
+</script>
+<script>
+  (function () {
+    const openBtn = document.getElementById("btnOpenDetail");
+    const closeBtn = document.getElementById("btnCloseDetail");
+    const drawer = document.getElementById("gwDetailDrawer");
+    const overlay = document.getElementById("gwDetailOverlay");
+
+    if (!openBtn || !closeBtn || !drawer || !overlay) return;
+
+    function openDrawer() {
+      drawer.hidden = false;
+      drawer.classList.add("is-open");
+      drawer.setAttribute("aria-hidden", "false");
+      overlay.hidden = false;
+      document.body.classList.add("gw-lock");
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove("is-open");
+      drawer.setAttribute("aria-hidden", "true");
+      overlay.hidden = true;
+      document.body.classList.remove("gw-lock");
+      drawer.hidden = true;
+    }
+// Esposto per poter chiudere il drawer anche da altri moduli (es. click sulla "×" accanto al "+")
+    window.gwCloseMapDetailDrawer = closeDrawer;
+    openBtn.addEventListener("click", openDrawer);
+    closeBtn.addEventListener("click", closeDrawer);
+    overlay.addEventListener("click", closeDrawer);
+  })();
+</script>
+
+  <!-- Badge Messaggi/Room -->
+<script type="module" src="js/notifications.js"></script>
+</body>
+</html>
+
