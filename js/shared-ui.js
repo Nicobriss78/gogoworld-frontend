@@ -132,20 +132,14 @@ function initMenuActions() {
     });
   }
 
-  if (btnPrivateEventsMenu) {
-    btnPrivateEventsMenu.addEventListener("click", (e) => {
-      e.preventDefault();
-      closeGwMenu();
+if (btnPrivateEventsMenu) {
+  btnPrivateEventsMenu.addEventListener("click", (e) => {
+    e.preventDefault();
+    closeGwMenu();
+    window.location.href = "partecipante-privati.html";
+  });
+}
 
-      const legacy = document.querySelector("section.legacy");
-      if (legacy) {
-        legacy.style.display = (legacy.style.display === "none") ? "block" : "none";
-        legacy.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        alert("Sezione Eventi privati non trovata (legacy).");
-      }
-    });
-  }
 
   if (btnGuide) {
     btnGuide.addEventListener("click", (e) => {
