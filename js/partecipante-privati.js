@@ -173,7 +173,7 @@ if (!DISABLE_LEGACY_TOPBAR_UI) {
 
       // contesto ritorno su MAPPA
       sessionStorage.setItem("fromView", "map");
-      sessionStorage.setItem("returnTo", "partecipante-mappa.html");
+      sessionStorage.setItem("returnTo", "partecipante-privati.html");
       sessionStorage.setItem("returnEventId", id);
 
       window.location.href = "evento.html";
@@ -186,7 +186,7 @@ if (!DISABLE_LEGACY_TOPBAR_UI) {
      ========================= */
   async function loadMapEvents() {
     try {
-      const res = await apiGet("/events", token);
+      const res = await apiGet("/events/private", token);
       const events = res?.events || res?.data?.events || [];
       if (!Array.isArray(events)) {
         throw new Error("Formato eventi non valido");
@@ -215,7 +215,7 @@ if (!DISABLE_LEGACY_TOPBAR_UI) {
         sessionStorage.removeItem("returnEventId");
       }
     } catch (err) {
-showAlert(err?.message || "Errore nel caricamento eventi (MAPPA)", "error", { autoHideMs: 4000 });
+showAlert(err?.message || "Errore nel caricamento eventi privati", "error", { autoHideMs: 4000 });
     }
   }
 
