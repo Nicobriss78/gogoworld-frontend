@@ -351,6 +351,186 @@ document.addEventListener("DOMContentLoaded", async () => {
 // CHIP STATUS (utente loggato)
 const statusRaw = (me?.status || me?.user?.status || "").toString().toLowerCase();
 const statusLabel = statusRaw ? (statusRaw[0].toUpperCase() + statusRaw.slice(1)) : "";
+// =====================================================
+// FE-2: Access Management + Banner (solo owner/admin)
+// =====================================================
+const mgmtWrap = document.getElementById("eventMgmt");
+const mgmtInviteEmail = document.getElementById("mgmtInviteEmail");
+const mgmtInviteBtn = document.getElementById("mgmtInviteBtn");
+const mgmtParticipantsList = document.getElementById("mgmtParticipantsList");
+const mgmtRevokedList = document.getElementById("mgmtRevokedList");
+const mgmtBannerUrl = document.getElementById("mgmtBannerUrl");
+const mgmtBannerSaveBtn = document.getElementById("mgmtBannerSaveBtn");
+
+const role = (me?.user?.role || me?.role || "").toString().toLowerCase();
+const isAdmin = role === "admin";
+
+const organizerId = ev?.organizer?._id || ev?.organizer;
+const isOwner = organizerId && myId && String(organizerId) === String(myId);
+
+const canManage = !!(isAdmin || isOwner);
+
+// Evento privato? (nel tuo payload usi spesso ev.isPrivate; teniamo entrambe le varianti)
+const isPrivateEvent = !!(ev?.isPrivate || (ev?.visibility && String(ev.visibility).toLowerCase() === "private"));
+
+let mgmtWired = false;
+
+function escHtml(s) {
+  return String(s ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function renderUserRow(u, actionText, actionClass, dataAction) {
+  const id = u?._id || u?.id || "";
+  const name = escHtml(u?.name || "Utente");
+  const email = escHtml(u?.email || "");
+  return `
+    <div class="gw-row" style="display:flex; gap:.5rem; align-items:center; justify-content:space-between; padding:.45rem .5rem; border:1px solid rgba(0,0,0,.08); border-radius:10px;">
+      <div style="display:flex; flex-direction:column; min-width:0;">
+        <div style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</div>
+        <div style="font-size:.85rem; opacity:.8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${email}</div>
+      </div>
+      <button class="btn ${actionClass || ""}" type="button"
+              data-action="${dataAction}" data-user-id="${escHtml(id)}"
+              style="white-space:nowrap;">
+        ${actionText}
+      </button>
+    </div>
+  `;
+}
+
+async function refreshMgmt() {
+  if (!canManage || !mgmtWrap) return;
+
+  // Banner: valorizza input con coverImage corrente
+  if (mgmtBannerUrl) mgmtBannerUrl.value = (ev?.coverImage || "").toString();
+
+  // Access management ha senso sui privati
+  if (!isPrivateEvent) {
+    if (mgmtParticipantsList) mgmtParticipantsList.innerHTML = `<div style="opacity:.75;">(Evento non privato: accessi non applicabili)</div>`;
+    if (mgmtRevokedList) mgmtRevokedList.innerHTML = "";
+    return;
+  }
+
+  const r = await apiGet(`/events/${eventId}/access`, token);
+  if (!r?.ok) throw new Error(r?.error || "Errore caricamento accessi evento");
+
+  const participants = Array.isArray(r.participants) ? r.participants : [];
+  const revoked = Array.isArray(r.revokedUsers) ? r.revokedUsers : [];
+
+  if (mgmtParticipantsList) {
+    mgmtParticipantsList.innerHTML = participants.length
+      ? participants.map(u => renderUserRow(u, "⛔ Escludi", "btn-secondary", "ban")).join("")
+      : `<div style="opacity:.75;">(Nessun partecipante autorizzato)</div>`;
+  }
+
+  if (mgmtRevokedList) {
+    mgmtRevokedList.innerHTML = revoked.length
+      ? revoked.map(u => renderUserRow(u, "✅ Reinserisci", "", "unban")).join("")
+      : `<div style="opacity:.75;">(Nessun utente escluso)</div>`;
+  }
+}
+
+async function doInvite() {
+  const email = (mgmtInviteEmail?.value || "").trim();
+  if (!email) {
+    showAlert("Inserisci un'email valida.", "warning", { autoHideMs: 3000 });
+    return;
+  }
+  const r = await apiPost(`/events/${eventId}/invite`, { email }, token);
+  if (!r?.ok) throw new Error(r?.error || "Invito fallito");
+  if (mgmtInviteEmail) mgmtInviteEmail.value = "";
+  showAlert("Invito inviato (utente aggiunto agli autorizzati).", "success", { autoHideMs: 2500 });
+  await refreshMgmt();
+}
+
+async function doBan(userId) {
+  const r = await apiPost(`/events/${eventId}/ban`, { userId }, token);
+  if (!r?.ok) throw new Error(r?.error || "Revoca fallita");
+  showAlert("Utente escluso (ban).", "success", { autoHideMs: 2500 });
+  await refreshMgmt();
+}
+
+async function doUnban(userId) {
+  const r = await apiPost(`/events/${eventId}/unban`, { userId }, token);
+  if (!r?.ok) throw new Error(r?.error || "Reinserimento fallito");
+  showAlert("Utente reinserito.", "success", { autoHideMs: 2500 });
+  await refreshMgmt();
+}
+
+async function doSaveBanner() {
+  const bannerUrl = (mgmtBannerUrl?.value || "").trim();
+  if (!bannerUrl) {
+    showAlert("Inserisci un URL banner valido.", "warning", { autoHideMs: 3000 });
+    return;
+  }
+  const r = await apiPatch(`/events/${eventId}/banner`, { bannerUrl }, token);
+  if (!r?.ok) throw new Error(r?.error || "Salvataggio banner fallito");
+
+  // aggiorna anche l'oggetto ev in memoria (così UI resta coerente)
+  ev.coverImage = r.coverImage || bannerUrl;
+
+  showAlert("Banner aggiornato.", "success", { autoHideMs: 2500 });
+}
+
+async function wireMgmtOnce() {
+  if (!mgmtWrap || mgmtWired) return;
+  mgmtWired = true;
+
+  // Invite
+  if (mgmtInviteBtn) {
+    mgmtInviteBtn.addEventListener("click", async () => {
+      try { await doInvite(); } catch (e) { showAlert(e.message, "error", { autoHideMs: 4000 }); }
+    });
+  }
+  if (mgmtInviteEmail) {
+    mgmtInviteEmail.addEventListener("keydown", async (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        try { await doInvite(); } catch (err) { showAlert(err.message, "error", { autoHideMs: 4000 }); }
+      }
+    });
+  }
+
+  // Delegation per ban/unban
+  const onClickLists = async (e) => {
+    const btn = e.target?.closest?.("button[data-action][data-user-id]");
+    if (!btn) return;
+    const action = btn.getAttribute("data-action");
+    const uid = btn.getAttribute("data-user-id");
+    try {
+      if (action === "ban") await doBan(uid);
+      if (action === "unban") await doUnban(uid);
+    } catch (err) {
+      showAlert(err.message, "error", { autoHideMs: 4000 });
+    }
+  };
+  if (mgmtParticipantsList) mgmtParticipantsList.addEventListener("click", onClickLists);
+  if (mgmtRevokedList) mgmtRevokedList.addEventListener("click", onClickLists);
+
+  // Banner save
+  if (mgmtBannerSaveBtn) {
+    mgmtBannerSaveBtn.addEventListener("click", async () => {
+      try { await doSaveBanner(); } catch (e) { showAlert(e.message, "error", { autoHideMs: 4000 }); }
+    });
+  }
+}
+
+// Mostra la sezione solo se owner/admin
+if (mgmtWrap) {
+  if (canManage) {
+    mgmtWrap.style.display = "block";
+    // inizializza + carica liste
+    await wireMgmtOnce();
+    try { await refreshMgmt(); } catch (e) { showAlert(e.message, "error", { autoHideMs: 4000 }); }
+  } else {
+    mgmtWrap.style.display = "none";
+  }
+}
 
     elTitle.textContent = ev.title || "Evento";
 const badgePriv = document.getElementById("badgePrivate");
@@ -1103,6 +1283,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
