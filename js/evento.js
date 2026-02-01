@@ -656,7 +656,6 @@ loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
     const evOrganizerId = (ev.organizer && typeof ev.organizer === "object" && ev.organizer._id)
       ? ev.organizer._id
       : ev.organizer;
-    const isOwner = String(evOrganizerId || "") === String(myId || "");
 // URL di ritorno (riusato per chat evento e DM)
 const ret = encodeURIComponent(window.location.href);
 
@@ -1283,6 +1282,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
