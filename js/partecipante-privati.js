@@ -12,6 +12,16 @@ import { showAlert } from "/js/participant-shared.js";
    ANCHOR: PRIVATI_UNLOCK_FLOW
    ========================= */
 async function unlockPrivateEventFlow(token, reloadFn) {
+   // Cooldown client (UI): se il backend ha risposto 429, evitiamo prompt ripetuti
+  const COOLDOWN_KEY = "gw_priv_unlock_cooldown_until";
+  const until = Number(sessionStorage.getItem(COOLDOWN_KEY) || "0");
+  const now = Date.now();
+  if (until && now < until) {
+    const secLeft = Math.max(1, Math.ceil((until - now) / 1000));
+    showAlert(`⛔ Troppi tentativi. Attendi ${secLeft}s prima di riprovare.`, "error", { autoHideMs: 3500 });
+    return;
+  }
+
   const code = prompt("Inserisci il codice dell'evento privato:");
   if (!code) return;
 
@@ -27,10 +37,46 @@ async function unlockPrivateEventFlow(token, reloadFn) {
 
     const json = await res.json().catch(() => null);
 
-    if (!res.ok || !json?.ok) {
-      showAlert(json?.error || json?.message || "Codice non valido o evento non autorizzato.", "error", { autoHideMs: 4000 });
+if (!res.ok || !json?.ok) {
+      // 429 = rate limit (bruteforce bloccato)
+      if (res.status === 429) {
+        const ra = res.headers.get("Retry-After");
+        const retrySec = ra ? Number(ra) : NaN;
+        const waitSec = Number.isFinite(retrySec) && retrySec > 0 ? retrySec : 600; // fallback prudente
+
+        sessionStorage.setItem(COOLDOWN_KEY, String(Date.now() + waitSec * 1000));
+
+        showAlert(
+          `⛔ Troppi tentativi consecutivi. Attendi ${waitSec}s e riprova.`,
+          "error",
+          { autoHideMs: 4500 }
+        );
+        return;
+      }
+
+      // 404 = codice errato / evento non disponibile (messaggio chiaro)
+      if (res.status === 404) {
+        showAlert(
+          "❌ Codice non valido o evento non disponibile. Controlla il codice e riprova.",
+          "error",
+          { autoHideMs: 4000 }
+        );
+        return;
+      }
+
+      // 401/403 = sessione/token non valido
+      if (res.status === 401 || res.status === 403) {
+        showAlert("⚠️ Sessione non valida. Effettua di nuovo il login.", "error", { autoHideMs: 3500 });
+        setTimeout(() => { window.location.href = "login.html"; }, 800);
+        return;
+      }
+
+      // Fallback generico
+      showAlert(json?.error || json?.message || "Operazione non riuscita.", "error", { autoHideMs: 4000 });
       return;
     }
+sessionStorage.removeItem(COOLDOWN_KEY);
+
 
     showAlert("Evento privato sbloccato ✅", "success", { autoHideMs: 2500 });
 
