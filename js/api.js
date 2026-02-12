@@ -1,9 +1,22 @@
 // js/api.js — wrapper Fetch con retry/backoff e gestione errori uniformi
 
-// Base API: reverse-proxy (Netlify/prod) → "/api"
+// Base API dinamica
 function resolveApiBase() {
-  return "/api";
+  // 1️⃣ Se definita variabile ambiente (Netlify/Build)
+  if (typeof window !== "undefined" && window.__API_BASE__) {
+    return window.__API_BASE__;
+  }
+
+  // 2️⃣ Se presente meta tag <meta name="api-base" content="...">
+  const meta = typeof document !== "undefined"
+    ? document.querySelector('meta[name="api-base"]')
+    : null;
+  if (meta?.content) return meta.content;
+
+  // 3️⃣ Fallback: produzione Render (IMPOSTA QUI IL TUO BACKEND REALE)
+  return "https://gogoworld-api.onrender.com/api";
 }
+
 const API_BASE = resolveApiBase();
 
 // Sleep helper per il backoff
