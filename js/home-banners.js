@@ -15,6 +15,45 @@ let lastFetchTs = 0;
 
 let visibleSlots = new Set();
 let rotateTimer = null;
+// === Fallback Tips (usati solo quando NON ci sono sponsor) ===
+const fallbackTips = [
+  {
+    kind: "tip",
+    iconSvg: `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 2a7 7 0 0 0-7 7c0 4.5 7 13 7 13s7-8.5 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
+      </svg>
+    `.trim(),
+    title: "Attiva la posizione",
+    text: "Scopri eventi vicino a te e filtra la mappa in un attimo.",
+  },
+  {
+    kind: "tip",
+    iconSvg: `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+      </svg>
+    `.trim(),
+    title: "Fai Check-in",
+    text: "Partecipa davvero agli eventi e sblocca badge e classifica mensile.",
+  },
+  {
+    kind: "tip",
+    iconSvg: `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13z"/>
+      </svg>
+    `.trim(),
+    title: "Segui organizzatori",
+    text: "Resta aggiornato sugli eventi che ti interessano davvero.",
+  },
+];
+
+let fallbackIndex = 0;
+function getCurrentFallbackTip() {
+  const tip = fallbackTips[fallbackIndex % fallbackTips.length];
+  return tip || null;
+}
 
 /**
  * Inserisce SLOT banner (non banner veri) nella lista eventi:
@@ -90,6 +129,21 @@ function getCurrentBanner() {
   const idx = bannerIndex % bannerQueue.length;
   return bannerQueue[idx];
 }
+function renderFallbackTipCard(tip) {
+  if (!tip) return "";
+
+  return `
+    <article class="gw-rail gw-banner gw-banner--tip" data-kind="banner-tip">
+      <div class="gw-banner__inner">
+        <div class="gw-banner__icon">${tip.iconSvg || ""}</div>
+        <div class="gw-banner__content">
+          <div class="gw-banner__title">${tip.title || ""}</div>
+          <div class="gw-banner__text">${tip.text || ""}</div>
+        </div>
+      </div>
+    </article>
+  `.trim();
+}
 
 /**
  * Quando la queue sta finendo, prefetch.
@@ -118,7 +172,9 @@ function maybeRefresh(ctx) {
  */
 function updateVisibleSlots(renderBannerCard) {
   const b = getCurrentBanner();
-  const html = b ? renderBannerCard(b) : "";
+  const tip = !b ? getCurrentFallbackTip() : null;
+
+  const html = b ? renderBannerCard(b) : renderFallbackTipCard(tip);
 
   visibleSlots.forEach((el) => {
     try {
@@ -144,7 +200,12 @@ function ensureRotation(renderBannerCard, ctx) {
       maybePrefetch(ctx);
 
       // rotate
-      bannerIndex++;
+     bannerIndex++;
+
+if (!bannerQueue.length) {
+  fallbackIndex++;
+}
+
       updateVisibleSlots(renderBannerCard);
     }, BANNER_ROTATE_MS);
   }
