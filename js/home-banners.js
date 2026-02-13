@@ -6,6 +6,8 @@ export const BANNER_PLACEMENT_EVENTS_INLINE = "events_list_inline";
 export const BANNER_BATCH_SIZE = 8;
 export const BANNER_ROTATE_MS = 4500;
 export const BANNER_REFRESH_MS = 150000; // 2.5 minuti
+// Ogni quanti sponsor inseriamo 1 tip (es. 3:1 => dopo 3 sponsor, 1 tip)
+export const TIP_EVERY_N_SPONSORS = 3;
 
 // === Internal state (shared across all banner slots) ===
 let bannerQueue = [];
@@ -124,11 +126,29 @@ async function fetchBannerBatch({ country = "", region = "", token } = {}) {
 /**
  * Ritorna il prossimo banner dalla queue (senza rimuoverlo).
  */
+function isTipTurn() {
+  // Se non ci sono sponsor, è sempre turno tip
+  if (!bannerQueue.length) return true;
+
+  // Pattern: S S S T (con TIP_EVERY_N_SPONSORS = 3)
+  const cycle = TIP_EVERY_N_SPONSORS + 1; // es. 4
+  const pos = bannerIndex % cycle; // 0..3
+  return pos === TIP_EVERY_N_SPONSORS; // l'ultimo del ciclo è tip
+}
+
 function getCurrentBanner() {
   if (!bannerQueue.length) return null;
-  const idx = bannerIndex % bannerQueue.length;
+  if (isTipTurn()) return null;
+
+  // Mappa bannerIndex (che include anche i turni tip) su indice sponsor puro
+  const cycle = TIP_EVERY_N_SPONSORS + 1;
+  const tipsSoFar = Math.floor(bannerIndex / cycle); // 1 tip per ciclo
+  const sponsorIndex = bannerIndex - tipsSoFar; // “collassa” i turni tip
+
+  const idx = sponsorIndex % bannerQueue.length;
   return bannerQueue[idx];
 }
+
 function renderFallbackTipCard(tip) {
   if (!tip) return "";
 
@@ -200,11 +220,13 @@ function ensureRotation(renderBannerCard, ctx) {
       maybePrefetch(ctx);
 
       // rotate
-     bannerIndex++;
+bannerIndex++;
 
-if (!bannerQueue.length) {
+// Avanza i tips solo quando viene mostrato un tip
+if (isTipTurn()) {
   fallbackIndex++;
 }
+
 
       updateVisibleSlots(renderBannerCard);
     }, BANNER_ROTATE_MS);
