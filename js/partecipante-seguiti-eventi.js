@@ -301,7 +301,7 @@ const cardsHtml = mixed
     }
     // normale card evento
     const joined = isJoined(item);
-    return `<div class="gw-rail">${renderFollowingCard(item, joined)}</div>`;
+return renderFollowingCard(item, joined);
   })
   .join("");
 
