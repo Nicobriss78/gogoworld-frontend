@@ -326,8 +326,22 @@ const cardsHtml = mixed
     .join("");
 
 container.innerHTML = html;
-// Attiva sponsor/tips sugli slot presenti nella pagina (engine standard)
-activateHomeBannerSlots();
+
+// Attiva sponsor/tips per ogni carousel (uno per organizer)
+const token = FOLLOWING_TOKEN;
+if (token) {
+  const wraps = Array.from(container.querySelectorAll(".gw-carousel-wrap"));
+  wraps.forEach((wrap) => {
+    activateHomeBannerSlots({
+      container: wrap,
+      country: "",
+      region: "",
+      token,
+      renderBannerCard,
+    });
+  });
+}
+
 }
 
 /* =========================
