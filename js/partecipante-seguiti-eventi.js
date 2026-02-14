@@ -212,31 +212,40 @@ return `
    ANCHOR: FOLLOWING_RENDER
    ========================= */
 function renderBannerCard(b) {
-  if (!b) return "";
+ if (!b) return "";
 
-  const title = String(b.title || b.name || "Sponsor").trim();
-  const text = String(b.text || b.subtitle || b.description || "").trim();
+ const id = String(b?.id || b?._id || "");
+ const title = (b?.title || b?.name || "Promozione").toString();
+ const img = (b?.imageUrl || b?.image || "").toString();
+ const type = String(b?.type || "").toUpperCase();
 
-  const img = String(b.imageUrl || b.image || b.image_url || "").trim();
-  const href = String(b.linkUrl || b.url || b.href || "").trim();
+ const kicker =
+ type === "SPONSOR" ? "Sponsor" :
+ type === "HOUSE" ? "Comunicazione" :
+ "Promo";
 
-  const media = img
-    ? `<div class="gw-banner__media"><img src="${img}" alt="" loading="lazy"></div>`
-    : "";
+ // HOME usa click-tracking via BE se id presente; fallback su targetUrl/linkUrl/url
+ const clickHref = id
+ ? `/api/banners/${encodeURIComponent(id)}/click?redirect=1`
+ : (b?.targetUrl || b?.linkUrl || b?.url || "#");
 
-  const content = `
-    <div class="gw-banner__inner">
-      ${media}
-      <div class="gw-banner__content">
-        <div class="gw-banner__title">${title}</div>
-        ${text ? `<div class="gw-banner__text">${text}</div>` : ""}
-      </div>
-    </div>
-  `.trim();
+ const bgStyle = img
+ ? ` style="background-image:url('${img}'); background-size:cover; background-position:center;"`
+ : "";
 
-  return href
-    ? `<a class="gw-rail gw-banner gw-banner--sponsor" data-kind="banner-sponsor" href="${href}" target="_blank" rel="noopener noreferrer">${content}</a>`
-    : `<article class="gw-rail gw-banner gw-banner--sponsor" data-kind="banner-sponsor">${content}</article>`;
+ return `
+ <article class="gw-rail event-card gw-banner-card" data-banner-id="${id}">
+ <a class="gw-banner-link" href="${clickHref}" aria-label="${title}">
+ <div class="gw-thumb"${bgStyle}></div>
+ <div class="content">
+ <div class="meta" style="margin-top:0;">
+ <span><strong>${kicker}</strong></span>
+ </div>
+ <h3 class="title">${title}</h3>
+ </div>
+ </a>
+ </article>
+ `;
 }
 function renderFollowingBlocks(events) {
   const container = document.getElementById("followingEventsContainer");
