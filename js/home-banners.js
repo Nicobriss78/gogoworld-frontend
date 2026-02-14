@@ -247,12 +247,12 @@ if (isTipTurn()) {
  * - tutti gli slot visibili mostrano lo stesso banner (stessa queue/stream)
  */
 export async function activateHomeBannerSlots({
-  container,
-  country = "",
-  region = "",
-  token,
-  renderBannerCard,
-}) {
+   container,
+   country = "",
+   region = "",
+   token,
+   renderBannerCard,
+} = {}) {
   if (!container || typeof renderBannerCard !== "function") return;
 
   const ctx = { country, region, token };
