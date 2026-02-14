@@ -17,6 +17,7 @@ import {
 
 // Memorizzo l'id dell'utente loggato (serve per capire se "Partecipo" su un evento)
 let ME_ID = null;
+let FOLLOWING_TOKEN = null;
 
 /* =========================
    ANCHOR: FOLLOWING_TOPBAR
