@@ -211,7 +211,33 @@ return `
 /* =========================
    ANCHOR: FOLLOWING_RENDER
    ========================= */
+function renderBannerCard(b) {
+  if (!b) return "";
 
+  const title = String(b.title || b.name || "Sponsor").trim();
+  const text = String(b.text || b.subtitle || b.description || "").trim();
+
+  const img = String(b.imageUrl || b.image || b.image_url || "").trim();
+  const href = String(b.linkUrl || b.url || b.href || "").trim();
+
+  const media = img
+    ? `<div class="gw-banner__media"><img src="${img}" alt="" loading="lazy"></div>`
+    : "";
+
+  const content = `
+    <div class="gw-banner__inner">
+      ${media}
+      <div class="gw-banner__content">
+        <div class="gw-banner__title">${title}</div>
+        ${text ? `<div class="gw-banner__text">${text}</div>` : ""}
+      </div>
+    </div>
+  `.trim();
+
+  return href
+    ? `<a class="gw-rail gw-banner gw-banner--sponsor" data-kind="banner-sponsor" href="${href}" target="_blank" rel="noopener noreferrer">${content}</a>`
+    : `<article class="gw-rail gw-banner gw-banner--sponsor" data-kind="banner-sponsor">${content}</article>`;
+}
 function renderFollowingBlocks(events) {
   const container = document.getElementById("followingEventsContainer");
   if (!container) return;
@@ -364,6 +390,7 @@ function initActionsDelegation(token) {
    ========================= */
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
+  FOLLOWING_TOKEN = token;
 
   if (!token) {
     window.location.href = "index.html";
