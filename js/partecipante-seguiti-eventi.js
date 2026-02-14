@@ -6,7 +6,7 @@
 // - Chicca: countdown (giorni/ore) sugli "imminent" (72h in BE)
 
 import { apiGet, apiPost } from "./api.js";
-import { renderEventCard, renderBannerCard } from "./home-cards.js";
+import { renderEventCard } from "./home-cards.js";
 import { showAlert } from "./participant-shared.js";
 
 import {
