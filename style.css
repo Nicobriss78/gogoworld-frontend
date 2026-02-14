@@ -1660,6 +1660,27 @@ article.gw-rail.gw-banner--tip .gw-banner__text{
   overflow: hidden;
 }
 
+/* =========================================================
+   UI v2 — Banner Tips: varianti colore per data-tip
+   ========================================================= */
+
+article.gw-rail.gw-banner--tip[data-tip="geo"] .gw-banner__inner{
+  border-left-color: rgba(44,90,160,.75);
+}
+
+article.gw-rail.gw-banner--tip[data-tip="checkin"] .gw-banner__inner{
+  border-left-color: rgba(200,58,58,.75);
+}
+
+article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__inner{
+  border-left-color: rgba(46,125,50,.75);
+}
+
+/* Colore icona coerente */
+article.gw-rail.gw-banner--tip[data-tip="geo"] .gw-banner__icon{ color: var(--gw-blue); }
+article.gw-rail.gw-banner--tip[data-tip="checkin"] .gw-banner__icon{ color: var(--gw-red); }
+article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d32; }
+
 
 
 
