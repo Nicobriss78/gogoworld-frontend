@@ -1681,6 +1681,25 @@ article.gw-rail.gw-banner--tip[data-tip="geo"] .gw-banner__icon{ color: var(--gw
 article.gw-rail.gw-banner--tip[data-tip="checkin"] .gw-banner__icon{ color: var(--gw-red); }
 article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d32; }
 
+/* =========================================================
+   Scoped sizing — Scheda "Eventi seguiti"
+   Evita card gigantesche su desktop, mantiene preview su mobile
+   ========================================================= */
+
+#followingEventsContainer .gw-carousel-wrap .gw-rail{
+  /* desktop/tablet: card con larghezza “umana” */
+  flex: 0 0 420px;
+  max-width: 420px;
+}
+
+@media (max-width: 520px){
+  #followingEventsContainer .gw-carousel-wrap .gw-rail{
+    /* mobile: manteniamo lo stile rail a percentuale */
+    flex: 0 0 78%;
+    max-width: 78%;
+  }
+}
+
 
 
 
