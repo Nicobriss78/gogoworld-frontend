@@ -1603,9 +1603,8 @@ article.gw-rail.gw-banner--tip .gw-banner__inner{
 
   /* sfondo “accattivante” ma soft e coerente */
 background:
-  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='80' viewBox='0 0 180 80'%3E%3Cg fill='none' stroke='%2399b3d9' stroke-opacity='.35'%3E%3Cpath d='M0 60 C30 40,60 80,90 60 S150 40,180 60'/%3E%3Cpath d='M0 40 C30 20,60 60,90 40 S150 20,180 40'/%3E%3C/g%3E%3C/svg%3E") right 10px center / 180px 80px no-repeat,
-  linear-gradient(135deg, rgba(44,90,160,.16), rgba(200,58,58,.12));}
-
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='90' viewBox='0 0 220 90'%3E%3Cg fill='none' stroke='%2399b3d9' stroke-opacity='.55' stroke-width='2'%3E%3Cpath d='M0 70 C40 40,80 100,120 70 S180 40,220 70'/%3E%3Cpath d='M0 45 C40 15,80 75,120 45 S180 15,220 45'/%3E%3C/g%3E%3C/svg%3E") right 0 center / 220px 90px no-repeat,
+  linear-gradient(135deg, rgba(44,90,160,.22), rgba(200,58,58,.18));
 article.gw-rail.gw-banner--tip .gw-banner__icon{
   flex: 0 0 auto;
   width: 36px;
@@ -1653,6 +1652,7 @@ article.gw-rail.gw-banner--tip .gw-banner__text{
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 
 
 
