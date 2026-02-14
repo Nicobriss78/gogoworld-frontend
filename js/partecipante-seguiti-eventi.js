@@ -6,10 +6,18 @@
 // - Chicca: countdown (giorni/ore) sugli "imminent" (72h in BE)
 
 import { apiGet, apiPost } from "./api.js";
-import { renderEventCard } from "./home-cards.js";
+import { renderEventCard, renderBannerCard } from "./home-cards.js";
 import { showAlert } from "./participant-shared.js";
+
+import {
+  injectBannerSlots,
+  renderBannerSlotHTML,
+  activateHomeBannerSlots,
+} from "./home-banners.js";
+
 // Memorizzo l'id dell'utente loggato (serve per capire se "Partecipo" su un evento)
 let ME_ID = null;
+let FOLLOWING_TOKEN = null;
 
 /* =========================
    ANCHOR: FOLLOWING_TOPBAR
@@ -203,6 +211,28 @@ return `
 /* =========================
    ANCHOR: FOLLOWING_RENDER
    ========================= */
+async function activateFollowingBanners() {
+  const token = FOLLOWING_TOKEN;
+  if (!token) return;
+
+  const root = document.getElementById("followingEventsContainer");
+  if (!root) return;
+
+  const wraps = Array.from(root.querySelectorAll(".gw-carousel-wrap"));
+  if (!wraps.length) return;
+
+  // Attiva l'engine banner su ogni carousel (uno per organizer)
+  wraps.forEach((wrap) => {
+    activateHomeBannerSlots({
+      container: wrap,
+      token,
+      renderBannerCard,
+      country: "",
+      region: "",
+    });
+  });
+}
+
 function renderFollowingBlocks(events) {
   const container = document.getElementById("followingEventsContainer");
   if (!container) return;
@@ -256,8 +286,18 @@ const arr = Array.isArray(events) ? events : [];
       const count = list.length;
 
       const railId = `followingRail_${idx}`;
-const cardsHtml = list
-  .map(ev => `<div class="gw-rail">${renderFollowingCard(ev)}</div>`)
+const mixed = injectBannerSlots(list);
+
+const cardsHtml = mixed
+  .map((item) => {
+    if (item && item.__kind === "banner-slot") {
+      // slot banner (poi riempito dall'engine sponsor/tips)
+      return renderBannerSlotHTML();
+    }
+    // normale card evento
+    const joined = isJoined(item);
+    return `<div class="gw-rail">${renderFollowingCard(item, joined)}</div>`;
+  })
   .join("");
 
       return `
@@ -281,6 +321,8 @@ const cardsHtml = list
     .join("");
 
   container.innerHTML = html;
+   // Attiva sponsor/tips per tutti gli slot appena renderizzati
+   activateFollowingBanners();
 }
 
 /* =========================
@@ -343,6 +385,8 @@ function initActionsDelegation(token) {
    ========================= */
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
+   FOLLOWING_TOKEN = token;
+
   if (!token) {
     window.location.href = "index.html";
     return;
