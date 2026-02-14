@@ -1600,6 +1600,13 @@ article.gw-rail.gw-banner--tip .gw-banner__inner{
   padding: 12px 12px;
   align-items: center;
   border-left: 4px solid rgba(44,90,160,.55);
+  transition: all .3s ease;
+}
+
+article.gw-rail.gw-banner--tip:hover .gw-banner__inner{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(17,24,39,.10);
+}
 
   /* sfondo “accattivante” ma soft e coerente */
 background:
@@ -1652,6 +1659,7 @@ article.gw-rail.gw-banner--tip .gw-banner__text{
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 
 
 
