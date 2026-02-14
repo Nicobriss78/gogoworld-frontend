@@ -1699,6 +1699,22 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     max-width: 78%;
   }
 }
+/* =========================================================
+   Sponsor banner — thumb più alto (solo gw-banner-card)
+   Non impatta le card evento
+   ========================================================= */
+
+.gw-banner-card .gw-thumb{
+  height: 110px;
+}
+
+/* Mobile: un filo meno alto per evitare che rubi spazio */
+@media (max-width: 520px){
+  .gw-banner-card .gw-thumb{
+    height: 96px;
+  }
+}
+
 
 
 
