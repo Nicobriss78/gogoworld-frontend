@@ -17,7 +17,6 @@ import {
 
 // Memorizzo l'id dell'utente loggato (serve per capire se "Partecipo" su un evento)
 let ME_ID = null;
-let FOLLOWING_TOKEN = null;
 
 /* =========================
    ANCHOR: FOLLOWING_TOPBAR
@@ -211,27 +210,6 @@ return `
 /* =========================
    ANCHOR: FOLLOWING_RENDER
    ========================= */
-async function activateFollowingBanners() {
-  const token = FOLLOWING_TOKEN;
-  if (!token) return;
-
-  const root = document.getElementById("followingEventsContainer");
-  if (!root) return;
-
-  const wraps = Array.from(root.querySelectorAll(".gw-carousel-wrap"));
-  if (!wraps.length) return;
-
-  // Attiva l'engine banner su ogni carousel (uno per organizer)
-  wraps.forEach((wrap) => {
-    activateHomeBannerSlots({
-      container: wrap,
-      token,
-      renderBannerCard,
-      country: "",
-      region: "",
-    });
-  });
-}
 
 function renderFollowingBlocks(events) {
   const container = document.getElementById("followingEventsContainer");
@@ -320,9 +298,9 @@ const cardsHtml = mixed
     })
     .join("");
 
-  container.innerHTML = html;
-   // Attiva sponsor/tips per tutti gli slot appena renderizzati
-   activateFollowingBanners();
+container.innerHTML = html;
+// Attiva sponsor/tips sugli slot presenti nella pagina (engine standard)
+activateHomeBannerSlots();
 }
 
 /* =========================
@@ -385,7 +363,6 @@ function initActionsDelegation(token) {
    ========================= */
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
-   FOLLOWING_TOKEN = token;
 
   if (!token) {
     window.location.href = "index.html";
