@@ -266,6 +266,12 @@ export async function activateHomeBannerSlots({
   if (!slots.length) return;
 
   // IntersectionObserver: considera "visibile" se >=60% in viewport
+// Root: se siamo dentro un carousel orizzontale, usiamo come root lo scroll-container
+  const rootEl =
+    container.classList && container.classList.contains("gw-carousel-wrap")
+      ? container
+      : container.closest && container.closest(".gw-carousel-wrap");
+
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -278,12 +284,54 @@ export async function activateHomeBannerSlots({
         }
       });
 
-      ensureRotation(renderBannerCard, ctx);
+      // se ci sono slot visibili, assicura rotazione/render
+      ensureRotation(renderBannerCard);
     },
-    { threshold: [0, 0.6, 1] }
+    {
+      root: rootEl || null,
+      threshold: [0, 0.6, 1],
+    }
   );
 
+
   slots.forEach((el) => io.observe(el));
+// Bootstrap: se l'IntersectionObserver non emette subito (caso carousel orizzontale),
+  // non lasciamo slot vuoti. Valutiamo "visibilità" manuale e in fallback prendiamo il primo slot.
+  try {
+    const rootRect = (rootEl || document.documentElement).getBoundingClientRect();
+    let any = false;
+
+    slots.forEach((el) => {
+      const r = el.getBoundingClientRect();
+
+      // Intersezione approssimata rispetto a rootRect
+      const iw = Math.max(0, Math.min(r.right, rootRect.right) - Math.max(r.left, rootRect.left));
+      const ih = Math.max(0, Math.min(r.bottom, rootRect.bottom) - Math.max(r.top, rootRect.top));
+      const interArea = iw * ih;
+      const area = Math.max(1, r.width * r.height);
+      const ratio = interArea / area;
+
+      if (ratio >= 0.6) {
+        visibleSlots.add(el);
+        any = true;
+      }
+    });
+
+    if (!any && slots.length) {
+      visibleSlots.add(slots[0]);
+    }
+
+    // render iniziale immediato
+    updateVisibleSlots(renderBannerCard);
+    ensureRotation(renderBannerCard);
+  } catch (e) {
+    // in caso di edge-case, almeno evita slot vuoti
+    if (slots.length) {
+      visibleSlots.add(slots[0]);
+      updateVisibleSlots(renderBannerCard);
+      ensureRotation(renderBannerCard);
+    }
+  }
 
   // In caso la prima volta sia già visibile (alcuni browser non triggerano subito)
   ensureRotation(renderBannerCard, ctx);
