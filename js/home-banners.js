@@ -21,6 +21,7 @@ let rotateTimer = null;
 const fallbackTips = [
   {
     kind: "tip",
+    tipKey: "geo",
     iconSvg: `
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M12 2a7 7 0 0 0-7 7c0 4.5 7 13 7 13s7-8.5 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
@@ -31,6 +32,7 @@ const fallbackTips = [
   },
   {
     kind: "tip",
+    tipKey: "checkin",
     iconSvg: `
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
@@ -41,6 +43,7 @@ const fallbackTips = [
   },
   {
     kind: "tip",
+    tipKey: "follow",
     iconSvg: `
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13z"/>
@@ -153,7 +156,7 @@ function renderFallbackTipCard(tip) {
   if (!tip) return "";
 
   return `
-    <article class="gw-rail gw-banner gw-banner--tip" data-kind="banner-tip">
+   <article class="gw-rail gw-banner gw-banner--tip" data-kind="banner-tip" data-tip="${tip.tipKey || "geo"}">
       <div class="gw-banner__inner">
         <div class="gw-banner__icon">${tip.iconSvg || ""}</div>
         <div class="gw-banner__content">
