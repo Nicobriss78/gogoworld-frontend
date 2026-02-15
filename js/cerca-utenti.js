@@ -9,7 +9,18 @@ function debounce(fn, wait = 500) {
     t = setTimeout(() => fn(...args), wait);
   };
 }
-
+function getSafeReturnUrl() {
+  const ref = document.referrer || "";
+  try {
+    const u = new URL(ref);
+    // consentiamo solo ritorni same-origin (evita redirect esterni)
+    if (u.origin === window.location.origin) {
+      // evitiamo loop su cerca-utenti
+      if (!u.pathname.endsWith("/pages/cerca-utenti.html")) return ref;
+    }
+  } catch (_) {}
+  return "../partecipante.html";
+}
 function liTemplate(u) {
   const avatar = u.avatar
     ? `<img src="${u.avatar}" alt="" class="avatar" />`
@@ -171,6 +182,19 @@ async function doSearch(q) {
 const run = debounce(() => doSearch($("q").value), 500);
 
 document.addEventListener("DOMContentLoaded", () => {
+  const backBtn = $("btnBack");
+  if (backBtn) {
+    const fallback = getSafeReturnUrl();
+    backBtn.setAttribute("href", fallback);
+
+    backBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      // ritorno perfetto alla pagina/scheda precedente (no reset stato)
+      if (window.history.length > 1) window.history.back();
+      else window.location.href = fallback;
+    });
+  }
+
   $("q").addEventListener("input", run);
   $("q").focus();
 });
