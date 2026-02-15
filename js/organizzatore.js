@@ -721,6 +721,70 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
       return { date: "", time: "" };
     }
   }
+  // ---------------------------------------------------------------------------
+// Autofill Data/Ora fine in base a Categoria + Sottocategoria (tabella durate)
+// Regole:
+// - si attiva quando cambia start (dateStart/timeStart)
+// - NON ricalcola se cambia categoria/sottocategoria (scelta Nico)
+// - se l'utente tocca end (dateEnd/timeEnd), non sovrascriviamo più
+// ---------------------------------------------------------------------------
+function hookAutoEndDateTime(form) {
+  if (!form) return;
+
+  const inDateStart = form.querySelector('input[name="dateStart"]');
+  const inTimeStart = form.querySelector('input[name="timeStart"]');
+  const inDateEnd = form.querySelector('input[name="dateEnd"]');
+  const inTimeEnd = form.querySelector('input[name="timeEnd"]');
+
+  const selCategory = form.querySelector('select[name="category"]');
+  const selSub = form.querySelector('select[name="subcategory"]');
+
+  if (!inDateStart || !inDateEnd) return;
+
+  let endTouched = false;
+
+  function markTouched() { endTouched = true; }
+
+  inDateEnd.addEventListener("input", markTouched);
+  inDateEnd.addEventListener("change", markTouched);
+  inTimeEnd?.addEventListener("input", markTouched);
+  inTimeEnd?.addEventListener("change", markTouched);
+
+  function applyAutoEndIfPossible() {
+    // se utente ha già impostato manualmente la fine → non toccare
+    if (endTouched) return;
+
+    const ds = (inDateStart.value || "").trim();
+    if (!ds) return;
+
+    const ts = inTimeStart ? (inTimeStart.value || "").trim() : "";
+    const startIso = combineDateAndTime(ds, ts);
+    if (!startIso) return;
+
+    const cat = selCategory ? (selCategory.value || "").trim() : "";
+    const sub = selSub ? (selSub.value || "").trim() : "";
+
+    const minutes = getEstimatedMinutesFromTaxonomy(cat, sub);
+
+    const start = new Date(startIso);
+    if (isNaN(start.getTime())) return;
+
+    const end = new Date(start.getTime() + minutes * 60 * 1000);
+    const out = isoToLocalDateAndTimeInputs(end.toISOString());
+
+    if (out.date) inDateEnd.value = out.date;
+    if (inTimeEnd && out.time) inTimeEnd.value = out.time;
+  }
+
+  // Trigger: solo su start
+  inDateStart.addEventListener("change", applyAutoEndIfPossible);
+  inTimeStart?.addEventListener("change", applyAutoEndIfPossible);
+  inDateStart.addEventListener("input", applyAutoEndIfPossible);
+  inTimeStart?.addEventListener("input", applyAutoEndIfPossible);
+
+  // Primo tentativo (se start già compilata quando apri pannello)
+  applyAutoEndIfPossible();
+}
 
   function populateCreateFormOptions() {
     if (!form) return;
@@ -1590,6 +1654,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
