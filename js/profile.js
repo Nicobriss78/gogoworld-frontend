@@ -301,6 +301,49 @@ if (p.avatarUrl) {
   optInDM.checked = !!(p.privacy && p.privacy.optInDM);
   dmsFrom.value = (p.privacy && p.privacy.dmsFrom) || "everyone";
 }
+async function loadEmailVerifyStatus() {
+  try {
+    // /api/users/me (protetta) → contiene email + verified (aggiunto in backend)
+    const meRes = await apiGet("/users/me", token);
+
+    if (!meRes || meRes.ok === false) return;
+
+    const email = meRes.email;
+    const verified = !!meRes.verified;
+
+    if (!verifyBox || !verifyStatus || !btnResendVerify) return;
+
+    verifyBox.style.display = "block";
+
+    if (verified) {
+      verifyStatus.textContent = "✅ Email verificata";
+      btnResendVerify.style.display = "none";
+      return;
+    }
+
+    verifyStatus.textContent = "⚠️ Email non verificata. Alcune funzioni (L2 / check-in) richiederanno la verifica.";
+    btnResendVerify.style.display = "block";
+
+    btnResendVerify.onclick = async () => {
+      btnResendVerify.disabled = true;
+      btnResendVerify.textContent = "Invio in corso…";
+
+      // risposta neutra ok:true sempre (anti-enumerazione)
+      const r = await apiPost("/users/verify/resend", { email }, token);
+
+      btnResendVerify.disabled = false;
+      btnResendVerify.textContent = "Reinvia email di verifica";
+
+      if (r && r.ok !== false) {
+        showAlert("Se l’email è corretta, riceverai un link di verifica a breve.", "success", 3500);
+      } else {
+        showAlert(r?.message || "Impossibile reinviare la verifica ora. Riprova più tardi.", "error", 3500);
+      }
+    };
+  } catch (e) {
+    // silenzioso: non deve rompere il profilo
+  }
+}
 
 // --- submit basic ---
 basicForm?.addEventListener("submit", async (e) => {
