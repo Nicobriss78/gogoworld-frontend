@@ -1,5 +1,5 @@
 // js/profile.js — C1 Profilo (UI)
-import { getMyProfile, updateMyProfile, whoami, apiGet } from "./api.js";
+import { getMyProfile, updateMyProfile, whoami, apiGet, apiPost } from "./api.js";
 // Fallback assoluto al backend Render se il proxy Netlify /api fallisce (404)
 // Mantieni sincronizzato questo valore con netlify.toml
 const BACKEND_ORIGIN = "https://gogoworld-api.onrender.com";
@@ -106,7 +106,10 @@ const viewBio = document.getElementById("viewBio");
 const viewLanguages = document.getElementById("viewLanguages");
 const viewInterests = document.getElementById("viewInterests");
 const viewSocials = document.getElementById("viewSocials");
-
+// Verifica email UI
+const verifyBox = document.getElementById("verifyBox");
+const verifyStatus = document.getElementById("verifyStatus");
+const btnResendVerify = document.getElementById("btnResendVerify");
 const btnMyPublic2 = document.getElementById("btnMyPublic2");
 
 // View-mode: connessioni
@@ -774,6 +777,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setMyPublicBoardLink();
   hideIfMissing();
   loadProfile();
+  loadEmailVerifyStatus();
   loadFollowStats();
   // --- VIEW/EDIT toggle ---
   showViewMode();
