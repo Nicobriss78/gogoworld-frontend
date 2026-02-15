@@ -521,6 +521,206 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
     targets: ["tutti","famiglie","18+","professionisti"],
     currencies: ["EUR","USD","GBP","CHF","RON","other"]
   };
+// ---------------------------------------------------------------------------
+  // Tabella Durate Stimate (avanzata) — Categoria + Sottocategoria
+  // Valori in MINUTI. Se sottocategoria non trovata, usa default categoria.
+  // NOTA: non ricalcoliamo su cambio categoria (scelta Nico).
+  // ---------------------------------------------------------------------------
+  const DEFAULT_EVENT_MINUTES = 360; // fallback generico (6h)
+
+  const DURATION_MINUTES = {
+    "Musica": {
+      _default: 240,
+      "Concerto": 180,
+      "Festival": 480,
+      "DJ set": 300,
+      "Live acustico": 150,
+      "Jam session": 180,
+      "Rassegna": 240,
+      "Karaoke": 180,
+      "Open mic": 180
+    },
+    "Cibo & Sagre": {
+      _default: 480,
+      "Sagra": 600,
+      "Street food": 360,
+      "Degustazione vini": 180,
+      "Degustazione birre": 180,
+      "Cena tematica": 180,
+      "Food market": 360,
+      "Show cooking": 150
+    },
+    "Sport": {
+      _default: 180,
+      "Torneo": 360,
+      "Gara": 240,
+      "Corsa": 180,
+      "Raduno": 240,
+      "Lezione aperta": 90,
+      "Esibizione": 120,
+      "Partita amichevole": 120,
+      "E-sport LAN": 360
+    },
+    "Arte & Cultura": {
+      _default: 240,
+      "Mostra": 360,
+      "Vernissage": 180,
+      "Teatro": 150,
+      "Opera": 210,
+      "Danza": 150,
+      "Performance": 120,
+      "Presentazione libro": 120,
+      "Incontro con autore": 120,
+      "Proiezione": 150
+    },
+    "Formazione & Workshop": {
+      _default: 240,
+      "Corso": 360,
+      "Seminario": 180,
+      "Workshop": 240,
+      "Masterclass": 180,
+      "Laboratorio per bambini": 120,
+      "Mentoring": 90,
+      "Meetup tematico": 150
+    },
+    "Notte & Club": {
+      _default: 360,
+      "Party": 360,
+      "Serata a tema": 360,
+      "Opening party": 300,
+      "Closing party": 360,
+      "Special guest": 360,
+      "Silent disco": 360
+    },
+    "Mercati & Fiere": {
+      _default: 480,
+      "Mercatino": 360,
+      "Fiera": 480,
+      "Expo": 480,
+      "Vintage market": 360,
+      "Artigianato": 360,
+      "Antiquariato": 360,
+      "Auto/Moto d’epoca": 360
+    },
+    "Volontariato & Comunità": {
+      _default: 240,
+      "Raccolta fondi": 180,
+      "Pulizia parco": 180,
+      "Pulizia spiaggia": 180,
+      "Donazioni": 180,
+      "Raccolta alimentare": 240,
+      "Evento solidale": 240
+    },
+    "Tecnologia & Startup": {
+      _default: 240,
+      "Conferenza": 360,
+      "Hackathon": 720,
+      "Demo day": 240,
+      "Pitch night": 180,
+      "Community meetup": 150,
+      "Retrospettiva tech": 150
+    },
+    "Benessere & Outdoor": {
+      _default: 180,
+      "Yoga": 90,
+      "Meditazione": 90,
+      "Trekking": 240,
+      "Escursione": 240,
+      "Bike tour": 240,
+      "Fitness all’aperto": 90,
+      "Ritiro": 720
+    },
+    "Famiglia & Bambini": {
+      _default: 150,
+      "Festa bambini": 180,
+      "Spettacolo famiglie": 120,
+      "Laboratorio creativo": 120,
+      "Letture animate": 90
+    },
+    "Motori": {
+      _default: 240,
+      "Raduno auto": 240,
+      "Raduno moto": 240,
+      "Track day": 480,
+      "Esposizione": 240,
+      "Drift": 240
+    },
+    "Tradizioni & Folklore": {
+      _default: 480,
+      "Corteo storico": 240,
+      "Palio": 360,
+      "Rievocazione": 360,
+      "Festa patronale": 600
+    },
+    "Business & Networking": {
+      _default: 150,
+      "Networking night": 150,
+      "Colazione d’affari": 90,
+      "Tavola rotonda": 120,
+      "Presentazione aziendale": 120
+    },
+    "Moda & Beauty": {
+      _default: 150,
+      "Sfilata": 120,
+      "Shooting aperto": 120,
+      "Fiera moda": 360,
+      "Lancio prodotto": 120
+    },
+    "Eventi Privati": {
+      _default: 240,
+      "Compleanno": 240,
+      "Laurea": 240,
+      "Anniversario": 240,
+      "Addio al celibato": 360,
+      "Addio al nubilato": 360,
+      "House party": 360,
+      "Matrimonio": 720,
+      "Battesimo": 180,
+      "Comunione": 240,
+      "Cresima": 240,
+      "Team building": 360,
+      "Kick-off": 180,
+      "Riunione interna": 120,
+      "Cena aziendale": 240,
+      "Family day": 360,
+      "Party in villa": 360,
+      "Evento con lista": 360,
+      "Club privato": 360,
+      "Evento segreto": 360
+    },
+    "Altro": {
+      _default: DEFAULT_EVENT_MINUTES,
+      "Generico": 360,
+      "Sperimentale": 240,
+      "Pop-up": 180,
+      "Flash mob": 60
+    }
+  };
+
+  function getEstimatedMinutesFromTaxonomy(category, subcategory) {
+    const cat = (category || "").trim();
+    const sub = (subcategory || "").trim();
+    const map = DURATION_MINUTES[cat];
+    if (!map) return DEFAULT_EVENT_MINUTES;
+    if (sub && typeof map[sub] === "number") return map[sub];
+    if (typeof map._default === "number") return map._default;
+    return DEFAULT_EVENT_MINUTES;
+  }
+
+  function isoToLocalDateAndTimeInputs(iso) {
+    try {
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return { date: "", time: "" };
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mi = String(d.getMinutes()).padStart(2, "0");
+      return { date: `${yyyy}-${mm}-${dd}`, time: `${hh}:${mi}` };
+    } catch {
+      return { date: "", time: "" };
+    }
+  }
 
   function populateCreateFormOptions() {
     if (!form) return;
@@ -590,6 +790,72 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
 
     // split helper
     const splitPipe = (s) => s ? s.split("|").map(x => x.trim()).filter(Boolean) : [];
+    // ---------------------------------------------------------------------------
+// Autofill Data/Ora fine in base a Categoria + Sottocategoria (tabella durate)
+// Regole:
+// - si attiva quando cambia start (dateStart/timeStart)
+// - NON ricalcola se cambia categoria/sottocategoria (scelta Nico)
+// - se l'utente tocca end (dateEnd/timeEnd), non sovrascriviamo più
+// ---------------------------------------------------------------------------
+function hookAutoEndDateTime(form) {
+  if (!form) return;
+
+  const inDateStart = form.querySelector('input[name="dateStart"]');
+  const inTimeStart = form.querySelector('input[name="timeStart"]');
+  const inDateEnd = form.querySelector('input[name="dateEnd"]');
+  const inTimeEnd = form.querySelector('input[name="timeEnd"]');
+
+  const selCategory = form.querySelector('select[name="category"]');
+  const selSub = form.querySelector('select[name="subcategory"]');
+
+  if (!inDateStart || !inDateEnd) return;
+
+  let endTouched = false;
+
+  function markTouched() { endTouched = true; }
+
+  inDateEnd.addEventListener("input", markTouched);
+  inDateEnd.addEventListener("change", markTouched);
+  inTimeEnd?.addEventListener("input", markTouched);
+  inTimeEnd?.addEventListener("change", markTouched);
+
+  function applyAutoEndIfPossible() {
+    // se utente ha già impostato manualmente la fine → non toccare
+    if (endTouched) return;
+
+    const ds = (inDateStart.value || "").trim();
+    if (!ds) return;
+
+    const ts = inTimeStart ? (inTimeStart.value || "").trim() : "";
+    const startIso = combineDateAndTime(ds, ts);
+    if (!startIso) return;
+
+    const cat = selCategory ? (selCategory.value || "").trim() : "";
+    const sub = selSub ? (selSub.value || "").trim() : "";
+
+    const minutes = getEstimatedMinutesFromTaxonomy(cat, sub);
+
+    const start = new Date(startIso);
+    if (isNaN(start.getTime())) return;
+
+    const end = new Date(start.getTime() + minutes * 60 * 1000);
+    const out = isoToLocalDateAndTimeInputs(end.toISOString());
+
+    // autocompila sempre (anche se campi vuoti), ma non “bloccante”
+    if (out.date) inDateEnd.value = out.date;
+    if (inTimeEnd && out.time) inTimeEnd.value = out.time;
+  }
+
+  // Trigger: solo su start
+  inDateStart.addEventListener("change", applyAutoEndIfPossible);
+  inTimeStart?.addEventListener("change", applyAutoEndIfPossible);
+  inDateStart.addEventListener("input", applyAutoEndIfPossible);
+  inTimeStart?.addEventListener("input", applyAutoEndIfPossible);
+
+  // Primo tentativo (se start già compilata quando apri pannello)
+  applyAutoEndIfPossible();
+}
+
     // PATCH orari → unisci data (YYYY-MM-DD) + ora (HH:mm) in ISO
     const dateStartStr = combineDateAndTime(get("dateStart"), get("timeStart"));
     const rawDateEnd = get("dateEnd");
@@ -1091,6 +1357,7 @@ if (action === "promote") {
         first && first.focus();
         hookFreePrice(form);
         hookPrivateVisibility(form); // <-- nuova patch
+        hookAutoEndDateTime(form);
       } else {
         panel.style.display = "none";
       }
@@ -1388,6 +1655,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
