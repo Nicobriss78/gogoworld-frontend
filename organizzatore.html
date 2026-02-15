@@ -141,7 +141,9 @@
         <label>Data fine <input type="date" name="dateEnd" /></label><br/>
         <!-- PATCH: Ora fine (aggiunta chirurgica) -->
         <label>Ora fine <input type="time" name="timeEnd" /></label><br/>
-
+        <small class="help-text">
+         La fine viene proposta automaticamente in base a Categoria/Sottocategoria: puoi modificarla liberamente.
+        </small><br/>
         <!-- Prezzo -->
         <label><input type="checkbox" name="isFree" /> Evento gratuito</label><br/>
         <label>Prezzo <input type="number" step="0.01" name="price" /></label><br/>
@@ -280,6 +282,7 @@
 <script type="module" src="js/notifications.js"></script>
 </body>
 </html>
+
 
 
 
