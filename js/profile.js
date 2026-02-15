@@ -314,6 +314,38 @@ async function loadEmailVerifyStatus() {
 
     const email = meRes.email;
     const verified = !!meRes.verified;
+    // L2 (server-side)
+    const l2 = meRes.l2;
+
+    if (l2Box && l2Status) {
+      l2Box.style.display = "block";
+
+      if (l2 && l2.l2 === true) {
+        l2Status.textContent = "✅ L2 attivo (account completo)";
+        if (l2Missing) l2Missing.style.display = "none";
+        if (btnGoCompleteProfile) btnGoCompleteProfile.style.display = "none";
+      } else {
+        l2Status.textContent =
+          "⚠️ L2 non attivo: alcune funzioni (check-in / leaderboard) resteranno bloccate.";
+
+        if (l2Missing) {
+          const miss = Array.isArray(l2?.missing) ? l2.missing : [];
+          if (miss.length) {
+            l2Missing.style.display = "block";
+            l2Missing.textContent = "Manca: " + miss.join(", ");
+          } else {
+            l2Missing.style.display = "none";
+          }
+        }
+
+        if (btnGoCompleteProfile) {
+          btnGoCompleteProfile.style.display = "block";
+          btnGoCompleteProfile.onclick = () => {
+            try { showEditMode(); } catch {}
+          };
+        }
+      }
+    }
 
     if (!verifyBox || !verifyStatus || !btnResendVerify) return;
 
