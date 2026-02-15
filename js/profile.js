@@ -111,7 +111,11 @@ const verifyBox = document.getElementById("verifyBox");
 const verifyStatus = document.getElementById("verifyStatus");
 const btnResendVerify = document.getElementById("btnResendVerify");
 const btnMyPublic2 = document.getElementById("btnMyPublic2");
-
+// L2 UI
+const l2Box = document.getElementById("l2Box");
+const l2Status = document.getElementById("l2Status");
+const l2Missing = document.getElementById("l2Missing");
+const btnGoCompleteProfile = document.getElementById("btnGoCompleteProfile");
 // View-mode: connessioni
 const myFollowersCount_view = document.getElementById("myFollowersCount_view");
 const myFollowingCount_view = document.getElementById("myFollowingCount_view");
