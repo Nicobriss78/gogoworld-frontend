@@ -1393,6 +1393,30 @@ body.gw-page-map .gw-map{
   width: 100%;
   min-width: 0;
 }
+/* FOLLOWED EVENTS: anche i banner devono avere la stessa “card width” degli eventi */
+.gw-carousel-wrap > .gw-rail.gw-banner {
+  flex: 0 0 86%;
+  max-width: 86%;
+  min-width: 260px;
+  box-sizing: border-box;
+  scroll-snap-align: start;
+}
+
+/* su schermi più grandi: banner a dimensione “card” come gli eventi */
+@media (min-width: 768px) {
+  .gw-carousel-wrap > .gw-rail.gw-banner {
+    flex: 0 0 360px;
+    max-width: 360px;
+    min-width: 320px;
+  }
+}
+
+/* anti “card infinita”: consenti al contenuto di restringersi e spezzare testo/URL */
+.gw-rail .content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 
 /* su schermi più grandi: card a dimensione “card” */
 @media (min-width: 768px) {
@@ -1727,6 +1751,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
