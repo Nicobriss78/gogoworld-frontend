@@ -1683,22 +1683,35 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
 
 /* =========================================================
    Scoped sizing — Scheda "Eventi seguiti"
-   Evita card gigantesche su desktop, mantiene preview su mobile
+   FIX: il wrapper è anche .gw-rail, e dentro c’è una .gw-rail.event-card
+   Quindi NON targettiamo ".gw-rail" genericamente: targettiamo il wrapper.
    ========================================================= */
 
-#followingEventsContainer .gw-carousel-wrap .gw-rail{
-  /* desktop/tablet: card con larghezza “umana” */
+#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap{
   flex: 0 0 420px;
   max-width: 420px;
+  min-width: 320px; /* evita card troppo strette */
+  box-sizing: border-box;
+  scroll-snap-align: start;
 }
 
+/* La card dentro deve riempire il wrapper, ma NON deve allargare il carosello */
+#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap > .event-card{
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  flex: 0 0 auto; /* IMPORTANT: disinnesca il flex della .gw-rail interna */
+}
+
+/* Mobile: preview a percentuale */
 @media (max-width: 520px){
-  #followingEventsContainer .gw-carousel-wrap .gw-rail{
-    /* mobile: manteniamo lo stile rail a percentuale */
+  #followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap{
     flex: 0 0 78%;
     max-width: 78%;
+    min-width: 260px;
   }
 }
+
 /* =========================================================
    Sponsor banner — thumb più alto (solo gw-banner-card)
    Non impatta le card evento
@@ -1714,6 +1727,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
