@@ -1361,6 +1361,7 @@ body.gw-page-map .gw-map{
 .gw-rail{
   flex: 0 0 78%;
   max-width: 78%;
+  min-width: 0;
   scroll-snap-align: center;
   box-sizing: border-box;
   background: var(--gw-surface);
@@ -1393,11 +1394,12 @@ body.gw-page-map .gw-map{
   width: 100%;
   min-width: 0;
 }
-/* FOLLOWED EVENTS: anche i banner devono avere la stessa “card width” degli eventi */
+/* Banner dentro carousel (struttura reale DOM) */
+.gw-carousel-wrap .gw-carousel > .gw-rail.gw-banner,
 .gw-carousel-wrap > .gw-rail.gw-banner {
   flex: 0 0 86%;
   max-width: 86%;
-  min-width: 260px;
+  min-width: 0;
   box-sizing: border-box;
   scroll-snap-align: start;
 }
@@ -1435,6 +1437,7 @@ body.gw-page-map .gw-map{
   .gw-rail{
     flex: 0 0 100%;
     max-width: 100%;
+    min-width: 0;
     scroll-snap-align: start;
     box-sizing: border-box;
   }
@@ -1751,6 +1754,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
