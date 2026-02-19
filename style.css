@@ -1,3 +1,11 @@
+/* =====================================================================
+   GoGoWorld.life – CSS Loader (Parentesi Operativa 3)
+   Phase 1: imports tokens/base and keeps legacy rules inside this file.
+   ===================================================================== */
+
+@import url("css/tokens.css");
+@import url("css/base.css");
+
 /* ==========================================================================
    TODO UI/UX Overhaul (GoGoWorld.life)
    - Definire palette definitiva (primary, secondary, danger, success, background, surface)
@@ -1730,6 +1738,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
