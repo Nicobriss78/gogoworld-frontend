@@ -1,1 +1,36 @@
+/* GoGoWorld.life – CSS Base (reset, typography, layout base)
+   Parentesi Operativa 3 – Fase 1
+*/
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.app-header { margin-bottom: 1.5rem; }
+
+.app-title {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--color-secondary);
+}
+
+.app-footer {
+  margin-top: 2rem;
+  text-align: center;
+  color: var(--color-secondary);
+  font-size: 0.85rem;
+}
 
