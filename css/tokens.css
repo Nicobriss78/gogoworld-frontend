@@ -1,1 +1,33 @@
+/* GoGoWorld.life – CSS Tokens (variables)
+   Parentesi Operativa 3 – Fase 1
+*/
+
+:root {
+  --color-primary: #2a7ae2;
+  --color-secondary: #555;
+  --color-bg: #f9f9f9;
+  --color-text: #222;
+  --color-danger: #d33;
+  --color-success: #2e7d32;
+  --color-error-bg: #fdecea;
+  --color-error-text: #b00020;
+  --color-success-bg: #e8f5e9;
+  --color-success-text: #1b5e20;
+}
+
+:root{
+  --gw-blue: #2C5AA0;
+  --gw-dark: #131823;
+  --gw-bg: #0b0f19;
+  --gw-card: rgba(255,255,255,.06);
+  --gw-border: rgba(255,255,255,.12);
+  --gw-text: rgba(255,255,255,.92);
+  --gw-text-dim: rgba(255,255,255,.72);
+  --gw-shadow: 0 10px 30px rgba(0,0,0,.35);
+
+  --gw-topbar-h: 56px;
+  --gw-bottombar-h: 64px;
+  --gw-radius: 16px;
+  --gw-gap: 12px;
+}
 
