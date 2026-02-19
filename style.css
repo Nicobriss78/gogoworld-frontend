@@ -16,12 +16,6 @@
    - Token CSS (custom properties) → sostituire gradualmente le variabili attuali
    ========================================================================== */
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--color-bg);
-  color: var(--color-text);
-}
 
 .container {
   max-width: 800px;
@@ -1706,6 +1700,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
