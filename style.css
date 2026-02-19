@@ -16,20 +16,6 @@
    - Token CSS (custom properties) → sostituire gradualmente le variabili attuali
    ========================================================================== */
 
-
-:root {
-  --color-primary: #2a7ae2;
-  --color-secondary: #555;
-  --color-bg: #f9f9f9;
-  --color-text: #222;
-  --color-danger: #d33;
-  --color-success: #2e7d32;
-  --color-error-bg: #fdecea;
-  --color-error-text: #b00020;
-  --color-success-bg: #e8f5e9;
-  --color-success-text: #1b5e20;
-}
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -1006,25 +992,7 @@ body {
    Topbar FIXED + BottomNav FIXED + Home 50/50 stabile (mobile/desktop)
    ========================================================= */
 
-:root{
-  --gw-blue: #2C5AA0;
-  --gw-red: #C83A3A;
-  --gw-gray: #9AA3AF;
 
-  --gw-bg: #ffffff;
-  --gw-surface: #ffffff;
-  --gw-text: #111827;
-  --gw-muted: #6b7280;
-  --gw-border: #E5E7EB;
-
-  --gw-shadow: 0 6px 18px rgba(17,24,39,.08);
-  --gw-radius: 16px;
-
-  /* altezze coerenti con opzione A */
-  --gw-topbar-h: 104px; /* topbar a 2 righe */
-  --gw-bottomnav-h: 44px; /* bottomnav fissa */
-  --gw-gap: 6px;
-}
 
 .gw-topbar,
 .gw-bottomnav{
@@ -1738,6 +1706,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
