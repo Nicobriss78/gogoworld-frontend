@@ -15,33 +15,6 @@
    - Stati (hover, focus, disabled) + tema dark (se previsto)
    - Token CSS (custom properties) → sostituire gradualmente le variabili attuali
    ========================================================================== */
-
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-.app-header { margin-bottom: 1.5rem; }
-
-.app-title {
-  margin: 0;
-  font-size: 1.8rem;
-}
-
-.subtitle {
-  margin: 0.25rem 0 0;
-  color: var(--color-secondary);
-}
-
-.app-footer {
-  margin-top: 2rem;
-  text-align: center;
-  color: var(--color-secondary);
-  font-size: 0.85rem;
-}
-
 /* Form */
 .form { display: flex; flex-direction: column; gap: 1rem; }
 .form-row { display: flex; flex-direction: column; }
@@ -1700,6 +1673,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
