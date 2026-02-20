@@ -1093,23 +1093,25 @@ main.container.participant{
   background: var(--gw-surface);
   border-top: 1px solid var(--gw-border);
 
-  height: var(--gw-bottomnav-h);
+  height: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom));
   display: flex;
   align-items: center;
   justify-content: space-around;
 
-  padding: 2px 8px;
+  padding-bottom: 0;
   padding-bottom: env(safe-area-inset-bottom);
   box-sizing: border-box;
 }
 
-.gw-bottomnav .inner{
-  height: var(--gw-bottomnav-h);
+.gw-bottomnav__inner{
+  height: 100%;
   display:flex;
   align-items:center;
   justify-content:space-around;
-  padding: 8px 10px;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
+
 
 .gw-navitem{
   width: 64px;
@@ -1690,6 +1692,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
