@@ -1138,8 +1138,8 @@
   background: var(--gw-bg);
 
   /* spazio reale per topbar + bottomnav */
-  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top) + 2px);
-  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 2px);
+  padding-top: calc(var(--gw-topbar-h, 56px) + env(safe-area-inset-top) + 2px);
+  padding-bottom: calc(var(--gw-bottomnav-h, 64px) + env(safe-area-inset-bottom) + 2px);
   padding-left: 10px;
   padding-right: 10px;
 
@@ -1200,10 +1200,10 @@ body.gw-page-map > main.container.participant{
   box-sizing: border-box;
 
   /* lascia spazio alla topbar fixed (evita "taglio" in alto) */
-  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top) + 2px);
+  padding-top: calc(var(--gw-topbar-h, 56px) + env(safe-area-inset-top) + 2px);
 
   /* lascia spazio alla bottomnav fixed */
-  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 2px);
+  padding-bottom: calc(var(--gw-bottomnav-h, 64px) + env(safe-area-inset-bottom) + 2px);
 
   /* lo scroll deve avvenire nel contenuto, non sotto le barre fixed */
   overflow: hidden;
@@ -1673,6 +1673,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
