@@ -5,7 +5,22 @@
 
 @import url("/css/tokens.css");
 @import url("/css/base.css");
+/* === PHASE 1 GUARD-RAILS (fix rotture globali) === */
 
+/* Default: fuori dall'area app rimaniamo chiari */
+html, body{
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Area Participant: tema scuro + offset per topbar/bottombar */
+main.container.participant{
+  background: var(--gw-bg);
+  color: var(--gw-text);
+  min-height: 100vh;
+  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
+  padding-bottom: calc(var(--gw-bottombar-h) + env(safe-area-inset-bottom));
+}
 /* ==========================================================================
    TODO UI/UX Overhaul (GoGoWorld.life)
    - Definire palette definitiva (primary, secondary, danger, success, background, surface)
@@ -1673,6 +1688,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
