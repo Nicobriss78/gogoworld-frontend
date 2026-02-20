@@ -5,6 +5,8 @@
 
 @import url("/css/tokens.css");
 @import url("/css/base.css");
+@import url("/css/components.css");
+
 /* === PHASE 1 GUARD-RAILS (fix rotture globali) === */
 
 /* Default: fuori dall'area app rimaniamo chiari */
@@ -1688,6 +1690,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
