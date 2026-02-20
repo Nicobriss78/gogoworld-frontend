@@ -30,4 +30,19 @@
   --gw-radius: 16px;
   --gw-gap: 12px;
 }
+/* === Alias + variabili mancanti (UI v2) === */
+:root{
+  /* Surface: usata da topbar / bottomnav */
+  --gw-surface: var(--gw-card);
+
+  /* Testi secondari / muted */
+  --gw-muted: var(--gw-text-dim);
+  --gw-gray: var(--gw-text-dim);
+
+  /* Accent rosso per badge */
+  --gw-red: #c83a3a;
+
+  /* Alias altezza bottomnav (nel CSS legacy usi bottomnav-h) */
+  --gw-bottomnav-h: var(--gw-bottombar-h, 64px);
+}
 
