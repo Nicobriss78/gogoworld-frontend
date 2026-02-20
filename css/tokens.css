@@ -33,7 +33,7 @@
 /* === Alias + variabili mancanti (UI v2) === */
 :root{
   /* Surface: usata da topbar / bottomnav */
-  --gw-surface: var(--gw-card);
+  --gw-surface: var(--gw-dark);
 
   /* Testi secondari / muted */
   --gw-muted: var(--gw-text-dim);
