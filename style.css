@@ -1170,7 +1170,7 @@
   letter-spacing: .2px;
   color: var(--gw-text);
   margin: 0;
-  line-heigth: 1.1;
+  line-height: 1.1;
 }
 /* Fix: azzera i margini default degli heading dentro l’header del blocco */
  .gw-block-head h1,
@@ -1673,6 +1673,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
