@@ -5,8 +5,8 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: var(--color-bg);
-  color: var(--color-text);
+  background: var(--gw-bg, var(--color-bg));
+  color: var(--gw-text, var(--color-text));
 }
 
 .container {
