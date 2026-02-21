@@ -733,8 +733,8 @@ top: calc(env(safe-area-inset-top) + var(--gw-topbar-h));  right: 14px;
 .gw-home{
   box-sizing: border-box;
   background: var(--gw-bg);
-  padding-top: 0
-  padding-bottom: 0 
+  padding-top: 0;
+  padding-bottom: 0; 
   padding-left: 10px;
   padding-right: 10px;
   display:flex;
@@ -1221,6 +1221,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
