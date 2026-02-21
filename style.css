@@ -1198,6 +1198,17 @@ top: calc(env(safe-area-inset-top) + var(--gw-topbar-h));  right: 14px;
  .gw-block__head h3{
    margin: 0;
  }
+/* Fix: titoli "pagina" fuori dai blocchi (Utenti seguiti / Eventi seguiti / Profilo) */
+.gw-home > h1,
+.gw-home > h2,
+.gw-home > h3{
+  margin-top: 0;
+}
+
+/* (opzionale ma consigliato) riduci anche i margini verticali generali dentro le pagine */
+.gw-home p:first-child{
+  margin-top: 0;
+}
 /* Chat head: icona info dentro la testata (non overlay assoluto) */
 .gw-chat-head .gw-info-btn{
   position: static;
@@ -1690,6 +1701,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
