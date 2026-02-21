@@ -1,1 +1,36 @@
+/* =========================================================
+   Organizer — Migrato da style.css (Tranche 3)
+   ========================================================= */
+
+/* Pannello creazione evento (inline) */
+#createEventPanel {
+  margin: 1em 0;
+  padding: 1em;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+}
+#createEventPanel label { display: block; margin: 0.4rem 0; }
+#createEventPanel input,
+#createEventPanel select,
+#createEventPanel textarea {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Placeholder pannello codice invito */
+#invitePanel input {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* ---- Organizer: Promozioni ---- */
+#myPromosTable td.ctr-high { color: #0a7a0a; font-weight: 600; }
+#myPromosTable td.ctr-mid { color: #b97800; }
+#myPromosTable td.ctr-low { color: #c21d1d; }
+#myPromosTable tr.expired td { opacity: .55; text-decoration: line-through; }
 
