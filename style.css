@@ -14,13 +14,7 @@ html, body{
   background: var(--color-bg);
   color: var(--color-text);
 }
-/* Wrapper pagina: lascia spazio a Topbar + Bottomnav in tutte le schede */
-.gw-page{
-  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
-  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 2px);
-  box-sizing: border-box;
-  min-height: 100vh;
-}
+
 /* Area Participant: tema scuro + offset per topbar/bottombar */
 main.container.participant{
   background: var(--gw-bg);
@@ -1667,6 +1661,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
