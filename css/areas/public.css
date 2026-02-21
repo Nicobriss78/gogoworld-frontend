@@ -13,7 +13,15 @@
 .msg { margin:.3rem 0; padding:.3rem .6rem; border-radius:6px; max-width:70%; }
 .msg.me { background:#dff0ff; align-self:flex-end; }
 .msg.them { background:#f0f0f0; align-self:flex-start; }
-.badge { background:red; color:#fff; border-radius:10px; font-size:.7em; padding:0 .3em; margin-left:.3em; }
+#messagesApp .badge,
+.roomItem .badge{
+  background:red;
+  color:#fff;
+  border-radius:10px;
+  font-size:.7em;
+  padding:0 .3em;
+  margin-left:.3em;
+}
 #chatInput { display:flex; gap:.5rem; border-top:1px solid #ccc; padding:.4rem; }
 #msgText { flex:1; resize:none; }
 
