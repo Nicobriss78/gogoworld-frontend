@@ -993,18 +993,18 @@ main.container.participant{
   padding-top: env(safe-area-inset-top);
 }
 
+/* più compatta */
 .gw-topbar-row{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding: 10px 14px;
+  padding: 6px 12px;
 }
-.gw-topbar-row--title{ padding-bottom: 6px; }
+.gw-topbar-row--title{ padding-bottom: 4px; }
 .gw-topbar-row--actions{
   gap: 8px;
-  padding: 6px 14px; /* prima era ereditato 10px 14px */
+  padding: 4px 12px;
 }
-
 .gw-greeting{ display:flex; flex-direction:column; gap:2px; }
 .gw-hello{ font-size:14px; color: var(--gw-muted); line-height: 1.1; }
 .gw-status{ font-size:13px; color: var(--gw-muted); line-height: 1.1; }
@@ -1014,8 +1014,8 @@ main.container.participant{
 .gw-brandtext{ font-weight:700; letter-spacing:.2px; color: var(--gw-blue); }
 
 .gw-iconbtn{
-  width:44px; height:44px;
-  border-radius:14px;
+  width:40px; height:40px;
+  border-radius:12px;
   border:1px solid var(--gw-border);
   background:#fff;
   display:flex;
@@ -1025,11 +1025,12 @@ main.container.participant{
   -webkit-tap-highlight-color: transparent;
 }
 .gw-iconbtn:active{ transform: scale(.98); }
-/* Topbar row 2: icone un filo più piccole */
+
+/* azioni ancora più compatte */
 .gw-topbar-row--actions .gw-iconbtn{
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
 }
 
 /* ---------- HAMBURGER MENU (DROPDOWN) ---------- */
@@ -1660,6 +1661,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
