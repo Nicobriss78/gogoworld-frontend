@@ -25,8 +25,12 @@
   --gw-text-dim: rgba(255,255,255,.72);
   --gw-shadow: 0 10px 30px rgba(0,0,0,.35);
 
-  --gw-topbar-h: 96px;
+/* Altezze barre */
   --gw-bottombar-h: 64px;
+
+  /* Topbar = 2 righe, ognuna alta quanto la bottombar */
+  --gw-topbar-row-h: var(--gw-bottombar-h);
+  --gw-topbar-h: calc(var(--gw-topbar-row-h) * 2);
   --gw-radius: 16px;
   --gw-gap: 12px;
 }
