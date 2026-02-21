@@ -1017,7 +1017,7 @@ main.gw-home > .app-footer{
   font-family: Arial, sans-serif;
 }
 
-/* ---------- TOPBAR (FIXED) ---------- */
+/* ---/* ---------- TOPBAR (FIXED) ---------- */
 .gw-topbar{
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -1025,19 +1025,29 @@ main.gw-home > .app-footer{
   background: var(--gw-surface);
   border-bottom: 1px solid var(--gw-border);
   padding-top: env(safe-area-inset-top);
+  box-sizing: border-box;
+
+  /* Altezza totale = 2 righe */
+  height: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
+  display: flex;
+  flex-direction: column;
 }
 
-/* più compatta */
 .gw-topbar-row{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding: 6px 12px;
+
+  /* ogni riga è “bloccata” */
+  height: var(--gw-topbar-row-h);
+  padding: 0 14px;
+  box-sizing: border-box;
 }
-.gw-topbar-row--title{ padding-bottom: 4px; }
+
+.gw-topbar-row--title{ padding-bottom: 0; }
 .gw-topbar-row--actions{
   gap: 8px;
-  padding: 4px 12px;
+  padding: 0 14px;
 }
 .gw-greeting{ display:flex; flex-direction:column; gap:2px; }
 .gw-hello{ font-size:14px; color: var(--gw-muted); line-height: 1.1; }
@@ -1701,6 +1711,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
