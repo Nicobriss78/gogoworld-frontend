@@ -1035,8 +1035,7 @@ main.container.participant{
 /* ---------- HAMBURGER MENU (DROPDOWN) ---------- */
 .gw-menu{
   position: fixed;
-  top: calc(env(safe-area-inset-top) + 78px);
-  right: 14px;
+top: calc(env(safe-area-inset-top) + var(--gw-topbar-h));  right: 14px;
   z-index: 2000;
 
   width: min(280px, calc(100vw - 28px));
@@ -1661,6 +1660,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
