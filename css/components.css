@@ -13,12 +13,22 @@
   border-bottom: 1px solid var(--gw-border);
   z-index: 1000;
 }
+/* Righe topbar sempre "piene" (niente trasparenze) */
 .gw-topbar-row{
-  height: var(--gw-topbar-h);
+  background: var(--gw-surface);
+}
+.gw-topbar-row{
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 12px;
+  box-sizing: border-box;
+}
+.gw-topbar-row--title{
+  height: var(--gw-topbar-header-h);
+}
+.gw-topbar-row--actions{
+  height: var(--gw-topbar-toolbar-h);
 }
 .gw-title{
   font-size: 18px;
