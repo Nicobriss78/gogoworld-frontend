@@ -137,6 +137,23 @@
 
 /* =========================== MAPPA PARTECIPANTE (layout reale) =========================== */
 
+/* Patch C — mappa dopo Opzione A (gw-app > gw-page > main.gw-home)
+   Obiettivo: bloccare scroll “doppio” e dare altezza corretta a mapSection
+*/
+body.gw-page-map .gw-page{
+  min-height: 100dvh;
+}
+
+body.gw-page-map main.gw-home{
+  height: 100%;
+  overflow: hidden;
+}
+
+body.gw-page-map #mapSection{
+  flex: 1;
+  min-height: 0;
+}
+
 /* Il tuo <main id="mapSection" class="gw-map"> */
 #mapSection{
   display: flex;
