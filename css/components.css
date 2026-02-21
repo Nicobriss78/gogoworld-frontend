@@ -1095,3 +1095,51 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
   color: #92400e;
   border-color: #f5d399;
 }
+
+/* =========================================================
+   Patch UI — componenti generali (migrati da style.css)
+   ========================================================= */
+
+/* Meta nelle card evento */
+.event-card .meta {
+  margin: 0.25rem 0;
+  color: var(--color-secondary);
+  font-size: 0.92rem;
+}
+
+/* Galleria immagini nel dettaglio */
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.gallery img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  object-fit: cover;
+}
+
+/* Filtri: select coerenti con input */
+.filters select {
+  min-width: 140px;
+  padding: 0.25rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+}
+
+/* ---- Badge in scadenza ---- */
+.badge.warning {
+  display: inline-block;
+  margin-left: .35rem;
+  padding: .15rem .4rem;
+  border-radius: 6px;
+  background: #fff4db;
+  color: #7a4d00;
+  border: 1px solid #f0d28a;
+  font-size: .75rem;
+  vertical-align: middle;
+}
