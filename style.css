@@ -799,24 +799,6 @@ top: calc(env(safe-area-inset-top) + var(--gw-topbar-h));  right: 14px;
 }
 
 /* ---------- PAGINA MAPPA: spazio reale per topbar + bottomnav FIXED ---------- */
-body.gw-page-map > main.container.participant{
-  height: 100dvh;
-  height: 100vh; /* fallback */
-  box-sizing: border-box;
-
-  /* lascia spazio alla topbar fixed (evita "taglio" in alto) */
-  padding-top: calc(var(--gw-topbar-h, 56px) + env(safe-area-inset-top) + 2px);
-
-  /* lascia spazio alla bottomnav fixed */
-  padding-bottom: calc(var(--gw-bottomnav-h, 64px) + env(safe-area-inset-bottom) + 2px);
-
-  /* lo scroll deve avvenire nel contenuto, non sotto le barre fixed */
-  overflow: hidden;
-
-  display: flex;
-  flex-direction: column;
-}
-
 body.gw-page-map .gw-map{
   flex: 1;
   min-height: 0;
@@ -1221,6 +1203,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
