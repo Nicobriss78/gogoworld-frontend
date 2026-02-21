@@ -1,0 +1,45 @@
+/* GoGoWorld.life – Layout (App Shell)
+   Parentesi Operativa 4 – Opzione A
+   Regola: l’offset top/bottom vive SOLO su .gw-page
+*/
+
+/* Default: fuori dall’area app rimaniamo chiari */
+html, body{
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* App shell */
+.gw-app{
+  min-height: 100vh;
+}
+
+/* Wrapper pagina: lascia spazio a Topbar + Bottomnav (offset unico) */
+.gw-page{
+  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
+  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 2px);
+  box-sizing: border-box;
+  min-height: 100vh;
+
+  /* Tema scuro SOLO nell’area app */
+  background: var(--gw-bg);
+  color: var(--gw-text);
+}
+
+/* main.gw-home: colonna piena, SENZA padding di sistema (niente doppioni) */
+main.gw-home{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Il “corpo” deve espandersi e spingere il footer in basso */
+main.gw-home > section{
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Footer sempre “giù” */
+main.gw-home > .app-footer{
+  margin-top: auto;
+}
