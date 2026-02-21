@@ -46,3 +46,11 @@
   --gw-bottomnav-h: var(--gw-bottombar-h, 64px);
 }
 
+/* === Topbar split heights (Header + Toolbar) === */
+:root{
+  --gw-topbar-header-h: var(--gw-bottombar-h, 64px);
+  --gw-topbar-toolbar-h: var(--gw-bottombar-h, 64px);
+
+  /* Topbar totale = header + toolbar */
+  --gw-topbar-h: calc(var(--gw-topbar-header-h) + var(--gw-topbar-toolbar-h));
+}
