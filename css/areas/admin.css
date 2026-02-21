@@ -120,3 +120,54 @@
   border-color: #999 !important;
 }
 
+/* =========================================================
+   Admin — patch residue (migrate da style.css) — Tranche 4
+   ========================================================= */
+
+/* ==========================================================================
+   TODO UI/UX Overhaul (GoGoWorld.life)
+   - Definire palette definitiva (primary, secondary, danger, success, background, surface)
+   - Definire tipografia (font family, scale, weight map)
+   - Spaziature standard (8pt grid)
+   - Componenti base (Button, Input, Card, Alert, Toolbar, Tag)
+   - Stati (hover, focus, disabled) + tema dark (se previsto)
+   - Token CSS (custom properties) → sostituire gradualmente le variabili attuali
+   ========================================================================== */
+
+/* ===========================
+   PATCH: aggiunte minime UI
+   =========================== */
+
+
+/* --- Admin: Users Filters Toolbar --- */
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.admin-toolbar .search-input,
+.admin-toolbar .select-input {
+  min-width: 140px;
+  padding: 0.25rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.admin-toolbar .btn {
+  padding: 0.45rem 0.9rem;
+}
+
+/* Mobile: lascia che la search si allunghi */
+@media (max-width: 640px) {
+  .admin-toolbar .search-input { flex: 1; min-width: 180px; }
+}
+
+/* PATCH Admin: mostra sempre il testo dei bottoni azione nelle card */
+.admin-card .actions .btn {
+  color: #111 !important;
+  font-size: 14px !important;
+}
