@@ -708,3 +708,390 @@ article.gw-rail.gw-banner--tip[data-tip="geo"] .gw-banner__icon{ color: var(--gw
 article.gw-rail.gw-banner--tip[data-tip="checkin"] .gw-banner__icon{ color: var(--gw-red); }
 article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d32; }
 
+/* =========================================================
+   LEGACY UTILE — MIGRATO DA style.css (Tranche 3)
+   form / btn / alerts / kpi / simple-table / status / utilities
+   ========================================================= */
+
+/* Form */
+.form { display: flex; flex-direction: column; gap: 1rem; }
+.form-row { display: flex; flex-direction: column; }
+.form-row label { margin-bottom: 0.25rem; }
+.form-actions { display: flex; gap: 1rem; }
+/* Grid utilities for edit form */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media (max-width: 640px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* Spacing sezione modifica */
+.edit-event { margin-top: 1.25rem; }
+/* TODO UI/UX Overhaul:
+   Rimpiazzare le classi .btn / .btn-secondary con componenti standardizzati
+   (es. .gw-button[data-variant="primary|secondary|ghost"] con scale e stati uniformi). */
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: var(--color-primary);
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.btn:hover { background: #195db7; }
+.btn-secondary { background: var(--color-secondary); }
+.btn-secondary:hover { background: #333; }
+.btn[disabled],
+.btn:disabled { 
+  opacity: .6; 
+  cursor: not-allowed; 
+}
+
+.is-busy {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Link stile pulsante */
+.linklike {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+/* Liste eventi */
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.event-card {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 0.75rem;
+  border-radius: 4px;
+}
+
+.event-card h3 { margin: 0 0 0.25rem; }
+
+.event-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.filters input { flex: 1; min-width: 120px; padding: 0.25rem; }
+/* Mappa eventi */
+#map {
+  height: 420px;
+  margin: 1rem 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* B2.1 – (UI v2) NON usare sticky su #mapSection: topbar è FIXED e lo copre */
+.participant #mapSection {
+  position: static;
+  top: auto;
+  z-index: auto;
+  background: transparent;
+}
+
+
+/* Specifiche home0 */
+.home0 .role-grid {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem 0;
+}
+.role-btn { flex: 1; margin: 0 0.5rem; }
+.register-cta { text-align: center; margin-top: 2rem; }
+
+/* TODO UI/UX Overhaul:
+   Valutare hero/banner di benvenuto con layout consistente fra aree.
+   Esempio: .gw-banner[data-variant="welcome"] con icona, titolo, sottotitolo, azioni. */
+
+.welcome {
+  margin: 0 0 24px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--color-primary);
+}
+
+/* Alert banners */
+.alert {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  background: #fff; /* fallback neutro visibile */
+  color: var(--color-text);
+  border: 1px solid #ddd;
+}
+.alert.error {
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid #f5c6cb;
+}
+.alert.success {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid #c8e6c9;
+}
+.alert.warning {
+  background: #fff8e1;
+  border: 1px solid #f1c40f;
+  color: #7d6608;
+}
+/* Fallback informativo, se mai usato */
+.alert.info {
+  background: #e8f0fe;
+  color: #1a237e;
+  border: 1px solid #c5cae9;
+}
+
+/* TODO UI/UX Overhaul:
+   Unificare sistema di alert/notifiche (success, error, warning, info) con icone,
+   ruoli ARIA, e posizione fissa nell’area contenuto. */
+
+/* --- Dashboard KPI (organizzatore) --- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 1.5rem;
+}
+.kpi-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.kpi-label {
+  font-size: 0.85rem;
+  color: var(--color-secondary);
+  margin-bottom: 0.25rem;
+}
+.kpi-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+.kpi-sub {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-secondary);
+  margin-left: 0.25rem;
+}
+
+/* --- Tabelle semplici (dashboard) --- */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+.simple-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  background: #fff;
+}
+.simple-table th,
+.simple-table td {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+  vertical-align: top;
+}
+.simple-table thead th {
+  background: #f3f4f6;
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+/* --- Status badge (evento) --- */
+.status {
+  display: inline-block;
+  margin: 4px 0 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  border: 1px solid #ddd;
+  background: #f7f7f7;
+  color: var(--color-text);
+}
+
+/* In corso = verde (success) */
+.status.ongoing {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  border-color: #c8e6c9;
+}
+
+/* Imminente = arancione tenue */
+.status.imminent {
+  background: #fff7ed;
+  color: #b45309;
+  border-color: #fed7aa;
+}
+
+/* Futuro = blu tenue (coerente con primary) */
+.status.future {
+  background: #e8f0fe;
+  color: #1a237e;
+  border-color: #c5cae9;
+}
+
+/* Concluso = grigio */
+.status.concluded {
+  background: #f4f4f5;
+  color: #52525b;
+  border-color: #e4e4e7;
+}
+/* --- Dettaglio evento: badge di stato + messaggio --- */
+
+.event-status-badge {
+  display: inline-block;
+  margin: 4px 0 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  border: 1px solid #ddd;
+  background: #f7f7f7;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* Varianti colore, coerenti con le .status della lista */
+.event-status-badge.status-future {
+  background: #e8f0fe;
+  color: #1a237e;
+  border-color: #c5cae9;
+}
+
+.event-status-badge.status-imminent {
+  background: #fff7ed;
+  color: #b45309;
+  border-color: #fed7aa;
+}
+
+.event-status-badge.status-ongoing {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  border-color: #c8e6c9;
+}
+
+.event-status-badge.status-concluded {
+  background: #f4f4f5;
+  color: #52525b;
+  border-color: #e4e4e7;
+}
+
+.event-status-badge.status-past {
+  background: #f4f4f5;
+  color: #737373;
+  border-color: #e5e5e5;
+}
+
+/* Messaggio sotto la toolbar negli eventi passati */
+.event-state-message {
+  margin: 0.25rem 0 1rem;
+  font-size: 0.9rem;
+  color: var(--color-secondary);
+}
+
+/* --- Approval badge (moderazione evento) --- */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  border: 1px solid #ddd;
+  background: #f5f5f5;
+  color: var(--color-text);
+  vertical-align: middle;
+  margin: 2px 0;
+}
+
+.badge.approved {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  border-color: #c8e6c9;
+}
+.badge.pending {
+  background: #fff6e5;
+  color: #8a5a00;
+  border-color: #f3d19e;
+}
+.badge.rejected {
+  background: #fdecec;
+  color: #9b1c1c;
+  border-color: #f4b5b5;
+}
+.badge.blocked {
+  background: #f4f4f5;
+  color: #52525b;
+  border-color: #e4e4e7;
+}
+
+/* Testo attenuato riutilizzabile (per note/moderazione) */
+.muted { color: var(--color-secondary); }
+/* --- User Status Chip (profilo/benvenuto) --- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: var(--color-text);
+  vertical-align: middle;
+}
+
+.chip.status-chip { font-weight: 600; }
+
+/* Varianti status utente */
+.chip-novizio {
+  background: #f4f4f5;
+  color: #52525b;
+  border-color: #e4e4e7;
+}
+.chip-esploratore {
+  background: #e8f0fe;
+  color: #1a237e;
+  border-color: #c5cae9;
+}
+.chip-veterano {
+  background: #f3e8ff;
+  color: #6b21a8;
+  border-color: #e9d5ff;
+}
+.chip-ambassador {
+  background: #fff7e6;
+  color: #92400e;
+  border-color: #f5d399;
+}
