@@ -21,6 +21,7 @@ html, body{
   box-sizing: border-box;
   min-height: 100vh;
 }
+
 /* Area Participant: tema scuro + offset per topbar/bottombar */
 main.container.participant{
   background: var(--gw-bg);
@@ -28,6 +29,33 @@ main.container.participant{
   min-height: 100vh;
   padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
   padding-bottom: calc(var(--gw-bottombar-h) + env(safe-area-inset-bottom));
+}
+/* === Participant pages con layout gw-app/gw-page + main.gw-home === */
+.gw-app,
+.gw-page,
+main.gw-home{
+  background: var(--gw-bg);
+  color: var(--gw-text);
+}
+
+/* main.gw-home deve comportarsi come "colonna piena" */
+main.gw-home{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
+  padding-bottom: calc(var(--gw-bottombar-h) + env(safe-area-inset-bottom));
+}
+
+/* Il "corpo" deve espandersi e spingere il footer in basso */
+main.gw-home > section{
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Footer sempre “giù” (sopra la bottomnav fixed) */
+main.gw-home > .app-footer{
+  margin-top: auto;
 }
 /* ==========================================================================
    TODO UI/UX Overhaul (GoGoWorld.life)
@@ -1662,6 +1690,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
