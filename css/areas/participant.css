@@ -1,1 +1,194 @@
+/* === Banner profilo (UI polish) === */
+.alert {
+  padding: .6rem .8rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  line-height: 1.35;
+}
+.alert.info {
+  background: #eef6ff;
+  border: 1px solid #b6daff;
+}
+.alert .btn { margin-left: .5rem; }
+.alert .btn.btn-secondary { opacity: .85; }
+.fade-in { animation: fadeIn .25s ease-out both; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: translateY(0) } }
+
+/* === Avatar Profilo (UI responsive e centrato) === */
+.avatar-box {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-top: .25rem;
+  justify-content: center;
+}
+
+.avatar-wrapper {
+  width: 128px;
+  height: 128px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#avatar-preview {
+  max-width: 100%;
+  max-height: 100%;
+  display: none; /* mostrata via JS */
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Stato placeholder (nessun avatar caricato) */
+.avatar-wrapper::before {
+  content: "👤";
+  font-size: 2.5rem;
+  color: #bbb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile: centrato e proporzionato */
+@media (max-width: 640px) {
+  .avatar-box {
+    flex-direction: column;
+  }
+}
+
+/* === Mappa partecipante: marker per stato + legenda === */
+.status-marker {
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
+.status-marker-inner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+/* Colori coerenti con i badge di stato */
+.status-future .status-marker-inner {
+  background-color: #4a90e2; /* evento futuro */
+}
+
+.status-imminent .status-marker-inner {
+  background-color: #f5a623; /* evento imminente */
+}
+
+.status-ongoing .status-marker-inner {
+  background-color: #d0021b; /* evento in corso */
+}
+
+.status-concluded .status-marker-inner {
+  background-color: #999999; /* evento concluso */
+}
+
+.status-past .status-marker-inner {
+  background-color: #cccccc; /* evento passato (solo nella lista "miei") */
+}
+
+/* Legenda sotto la mappa */
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  align-items: center;
+}
+
+.map-legend .legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-dot-future {
+  background-color: #4a90e2;
+}
+
+.legend-dot-imminent {
+  background-color: #f5a623;
+}
+
+.legend-dot-ongoing {
+  background-color: #d0021b;
+}
+
+
+/* =========================== MAPPA PARTECIPANTE (layout reale) =========================== */
+
+/* Il tuo <main id="mapSection" class="gw-map"> */
+#mapSection{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 14px;
+  min-height: 0;
+}
+
+/* MAPPA: più grande e stabile */
+#map{
+  width: 100%;
+  height: 42vh;
+  min-height: 240px;
+  max-height: 420px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* DETTAGLIO: per ora resta VISIBILE (come oggi).
+   Quando faremo l’ibrido “info”, lo renderemo drawer con una classe toggle. */
+#selectedEventSection{
+  min-height: 0;
+}
+
+/* CHAT: deve essere un contenitore flex che “trattiene” input e scroll messaggi */
+#chatRoomSection{
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Area messaggi: scorre */
+#mapChatRoom{
+  flex: 1;
+  min-height: 140px;
+  max-height: 28vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 6px;
+}
+
+/* Composer: resta sempre visibile sotto */
+#mapChatComposer{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#mapChatComposer input{
+  flex: 1;
+  min-width: 0;
+}
 
