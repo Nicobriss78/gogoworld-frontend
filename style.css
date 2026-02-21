@@ -14,7 +14,13 @@ html, body{
   background: var(--color-bg);
   color: var(--color-text);
 }
-
+/* Wrapper pagina: lascia spazio a Topbar + Bottomnav in tutte le schede */
+.gw-page{
+  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
+  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 2px);
+  box-sizing: border-box;
+  min-height: 100vh;
+}
 /* Area Participant: tema scuro + offset per topbar/bottombar */
 main.container.participant{
   background: var(--gw-bg);
@@ -1120,17 +1126,12 @@ top: calc(env(safe-area-inset-top) + var(--gw-topbar-h));  right: 14px;
 /* ---------- HOME (50/50 stabile + viewport mobile corretto) ---------- */
 /* Niente calc “sottrai barre”: usiamo height:100dvh e padding per lasciare spazio a barre FIXED */
 .gw-home{
-  height: 100dvh;
-  height: 100vh; /* fallback */
   box-sizing: border-box;
   background: var(--gw-bg);
-
-  /* spazio reale per topbar + bottomnav */
-  padding-top: calc(var(--gw-topbar-h, 56px) + env(safe-area-inset-top) + 2px);
-  padding-bottom: calc(var(--gw-bottomnav-h, 64px) + env(safe-area-inset-bottom) + 2px);
+  padding-top: 0
+  padding-bottom: 0 
   padding-left: 10px;
   padding-right: 10px;
-
   display:flex;
   flex-direction: column;
   gap: var(--gw-gap);
@@ -1661,6 +1662,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
