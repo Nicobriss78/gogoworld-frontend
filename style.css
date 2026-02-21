@@ -5,58 +5,14 @@
 
 @import url("/css/tokens.css");
 @import url("/css/base.css");
+@import url("/css/layout.css");
 @import url("/css/components.css");
 
-/* === PHASE 1 GUARD-RAILS (fix rotture globali) === */
+@import url("/css/areas/public.css");
+@import url("/css/areas/participant.css");
+@import url("/css/areas/organizer.css");
+@import url("/css/areas/admin.css");
 
-/* Default: fuori dall'area app rimaniamo chiari */
-html, body{
-  background: var(--color-bg);
-  color: var(--color-text);
-}
-/* Wrapper pagina: lascia spazio a Topbar + Bottomnav in tutte le schede */
-.gw-page{
-  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
-  padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 2px);
-  box-sizing: border-box;
-  min-height: 100vh;
-}
-
-/* Area Participant: tema scuro + offset per topbar/bottombar */
-main.container.participant{
-  background: var(--gw-bg);
-  color: var(--gw-text);
-  min-height: 100vh;
-  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
-  padding-bottom: calc(var(--gw-bottombar-h) + env(safe-area-inset-bottom));
-}
-/* === Participant pages con layout gw-app/gw-page + main.gw-home === */
-.gw-app,
-.gw-page,
-main.gw-home{
-  background: var(--gw-bg);
-  color: var(--gw-text);
-}
-
-/* main.gw-home deve comportarsi come "colonna piena" */
-main.gw-home{
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
-  padding-bottom: calc(var(--gw-bottombar-h) + env(safe-area-inset-bottom));
-}
-
-/* Il "corpo" deve espandersi e spingere il footer in basso */
-main.gw-home > section{
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-/* Footer sempre “giù” (sopra la bottomnav fixed) */
-main.gw-home > .app-footer{
-  margin-top: auto;
-}
 /* ==========================================================================
    TODO UI/UX Overhaul (GoGoWorld.life)
    - Definire palette definitiva (primary, secondary, danger, success, background, surface)
@@ -1711,6 +1667,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
     height: 96px;
   }
 }
+
 
 
 
