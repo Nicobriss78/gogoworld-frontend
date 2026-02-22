@@ -139,3 +139,12 @@
   font-size: .9rem;
 }
 
+/* FASE 3 — evento.html headings (ex inline) */
+.event-details h2{
+  margin:0 0 .5rem 0;
+  font-size:1rem;
+}
+.event-details h3{
+  margin:.5rem 0;
+  font-size:.95rem;
+}
