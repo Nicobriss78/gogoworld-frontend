@@ -309,3 +309,10 @@ body.gw-page-map #mapSection{
 .private-events-list li:hover {
   background: #f0f4ff;
 }
+/* =========================================================
+   FASE 3 — partecipante-seguiti-utenti.html (ex inline)
+   ========================================================= */
+
+.gw-block--fixed{
+  flex:0;
+}
