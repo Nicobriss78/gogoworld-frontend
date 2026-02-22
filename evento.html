@@ -13,10 +13,8 @@
   <main class="container event-detail">
 <header class="app-header">
       <h1 id="eventTitle">Evento</h1>
-      <span id="badgePrivate"
-            style="display:none; background:#555; color:#fff; padding:4px 8px; border-radius:6px; font-size:.8rem; margin-left:.5rem;">
-        🔒 Privato
-      </span>
+      <span id="badgePrivate" class="gw-pill u-ml-05 is-hidden">🔒 Privato</span>
+
     </header>
 <nav class="toolbar" id="eventActions">
  <a id="btnChatEvento" class="btn is-hidden" href="#">
@@ -28,40 +26,39 @@
     <!-- ===================================================== -->
     <section id="eventMgmt" class="event-details is-hidden u-mt-075">
       <div class="gw-panel">
-        <h2>">Gestione evento (Owner/Admin)</h2>
+        <h2>Gestione evento (Owner/Admin)</h2>
 
         <!-- Accessi -->
-        <div style="margin-top:.5rem;">
-          <h3>">Accessi evento</h3>
+        <div class="u-mt-05">
+          <h3>Accessi evento</h3>
 
-          <div style="display:flex; gap:.5rem; align-items:center; flex-wrap:wrap;">
-            <input id="mgmtInviteEmail" type="email" placeholder="Email utente da invitare"
-                   style="flex:1; min-width:220px; padding:.55rem .6rem; border:1px solid rgba(0,0,0,.12); border-radius:10px;" />
+            <div class="u-flex u-gap-05 u-center u-wrap">
+            <input id="mgmtInviteEmail" class="mgmt-input" type="email" placeholder="Email utente da invitare" />
+
             <button id="mgmtInviteBtn" class="btn" type="button">➕ Invita</button>
           </div>
 
-          <div style="display:grid; gap:.5rem; margin-top:.75rem;">
+           <div class="u-grid u-grid-gap-05 u-mt-075">
             <div>
-              <div style="font-weight:600; margin-bottom:.25rem;">Autorizzati</div>
-              <div id="mgmtParticipantsList" style="display:grid; gap:.35rem;"></div>
+             <div class="mgmt-title">Autorizzati</div>
+              <div id="mgmtParticipantsList" class="mgmt-list"></div>
             </div>
 
-            <div style="margin-top:.25rem;">
-              <div style="font-weight:600; margin-bottom:.25rem;">Esclusi (ban)</div>
-              <div id="mgmtRevokedList" style="display:grid; gap:.35rem;"></div>
+              <div class="u-mt-025">
+              <div class="mgmt-title">Esclusi (ban)</div>
+              <div id="mgmtRevokedList" class="mgmt-list"></div>
             </div>
           </div>
         </div>
 
         <!-- Banner -->
-        <div style="margin-top:1rem;">
-          <h3 style="margin:.5rem 0; font-size:.95rem;">Banner evento</h3>
-          <div style="display:flex; gap:.5rem; align-items:center; flex-wrap:wrap;">
-            <input id="mgmtBannerUrl" type="url" placeholder="URL banner (coverImage)"
-                   style="flex:1; min-width:220px; padding:.55rem .6rem; border:1px solid rgba(0,0,0,.12); border-radius:10px;" />
+          <div class="u-mt-1">
+           <h3 class="mgmt-h3">Banner evento</h3>
+            <div class="u-flex u-gap-05 u-center u-wrap">
+            <input id="mgmtBannerUrl" class="mgmt-input" type="url" placeholder="URL banner (coverImage)" />
             <button id="mgmtBannerSaveBtn" class="btn btn-secondary" type="button">💾 Salva banner</button>
           </div>
-          <div id="mgmtBannerHint" style="margin-top:.35rem; font-size:.85rem; opacity:.75;">
+           <div id="mgmtBannerHint" class="muted u-mt-035">
             (Il banner usa il campo coverImage dell’evento)
           </div>
         </div>
@@ -130,6 +127,7 @@
 
 </body>
 </html>
+
 
 
 
