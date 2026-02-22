@@ -218,3 +218,14 @@
 .import-form{
   gap:0.75rem;
 }
+/* =========================================================
+   FASE 3 — pages/verify.html (ex inline)
+   ========================================================= */
+
+.verify-card{
+  padding:1rem;
+}
+
+.verify-msg{
+  margin:0;
+}
