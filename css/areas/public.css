@@ -203,3 +203,18 @@
 }
 
 .up-bio{ margin:0; }
+
+/* =========================================================
+   FASE 3 — pages/import.html (ex inline)
+   ========================================================= */
+
+.import-card{
+  padding:1rem;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:4px;
+}
+
+.import-form{
+  gap:0.75rem;
+}
