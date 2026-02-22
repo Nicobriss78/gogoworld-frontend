@@ -7,10 +7,3 @@
 @import url("/css/base.css");
 @import url("/css/layout.css");
 @import url("/css/components.css");
-
-@import url("/css/areas/public.css");
-@import url("/css/areas/participant.css");
-@import url("/css/areas/organizer.css");
-@import url("/css/areas/admin.css");
-
-
