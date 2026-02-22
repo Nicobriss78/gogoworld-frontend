@@ -22,17 +22,16 @@
   <section class="event-card" id="card-profile">
     <div class="profile-header">
       <div class="profile-avatar-box">
-        <img id="profileAvatar" class="avatar-lg" alt="Avatar utente"
-             style="width:96px;height:96px;border-radius:50%;border:1px solid #ddd;object-fit:cover;display:none;" />
+        <img id="profileAvatar" class="gw-avatar gw-avatar--96 gw-avatar--round is-hidden" alt="Avatar utente" />
       </div>
 <div class="profile-main">
-        <h2 id="profileName" style="margin:0 0 .25rem;">Utente</h2>
-        <div id="profileMeta" class="muted" style="margin-bottom:.35rem;"></div>
-        <div id="profileRole" class="badge" style="margin-bottom:.5rem;"></div>
+        <h2 id="profileName" class="up-name">Utente</h2>
+        <div id="profileMeta" class="muted up-meta"></div>
+        <div id="profileRole" class="badge up-role"></div>
 
         <div id="connectionsBox">
-          <div class="muted" style="font-size:.8rem;margin:0 0 .15rem;">Connessioni</div>
-          <div class="profile-stats" style="display:flex;gap:1rem;flex-wrap:wrap;">
+         <div class="muted up-connections-label">Connessioni</div>
+          <div class="profile-stats u-flex u-gap-1 u-wrap">
             <span><strong id="followersCount">0</strong> follower</span>
             <span><strong id="followingCount">0</strong> seguiti</span>
           </div>
@@ -40,25 +39,25 @@
       </div>
       <div class="profile-actions">
         <button id="followBtn" class="btn btn-primary">Segui</button>
-        <p id="followHint" class="muted" style="margin-top:.35rem;font-size:.8rem;"></p>
+        <p id="followHint" class="muted up-follow-hint"></p>
       </div>
 
     </div>
 
-    <div class="profile-bio" style="margin-top:.75rem;">
-      <h3 style="margin:0 0 .25rem;font-size:.95rem;">Bio</h3>
-      <p id="profileBio" class="muted" style="margin:0;">Nessuna bio disponibile.</p>
+    <div class="profile-bio u-mt-075">
+     <h3 class="up-h3">Bio</h3>
+      <p id="profileBio" class="muted up-bio">Nessuna bio disponibile.</p>
     </div>
   </section>
 
   <!-- CARD BACHECA -->
   <section class="event-card" id="card-activity">
-    <h3 style="margin:0 0 .5rem;">Attività recenti</h3>
-    <div id="activityPrivate" class="muted" style="display:none;">
+     <h3 class="up-h3 up-h3--section">Attività recenti</h3>
+    <div id="activityPrivate" class="muted is-hidden">
       Questa bacheca è visibile solo ai follower.
     </div>
 <ul id="activityList" class="activity-list"></ul>
-    <div id="activityEmpty" class="muted" style="display:none;margin-top:.25rem;">
+     <div id="activityEmpty" class="muted is-hidden u-mt-025">
       Nessuna attività da mostrare.
     </div>
   </section>
