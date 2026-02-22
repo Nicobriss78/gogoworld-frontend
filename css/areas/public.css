@@ -238,3 +238,14 @@
   font-size:.9em;
   margin-top:.5rem;
 }
+/* =========================================================
+   FASE 3 — pages/cerca-utenti.html (ex inline)
+   ========================================================= */
+
+.search-card{
+  padding:1rem;
+}
+
+.search-card--nopad{
+  padding:0;
+}
