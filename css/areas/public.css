@@ -148,3 +148,29 @@
   margin:.5rem 0;
   font-size:.95rem;
 }
+/* =========================================================
+   FASE 3 — evento.html (Owner/Admin management) — ex inline
+   ========================================================= */
+
+.mgmt-input{
+  flex:1;
+  min-width:220px;
+  padding:.55rem .6rem;
+  border:1px solid rgba(0,0,0,.12);
+  border-radius:10px;
+}
+
+.mgmt-title{
+  font-weight:600;
+  margin-bottom:.25rem;
+}
+
+.mgmt-list{
+  display:grid;
+  gap:.35rem;
+}
+
+.mgmt-h3{
+  margin:.5rem 0;
+  font-size:.95rem;
+}
