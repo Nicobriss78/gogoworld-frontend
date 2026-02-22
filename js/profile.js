@@ -875,6 +875,7 @@ function hideIfMissing() {
 
 // --- bootstrap ---
 document.addEventListener("DOMContentLoaded", () => {
+  setTopbarGreeting();
   setMyPublicBoardLink();
   hideIfMissing();
   loadProfile();
