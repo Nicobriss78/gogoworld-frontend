@@ -90,22 +90,6 @@
   border-color: #f0d28a;
   box-shadow: 0 0 0 3px rgba(240, 210, 138, .18);
 }
-/* Badge base (vale ovunque) */
-.badge{
-  display:inline-block;
-  padding:3px 7px;
-  border-radius:5px;
-  background:#e5e5e5;
-  color:#222;
-  font-size:.85rem;
-  line-height:1;
-}
-/* se il badge non ha testo, non mostrarlo */
-.badge:empty{ display:none; }
-
-/* già esistenti/aggiunti: varianti */
-.badge.active{ background:#008000; color:#fff; }
-.badge.warning{ /* resta quello che hai già */ }
 
 /* Override mirato per i bottoni "Crea sponsor/house" */
 #spCreate.btn.primary,
