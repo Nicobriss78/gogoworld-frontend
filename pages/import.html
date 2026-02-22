@@ -19,10 +19,10 @@
     </header>
 
     <!-- Alert dinamico -->
-    <div id="alertBox" class="alert" style="display:none;"></div>
+    <div id="alertBox" class="alert is-hidden"></div>
 
-    <section class="card" style="padding:1rem; background:#fff; border:1px solid #ddd; border-radius:4px;">
-      <div class="form" style="gap:0.75rem;">
+   <section class="card import-card">
+       <div class="form import-form">
         <div class="form-row">
           <label for="csvFile"><strong>File CSV</strong></label>
           <input type="file" id="csvFile" accept=".csv" />
@@ -30,7 +30,7 @@
           <em>Note:</em> <code>tags</code> e <code>images</code> accettano valori separati da <code>|</code>. <code>date</code>/<code>endDate</code>: <code>YYYY-MM-DD</code> o <code>DD/MM/YYYY</code>.</small>
         </div>
 
-        <div class="form-row" style="display:flex; align-items:center; gap:0.5rem;">
+        <div class="form-row u-flex u-center u-gap-05">
           <input type="checkbox" id="dryRun" checked />
           <label for="dryRun">Dry-run (solo validazione, non salva)</label>
         </div>
@@ -42,7 +42,7 @@
       </div>
     </section>
 
-    <section id="previewSection" style="margin-top:1rem; display:none;">
+    <section id="previewSection" class="u-mt-1 is-hidden">
       <h2 class="subtitle">Anteprima risultati</h2>
       <div class="table-wrap">
         <table id="previewTable" class="simple-table">
