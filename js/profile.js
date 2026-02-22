@@ -8,6 +8,28 @@ const API_PREFIX = "/api";
 // --- helpers UI ---
 const $ = (sel) => document.querySelector(sel);
 const alerts = $("#alerts");
+// --- Topbar v2: saluto + nome utente (solo PROFILO) ---
+async function setTopbarGreeting() {
+  const topName = document.getElementById("gwUserName");
+  if (!topName) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    const me = await whoami(token);
+
+    const name =
+      me?.name ||
+      me?.user?.name ||
+      me?.email ||
+      me?.user?.email ||
+      "Utente";
+
+    topName.textContent = name;
+  } catch (e) {
+    console.warn("setTopbarGreeting failed:", e);
+    topName.textContent = "Utente";
+  }
+}
 
 function showAlert(msg, type = "success", ms = 2500) {
   const div = document.createElement("div");
