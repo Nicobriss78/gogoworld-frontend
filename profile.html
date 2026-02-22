@@ -101,27 +101,26 @@
                 </div>
               </div>
               <!-- Verifica email -->
-              <div class="form-row" id="verifyBox" style="margin-top:.75rem; display:none;">
+              <div class="form-row u-mt-075 is-hidden" id="verifyBox">
                 <p class="muted">Verifica email</p>
 
-                <div style="border:1px solid #ddd; border-radius:12px; padding:.75rem;">
+                <div class="gw-panel">
                   <div id="verifyStatus" class="muted">—</div>
 
-                  <button id="btnResendVerify" class="btn" style="margin-top:.5rem; width:100%; display:none;">
+                  <button id="btnResendVerify" class="btn u-mt-05 u-w-100 is-hidden">
                     Reinvia email di verifica
                   </button>
                 </div>
               </div>
               <!-- Livello L2 -->
-              <div class="form-row" id="l2Box" style="margin-top:.75rem; display:none;">
+              <div class="form-row u-mt-075 is-hidden" id="l2Box">
                <p class="muted">Livello L2</p>
 
-                <div style="border:1px solid #ddd; border-radius:12px; padding:.75rem;">
+                <div class="gw-panel">
                  <div id="l2Status" class="muted">—</div>
-                  <div id="l2Missing" class="muted" style="margin-top:.35rem; display:none;"></div>
+                  <div id="l2Missing" class="muted u-mt-035 is-hidden"></div>
 
-                  <button id="btnGoCompleteProfile" class="btn btn-secondary"
-                   style="margin-top:.5rem; width:100%; display:none;">
+                  <button id="btnGoCompleteProfile" class="btn btn-secondary u-mt-05 u-w-100 is-hidden">
                    Completa il profilo
                   </button>
                  </div>
@@ -137,12 +136,12 @@
               <div class="form-row" style="margin-top:.75rem;">
                 <p class="muted">Connessioni</p>
 
-                <div class="profile-stats" style="display:flex;gap:1rem;flex-wrap:wrap;">
+                <div class="profile-stats u-flex u-gap-1 u-wrap">
                   <span><strong id="myFollowersCount_view">0</strong> follower</span>
                   <span><strong id="myFollowingCount_view">0</strong> seguiti</span>
                 </div>
 
-                <div class="form-actions" style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+                 <div class="form-actions u-mt-05 u-flex u-gap-05 u-wrap">
                   <button type="button" class="btn btn-secondary" id="btnShowFollowers_view">
                     Vedi chi ti segue
                   </button>
@@ -151,25 +150,25 @@
                   </button>
                 </div>
 
-                <div id="followersBox_view" class="muted" style="margin-top:.5rem;display:none;">
+                <div id="followersBox_view" class="muted u-mt-05 is-hidden">
                   <strong>Follower</strong>
                   <ul id="followersList_view" class="simple-list"></ul>
-                  <p id="followersEmpty_view" class="muted" style="display:none;">
+                  <p id="followersEmpty_view" class="muted is-hidden">
                     Nessuno ti segue ancora.
                   </p>
                 </div>
 
-                <div id="followingBox_view" class="muted" style="margin-top:.5rem;display:none;">
+                <div id="followingBox_view" class="muted u-mt-05 is-hidden">
                   <strong>Seguiti</strong>
                   <ul id="followingList_view" class="simple-list"></ul>
-                  <p id="followingEmpty_view" class="muted" style="display:none;">
+                  <p id="followingEmpty_view" class="muted is-hidden">
                     Non stai ancora seguendo nessuno.
                   </p>
                 </div>
               </div>
 
               <!-- Azione -->
-              <div class="form-actions" style="margin-top:.75rem;">
+              <div class="form-actions u-mt-075">
                 <button type="button" class="btn" id="btnEditProfile">Modifica</button>
               </div>
             </section>
@@ -214,7 +213,7 @@
 
                     <div class="form-row">
                       <div class="avatar-box">
-                        <img id="avatar-preview" style="display:none;max-width:120px;border-radius:8px;"/>
+                        <img id="avatar-preview" class="gw-avatar gw-avatar--preview is-hidden"/>
                       </div>
                     </div>
 
