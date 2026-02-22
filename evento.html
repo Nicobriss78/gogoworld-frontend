@@ -18,20 +18,21 @@
         🔒 Privato
       </span>
     </header>
-<nav class="toolbar" id="eventActions" style="display:flex; gap:.5rem; margin:.5rem 0;">
-  <a id="btnChatEvento" class="btn" href="#" style="display:none">💬 Apri chat evento</a>
+<nav class="toolbar" id="eventActions">
+ <a id="btnChatEvento" class="btn is-hidden" href="#">
+💬 Apri chat evento</a>
   <a id="btnDMOrganizzatore" class="btn btn-secondary" href="#">✉️ Scrivi all’organizzatore</a>
 </nav>
 <!-- ===================================================== -->
     <!-- Access Management + Banner (solo organizer owner / admin) -->
     <!-- ===================================================== -->
-    <section id="eventMgmt" class="event-details" style="display:none; margin-top:.75rem;">
-      <div style="padding:.75rem; border:1px solid rgba(0,0,0,.08); border-radius:12px; background:#fff;">
-        <h2 style="margin:0 0 .5rem 0; font-size:1rem;">Gestione evento (Owner/Admin)</h2>
+    <section id="eventMgmt" class="event-details is-hidden u-mt-075">
+      <div class="gw-panel">
+        <h2>">Gestione evento (Owner/Admin)</h2>
 
         <!-- Accessi -->
         <div style="margin-top:.5rem;">
-          <h3 style="margin:.5rem 0; font-size:.95rem;">Accessi evento</h3>
+          <h3>">Accessi evento</h3>
 
           <div style="display:flex; gap:.5rem; align-items:center; flex-wrap:wrap;">
             <input id="mgmtInviteEmail" type="email" placeholder="Email utente da invitare"
@@ -129,6 +130,7 @@
 
 </body>
 </html>
+
 
 
 
