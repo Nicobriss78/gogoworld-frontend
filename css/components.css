@@ -1143,3 +1143,83 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
   font-size: .75rem;
   vertical-align: middle;
 }
+
+/* =========================================================
+   FASE 3 — Utilities + micro-componenti (NO inline styles)
+   ========================================================= */
+
+/* Visibilità */
+.is-hidden{ display:none !important; }
+
+/* Spacing utilities (coprono gli inline più usati) */
+.u-mt-035{ margin-top:.35rem !important; }
+.u-mt-05{ margin-top:.5rem !important; }
+.u-mt-075{ margin-top:.75rem !important; }
+.u-mt-1{ margin-top:1rem !important; }
+.u-ml-05{ margin-left:.5rem !important; }
+.u-mb-025{ margin-bottom:.25rem !important; }
+.u-mb-05{ margin-bottom:.5rem !important; }
+
+.u-w-100{ width:100% !important; }
+
+/* Flex/grid helpers */
+.u-flex{ display:flex !important; }
+.u-flex-col{ display:flex !important; flex-direction:column; }
+.u-wrap{ flex-wrap:wrap !important; }
+.u-between{ justify-content:space-between !important; }
+.u-end{ justify-content:flex-end !important; }
+.u-center{ align-items:center !important; }
+
+.u-gap-025{ gap:.25rem !important; }
+.u-gap-05{ gap:.5rem !important; }
+.u-gap-1{ gap:1rem !important; }
+
+.u-grid{ display:grid !important; }
+.u-grid-gap-035{ gap:.35rem !important; }
+.u-grid-gap-05{ gap:.5rem !important; }
+
+/* Panel “chiaro” (copre i box border/padding inline di profilo/evento/organizer) */
+.gw-panel{
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:.75rem;
+  background:#fff;
+}
+
+/* Avatar image helpers */
+.gw-avatar{
+  object-fit:cover;
+  border:1px solid #ddd;
+  display:block;
+}
+.gw-avatar--120{ width:120px; height:120px; border-radius:12px; }
+.gw-avatar--96{ width:96px; height:96px; }
+.gw-avatar--round{ border-radius:50%; }
+
+/* Preview avatar (profilo edit) */
+.gw-avatar--preview{
+  max-width:120px;
+  border-radius:8px;
+}
+
+/* Toolbar (evento/organizer) */
+.toolbar{
+  display:flex;
+  gap:.5rem;
+  margin:.5rem 0;
+}
+.toolbar--end{
+  justify-content:flex-end;
+  margin-top:.25rem;
+}
+
+/* “pill” scuro (evento status badge) */
+.gw-pill{
+  display:inline-block;
+  background:#555;
+  color:#fff;
+  padding:4px 8px;
+  border-radius:6px;
+  font-size:.8rem;
+  line-height:1.2;
+}
