@@ -15,12 +15,12 @@
       <h1>I miei Eventi</h1>
 <nav class="toolbar">
   <button id="btnSwitchRole" class="btn">Cambia ruolo</button>
-  <a href="messages.html" class="btn">✉️ Messaggi <span id="messagesBadge" class="badge" style="display:none">0</span></a>
-  <a href="pages/rooms.html" class="btn">💬 Room <span id="roomsBadge" class="badge" style="display:none">0</span></a>
+  <a href="messages.html" class="btn">✉️ Messaggi <span id="messagesBadge" class="badge is-hidden">0</span>
+  <a href="pages/rooms.html" class="btn">💬 Room <span id="roomsBadge" class="badge is-hidden">0</span>
   <a href="pages/cerca-utenti.html" class="btn">🔎 Cerca</a>
 
   <!-- 🔔 NEW A9.3.2 -->
-  <a id="btnNotifications" class="btn">🔔 Notifiche <span id="notiBadge" class="badge" style="display:none">0</span></a>
+  <a id="btnNotifications" class="btn">🔔 Notifiche <span id="notiBadge" class="badge is-hidden">0</span>
 
   <button id="btnLogout" class="btn btn-secondary">Logout</button>
   <button id="btnMyPromos" class="btn btn-secondary">Le mie promozioni</button>
@@ -28,12 +28,12 @@
 
   <!-- RIMOSSO: pulsante Importa CSV -->
 </nav>
-      <nav class="toolbar" style="display:flex; justify-content:flex-end; gap:.5rem; margin-top:.25rem;">
+<nav class="toolbar toolbar--end">
   <a id="btnProfileLink" class="btn btn-secondary" href="#">Profilo</a>
 </nav>
     </header>
 <!-- Banner “Completa profilo” -->
-    <section id="profileNag" class="alert info" style="display:none; margin:.5rem 0;"></section>
+    <section id="profileNag" class="alert info is-hidden u-mt-05 u-mb-05"></section>
     <section class="filters">
       <input id="filterTitle" type="text" placeholder="Titolo" />
       <input id="filterCity" type="text" placeholder="Città" />
@@ -42,7 +42,7 @@
     </section>
 
     <!-- PATCH: pannello creazione evento inline -->
-    <section id="createEventPanel" style="display:none; margin:1em 0; padding:1em; border:1px solid #ccc; border-radius:8px;">
+    <section id="createEventPanel" class="is-hidden u-mt-1 u-mb-05 gw-panel">
       <h2>Crea nuovo evento</h2>
       <form id="createEventForm">
         <!-- Base -->
@@ -67,20 +67,17 @@
         </label><br/>
 
 <!-- PATCH: opzioni evento privato -->
-        <div id="privateOptions" style="display:none; margin-bottom: 0.5rem;">
+     <div id="privateOptions" class="is-hidden u-mb-05">
           <label>Codice evento privato
-            <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.15rem;">
+            <div class="u-flex u-center u-gap-05 u-mt-035">
               <input type="text"
                      name="accessCode"
                      id="accessCodeInput"
                      maxlength="32"
                      placeholder="Es. FESTA123" />
-              <button type="button"
-                      id="btnGenerateAccessCode"
-                      class="btn"
-                      style="padding:0.15rem 0.5rem; font-size:0.8rem;">
-                Genera codice
-              </button>
+                <button type="button" id="btnGenerateAccessCode" class="btn btn-codegen">
+                  Genera codice
+                </button>
             </div>
           </label><br/>
           <small class="help-text">
@@ -164,7 +161,7 @@
         <label>Immagini (URL separati da |) <input type="text" name="images" /></label><br/>
         <label>Immagine di copertina (URL) <input type="text" name="coverImage" /></label><br/>
 
-        <div style="margin-top:1em;">
+        <div class="u-mt-05 u-mb-05">
           <button type="submit" class="btn btn-primary">Crea</button>
           <button type="button" id="btnCancelCreate" class="btn btn-secondary">Annulla</button>
         </div>
@@ -172,7 +169,7 @@
     </section>
     <!-- FINE PATCH -->
     <!-- PANNELLO: Promuovi evento -->
-    <section id="promotePanel" style="display:none; margin:1em 0; padding:1em; border:1px solid #ccc; border-radius:8px;">
+    <section id="promotePanel" class="is-hidden u-mt-1 u-mb-05 gw-panel">
       <h2>Promuovi evento</h2>
       <form id="promoteForm">
         <div class="muted">Evento: <span id="promoteEventTitle">—</span></div>
@@ -226,14 +223,14 @@
       </form>
     </section>
 <!-- PANNELLO: Le mie promozioni -->
-  <section id="myPromosPanel" style="display:none; margin:1em 0; padding:1em; border:1px solid #ccc; border-radius:8px;">
+<section id="myPromosPanel" class="is-hidden u-mt-1 u-mb-05 gw-panel">
     <h2>Le mie promozioni</h2>
     <div class="muted" id="myPromosInfo">Qui trovi i banner che hai richiesto o creato. Aggiorna per vedere le metriche aggiornate.</div>
-    <div style="margin:.5em 0;">
+    <div class="u-mt-05 u-mb-05">
       <button id="btnMyPromosRefresh" class="btn">Aggiorna</button>
       <button id="btnMyPromosClose" class="btn btn-secondary">Chiudi</button>
     </div>
-    <div class="filters" id="myPromosFilters" style="margin:.25em 0 .75em;">
+    <div class="filters u-mt-025 u-mb-075" id="myPromosFilters">
 <label>Stato:
 <select id="myPromosFilterStatus" class="select-input">
 <option value="">Tutti</option>
@@ -242,14 +239,14 @@
 <option value="expired">Expired</option>
 </select>
 </label>
-<label style="margin-left:.5rem;">Placement:
+<label class="u-ml-05">Placement:
 <input id="myPromosFilterPlacement" class="search-input" placeholder="es. events_list_inline" />
 </label>
 </div>
 
     <div class="table-wrap">
       <table id="myPromosTable">
-<caption id="myPromosCaption" class="muted" style="caption-side:bottom; text-align:left; display:none;">
+<caption id="myPromosCaption" class="muted is-hidden">
     Nessuna promozione trovata.
   </caption>
   <thead>
@@ -283,6 +280,7 @@
 <script type="module" src="js/notifications.js"></script>
 </body>
 </html>
+
 
 
 
