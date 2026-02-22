@@ -34,9 +34,9 @@
 <body>
   <header>
     <h1>Chat Evento</h1>
-    <nav class="toolbar" style="display:flex; gap:.5rem;">
+     <nav class="toolbar">
     <a id="btnHome" href="../partecipante.html" class="btn btn-secondary">← Home</a>
-      <a id="btnBackToEvent" href="#" class="btn btn-secondary" style="display:none;">Vai all’evento</a>
+      <a id="btnBackToEvent" href="#" class="btn btn-secondary is-hidden">Vai all’evento</a>
     </nav>
   </header>
 
@@ -58,7 +58,7 @@
         <button id="sendBtn" class="btn">Invia</button>
           <p id="lockedMsg"
      class="locked-info"
-     style="display:none; color:#b33; font-size:.9em; margin-top:.5rem;">
+     <div id="roomsError" class="rooms-error is-hidden">
     🔒 Non puoi partecipare alla chat di questo evento. Potresti non essere autorizzato oppure la chat non è più attiva.
   </p>
       </div>
