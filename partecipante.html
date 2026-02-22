@@ -43,12 +43,12 @@
 
     <a class="gw-iconbtn" href="messages.html" title="Messaggi" aria-label="Messaggi">
       <span class="gw-ico">✉️</span>
-      <span id="messagesBadge" class="gw-badge" style="display:none">0</span>
+      <span id="messagesBadge" class="gw-badge is-hidden">0</span>
     </a>
 
 <button class="gw-iconbtn" id="btnNotifications" title="Notifiche" aria-label="Notifiche">
   <span class="gw-ico">🔔</span>
-  <span id="notiBadge" class="gw-badge" style="display:none">0</span>
+  <span id="notiBadge" class="gw-badge is-hidden">0</span>
 </button>
 
 
@@ -58,7 +58,7 @@
   </div>
 
   <!-- Menu hamburger -->
-  <div id="gwMenu" class="gw-menu" style="display:none">
+  <div id="gwMenu" class="gw-menu is-hidden">
     <a href="pages/cerca-utenti.html">Cerca utente</a>
     <a href="#" id="btnPrivateEvents">Eventi privati</a>
     <a href="#" id="btnGuide">Guida partecipante</a>
@@ -93,7 +93,7 @@
 </div>
   </section>
 </section>
-    <section class="legacy" style="display:none">
+  <section class="legacy is-hidden">
     <!-- Filtri -->
     <section class="filters">
       <input id="filterTitle" type="text" placeholder="Titolo" />
@@ -143,10 +143,10 @@
       <button id="btnApplyFilters" class="btn">Filtra</button>
     </section>
 <!-- Banner “Completa profilo” -->
-    <section id="profileNag" class="alert info" style="display:none; margin:.5rem 0;"></section>
+    <section id="profileNag" class="alert info is-hidden u-mt-05 u-mb-05"></section>
 
     <!-- Eventi privati: codice invito + menù a tendina -->
-    <section id="privateEventsBlock" style="margin:0.5rem 0;">
+  <section id="privateEventsBlock" class="u-mt-05 u-mb-05">
       <div class="private-code-row">
         <input
           id="inviteCodeInput"
@@ -161,7 +161,7 @@
         🔒 Eventi privati (<span id="privateCount">0</span>)
       </button>
 
-      <ul id="privateEventsList" class="private-events-list" style="display:none;"></ul>
+      <ul id="privateEventsList" class="private-events-list is-hidden"></ul>
     </section>
     <!-- /Eventi privati -->
 
@@ -234,6 +234,7 @@
 <script type="module" src="js/notifications.js"></script>
 </body>
 </html>
+
 
 
 
