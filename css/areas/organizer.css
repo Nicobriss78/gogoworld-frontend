@@ -34,3 +34,8 @@
 #myPromosTable td.ctr-low { color: #c21d1d; }
 #myPromosTable tr.expired td { opacity: .55; text-decoration: line-through; }
 
+/* FASE 3 — organizzatore.html: bottone genera codice (ex inline) */
+.btn-codegen{
+  padding:0.15rem 0.5rem;
+  font-size:0.8rem;
+}
