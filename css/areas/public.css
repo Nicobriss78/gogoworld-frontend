@@ -229,3 +229,12 @@
 .verify-msg{
   margin:0;
 }
+/* =========================================================
+   FASE 3 — pages/rooms.html (ex inline)
+   ========================================================= */
+
+.rooms-error{
+  color:#b33;
+  font-size:.9em;
+  margin-top:.5rem;
+}
