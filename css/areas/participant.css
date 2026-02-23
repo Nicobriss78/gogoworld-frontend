@@ -316,3 +316,32 @@ body.gw-page-map #mapSection{
 .gw-block--fixed{
   flex:0;
 }
+/* FASE 4 — Following events (J1) */
+.gw-following-card-wrap--rel{ position:relative; }
+
+.gw-countdown-badge--following{
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:3;
+  background:rgba(0,0,0,.65);
+  color:#fff;
+  padding:4px 8px;
+  border-radius:10px;
+  font-size:12px;
+}
+
+.gw-following-cta{ margin-top:8px; }
+.gw-following-cta--joined{ font-size:13px; opacity:.85; }
+.gw-following-cta--join{ width:100%; }
+
+.gw-banner-card .gw-thumb{
+  background-size:cover;
+  background-position:center;
+}
+
+.gw-banner-meta--tight{ margin-top:0; }
+
+.gw-following-block{ margin-top:14px; }
+
+.gw-following-count{ opacity:.75; }
