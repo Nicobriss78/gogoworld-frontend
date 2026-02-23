@@ -389,14 +389,13 @@ function renderUserRow(u, actionText, actionClass, dataAction) {
   const name = escHtml(u?.name || "Utente");
   const email = escHtml(u?.email || "");
   return `
-    <div class="gw-row" style="display:flex; gap:.5rem; align-items:center; justify-content:space-between; padding:.45rem .5rem; border:1px solid rgba(0,0,0,.08); border-radius:10px;">
-      <div style="display:flex; flex-direction:column; min-width:0;">
-        <div style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</div>
-        <div style="font-size:.85rem; opacity:.8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${email}</div>
+    <div class="gw-row mgmt-row">
+      <div class="mgmt-row__meta">
+        <div class="mgmt-row__name">${name}</div>
+        <div class="mgmt-row__email">${email}</div>
       </div>
-      <button class="btn ${actionClass || ""}" type="button"
-              data-action="${dataAction}" data-user-id="${escHtml(id)}"
-              style="white-space:nowrap;">
+      <button class="btn ${actionClass || ""} mgmt-row__btn" type="button"
+              data-action="${dataAction}" data-user-id="${escHtml(id)}">
         ${actionText}
       </button>
     </div>
@@ -411,7 +410,7 @@ async function refreshMgmt() {
 
   // Access management ha senso sui privati
   if (!isPrivateEvent) {
-    if (mgmtParticipantsList) mgmtParticipantsList.innerHTML = `<div style="opacity:.75;">(Evento non privato: accessi non applicabili)</div>`;
+    if (mgmtParticipantsList) mgmtParticipantsList.innerHTML = `<div class="mgmt-muted">(Evento non privato: accessi non applicabili)</div>`;
     if (mgmtRevokedList) mgmtRevokedList.innerHTML = "";
     return;
   }
@@ -425,13 +424,13 @@ async function refreshMgmt() {
   if (mgmtParticipantsList) {
     mgmtParticipantsList.innerHTML = participants.length
       ? participants.map(u => renderUserRow(u, "⛔ Escludi", "btn-secondary", "ban")).join("")
-      : `<div style="opacity:.75;">(Nessun partecipante autorizzato)</div>`;
+      : `<div class="mgmt-muted">(Nessun partecipante autorizzato)</div>`;
   }
 
   if (mgmtRevokedList) {
     mgmtRevokedList.innerHTML = revoked.length
       ? revoked.map(u => renderUserRow(u, "✅ Reinserisci", "", "unban")).join("")
-      : `<div style="opacity:.75;">(Nessun utente escluso)</div>`;
+      : `<div class="mgmt-muted">(Nessun utente escluso)</div>`;
   }
 }
 
@@ -1282,3 +1281,4 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
