@@ -181,8 +181,7 @@ function sortByStatusAndStart(a, b) {
 function renderFollowingCard(ev, joined = false) {
   const countdown = formatCountdown(ev);
   const badgeHtml = countdown
-    ? `<div class="gw-countdown-badge"
-          style="position:absolute; top:10px; left:10px; z-index:3; background:rgba(0,0,0,.65); color:#fff; padding:4px 8px; border-radius:10px; font-size:12px;">
+    ? `<div class="gw-countdown-badge gw-countdown-badge--following">
           ⏳ ${countdown}
        </div>`
     : "";
@@ -192,15 +191,14 @@ function renderFollowingCard(ev, joined = false) {
 
   // CTA: "Partecipa" solo se NON joined
   const cta = joined
-    ? `<div style="margin-top:8px; font-size:13px; opacity:.85;">✅ Partecipo</div>`
-    : `<button class="btn"
+? `<div class="gw-following-cta gw-following-cta--joined">✅ Partecipo</div>`
+: `<button class="btn gw-following-cta gw-following-cta--join"
          type="button"
          data-action="join"
-         data-id="${ev._id}"
-         style="margin-top:8px; width:100%;">Partecipa</button>`;
+         data-id="${ev._id}">Partecipa</button>`;
 
 return `
-    <div class="gw-rail gw-following-card-wrap" style="position:relative;">
+<div class="gw-rail gw-following-card-wrap gw-following-card-wrap--rel">
       ${badgeHtml}
       ${base}
       ${cta}
@@ -230,7 +228,7 @@ function renderBannerCard(b) {
  : (b?.targetUrl || b?.linkUrl || b?.url || "#");
 
  const bgStyle = img
- ? ` style="background-image:url('${img}'); background-size:cover; background-position:center;"`
+ ? ` style="background-image:url('${img}');"`
  : "";
 
  return `
@@ -238,7 +236,7 @@ function renderBannerCard(b) {
  <a class="gw-banner-link" href="${clickHref}" aria-label="${title}">
  <div class="gw-thumb"${bgStyle}></div>
  <div class="content">
- <div class="meta" style="margin-top:0;">
+ <div class="meta gw-banner-meta--tight">
  <span><strong>${kicker}</strong></span>
  </div>
  <h3 class="title">${title}</h3>
@@ -315,9 +313,9 @@ return renderFollowingCard(item, joined);
   .join("");
 
       return `
-        <section class="gw-block" style="margin-top:14px;">
+   <section class="gw-block gw-following-block">
           <div class="gw-block-head">
-            <h2 class="gw-block-title">${g.orgName} <span style="opacity:.75;">(${count})</span></h2>
+            <h2 class="gw-block-title">${g.orgName} <span class="gw-following-count">(${count})</span></h2>
           </div>
 
 <div id="${railId}" class="gw-carousel-wrap">
