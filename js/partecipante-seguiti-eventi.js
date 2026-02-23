@@ -227,14 +227,14 @@ function renderBannerCard(b) {
  ? `/api/banners/${encodeURIComponent(id)}/click?redirect=1`
  : (b?.targetUrl || b?.linkUrl || b?.url || "#");
 
- const bgStyle = img
- ? ` style="background-image:url('${img}');"`
+ const bgAttr = img
+ ? ` data-bg="${escapeHtml(img)}"`
  : "";
 
  return `
  <article class="gw-rail event-card gw-banner-card" data-banner-id="${id}">
  <a class="gw-banner-link" href="${clickHref}" aria-label="${title}">
- <div class="gw-thumb"${bgStyle}></div>
+<div class="gw-thumb"${bgAttr}></div>
  <div class="content">
  <div class="meta gw-banner-meta--tight">
  <span><strong>${kicker}</strong></span>
@@ -244,6 +244,15 @@ function renderBannerCard(b) {
  </a>
  </article>
  `;
+}
+function applyBannerThumbBackgrounds(root) {
+  if (!root) return;
+  const thumbs = root.querySelectorAll(".gw-banner-card .gw-thumb[data-bg]");
+  thumbs.forEach((el) => {
+    const url = el.getAttribute("data-bg");
+    if (!url) return;
+    el.style.backgroundImage = `url("${url}")`;
+  });
 }
 function renderFollowingBlocks(events) {
   const container = document.getElementById("followingEventsContainer");
@@ -333,7 +342,8 @@ return renderFollowingCard(item, joined);
     .join("");
 
 container.innerHTML = html;
-
+// Applica background immagini banner senza inline style in template
+applyBannerThumbBackgrounds(container);
 // Attiva sponsor/tips per ogni carousel (uno per organizer)
 const token = FOLLOWING_TOKEN;
 if (token) {
