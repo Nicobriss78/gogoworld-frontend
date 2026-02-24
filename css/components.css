@@ -1106,7 +1106,19 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
   color: var(--color-secondary);
   font-size: 0.92rem;
 }
+/* FASE 4 — home-cards.js (J1) */
+.gw-card-actions--abs{
+  position:absolute;
+  top:10px;
+  right:10px;
+  display:flex;
+  gap:6px;
+  z-index:2;
+}
+.gw-card-action-btn{ position:static; }
 
+.gw-meta--mt6{ margin-top:6px; }
+.gw-meta--mt4{ margin-top:4px; }
 /* Galleria immagini nel dettaglio */
 .gallery {
   display: flex;
