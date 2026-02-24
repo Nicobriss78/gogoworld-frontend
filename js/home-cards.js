@@ -19,7 +19,15 @@ function formatEventDate(ev) {
     return "";
   }
 }
-
+// escape minimale per attributi HTML (data-*)
+// (evita rotture se l'URL contiene virgolette o caratteri speciali)
+function escAttr(v) {
+  return String(v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
 // helper per badge di stato
 function renderStatus(status) {
   if (!status) return "";
@@ -49,8 +57,8 @@ const coverUrl =
   ev?.thumbnailUrl ||
   "";
 
-  const thumbStyle = coverUrl
-    ? `style="background-image:url('${coverUrl}'); background-size:cover; background-position:center;"`
+  const thumbBgAttr = coverUrl
+    ? `data-bg="${escAttr(coverUrl)}"`
     : "";
 
   const priceStr = ev?.isFree
@@ -78,10 +86,9 @@ const coverUrl =
   const showCloseDetail = Boolean(opts?.showCloseDetail);
 
   // Wrapper posizionato in alto a destra; i bottoni sono "static" per evitare collisioni con eventuali CSS assoluti
-  const infoHtml = `
-    <div class="gw-card-actions" style="position:absolute; top:10px; right:10px; display:flex; gap:6px; z-index:2;">
-      <button class="${detailsBtnClass}"
-        style="position:static;"
+const infoHtml = `
+    <div class="gw-card-actions gw-card-actions--abs">
+      <button class="${detailsBtnClass} gw-card-action-btn"
         type="button"
         title="${detailsTitle}"
         aria-label="${detailsTitle}"
@@ -90,8 +97,7 @@ const coverUrl =
 
       ${
         (showCloseDetail && detailsIsPlus)
-          ? `<button class="gw-info-btn gw-info-plus"
-              style="position:static;"
+          ? `<button class="gw-info-btn gw-info-plus gw-card-action-btn"
               type="button"
               title="Chiudi dettaglio"
               aria-label="Chiudi dettaglio"
@@ -108,7 +114,7 @@ const coverUrl =
       ${infoHtml}
 
       <div class="gw-card-scroll">
-<div class="gw-thumb" ${thumbStyle}></div>
+<div class="gw-thumb" ${thumbBgAttr}></div>
 
         <div class="content">
           <h3 class="title">${ev.title || "(Senza titolo)"}</h3>
@@ -118,15 +124,15 @@ const coverUrl =
             ${when ? `<span>${when}</span>` : ""}
           </div>
 
-          <div class="meta" style="margin-top:6px;">
+          <div class="meta gw-meta--mt6">
             <span><strong>Categoria:</strong> ${ev.category || ""}${ev.subcategory ? " • " + ev.subcategory : ""}</span>
           </div>
 
-          <div class="meta" style="margin-top:4px;">
+          <div class="meta gw-meta--mt4">
             <span><strong>Lingua/Target:</strong> ${ev.language || ""}${ev.target ? " • " + ev.target : ""}</span>
           </div>
 
-          <div class="meta" style="margin-top:4px;">
+          <div class="meta gw-meta--mt4">
             <span><strong>Prezzo:</strong> ${priceStr}</span>
           </div>
         </div>
@@ -134,3 +140,12 @@ const coverUrl =
     </article>
   `;
 };
+// Applica cover thumb senza inline style nei template
+export function applyHomeCardThumbs(root = document) {
+  const thumbs = root.querySelectorAll(".event-card .gw-thumb[data-bg]");
+  thumbs.forEach((el) => {
+    const url = el.getAttribute("data-bg");
+    if (!url) return;
+    el.style.backgroundImage = `url("${url}")`;
+  });
+}
