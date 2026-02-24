@@ -44,3 +44,9 @@
   caption-side:bottom;
   text-align:left;
 }
+/* FASE 4 — organizzatore.js (J1) */
+.org-empty-actions{ margin-top:.5em; }
+
+.org-import-header{ padding:8px 0; }
+
+.org-form-actions--mt10{ margin-top:10px; }
