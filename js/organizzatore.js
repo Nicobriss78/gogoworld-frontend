@@ -971,7 +971,7 @@ function hookAutoEndDateTime(form) {
       if (!res.ok) throw new Error(res.error || "Errore caricamento eventi");
 
       if (!res.events.length) {
-listContainer.innerHTML = '<p>Nessun evento creato.</p><div style="margin-top:.5em"><button id="btnEmptyCreate" class="btn btn-primary">Crea il tuo primo evento</button></div>';
+    listContainer.innerHTML = '<p>Nessun evento creato.</p><div class="org-empty-actions"><button id="btnEmptyCreate" class="btn btn-primary">Crea il tuo primo evento</button></div>';
     const btnEmpty = document.getElementById("btnEmptyCreate");
 if (btnEmpty) btnEmpty.onclick = () => { try { document.getElementById("btnCreateEvent")?.click(); } catch {} };
 
@@ -1094,7 +1094,7 @@ if (btnEmpty) btnEmpty.onclick = () => { try { document.getElementById("btnCreat
       };
       panel.innerHTML = `
         <div class="simple-table">
-          <div style="padding:8px 0;"><strong>Anteprima import CSV</strong> — Totali: ${stats.total} • Validi: ${stats.valid} • Invalidi: ${stats.invalid}</div>
+         <div class="org-import-header"><strong>Anteprima import CSV</strong> — Totali: ${stats.total} • Validi: ${stats.valid} • Invalidi: ${stats.invalid}</div>
           <table class="simple-table">
             <thead><tr><th>#</th><th>Stato</th><th>Dettagli</th></tr></thead>
             <tbody>
@@ -1107,7 +1107,7 @@ if (btnEmpty) btnEmpty.onclick = () => { try { document.getElementById("btnCreat
               `).join("")}
             </tbody>
           </table>
-          <div class="form-actions" style="margin-top:10px">
+          <div class="form-actions org-form-actions--mt10">
             <button id="btnConfirmImport" class="btn btn-primary">Conferma import</button>
           </div>
         </div>
@@ -1126,7 +1126,7 @@ if (btnEmpty) btnEmpty.onclick = () => { try { document.getElementById("btnCreat
       const skipped = data.skipped ?? 0;
       panel.innerHTML = `
         <div class="simple-table">
-          <div style="padding:8px 0;"><strong>Import completato</strong> — Creati: ${created} • Skippati: ${skipped}</div>
+          <div class="org-import-header"><strong>Import completato</strong> — Creati: ${created} • Skippati: ${skipped}</div>
         </div>
       `;
       showAlert(`Import completato. Creati: ${created}, Skippati: ${skipped}`, "success", { autoHideMs: 4000 });
@@ -1654,6 +1654,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
