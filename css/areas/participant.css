@@ -345,3 +345,12 @@ body.gw-page-map #mapSection{
 .gw-following-block{ margin-top:14px; }
 
 .gw-following-count{ opacity:.75; }
+
+/* FASE 4 — partecipante.js (J1) */
+.gw-meta--tight{ margin-top:0; }
+
+/* Banner thumb: usiamo la stessa pipeline data-bg (applyHomeCardThumbs) */
+.gw-banner-card .gw-thumb{
+  background-size:cover;
+  background-position:center;
+}
