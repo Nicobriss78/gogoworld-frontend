@@ -47,7 +47,7 @@ export function createEmbeddedEventChat({
 
     panel.innerHTML = `
       <div class="gw-map-chat-head">
-        <p class="gw-muted" style="margin:0;">
+        <p class="gw-muted gw-m0">
           Chat evento: <strong>${escapeHtml(title || "Evento")}</strong>
         </p>
       </div>
