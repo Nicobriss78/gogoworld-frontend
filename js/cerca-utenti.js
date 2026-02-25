@@ -82,10 +82,9 @@ function liTemplate(u) {
          data-has-blocked-me="${hasBlockedMe ? "1" : "0"}">
       ${avatar}
       <div class="user-info">
-        <button class="user-name-btn"
+        <button class="user-name-btn user-name-btn--reset"
                 data-action="profile"
-                data-user="${u._id}"
-                style="all:unset;cursor:pointer;display:block;text-align:left;">
+                data-user="${u._id}">
           <div class="name">${u.name || "Utente"}</div>
           <div class="meta">${meta || ""}</div>
         </button>
