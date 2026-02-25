@@ -8,6 +8,13 @@ const API_PREFIX = "/api";
 // --- helpers UI ---
 const $ = (sel) => document.querySelector(sel);
 const alerts = $("#alerts");
+// --- J2: visibility helpers (no inline style.display) ---
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle("is-hidden", !!hidden);
+}
+function showEl(el) { setHidden(el, false); }
+function hideEl(el) { setHidden(el, true); }
 // --- Topbar v2: saluto + nome utente (solo PROFILO) ---
 async function setTopbarGreeting() {
   const topName = document.getElementById("gwUserName");
@@ -81,7 +88,7 @@ async function setMyPublicBoardLink() {
     const id = me?.user?._id;
 
     if (!id) {
-      uniq.forEach(el => (el.style.display = "none"));
+      uniq.forEach(el => hideEl(el));
       return;
     }
 
@@ -106,7 +113,7 @@ async function setMyPublicBoardLink() {
 
   } catch (e) {
     console.warn(e);
-    uniq.forEach(el => (el.style.display = "none"));
+    uniq.forEach(el => hideEl(el));
   }
 }
 
@@ -173,7 +180,7 @@ function setAvatarPreview(url) {
     avatarPreview.src = BACKEND_ORIGIN + path;
   };
   avatarPreview.src = src;
-  avatarPreview.style.display = "inline-block";
+  showEl(avatarPreview);
 }
 
 
@@ -183,7 +190,7 @@ avatarFile?.addEventListener("change", (e) => {
   const tmp = URL.createObjectURL(f);
   avatarPreview.onload = () => URL.revokeObjectURL(tmp);
   avatarPreview.src = tmp;
-  avatarPreview.style.display = "inline-block";
+  showEl(avatarPreview);
 });
 
 const optInDM = $("#optInDM");
@@ -192,13 +199,13 @@ const dmsFrom = $("#dmsFrom");
 // token
 const token = localStorage.getItem("token");
 function showViewMode() {
-  if (profileView) profileView.style.display = "block";
-  if (profileEdit) profileEdit.style.display = "none";
+  showEl(profileView);
+  hideEl(profileEdit);
 }
 
 function showEditMode() {
-  if (profileView) profileView.style.display = "none";
-  if (profileEdit) profileEdit.style.display = "block";
+  hideEl(profileView);
+  showEl(profileEdit);
 }
 
 function renderProfileView(p) {
@@ -222,9 +229,9 @@ function renderProfileView(p) {
         avatarView.src = BACKEND_ORIGIN + path;
       };
       avatarView.src = src;
-      avatarView.style.display = "inline-block";
+      showEl(avatarView);
     } else {
-      avatarView.style.display = "none";
+      hideEl(avatarView);
     }
   }
 
@@ -237,9 +244,9 @@ function renderProfileView(p) {
   if (viewPlace) {
     if (placeParts.length) {
       viewPlace.textContent = placeParts.join(" • ");
-      viewPlace.style.display = "block";
+      showEl(viewPlace);
     } else {
-      viewPlace.style.display = "none";
+      hideEl(viewPlace);
     }
   }
 
@@ -247,24 +254,24 @@ function renderProfileView(p) {
     const b = (p.bio || "").trim();
     if (b) {
       viewBio.textContent = b;
-      viewBio.style.display = "block";
-    } else viewBio.style.display = "none";
+      showEl(viewBio);
+    } else hideEl(viewBio);
   }
 
   if (viewLanguages) {
     const l = joinCSV(p.languages).trim();
     if (l) {
       viewLanguages.textContent = "Lingue: " + l;
-      viewLanguages.style.display = "block";
-    } else viewLanguages.style.display = "none";
+      showEl(viewLanguages);
+    } else hideEl(viewLanguages);
   }
 
   if (viewInterests) {
     const i = joinCSV(p.interests).trim();
     if (i) {
       viewInterests.textContent = "Interessi: " + i;
-      viewInterests.style.display = "block";
-    } else viewInterests.style.display = "none";
+      showEl(viewInterests);
+    } else hideEl(viewInterests);
   }
 
   if (viewSocials) {
@@ -287,9 +294,9 @@ function renderProfileView(p) {
         }
         viewSocials.appendChild(div);
       }
-      viewSocials.style.display = "block";
+      showEl(viewSocials);
     } else {
-      viewSocials.style.display = "none";
+      hideEl(viewSocials);
     }
   }
 }
@@ -313,7 +320,7 @@ avatarUrl.value = p.avatarUrl || "";
 if (p.avatarUrl) {
   setAvatarPreview(p.avatarUrl);
 } else {
-  avatarPreview.style.display = "none";
+  hideEl(avatarPreview);
 }
 
   }
