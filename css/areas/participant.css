@@ -354,3 +354,10 @@ body.gw-page-map #mapSection{
   background-size:cover;
   background-position:center;
 }
+/* FASE 4 — cerca-utenti.js (J1) */
+.user-name-btn--reset{
+  all:unset;
+  cursor:pointer;
+  display:block;
+  text-align:left;
+}
