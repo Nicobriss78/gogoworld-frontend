@@ -8,7 +8,7 @@
 
 import { apiGet, apiPost, getMyProfile, getRoomsUnreadCount } from "./api.js";
 import { sortEventsForParticipant } from "./core/event-sorting.js";
-import { renderEventCard } from "./home-cards.js";
+import { renderEventCard, applyHomeCardThumbs } from "./home-cards.js";
 import {
   injectBannerSlots,
   renderBannerSlotHTML,
@@ -1005,16 +1005,14 @@ const renderBannerCard = (b) => {
     ? `/api/banners/${encodeURIComponent(id)}/click?redirect=1`
     : (b?.targetUrl || "#");
 
-  const bgStyle = img
-    ? ` style="background-image:url('${img}'); background-size:cover; background-position:center;"`
-    : "";
+const bgStyle = img ? ` data-bg="${img}"` : "";
 
   return `
     <article class="gw-rail event-card gw-banner-card" data-banner-id="${id}">
       <a class="gw-banner-link" href="${clickHref}" aria-label="${title}">
         <div class="gw-thumb"${bgStyle}></div>
         <div class="content">
-          <div class="meta" style="margin-top:0;">
+        <div class="meta gw-meta--tight">
             <span><strong>${kicker}</strong></span>
           </div>
           <h3 class="title">${title}</h3>
@@ -1041,7 +1039,7 @@ if (allList) {
         Nessun evento disponibile.
       </div>
     `;
-
+try { applyHomeCardThumbs(allList); } catch {}
   // Attiva rotazione banner SOLO se lo slot è visibile (IntersectionObserver)
   activateHomeBannerSlots({
     container: allList,
@@ -1375,6 +1373,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
