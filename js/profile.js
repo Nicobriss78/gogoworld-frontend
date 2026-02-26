@@ -347,12 +347,12 @@ async function loadEmailVerifyStatus() {
     const l2 = meRes.l2;
 
     if (l2Box && l2Status) {
-      l2Box.style.display = "block";
+      showEl(l2Box);
 
       if (l2 && l2.l2 === true) {
         l2Status.textContent = "✅ L2 attivo (account completo)";
-        if (l2Missing) l2Missing.style.display = "none";
-        if (btnGoCompleteProfile) btnGoCompleteProfile.style.display = "none";
+        if (l2Missing) hideEl(l2Missing);
+        if (btnGoCompleteProfile) hideEl(btnGoCompleteProfile);
       } else {
         l2Status.textContent =
           "⚠️ L2 non attivo: alcune funzioni (check-in / leaderboard) resteranno bloccate.";
@@ -360,15 +360,15 @@ async function loadEmailVerifyStatus() {
         if (l2Missing) {
           const miss = Array.isArray(l2?.missing) ? l2.missing : [];
           if (miss.length) {
-            l2Missing.style.display = "block";
+            showEl(l2Missing);
             l2Missing.textContent = "Manca: " + miss.join(", ");
           } else {
-            l2Missing.style.display = "none";
+            hideEl(l2Missing);
           }
         }
 
         if (btnGoCompleteProfile) {
-          btnGoCompleteProfile.style.display = "block";
+          showEl(btnGoCompleteProfile);
           btnGoCompleteProfile.onclick = () => {
             try { showEditMode(); } catch {}
           };
@@ -378,16 +378,17 @@ async function loadEmailVerifyStatus() {
 
     if (!verifyBox || !verifyStatus || !btnResendVerify) return;
 
-    verifyBox.style.display = "block";
+    showEl(verifyBox);
 
     if (verified) {
       verifyStatus.textContent = "✅ Email verificata";
-      btnResendVerify.style.display = "none";
+      hideEl(btnResendVerify);
       return;
     }
 
-    verifyStatus.textContent = "⚠️ Email non verificata. Alcune funzioni (L2 / check-in) richiederanno la verifica.";
-    btnResendVerify.style.display = "block";
+    verifyStatus.textContent =
+      "⚠️ Email non verificata. Alcune funzioni (L2 / check-in) richiederanno la verifica.";
+    showEl(btnResendVerify);
 
     btnResendVerify.onclick = async () => {
       btnResendVerify.disabled = true;
@@ -400,9 +401,18 @@ async function loadEmailVerifyStatus() {
       btnResendVerify.textContent = "Reinvia email di verifica";
 
       if (r && r.ok !== false) {
-        showAlert("Se l’email è corretta, riceverai un link di verifica a breve.", "success", 3500);
+        showAlert(
+          "Se l’email è corretta, riceverai un link di verifica a breve.",
+          "success",
+          3500
+        );
       } else {
-        showAlert(r?.message || "Impossibile reinviare la verifica ora. Riprova più tardi.", "error", 3500);
+        showAlert(
+          r?.message ||
+            "Impossibile reinviare la verifica ora. Riprova più tardi.",
+          "error",
+          3500
+        );
       }
     };
   } catch (e) {
@@ -512,22 +522,22 @@ async function loadFollowersList_view() {
 
   // toggle: se è già aperto, chiudi
   if (box.dataset.open === "1") {
-    box.style.display = "none";
+    hideEl(box);
     box.dataset.open = "0";
     return;
   }
 
   // chiudi l'altra box
   if (otherBox) {
-    otherBox.style.display = "none";
+    hideEl(otherBox);
     otherBox.dataset.open = "0";
-    if (otherEmpty) otherEmpty.style.display = "none";
+    if (otherEmpty) hideEl(otherEmpty);
   }
 
-  box.style.display = "block";
+  showEl(box);
   box.dataset.open = "1";
   listEl.innerHTML = "";
-  emptyEl.style.display = "none";
+  hideEl(emptyEl);
 
   const liLoading = document.createElement("li");
   liLoading.textContent = "Caricamento…";
@@ -541,7 +551,7 @@ async function loadFollowersList_view() {
     if (!id) {
       listEl.innerHTML = "";
       emptyEl.textContent = "Devi essere loggato per vedere chi ti segue.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
 
@@ -550,14 +560,14 @@ async function loadFollowersList_view() {
     listEl.innerHTML = "";
     if (!json || json.ok === false) {
       emptyEl.textContent = "Impossibile caricare i follower.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
 
     const arr = json.data || [];
     if (!arr.length) {
       emptyEl.textContent = "Nessuno ti segue ancora.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
 
@@ -577,7 +587,7 @@ async function loadFollowersList_view() {
     console.warn("Errore nel caricamento follower (view)", e);
     listEl.innerHTML = "";
     emptyEl.textContent = "Errore di rete nel caricamento follower.";
-    emptyEl.style.display = "block";
+    showEl(emptyEl);
   }
 }
 
@@ -594,22 +604,22 @@ async function loadFollowingList_view() {
 
   // toggle: se è già aperto, chiudi
   if (box.dataset.open === "1") {
-    box.style.display = "none";
+    hideEl(box);
     box.dataset.open = "0";
     return;
   }
 
   // chiudi l'altra box
   if (otherBox) {
-    otherBox.style.display = "none";
+    hideEl(otherBox);
     otherBox.dataset.open = "0";
-    if (otherEmpty) otherEmpty.style.display = "none";
+    if (otherEmpty) hideEl(otherEmpty);
   }
 
-  box.style.display = "block";
+  showEl(box);
   box.dataset.open = "1";
   listEl.innerHTML = "";
-  emptyEl.style.display = "none";
+  hideEl(emptyEl);
 
   const liLoading = document.createElement("li");
   liLoading.textContent = "Caricamento…";
@@ -623,7 +633,7 @@ async function loadFollowingList_view() {
     if (!id) {
       listEl.innerHTML = "";
       emptyEl.textContent = "Devi essere loggato per vedere chi segui.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
 
@@ -632,14 +642,14 @@ async function loadFollowingList_view() {
     listEl.innerHTML = "";
     if (!json || json.ok === false) {
       emptyEl.textContent = "Impossibile caricare gli utenti seguiti.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
 
     const arr = json.data || [];
     if (!arr.length) {
       emptyEl.textContent = "Non stai ancora seguendo nessuno.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
 
@@ -659,10 +669,9 @@ async function loadFollowingList_view() {
     console.warn("Errore nel caricamento following (view)", e);
     listEl.innerHTML = "";
     emptyEl.textContent = "Errore di rete nel caricamento utenti seguiti.";
-    emptyEl.style.display = "block";
+    showEl(emptyEl);
   }
 }
-
 
 // --- carica i conteggi follower/seguiti nella card "Connessioni" ---
 async function loadFollowStats() {
@@ -701,22 +710,22 @@ async function loadFollowersList() {
 
   // toggle: se è già aperto, chiudi
   if (box.dataset.open === "1") {
-    box.style.display = "none";
+    hideEl(box);
     box.dataset.open = "0";
     return;
   }
 
   // chiudi l'altra box
   if (otherBox) {
-    otherBox.style.display = "none";
+    hideEl(otherBox);
     otherBox.dataset.open = "0";
-    if (otherEmpty) otherEmpty.style.display = "none";
+    if (otherEmpty) hideEl(otherEmpty);
   }
 
-  box.style.display = "block";
+  showEl(box);
   box.dataset.open = "1";
   listEl.innerHTML = "";
-  emptyEl.style.display = "none";
+  hideEl(emptyEl);
 
   const liLoading = document.createElement("li");
   liLoading.textContent = "Caricamento…";
@@ -729,7 +738,7 @@ async function loadFollowersList() {
     if (!id) {
       listEl.innerHTML = "";
       emptyEl.textContent = "Devi essere loggato per vedere chi ti segue.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
 
@@ -738,14 +747,14 @@ async function loadFollowersList() {
     listEl.innerHTML = "";
     if (!json || json.ok === false) {
       emptyEl.textContent = "Impossibile caricare i follower.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
 
     const arr = json.data || [];
     if (!arr.length) {
       emptyEl.textContent = "Nessuno ti segue ancora.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
 
@@ -765,7 +774,7 @@ async function loadFollowersList() {
     console.warn("Errore nel caricamento follower", e);
     listEl.innerHTML = "";
     emptyEl.textContent = "Errore di rete nel caricamento follower.";
-    emptyEl.style.display = "block";
+    showEl(emptyEl);
   }
 }
 
@@ -780,22 +789,22 @@ async function loadFollowingList() {
 
   // toggle: se è già aperto, chiudi
   if (box.dataset.open === "1") {
-    box.style.display = "none";
+    hideEl(box);
     box.dataset.open = "0";
     return;
   }
 
   // chiudi l'altra box
   if (otherBox) {
-    otherBox.style.display = "none";
+    hideEl(otherBox);
     otherBox.dataset.open = "0";
-    if (otherEmpty) otherEmpty.style.display = "none";
+    if (otherEmpty) hideEl(otherEmpty);
   }
 
-  box.style.display = "block";
+  showEl(box);
   box.dataset.open = "1";
   listEl.innerHTML = "";
-  emptyEl.style.display = "none";
+  hideEl(emptyEl);
 
   const liLoading = document.createElement("li");
   liLoading.textContent = "Caricamento…";
@@ -808,24 +817,23 @@ async function loadFollowingList() {
     if (!id) {
       listEl.innerHTML = "";
       emptyEl.textContent = "Devi essere loggato per vedere chi segui.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
-
 
     const json = await apiGet(`/users/${id}/following`);
 
     listEl.innerHTML = "";
     if (!json || json.ok === false) {
       emptyEl.textContent = "Impossibile caricare i seguiti.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
 
     const arr = json.data || [];
     if (!arr.length) {
       emptyEl.textContent = "Non stai ancora seguendo nessuno.";
-      emptyEl.style.display = "block";
+      showEl(emptyEl);
       return;
     }
 
@@ -845,7 +853,7 @@ async function loadFollowingList() {
     console.warn("Errore nel caricamento seguiti", e);
     listEl.innerHTML = "";
     emptyEl.textContent = "Errore di rete nel caricamento seguiti.";
-    emptyEl.style.display = "block";
+    showEl(emptyEl);
   }
 }
 
