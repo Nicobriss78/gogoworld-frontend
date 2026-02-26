@@ -17,7 +17,13 @@ function resolveEventId() {
 }
 
 import { escapeHtml } from "./utils.js";
-
+// --- J2: visibility helpers (no inline style.display) ---
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle("is-hidden", !!hidden);
+}
+function showEl(el) { setHidden(el, false); }
+function hideEl(el) { setHidden(el, true); }
 // Intervallo "start – end" con logica smart
 function formatRangeSmart(start, end) {
   const s = formatDateSmart(start);
@@ -212,7 +218,7 @@ function applyEventStateUI(ev, opts = {}) {
 
     badge.textContent = label;
     badge.className = "event-status-badge" + (extraClass ? " " + extraClass : "");
-    badge.style.display = label ? "" : "none";
+    setHidden(badge, !label);
   }
 
   // Eventi completamente passati: disattiva parte interattiva
@@ -1281,4 +1287,5 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
