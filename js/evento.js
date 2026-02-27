@@ -689,7 +689,7 @@ const chatEligible = (appr === "approved") && timeChatAllowed && !isPast;
 // UX del bottone "Apri chat evento"
 if (!btnChat) {
   // niente bottone → nascondiamo eventuale box sblocco (se rimasto nel DOM)
-  if (unlockBox) unlockBox.style.display = "none";
+  if (unlockBox) hideEl(unlockBox);
  } else if (forceHideChatBtn) {
   // Arrivo da MAPPA/Chat embedded → bottone "Apri chat evento" sempre nascosto
   btnChat.style.display = "none";
@@ -2533,6 +2533,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
