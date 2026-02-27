@@ -1967,18 +1967,15 @@ if (!btnChat) {
   btnChat.disabled = true;
   btnChat.classList.add("btn-disabled");
   btnChat.textContent = "Chat non ancora attiva";
-  btnChat.style.display = forceHideChatBtn ? "none" : "";
-  if (unlockBox) {
-      hideEl(unlockBox);
-    }
+  setHidden(btnChat, !!forceHideChatBtn);
+  if (unlockBox) hideEl(unlockBox);
 } else {
   // Chat eleggibile: stato base → attivo. Eventuali lock aggiuntivi vengono gestiti da checkChatAccess
   btnChat.disabled = false;
   btnChat.classList.remove("btn-disabled");
   btnChat.textContent = "💬 Apri chat evento";
-  btnChat.style.display = forceHideChatBtn ? "none" : "";
-  if (unlockBox) {
-      hideEl(unlockBox);
+setHidden(btnChat, !!forceHideChatBtn);
+  if (unlockBox) hideEl(unlockBox);
     }
 }
 
@@ -2553,6 +2550,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
