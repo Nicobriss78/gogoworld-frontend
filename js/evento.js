@@ -2219,7 +2219,7 @@ try {
     // Se arrivo dalla MAPPA/CHAT, il bottone "Apri chat evento" è ridondante
     if (fromView === "map") {
       const btnChatEvento = document.getElementById("btnChatEvento");
-      if (btnChatEvento) btnChatEvento.style.display = "none";
+      if (btnChatEvento) hideEl(btnChatEvento);
     }
 
   } catch (err) {
@@ -2550,6 +2550,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
