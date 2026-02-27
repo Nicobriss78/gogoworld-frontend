@@ -700,7 +700,9 @@ if (!btnChat) {
   // Arrivo da MAPPA/Chat embedded → bottone "Apri chat evento" sempre nascosto
   hideEl(btnChat);
   if (unlockBox) hideEl(unlockBox);
-  if (unlockBox) unlockBox.style.display = "none";
+  if (unlockBox) {
+      hideEl(unlockBox);
+    }
  } else if (isPast) {
   // Evento completamente passato → niente chat
   hideEl(btnChat);
@@ -1494,7 +1496,8 @@ function applyEventStateUI(ev, opts = {}) {
       hideEl(btnDM);
     }
     if (unlockBox) {
-      unlockBox.style.display = "none";
+      hideEl(unlockBox);
+    }
     }
 
     // messaggio informativo
@@ -1953,27 +1956,35 @@ if (!btnChat) {
  } else if (forceHideChatBtn) {
   // Arrivo da MAPPA/Chat embedded → bottone "Apri chat evento" sempre nascosto
   btnChat.style.display = "none";
-  if (unlockBox) unlockBox.style.display = "none";
+  if (unlockBox) {
+      hideEl(unlockBox);
+    }
  } else if (isPast) {
   // Evento completamente passato → niente chat
   btnChat.style.display = "none";
   btnChat.disabled = true;
   btnChat.classList.add("btn-disabled");
-  if (unlockBox) unlockBox.style.display = "none";
+  if (unlockBox) {
+      hideEl(unlockBox);
+    }
 } else if (!chatEligible) {
   // Evento non approvato o fuori finestra chat → bottone visibile ma disabilitato
   btnChat.disabled = true;
   btnChat.classList.add("btn-disabled");
   btnChat.textContent = "Chat non ancora attiva";
   btnChat.style.display = forceHideChatBtn ? "none" : "";
-  if (unlockBox) unlockBox.style.display = "none";
+  if (unlockBox) {
+      hideEl(unlockBox);
+    }
 } else {
   // Chat eleggibile: stato base → attivo. Eventuali lock aggiuntivi vengono gestiti da checkChatAccess
   btnChat.disabled = false;
   btnChat.classList.remove("btn-disabled");
   btnChat.textContent = "💬 Apri chat evento";
   btnChat.style.display = forceHideChatBtn ? "none" : "";
-  if (unlockBox) unlockBox.style.display = "none";
+  if (unlockBox) {
+      hideEl(unlockBox);
+    }
 }
 
 
@@ -1982,12 +1993,16 @@ async function checkChatAccess(eventId, token) {
     const res = await apiPost(`/rooms/event/${encodeURIComponent(eventId)}/open-or-join`, {}, token);
     if (res?.ok && res?.data && res.data.locked) {
       // evento privato: mostra box sblocco e disabilita il bottone chat
-      if (unlockBox) unlockBox.style.display = "";
+      if (unlockBox) {
+      hideEl(unlockBox);
+    }
       if (btnChat) { btnChat.disabled = true; btnChat.classList.add("btn-disabled"); }
       return { locked: true };
     }
     // pubblico o già sbloccato
-    if (unlockBox) unlockBox.style.display = "none";
+    if (unlockBox) {
+      hideEl(unlockBox);
+    }
     if (btnChat) { btnChat.disabled = false; btnChat.classList.remove("btn-disabled"); }
     return { locked: false, roomId: res?.data?.roomId || null };
   } catch (err) {
@@ -2012,7 +2027,9 @@ if (btnUnlock && unlockCode) {
       const res = await apiPost(`/rooms/event/${encodeURIComponent(eventId)}/unlock`, { code }, token);
       if (!res?.ok || res?.error) throw new Error(res.error || "Sblocco fallito");
       // sbloccato: nascondi box, abilita chat
-      if (unlockBox) unlockBox.style.display = "none";
+      if (unlockBox) {
+      hideEl(unlockBox);
+    }
       if (btnChat) { btnChat.disabled = false; btnChat.classList.remove("btn-disabled"); }
       showAlert("Evento sbloccato. Puoi entrare in chat.", "success", { autoHideMs: 2000 });
     } catch (err) {
@@ -2541,6 +2558,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
