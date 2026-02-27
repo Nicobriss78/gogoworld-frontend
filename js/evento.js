@@ -218,7 +218,7 @@ function applyEventStateUI(ev, opts = {}) {
 
     badge.textContent = label;
     badge.className = "event-status-badge" + (extraClass ? " " + extraClass : "");
-    badge.style.display = label ? "" : "none";
+    setHidden(badge, !label);
   }
 
   // Eventi completamente passati: disattiva parte interattiva
@@ -2544,6 +2544,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
