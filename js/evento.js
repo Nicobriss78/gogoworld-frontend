@@ -692,28 +692,29 @@ if (!btnChat) {
   if (unlockBox) hideEl(unlockBox);
  } else if (forceHideChatBtn) {
   // Arrivo da MAPPA/Chat embedded → bottone "Apri chat evento" sempre nascosto
-  btnChat.style.display = "none";
+  hideEl(btnChat);
+  if (unlockBox) hideEl(unlockBox);
   if (unlockBox) unlockBox.style.display = "none";
  } else if (isPast) {
   // Evento completamente passato → niente chat
-  btnChat.style.display = "none";
+  hideEl(btnChat);
   btnChat.disabled = true;
   btnChat.classList.add("btn-disabled");
-  if (unlockBox) unlockBox.style.display = "none";
+  if (unlockBox) hideEl(unlockBox);
 } else if (!chatEligible) {
   // Evento non approvato o fuori finestra chat → bottone visibile ma disabilitato
   btnChat.disabled = true;
   btnChat.classList.add("btn-disabled");
   btnChat.textContent = "Chat non ancora attiva";
-  btnChat.style.display = forceHideChatBtn ? "none" : "";
-  if (unlockBox) unlockBox.style.display = "none";
+  setHidden(btnChat, !!forceHideChatBtn);
+  if (unlockBox) hideEl(unlockBox);
 } else {
   // Chat eleggibile: stato base → attivo. Eventuali lock aggiuntivi vengono gestiti da checkChatAccess
   btnChat.disabled = false;
   btnChat.classList.remove("btn-disabled");
   btnChat.textContent = "💬 Apri chat evento";
-  btnChat.style.display = forceHideChatBtn ? "none" : "";
-  if (unlockBox) unlockBox.style.display = "none";
+  setHidden(btnChat, !!forceHideChatBtn);
+  if (unlockBox) hideEl(unlockBox);
 }
 
 
@@ -722,12 +723,12 @@ async function checkChatAccess(eventId, token) {
     const res = await apiPost(`/rooms/event/${encodeURIComponent(eventId)}/open-or-join`, {}, token);
     if (res?.ok && res?.data && res.data.locked) {
       // evento privato: mostra box sblocco e disabilita il bottone chat
-      if (unlockBox) unlockBox.style.display = "";
+      if (unlockBox) showEl(unlockBox);
       if (btnChat) { btnChat.disabled = true; btnChat.classList.add("btn-disabled"); }
       return { locked: true };
     }
     // pubblico o già sbloccato
-    if (unlockBox) unlockBox.style.display = "none";
+    if (unlockBox) hideEl(unlockBox);
     if (btnChat) { btnChat.disabled = false; btnChat.classList.remove("btn-disabled"); }
     return { locked: false, roomId: res?.data?.roomId || null };
   } catch (err) {
@@ -752,7 +753,7 @@ if (btnUnlock && unlockCode) {
       const res = await apiPost(`/rooms/event/${encodeURIComponent(eventId)}/unlock`, { code }, token);
       if (!res?.ok || res?.error) throw new Error(res.error || "Sblocco fallito");
       // sbloccato: nascondi box, abilita chat
-      if (unlockBox) unlockBox.style.display = "none";
+      if (unlockBox) hideEl(unlockBox);
       if (btnChat) { btnChat.disabled = false; btnChat.classList.remove("btn-disabled"); }
       showAlert("Evento sbloccato. Puoi entrare in chat.", "success", { autoHideMs: 2000 });
     } catch (err) {
@@ -762,7 +763,7 @@ if (btnUnlock && unlockCode) {
 }
 
     if (isOwner) {
-      btnToggle.style.display = "none";
+      hideEl(btnToggle);
 
       const adminBar = document.createElement("div");
       adminBar.className = "event-actions";
@@ -878,13 +879,13 @@ window.location.href = u.toString();
       };
 
 // Mostra il bottone e, se l'evento è già concluso, disabilitalo
-        btnToggle.style.display = "inline-block";
+        showEl(btnToggle);
 const evStatus = getEventStatus(ev);
 
         if (!canJoin(ev)) {
           if (evStatus === "past") {
             // evento completamente passato → nascondi il bottone
-            btnToggle.style.display = "none";
+            hideEl(btnToggle);
           } else {
             // finestra "concluded": bottone disabilitato con etichetta informativa
             btnToggle.disabled = true;
@@ -950,7 +951,7 @@ try {
     // Se arrivo dalla MAPPA/CHAT, il bottone "Apri chat evento" è ridondante
     if (fromView === "map") {
       const btnChatEvento = document.getElementById("btnChatEvento");
-      if (btnChatEvento) btnChatEvento.style.display = "none";
+      if (btnChatEvento) hideEl(btnChatEvento);
     }
 
   } catch (err) {
@@ -2533,6 +2534,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
