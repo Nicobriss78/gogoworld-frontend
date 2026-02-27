@@ -1602,7 +1602,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Anti-flicker: se arrivo dalla MAPPA, nascondo subito il bottone chat (prima di qualsiasi await)
   if (forceHideChatBtn) {
     const btnChatEarly = document.getElementById("btnChatEvento");
-    if (btnChatEarly) btnChatEarly.style.display = "none";
+    if (btnChatEarly) hideEl(btnChatEarly);
   }
 
   try {
@@ -2558,6 +2558,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
