@@ -1486,7 +1486,7 @@ function applyEventStateUI(ev, opts = {}) {
     }
     }
     if (btnChat) {
-      btnChat.style.display = "none";
+      hideEl(btnChat);
       btnChat.disabled = true;
       btnChat.classList.add("btn-disabled");
     }
@@ -2541,6 +2541,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
