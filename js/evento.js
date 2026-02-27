@@ -1482,7 +1482,8 @@ function applyEventStateUI(ev, opts = {}) {
   if (status === "past") {
     // nascondi pulsante partecipa solo per i non-owner
     if (!isOwner && btnToggle) {
-      btnToggle.style.display = "none";
+      hideEl(btnToggle);
+    }
     }
     if (btnChat) {
       btnChat.style.display = "none";
@@ -2540,6 +2541,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
