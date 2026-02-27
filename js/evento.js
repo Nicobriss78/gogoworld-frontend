@@ -3,7 +3,7 @@
 // - Layout dettaglio evento (cover, meta grid, azioni) con componenti standard
 // - Distinguere chiaramente UI owner vs participant con banner/toolbar dedicata
 // - Pulsante “Partecipa/Annulla” con stato loading e toast di esito
-import { apiGet, apiPost, apiDelete, apiPut } from "./api.js";
+import { apiGet, apiPost, apiDelete, apiPut, apiPatch } from "./api.js";
 // --- helper: risolve l'ID evento sia da query (?id=) sia da sessionStorage ---
 function resolveEventId() {
   const url = new URL(window.location.href);
@@ -2550,6 +2550,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
