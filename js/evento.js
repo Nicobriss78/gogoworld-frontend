@@ -1952,14 +1952,13 @@ if (!btnChat) {
   // Arrivo da MAPPA/Chat embedded → bottone "Apri chat evento" sempre nascosto
   hideEl(btnChat);
   if (unlockBox) hideEl(unlockBox);
-    }
 } else if (isPast) {
+
   // Evento completamente passato → niente chat
   hideEl(btnChat);
   btnChat.disabled = true;
   btnChat.classList.add("btn-disabled");
   if (unlockBox) hideEl(unlockBox);
-    }
 } else if (!chatEligible) {
   // Evento non approvato o fuori finestra chat → bottone visibile ma disabilitato
   btnChat.disabled = true;
@@ -1975,16 +1974,13 @@ if (!btnChat) {
 setHidden(btnChat, !!forceHideChatBtn);
   if (unlockBox) hideEl(unlockBox);
     }
-}
-
-
 async function checkChatAccess(eventId, token) {
   try {
     const res = await apiPost(`/rooms/event/${encodeURIComponent(eventId)}/open-or-join`, {}, token);
     if (res?.ok && res?.data && res.data.locked) {
       // evento privato: mostra box sblocco e disabilita il bottone chat
       if (unlockBox) {
-      hideEl(unlockBox);
+      showEl(unlockBox);
     }
       if (btnChat) { btnChat.disabled = true; btnChat.classList.add("btn-disabled"); }
       return { locked: true };
@@ -2548,6 +2544,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
