@@ -2147,13 +2147,13 @@ window.location.href = u.toString();
       };
 
 // Mostra il bottone e, se l'evento è già concluso, disabilitalo
-        btnToggle.style.display = "inline-block";
+        showEl(btnToggle);
 const evStatus = getEventStatus(ev);
 
         if (!canJoin(ev)) {
           if (evStatus === "past") {
             // evento completamente passato → nascondi il bottone
-            btnToggle.style.display = "none";
+            hideEl(btnToggle);
           } else {
             // finestra "concluded": bottone disabilitato con etichetta informativa
             btnToggle.disabled = true;
@@ -2550,6 +2550,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
