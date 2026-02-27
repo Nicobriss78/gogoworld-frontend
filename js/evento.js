@@ -1789,7 +1789,7 @@ async function wireMgmtOnce() {
 // Mostra la sezione solo se owner/admin
 if (mgmtWrap) {
   if (canManage) {
-    mgmtWrap.style.display = "block";
+    showEl(mgmtWrap);
     // inizializza + carica liste
     await wireMgmtOnce();
     try { await refreshMgmt(); } catch (e) { showAlert(e.message, "error", { autoHideMs: 4000 }); }
@@ -2558,6 +2558,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
