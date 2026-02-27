@@ -1955,13 +1955,12 @@ if (!btnChat) {
   hideEl(btnChat);
   if (unlockBox) hideEl(unlockBox);
     }
- } else if (isPast) {
+} else if (isPast) {
   // Evento completamente passato → niente chat
-  btnChat.style.display = "none";
+  hideEl(btnChat);
   btnChat.disabled = true;
   btnChat.classList.add("btn-disabled");
-  if (unlockBox) {
-      hideEl(unlockBox);
+  if (unlockBox) hideEl(unlockBox);
     }
 } else if (!chatEligible) {
   // Evento non approvato o fuori finestra chat → bottone visibile ma disabilitato
@@ -2554,6 +2553,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
