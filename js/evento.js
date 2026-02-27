@@ -539,12 +539,9 @@ if (mgmtWrap) {
 
     elTitle.textContent = ev.title || "Evento";
 const badgePriv = document.getElementById("badgePrivate");
-    if (badgePriv) {
-      if (ev.isPrivate) {
-        badgePriv.style.display = "inline-block";
-      } else {
-    hideEl(mgmtWrap);
-  }
+if (badgePriv) {
+  // usa la variabile già calcolata sopra se vuoi: isPrivateEvent
+  setHidden(badgePriv, !ev.isPrivate);
 }
     // --- Rendering per sezioni se i contenitori esistono; altrimenti fallback monolitico ---
     const sMeta = document.getElementById("eventMeta");
@@ -2558,6 +2555,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
