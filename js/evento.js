@@ -1952,9 +1952,8 @@ if (!btnChat) {
   if (unlockBox) hideEl(unlockBox);
  } else if (forceHideChatBtn) {
   // Arrivo da MAPPA/Chat embedded → bottone "Apri chat evento" sempre nascosto
-  btnChat.style.display = "none";
-  if (unlockBox) {
-      hideEl(unlockBox);
+  hideEl(btnChat);
+  if (unlockBox) hideEl(unlockBox);
     }
  } else if (isPast) {
   // Evento completamente passato → niente chat
@@ -2555,6 +2554,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
