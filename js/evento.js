@@ -1483,7 +1483,6 @@ function applyEventStateUI(ev, opts = {}) {
     if (!isOwner && btnToggle) {
       hideEl(btnToggle);
     }
-    }
     if (btnChat) {
       hideEl(btnChat);
       btnChat.disabled = true;
@@ -1494,7 +1493,6 @@ function applyEventStateUI(ev, opts = {}) {
     }
     if (unlockBox) {
       hideEl(unlockBox);
-    }
     }
 
     // messaggio informativo
@@ -2550,6 +2548,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
