@@ -1491,7 +1491,7 @@ function applyEventStateUI(ev, opts = {}) {
       btnChat.classList.add("btn-disabled");
     }
     if (btnDM) {
-      btnDM.style.display = "none";
+      hideEl(btnDM);
     }
     if (unlockBox) {
       unlockBox.style.display = "none";
@@ -2541,6 +2541,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
