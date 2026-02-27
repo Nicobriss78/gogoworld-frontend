@@ -591,10 +591,10 @@ loadReviewsList(eventId, token, myId, statusRaw, statusLabel);
         if (!eventHasEnded(ev)) msgs.push("Le recensioni si possono lasciare solo a evento concluso.");
         if (!isParticipantOf(ev, myId)) msgs.push("Solo i partecipanti possono lasciare una recensione.");
         if (hint) hint.textContent = msgs.join(" ");
-        if (formReview) formReview.style.display = "none";
+        if (formReview) hideEl(formReview);
       } else {
         if (hint) hint.textContent = "La tua recensione sarà visibile dopo l’approvazione.";
-        if (formReview) formReview.style.display = "";
+        if (formReview) showEl(formReview);
         // Submit recensione
         formReview?.addEventListener("submit", async (e) => {
           e.preventDefault();
@@ -2555,6 +2555,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
