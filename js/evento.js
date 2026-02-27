@@ -533,7 +533,7 @@ if (mgmtWrap) {
     await wireMgmtOnce();
     try { await refreshMgmt(); } catch (e) { showAlert(e.message, "error", { autoHideMs: 4000 }); }
   } else {
-    mgmtWrap.style.display = "none";
+    hideEl(mgmtWrap);
   }
 }
 
@@ -1794,7 +1794,7 @@ if (mgmtWrap) {
     await wireMgmtOnce();
     try { await refreshMgmt(); } catch (e) { showAlert(e.message, "error", { autoHideMs: 4000 }); }
   } else {
-    mgmtWrap.style.display = "none";
+    hideEl(mgmtWrap);
   }
 }
 
@@ -2558,6 +2558,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
