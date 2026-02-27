@@ -2031,7 +2031,7 @@ if (btnUnlock && unlockCode) {
 }
 
     if (isOwner) {
-      btnToggle.style.display = "none";
+      hideEl(btnToggle);
 
       const adminBar = document.createElement("div");
       adminBar.className = "event-actions";
@@ -2550,6 +2550,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
