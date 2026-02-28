@@ -226,7 +226,7 @@ for (const item of items) {
 
 async function loadAll(userId) {
   // Profilo pubblico
-const profRes = await apiGet(`/users/${userId}/public`);
+const profRes = await apiGet(`/users/${userId}/public`, token);
   if (!profRes || profRes.ok === false) {
     showAlert(profRes?.message || profRes?.error || "Impossibile caricare il profilo");
     return;
