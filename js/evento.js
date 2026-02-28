@@ -541,7 +541,7 @@ if (mgmtWrap) {
 const badgePriv = document.getElementById("badgePrivate");
 if (badgePriv) {
   // usa la variabile già calcolata sopra se vuoi: isPrivateEvent
-  setHidden(badgePriv, !ev.isPrivate);
+  setHidden(badgePriv, !isPrivateEvent);
 }
     // --- Rendering per sezioni se i contenitori esistono; altrimenti fallback monolitico ---
     const sMeta = document.getElementById("eventMeta");
@@ -1284,4 +1284,5 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
