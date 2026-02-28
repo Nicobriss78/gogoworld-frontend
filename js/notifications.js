@@ -1,6 +1,17 @@
 // notifications.js — aggiorna i badge DM e Rooms ogni 5s
 import { getUnreadCount as getDmUnread, getRoomsUnreadCount as getRoomsUnread } from "./api.js";
-
+// ==============================
+// J2 helpers — show/hide via classi (no element.style.display)
+// ==============================
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle("is-hidden", !!hidden);
+}
+function isHiddenEl(el) {
+  return !!el?.classList?.contains("is-hidden");
+}
+function showEl(el) { setHidden(el, false); }
+function hideEl(el) { setHidden(el, true); }
 (function () {
   const DM_SEL = "#messagesBadge, [data-badge='messages']";
   const ROOMS_SEL = "#roomsBadge, [data-badge='rooms']";
