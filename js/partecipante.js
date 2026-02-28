@@ -16,6 +16,19 @@ import {
 } from "./home-banners.js";
 import { createParticipantMap } from "./map.js";
 import { createEmbeddedEventChat } from "./map-chat.js";
+// ==============================
+// J2 helpers — show/hide via classi (no element.style.display)
+// ==============================
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle("is-hidden", !!hidden);
+}
+function isHiddenEl(el) {
+  return !!el?.classList?.contains("is-hidden");
+}
+function showEl(el) { setHidden(el, false); }
+function hideEl(el) { setHidden(el, true); }
+function toggleHidden(el) { setHidden(el, !isHiddenEl(el)); }
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -83,7 +96,7 @@ async function maybeShowProfileNag(token) {
     const el = document.getElementById("profileNag");
     if (!el) return;
 
-el.style.display = "";
+showEl(el);
 el.classList.add("fade-in");
 el.innerHTML = `
 
@@ -262,13 +275,13 @@ let _notiDisabled = false;
 let notiPanel = document.createElement("div");
 notiPanel.id = "notiPanel";
 notiPanel.className = "noti-panel";
-notiPanel.style.display = "none";
+hideEl(notiPanel);
 document.body.appendChild(notiPanel);
 
   let _roomsBadgeDisabled = false; // flag di kill
 
   function _hideRoomsBadge() {
-    if (badgeRooms) badgeRooms.style.display = "none";
+   hideEl(badgeRooms);
   }
 
  async function pollRoomsBadge() {
@@ -295,14 +308,14 @@ if (!r || r.ok === false || r.status === 401) {
     clearInterval(_roomsBadgeInterval);
     _roomsBadgeInterval = null;
   }
-  if (badgeRooms) badgeRooms.style.display = "none";
+  hideEl(badgeRooms);
   console.debug("[roomsBadge] stop on response:", r);
   return;
 }
     const n = r?.unread || 0;
     if (badgeRooms) {
       badgeRooms.textContent = n;
-      badgeRooms.style.display = n ? "inline-block" : "none";
+      setHidden(badgeRooms, !n);
     }
   } catch (err) {
     // Disattiva SEMPRE il polling al primo errore
@@ -311,7 +324,7 @@ if (!r || r.ok === false || r.status === 401) {
       clearInterval(_roomsBadgeInterval);
       _roomsBadgeInterval = null;
     }
-    if (badgeRooms) badgeRooms.style.display = "none";
+    hideEl(badgeRooms);
     console.debug("[roomsBadge] stop on error:", err && (err.status || err.code || err.message || err));
     return;
   }
@@ -323,7 +336,7 @@ if (!r || r.ok === false || r.status === 401) {
     const t = localStorage.getItem("token");
     if (!t) {
       _notiDisabled = true;
-      if (notiBadge) notiBadge.style.display = "none";
+      hideEl(notiBadge);
       return;
     }
 
@@ -339,7 +352,7 @@ if (!r || r.ok === false || r.status === 401) {
       const unread = res?.unreadCount || 0;
       if (notiBadge) {
         notiBadge.textContent = unread;
-        notiBadge.style.display = unread ? "inline-block" : "none";
+        setHidden(notiBadge, !unread);
       }
     } catch (err) {
       _notiDisabled = true;
@@ -388,8 +401,8 @@ if (btnNotifications && notiPanel) {
             .join("")
         : `<p class="noti-empty">Nessuna notifica</p>`;
 
-      notiPanel.style.display =
-        notiPanel.style.display === "none" ? "block" : "none";
+      toggleHidden(notiPanel);
+
 
       // Segna tutte come lette
       await apiPost("/notifications/read-all", {}, token);
@@ -579,9 +592,9 @@ function getGeoUiState() {
       inviteInput.value = "";
 
       // apre la lista se era chiusa
-      if (privateListEl && privateListEl.style.display === "none") {
-        privateListEl.style.display = "block";
-      }
+      if (privateListEl && isHiddenEl(privateListEl)) {
+       showEl(privateListEl);
+     }
 
       showAlert("Evento privato sbloccato", "success", { autoHideMs: 2500 });
     } catch (err) {
@@ -615,9 +628,7 @@ function getGeoUiState() {
   if (privateToggleBtn && privateListEl) {
     privateToggleBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      const isHidden =
-        privateListEl.style.display === "none" || !privateListEl.style.display;
-      privateListEl.style.display = isHidden ? "block" : "none";
+    toggleHidden(privateListEl);
     });
   }
 
@@ -734,7 +745,7 @@ if (ENABLE_LEGACY_MAPPA) {
     }
 
     const mapChatComposer = document.getElementById("mapChatComposer");
-    if (mapChatComposer) mapChatComposer.style.display = "flex";
+    showEl(mapChatComposer);
   };
 }
 
@@ -1273,15 +1284,16 @@ if (DISABLE_LEGACY_TOPBAR_UI) {
   // ==============================
   const closeGwMenu = () => {
     if (!gwMenu) return;
-    gwMenu.style.display = "none";
+    hideEl(gwMenu);
     try { btnHamburger?.setAttribute("aria-expanded", "false"); } catch {}
   };
 
   const toggleGwMenu = () => {
     if (!gwMenu) return;
-    const isOpen = gwMenu.style.display === "block";
-    gwMenu.style.display = isOpen ? "none" : "block";
-    try { btnHamburger?.setAttribute("aria-expanded", String(!isOpen)); } catch {}
+   const wasOpen = !isHiddenEl(gwMenu);
+   toggleHidden(gwMenu);
+   const nowOpen = !isHiddenEl(gwMenu);
+   try { btnHamburger?.setAttribute("aria-expanded", String(nowOpen)); } catch {}
   };
 
   // Toggle menu su click hamburger
@@ -1314,7 +1326,7 @@ if (DISABLE_LEGACY_TOPBAR_UI) {
 
       const legacy = document.querySelector("section.legacy");
       if (legacy) {
-        legacy.style.display = legacy.style.display === "none" ? "block" : "none";
+        toggleHidden(legacy);
         legacy.scrollIntoView({ behavior: "smooth", block: "start" });
       } else {
         alert("Sezione Eventi privati non trovata (legacy).");
@@ -1373,6 +1385,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
