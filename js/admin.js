@@ -281,7 +281,9 @@ async function fetchEvents() {
     visibility: (elEvVisibility?.value || "").toLowerCase(),
   };
  const path = `/api/admin/events?${qParams(q)}&_=${Date.now()}`;
- console.debug("[admin] fetchEvents url:", path, q);  
+ if (location.hostname === "localhost") {
+  console.debug("[admin] fetchEvents url:", path, q);
+} 
   const res = await callApi(path, { headers: { ...authHeaders() } });
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out?.ok) throw new Error(out?.error || "Errore fetch eventi");
