@@ -215,7 +215,6 @@ function renderProfileView(p) {
   if (avatarView) {
     if (p.avatarUrl) {
       // usa la stessa logica di preview, ma su avatarView
-      const tmp = document.getElementById("avatar-preview"); // riuso funzione già esistente
       // setAvatarPreview agisce su avatarPreview, quindi qui copiamo la logica in modo semplice:
       const isUploads = p.avatarUrl.startsWith("/uploads/");
       const isApiUploads = p.avatarUrl.startsWith("/api/uploads/");
