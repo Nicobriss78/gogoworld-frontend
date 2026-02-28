@@ -40,6 +40,7 @@ async function loadThreads() {
 
 function renderThreads() {
   const list = document.getElementById("threadsList");
+  if (!list) return;
   list.innerHTML = "";
   if (!threads.length) {
     list.innerHTML = `<p>Nessuna conversazione</p>`;
@@ -78,6 +79,7 @@ async function openThread(userId) {
 
 function renderMessages(msgs) {
   const box = document.getElementById("chatMessages");
+  if (!box) return;
   box.innerHTML = "";
   msgs.slice().reverse().forEach(m => {
     const div = document.createElement("div");
