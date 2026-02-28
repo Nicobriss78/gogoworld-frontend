@@ -25,7 +25,7 @@ function showAlert(message, type = "error", opts = {}) {
   const { autoHideMs = 0 } = opts;
   const box = document.getElementById("alertBox");
   if (!box) return;
-  box.style.display = "block";
+  showEl(box);
   const t = type === "success" ? "success" : type === "error" ? "error" : "info";
   box.className = `alert ${t}`;
   box.textContent = message;
