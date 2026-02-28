@@ -31,8 +31,8 @@ function showAlert(message, type = "error", opts = {}) {
   box.textContent = message;
   if (autoHideMs > 0) {
     if (box._hideTimer) clearTimeout(box._hideTimer);
-    box._hideTimer = setTimeout(() => {
-      box.style.display = "none";
+  box._hideTimer = setTimeout(() => {
+      hideEl(box);
     }, autoHideMs);
   }
 }
