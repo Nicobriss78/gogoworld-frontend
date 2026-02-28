@@ -135,7 +135,7 @@ function hookPrivateVisibility(form) {
     if (!selVisibility || !privateBox) return;
     const isPriv = selVisibility.value === "private";
 
-    privateBox.style.display = isPriv ? "block" : "none";
+    setHidden(privateBox, !isPriv);
 
     if (accessInput) {
       accessInput.disabled = !isPriv;
@@ -231,14 +231,14 @@ let _notiDisabled = false;
 let notiPanel = document.createElement("div");
 notiPanel.id = "notiPanel";
 notiPanel.className = "noti-panel";
-notiPanel.style.display = "none";
+hideEl(notiPanel);
 document.body.appendChild(notiPanel);
 
 let _roomsBadgeInterval = null;
 let _roomsBadgeDisabled = false;
 
 function _hideRoomsBadge() {
-  if (badgeRooms) badgeRooms.style.display = "none";
+  hideEl(badgeRooms);
 }
 
 async function pollRoomsBadge() {
@@ -271,7 +271,7 @@ async function pollRoomsBadge() {
     const n = r?.unread || 0;
     if (badgeRooms) {
       badgeRooms.textContent = n;
-      badgeRooms.style.display = n ? "inline-block" : "none";
+      setHidden(badgeRooms, !n);
     }
   } catch (err) {
     _roomsBadgeDisabled = true;
@@ -290,7 +290,7 @@ async function pollNotifications() {
   const t = localStorage.getItem("token");
   if (!t) {
     _notiDisabled = true;
-    if (notiBadge) notiBadge.style.display = "none";
+    hideEl(notiBadge);
     return;
   }
 
@@ -299,18 +299,18 @@ async function pollNotifications() {
 
     if (!res || res.ok === false || res.status === 401) {
       _notiDisabled = true;
-      if (notiBadge) notiBadge.style.display = "none";
+      hideEl(notiBadge);
       return;
     }
 
     const unread = res?.unreadCount || 0;
     if (notiBadge) {
       notiBadge.textContent = unread;
-      notiBadge.style.display = unread ? "inline-block" : "none";
+      setHidden(notiBadge, !unread);
     }
   } catch (err) {
     _notiDisabled = true;
-    if (notiBadge) notiBadge.style.display = "none";
+    hideEl(notiBadge);
   }
 }
 
@@ -422,8 +422,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
               .join("")
           : `<p class="noti-empty">Nessuna notifica</p>`;
 
-        notiPanel.style.display =
-          notiPanel.style.display === "none" ? "block" : "none";
+        toggleHidden(notiPanel);
 
         // Segna tutte come lette
         await apiPost("/notifications/read-all", {}, tokenNow);
@@ -459,14 +458,14 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
     const target = base + "/evento.html?id=" + encodeURIComponent(ev._id);
     document.getElementById("pmTarget").value = target;
     promoteEventTitle.textContent = title || "—";
-    promotePanel.style.display = "block";
+    showEl(promotePanel);
     promotePanel.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   if (btnPromoteCancel && promotePanel) {
     btnPromoteCancel.addEventListener("click", () => {
       promoteForm?.reset();
-      promotePanel.style.display = "none";
+      hideEl(promotePanel);
     });
   }
 
@@ -1667,6 +1666,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
