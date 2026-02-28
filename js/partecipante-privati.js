@@ -166,7 +166,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       // chiudi menu hamburger (gestito da shared-ui.js)
       const gwMenu = document.getElementById("gwMenu");
            hideEl(gwMenu);
-
       await unlockPrivateEventFlow(token, async () => {
         // ricarica eventi privati e aggiorna marker
         await loadMapEvents();
