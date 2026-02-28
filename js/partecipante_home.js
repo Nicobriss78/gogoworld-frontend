@@ -349,7 +349,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnGuide = document.getElementById("btnGuide");
   const btnSwitchRole = document.getElementById("btnSwitchRole");
   const btnLogout = document.getElementById("btnLogout");
+  // Fail-safe: garantisci stato iniziale coerente con J2
+  hideEl(gwMenu);
 
+  const legacyInit = document.querySelector("section.legacy");
+  if (legacyInit) hideEl(legacyInit);
   const closeGwMenu = () => {
     hideEl(gwMenu);
   };
