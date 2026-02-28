@@ -20,6 +20,15 @@ const $ = (sel) => document.querySelector(sel);
 const alerts = $("#alerts");
 const QS = new URLSearchParams(location.search);
 const IS_SELF = QS.get("self") === "1";
+const token =
+  localStorage.getItem("token") ||
+  sessionStorage.getItem("token") ||
+  sessionStorage.getItem("authToken") ||
+  localStorage.getItem("authToken") ||
+  sessionStorage.getItem("jwt") ||
+  localStorage.getItem("jwt") ||
+  sessionStorage.getItem("accessToken") ||
+  localStorage.getItem("accessToken");
 
 function showAlert(msg, type = "error", ms = 3000) {
   const div = document.createElement("div");
