@@ -500,7 +500,7 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
       if (!res?.ok) { throw new Error(res?.message || res?.error || "Invio non riuscito"); }
         showAlert("Richiesta inviata — in attesa di approvazione", "success", { autoHideMs: 4000 });
         promoteForm.reset();
-        promotePanel.style.display = "none";
+        hideEl(promotePanel);
       } catch (err) {
         showAlert(err?.message || "Errore invio richiesta", "error", { autoHideMs: 4000 });
       }
@@ -1666,6 +1666,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
