@@ -190,12 +190,12 @@ if (!DISABLE_LEGACY_TOPBAR_UI) {
   const btnPrivateEventsMenu = document.getElementById("btnPrivateEvents");
 
   const closeGwMenu = () => {
-    if (gwMenu) gwMenu.style.display = "none";
+      hideEl(gwMenu);
   };
 
   if (btnHamburger && gwMenu) {
     btnHamburger.addEventListener("click", () => {
-      gwMenu.style.display = gwMenu.style.display === "none" ? "block" : "none";
+      toggleHidden(gwMenu);
     });
 
     document.addEventListener("click", (e) => {
@@ -344,7 +344,7 @@ showAlert(err?.message || "Errore nel caricamento eventi privati", "error", { au
 
     // Mostra composer (map-chat gestisce canSend)
     const composer = document.getElementById("mapChatComposer");
-    if (composer) composer.style.display = "flex";
+    showEl(composer);
   }
 
   // Carica eventi e popola marker
