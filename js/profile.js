@@ -684,7 +684,7 @@ async function loadFollowStats() {
     if (!id) return;
 
     // usa api.js (token auto)
-    const res = await apiGet(`/users/${id}/public`);
+    const res = await apiGet(`/users/${id}/public`, token);
     if (!res || res.ok === false) return;
 
     const data = res.data || {};
