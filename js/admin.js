@@ -7,9 +7,9 @@ import { apiGet, apiPost, apiDelete, apiPut, whoami } from "./api.js"; // PATCH:
 // -------------------- Helpers base --------------------
 function apiBase() {
   // Opzione B: proxy relativo /api
-return "/api";
-
+  return "/api";
 }
+
 // Solo per rotte admin: passano dalla Function che inietta la chiave interna
 function adminBase() {
   return "/.netlify/functions/adminModeration";
@@ -18,9 +18,10 @@ function adminBase() {
 // Helper per instradare le chiamate API
 async function callApi(path, opts = {}) {
   // path deve iniziare con "/" (es. "/admin/..." o "/events/...")
- const url = path.startsWith("/admin/")
- ? `${adminBase()}/api${path}` // instrada via Function
- : (path.startsWith("/api/") ? path : `${apiBase()}${path}`); // se è già /api/ non duplicare
+  const url = path.startsWith("/admin/")
+    ? `${adminBase()}/api${path}` // instrada via Function
+    : (path.startsWith("/api/") ? path : `${apiBase()}${path}`); // se è già /api/ non duplicare
+
   const res = await fetch(url, opts);
 
   // Auto-logout coerente con api.js: dispatch su 401
