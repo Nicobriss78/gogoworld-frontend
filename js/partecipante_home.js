@@ -34,6 +34,19 @@ let privateEventIds = [];
 let privateEvents = [];
 
 let followingIds = new Set();
+// ==============================
+// J2 helpers — show/hide via classi (no element.style.display)
+// ==============================
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle("is-hidden", !!hidden);
+}
+function isHiddenEl(el) {
+  return !!el?.classList?.contains("is-hidden");
+}
+function showEl(el) { setHidden(el, false); }
+function hideEl(el) { setHidden(el, true); }
+function toggleHidden(el) { setHidden(el, !isHiddenEl(el)); }
 
 // -----------------------------
 // Helpers UI
@@ -257,10 +270,10 @@ async function updateRoomsBadge() {
     const unread = await getRoomsUnreadCount(token);
     const n = Number(unread?.count ?? unread ?? 0) || 0;
     if (n > 0) {
-      badge.style.display = "inline-block";
+      showEl(badge);
       badge.textContent = String(n);
     } else {
-      badge.style.display = "none";
+      hideEl(badge);
       badge.textContent = "0";
     }
   } catch (e) {
@@ -338,12 +351,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnLogout = document.getElementById("btnLogout");
 
   const closeGwMenu = () => {
-    if (gwMenu) gwMenu.style.display = "none";
+    hideEl(gwMenu);
   };
 
   if (btnHamburger && gwMenu) {
     btnHamburger.addEventListener("click", () => {
-      gwMenu.style.display = gwMenu.style.display === "none" ? "block" : "none";
+      toggleHidden(gwMenu);
     });
 
     document.addEventListener("click", (e) => {
@@ -363,7 +376,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const legacy = document.querySelector("section.legacy");
       if (legacy) {
-        legacy.style.display = legacy.style.display === "none" ? "block" : "none";
+        toggleHidden(legacy);
         legacy.scrollIntoView({ behavior: "smooth", block: "start" });
         await refreshPrivateEvents();
       } else {
