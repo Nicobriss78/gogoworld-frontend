@@ -1361,17 +1361,18 @@ if (action === "promote") {
   if (btnCreate) {
     btnCreate.addEventListener("click", () => {
       if (!panel) return;
-      if (panel.style.display === "none" || !panel.style.display) {
-        populateCreateFormOptions();
-        panel.style.display = "block";
-        const first = form?.querySelector('input[name="title"]');
-        first && first.focus();
-        hookFreePrice(form);
-        hookPrivateVisibility(form); // <-- nuova patch
-        hookAutoEndDateTime(form);
+      if (isHiddenEl(panel)) {
+      populateCreateFormOptions();
+      showEl(panel);
+      const first = form?.querySelector('input[name="title"]');
+      first && first.focus();
+      hookFreePrice(form);
+      hookPrivateVisibility(form); // <-- nuova patch
+      hookAutoEndDateTime(form);
       } else {
-        panel.style.display = "none";
+         hideEl(panel);
       }
+
     });
   }
 
@@ -1477,7 +1478,7 @@ if (action === "promote") {
         }
         showAlert("Evento creato con successo", "success", { autoHideMs: 2500 });
         form.reset();
-        panel.style.display = "none";
+        hideEl(panel);
         await loadEvents(); // KPI/Tabella si aggiornano dentro loadEvents
         document.getElementById("myEventsList")?.scrollIntoView({ behavior: "smooth", block: "start" });
       } catch (err) {
@@ -1666,6 +1667,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
