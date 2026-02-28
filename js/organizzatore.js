@@ -7,6 +7,19 @@
 
 import { apiGet, apiDelete, apiPost, whoami, getMyProfile } from "./api.js";
 import { getRoomsUnreadCount } from "./api.js";
+// ==============================
+// J2 helpers — show/hide via classi (no element.style.display)
+// ==============================
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle("is-hidden", !!hidden);
+}
+function isHiddenEl(el) {
+  return !!el?.classList?.contains("is-hidden");
+}
+function showEl(el) { setHidden(el, false); }
+function hideEl(el) { setHidden(el, true); }
+function toggleHidden(el) { setHidden(el, !isHiddenEl(el)); }
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -177,7 +190,7 @@ async function maybeShowProfileNag(token) {
     const el = document.getElementById("profileNag");
     if (!el) return;
 
-el.style.display = "";
+showEl(el);
 el.classList.add("fade-in");
 el.innerHTML = `
   <strong>Completa il tuo profilo</strong> per sfruttare al meglio l’area Organizzatore.&nbsp;
@@ -1654,6 +1667,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
