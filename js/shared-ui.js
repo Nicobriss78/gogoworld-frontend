@@ -9,7 +9,19 @@ import { apiGet, apiPost } from "./api.js";
 function getTokenSafe() {
   try { return localStorage.getItem("token"); } catch { return null; }
 }
-
+// ==============================
+// J2 helpers — show/hide via classi (no element.style.display)
+// ==============================
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle("is-hidden", !!hidden);
+}
+function isHiddenEl(el) {
+  return !!el?.classList?.contains("is-hidden");
+}
+function showEl(el) { setHidden(el, false); }
+function hideEl(el) { setHidden(el, true); }
+function toggleHidden(el) { setHidden(el, !isHiddenEl(el)); }
 /* ANCHOR: SHARED_UI_NOTI_PANEL */
 function ensureNotiPanel() {
   let panel = document.getElementById("notiPanel");
@@ -18,7 +30,7 @@ function ensureNotiPanel() {
   panel = document.createElement("div");
   panel.id = "notiPanel";
   panel.className = "noti-panel";
-  panel.style.display = "none";
+  hideEl(panel);
   document.body.appendChild(panel);
   return panel;
 }
@@ -49,7 +61,7 @@ async function toggleNotificationsPanel() {
         }).join("")
       : `<p class="noti-empty">Nessuna notifica</p>`;
 
-    notiPanel.style.display = (notiPanel.style.display === "none") ? "block" : "none";
+    toggleHidden(notiPanel);
 
     // Segna tutte come lette
     await apiPost("/notifications/read-all", {}, token);
@@ -67,9 +79,9 @@ function initHamburgerMenu() {
   const gwMenu = document.getElementById("gwMenu");
   if (!btnHamburger || !gwMenu) return;
 
-const closeGwMenu = () => {
-    gwMenu.style.display = "none";
-    try { btnHamburger.setAttribute("aria-expanded", "false"); } catch {}
+  const closeGwMenu = () => {
+      hideEl(gwMenu);
+      try { btnHamburger.setAttribute("aria-expanded", "false"); } catch {}
   };
 
   const isMenuOpen = () => {
@@ -78,11 +90,11 @@ const closeGwMenu = () => {
     return cur !== "none";
   };
 
-  const toggleGwMenu = () => {
-    const open = isMenuOpen();
-    // .gw-menu è disegnato per display:flex nel tuo CSS
-    gwMenu.style.display = open ? "none" : "flex";
-    try { btnHamburger.setAttribute("aria-expanded", String(!open)); } catch {}
+   const toggleGwMenu = () => {
+     const open = isMenuOpen();
+     // .gw-menu è disegnato per display:flex nel CSS; qui facciamo solo hide/show via classi
+     setHidden(gwMenu, open);
+      try { btnHamburger.setAttribute("aria-expanded", String(!open)); } catch {}
   };
 
 
