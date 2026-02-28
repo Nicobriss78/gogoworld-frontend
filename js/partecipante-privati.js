@@ -173,11 +173,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-   // ==============================
-// PATCH: shared-ui source of truth
 // ==============================
-const DISABLE_LEGACY_TOPBAR_UI = true;
-if (!DISABLE_LEGACY_TOPBAR_UI) {
+  // PATCH: shared-ui source of truth
+  // ==============================
+  const DISABLE_LEGACY_TOPBAR_UI = true;
+  if (!DISABLE_LEGACY_TOPBAR_UI) {
 /* =========================
      ANCHOR: MAPPA_MENU_MIN
      ========================= */
