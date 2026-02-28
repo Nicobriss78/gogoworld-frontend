@@ -98,12 +98,14 @@ async function onSend() {
 
 // Validazioni robuste prima dell'invio
 if (!currentUserId || !isObjectId(currentUserId)) {
-alert("Destinatario non valido. (manca ?to=<organizerId> oppure formato ID errato)");
-return;
+  alert("Destinatario non valido. (manca ?to=<organizerId> oppure formato ID errato)");
+  if (btn) btn.disabled = false;
+  return;
 }
 if (!val) {
-alert("Il messaggio è vuoto.");
-return;
+  alert("Il messaggio è vuoto.");
+  if (btn) btn.disabled = false;
+  return;
 }
  try {
  const r = await sendMessage(currentUserId, val);
