@@ -78,7 +78,9 @@ function initHamburgerMenu() {
   const btnHamburger = document.getElementById("btnHamburger");
   const gwMenu = document.getElementById("gwMenu");
   if (!btnHamburger || !gwMenu) return;
-
+  // Fail-safe: stato iniziale coerente
+  hideEl(gwMenu);
+  try { btnHamburger.setAttribute("aria-expanded", "false"); } catch {}
   const closeGwMenu = () => {
       hideEl(gwMenu);
       try { btnHamburger.setAttribute("aria-expanded", "false"); } catch {}
@@ -122,7 +124,7 @@ function initMenuActions() {
 
   const closeGwMenu = () => {
     if (!gwMenu) return;
-    gwMenu.style.display = "none";
+    hideEl(gwMenu);
     const btnHamburger = document.getElementById("btnHamburger");
     try { btnHamburger?.setAttribute("aria-expanded", "false"); } catch {}
   };
