@@ -110,9 +110,10 @@ if (!val) {
  try {
  const r = await sendMessage(currentUserId, val);
  if (!r || r.ok === false) {
- const msg = (r && (r.message || r.error)) || "Invio non riuscito.";
- alert(msg); // es. INVALID_RECIPIENT / INVALID_TEXT dal backend
- return;
+   const msg = (r && (r.message || r.error)) || "Invio non riuscito.";
+   alert(msg); // es. INVALID_RECIPIENT / INVALID_TEXT dal backend
+   if (btn) btn.disabled = false;
+   return;
  }
 window.dispatchEvent(new CustomEvent("dm:updated"));
    // --- Render ottimistico & pulizia input ---
