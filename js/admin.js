@@ -124,21 +124,21 @@ function badge(status) {
 function showAlert(msg, type = "info", { autoHideMs = 2500 } = {}) {
   let box = document.getElementById("adminAlert");
   if (!box) {
-    box = h("div", { id: "adminAlert", class: "admin-card" });
+    // NB: admin-card resta (coerenza UI), aggiungiamo classi dedicate alert
+    box = h("div", { id: "adminAlert", class: "admin-card admin-alert" });
     document.body.appendChild(box);
     box.setAttribute("role", "status");
     box.setAttribute("aria-live", "polite");
-    box.style.position = "fixed";
-    box.style.right = "1rem";
-    box.style.bottom = "1rem";
-    box.style.maxWidth = "360px";
-    box.style.zIndex = 9999;
-    box.style.boxShadow = "0 6px 24px rgba(0,0,0,.12)";
   }
-  box.innerHTML = `<strong>${type.toUpperCase()}</strong><div>${msg}</div>`;
-  box.style.borderLeft = `4px solid ${type === "error" ? "#e00" : type === "success" ? "#0a0" : "#111"}`;
+
+  // tipo per styling via CSS (no inline style)
+  box.setAttribute("data-alert-type", String(type || "info").toLowerCase());
+
+  box.innerHTML = `<strong>${String(type).toUpperCase()}</strong><div>${msg}</div>`;
+
   if (autoHideMs) setTimeout(() => { box.remove(); }, autoHideMs);
 }
+
 // Auto-logout su 401 proveniente da api.js
 window.addEventListener("auth:expired", () => {
   try {
