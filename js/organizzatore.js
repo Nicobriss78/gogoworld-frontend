@@ -1154,11 +1154,11 @@ function renderMyPromosTable(arr) {
 if (data.length === 0) {
   tbody.innerHTML = '';
   const cap = document.getElementById("myPromosCaption");
-  if (cap) cap.style.display = "table-caption";
+  if (cap) cap.hidden = false;
   return;
 }
 const cap = document.getElementById("myPromosCaption");
-if (cap) cap.style.display = "none";
+if (cap) cap.hidden = true;
 
   tbody.innerHTML = data.map(b => {
     const imp = b.impressionsTotal || 0;
@@ -1666,6 +1666,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
