@@ -1446,7 +1446,7 @@ if (action === "promote") {
   if (btnCancelCreate && panel) {
     btnCancelCreate.addEventListener("click", () => {
       form?.reset();
-      panel.style.display = "none";
+      hideEl(panel);
     });
   }
 
@@ -1639,7 +1639,7 @@ if (action === "promote") {
 if (btnMyPromos) {
   btnMyPromos.addEventListener("click", () => {
     if (!myPromosPanel) return;
-    myPromosPanel.style.display = "block";
+    showEl(myPromosPanel);
     loadMyBanners();
     if (myPromosFilterStatus) myPromosFilterStatus.addEventListener("change", applyMyPromosFilters);
     if (myPromosFilterPlacement) myPromosFilterPlacement.addEventListener("input", applyMyPromosFilters);
@@ -1653,7 +1653,7 @@ if (btnMyPromosRefresh) {
 }
 if (btnMyPromosClose) {
   btnMyPromosClose.addEventListener("click", () => {
-    if (myPromosPanel) myPromosPanel.style.display = "none";
+    hideEl(myPromosPanel);
   });
 }
 
@@ -1667,6 +1667,7 @@ if (btnMyPromosClose) {
   // Tabellina partecipanti per evento (aggiunta)
   renderParticipantsTableFromMyEvents();
 });
+
 
 
 
