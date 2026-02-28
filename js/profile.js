@@ -314,15 +314,14 @@ async function loadProfile() {
   birthYear.value = p.birthYear || "";
   region.value = p.region || "";
   city.value = p.city || "";
-avatarUrl.value = p.avatarUrl || "";
-  
-  if (avatarPreview) {
-if (p.avatarUrl) {
-  setAvatarPreview(p.avatarUrl);
-} else {
-  hideEl(avatarPreview);
-}
+  avatarUrl.value = p.avatarUrl || "";
 
+  if (avatarPreview) {
+    if (p.avatarUrl) {
+      setAvatarPreview(p.avatarUrl);
+    } else {
+      hideEl(avatarPreview);
+    }
   }
 
   bio.value = p.bio || "";
