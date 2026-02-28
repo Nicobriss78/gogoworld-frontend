@@ -553,7 +553,7 @@ async function loadFollowersList_view() {
       return;
     }
 
-    const json = await apiGet(`/users/${id}/followers`);
+    const json = await apiGet(`/users/${id}/followers`, token);
 
     listEl.innerHTML = "";
     if (!json || json.ok === false) {
@@ -635,7 +635,7 @@ async function loadFollowingList_view() {
       return;
     }
 
-    const json = await apiGet(`/users/${id}/following`);
+    const json = await apiGet(`/users/${id}/following`, token);
 
     listEl.innerHTML = "";
     if (!json || json.ok === false) {
@@ -740,7 +740,7 @@ async function loadFollowersList() {
       return;
     }
 
-    const json = await apiGet(`/users/${id}/followers`);
+    const json = await apiGet(`/users/${id}/followers`, token);
 
     listEl.innerHTML = "";
     if (!json || json.ok === false) {
@@ -819,7 +819,7 @@ async function loadFollowingList() {
       return;
     }
 
-    const json = await apiGet(`/users/${id}/following`);
+    const json = await apiGet(`/users/${id}/following`, token);
 
     listEl.innerHTML = "";
     if (!json || json.ok === false) {
