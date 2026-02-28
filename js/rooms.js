@@ -12,6 +12,19 @@ import {
 // Stato locale
 let current = { roomId: null, eventId: null, canSend: false, title: "", activeFrom: null, activeUntil: null };
 let polling = null;
+// ==============================
+// J2 helpers — show/hide via classi (no element.style.display)
+// ==============================
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle("is-hidden", !!hidden);
+}
+function isHiddenEl(el) {
+  return !!el?.classList?.contains("is-hidden");
+}
+function showEl(el) { setHidden(el, false); }
+function hideEl(el) { setHidden(el, true); }
+function toggleHidden(el) { setHidden(el, !isHiddenEl(el)); }
 
 function q(id) { return document.getElementById(id); }
 function fmtDate(d) {
@@ -37,7 +50,7 @@ function renderMyRooms(list = []) {
   if (!Array.isArray(list)) list = [];
 
   // hint visibile solo se lista vuota
-  if (hint) hint.style.display = list.length ? "none" : "";
+  setHidden(hint, !!list.length);
 
   if (!list.length) {
     box.innerHTML = "";
