@@ -4,6 +4,8 @@
 // - Distinguere chiaramente UI owner vs participant con banner/toolbar dedicata
 // - Pulsante “Partecipa/Annulla” con stato loading e toast di esito
 import { apiGet, apiPost, apiDelete, apiPut, apiPatch } from "./api.js";
+import { escapeHtml } from "./utils.js";
+
 // --- helper: risolve l'ID evento sia da query (?id=) sia da sessionStorage ---
 function resolveEventId() {
   const url = new URL(window.location.href);
@@ -16,7 +18,6 @@ function resolveEventId() {
   return null;
 }
 
-import { escapeHtml } from "./utils.js";
 // --- J2: visibility helpers (no inline style.display) ---
 function setHidden(el, hidden) {
   if (!el) return;
@@ -1284,5 +1285,6 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
