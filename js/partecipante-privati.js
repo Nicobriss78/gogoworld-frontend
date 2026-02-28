@@ -324,8 +324,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         // consumiamo l'id (così non ripete)
         sessionStorage.removeItem("returnEventId");
       }
-    } catch (err) {
-showAlert(err?.message || "Errore nel caricamento eventi privati", "error", { autoHideMs: 4000 });
+       } catch (err) {
+             showAlert(err?.message || "Errore nel caricamento eventi privati", "error", { autoHideMs: 4000 });
     }
   }
 
