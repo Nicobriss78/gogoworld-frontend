@@ -251,7 +251,7 @@ const profRes = await apiGet(`/users/${userId}/public`);
   }
 
   // Bacheca attività
-const actRes = await apiGet(`/users/${userId}/activity`);
+const actRes = await apiGet(`/users/${userId}/activity`, token);
 
   // Caso bacheca privata
   if (actRes && actRes.ok === false && actRes.status === 403 && actRes.error === "activity_private") {
@@ -286,7 +286,7 @@ async function onFollowClick(userId) {
 
   try {
     if (currently) {
-    const res = await apiDelete(`/users/${userId}/follow`);
+    const res = await apiDelete(`/users/${userId}/follow`, token);
 if (!res || res.ok === false) {
   showAlert(res?.message || res?.error || "Impossibile smettere di seguire");
   return;
@@ -298,7 +298,7 @@ if (!res || res.ok === false) {
       updateFollowUI(false, newFollowers, currentFollowing);
 
     } else {
-    const res = await apiPost(`/users/${userId}/follow`);
+    const res = await apiPost(`/users/${userId}/follow`, {}, token);
 if (!res || res.ok === false) {
   showAlert(res?.message || res?.error || "Impossibile seguire questo utente");
   return;
