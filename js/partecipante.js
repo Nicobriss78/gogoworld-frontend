@@ -345,7 +345,7 @@ if (!r || r.ok === false || r.status === 401) {
 
       if (!res || res.ok === false || res.status === 401) {
         _notiDisabled = true;
-        if (notiBadge) notiBadge.style.display = "none";
+        hideEl(notiBadge);
         return;
       }
 
@@ -356,7 +356,7 @@ if (!r || r.ok === false || r.status === 401) {
       }
     } catch (err) {
       _notiDisabled = true;
-      if (notiBadge) notiBadge.style.display = "none";
+      hideEl(notiBadge);
     }
   }
 
@@ -1385,6 +1385,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
