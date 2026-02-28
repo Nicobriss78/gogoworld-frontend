@@ -179,8 +179,8 @@ window.addEventListener("auth:expired", () => {
 
   async function sendClientError(payload) {
     try {
-      if (!throttleOk()) return;
-const __h = { "Content-Type": "application/json" };
+     if (!throttleOk()) return;
+      const __h = { "Content-Type": "application/json" };
       try {
         const t = getToken();
         if (t) __h.Authorization = "Bearer " + t;
