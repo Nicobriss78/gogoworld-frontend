@@ -44,7 +44,7 @@ function setPreviewRows(rows) {
 
   if (!Array.isArray(rows) || rows.length === 0) {
     tbody.innerHTML = `<tr><td colspan="3">Nessun dato</td></tr>`;
-    section.style.display = "block";
+    showEl(section);
     return;
   }
 
@@ -74,7 +74,7 @@ function setPreviewRows(rows) {
     .join("");
 
   tbody.innerHTML = html;
-  section.style.display = "block";
+  showEl(section);
 }
 
 async function postCsv({ dryRun }) {
