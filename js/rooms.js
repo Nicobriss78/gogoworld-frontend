@@ -340,10 +340,10 @@ q("roomTitle").textContent = current.title || (current.eventId ? "Chat evento" :
    // link "torna all’evento" se eventId presente
 const back = q("btnBackToEvent");
   if (current.eventId) {
-    back.style.display = "";
+    showEl(back);
     back.href = `../evento.html?id=${encodeURIComponent(current.eventId)}`;
   } else {
-    back.style.display = "none";
+    hideEl(back);
   }
 
 const txt = q("txt");
@@ -354,13 +354,13 @@ const txt = q("txt");
 
   if (txt) txt.disabled = !canWrite;
   if (sendBtn) sendBtn.disabled = !canWrite;
-  if (lockedMsg) lockedMsg.style.display = canWrite ? "none" : "block";
+  setHidden(lockedMsg, !!canWrite);
 
   // Se la chat è scaduta (oltre la fine +24h) disabilita comunque
   if (current.activeUntil && new Date() > new Date(current.activeUntil)) {
     if (txt) txt.disabled = true;
     if (sendBtn) sendBtn.disabled = true;
-    if (lockedMsg) lockedMsg.style.display = "block";
+    showEl(lockedMsg);
     q("roomWindow").textContent = "Chat non più attiva (evento concluso).";
   }
 }
