@@ -7,7 +7,19 @@ import { renderEventCard } from "./home-cards.js";
 import { createParticipantMap } from "./map.js";
 import { createEmbeddedEventChat } from "./map-chat.js";
 import { showAlert } from "/js/participant-shared.js";
-
+// ==============================
+// J2 helpers — show/hide via classi (no element.style.display)
+// ==============================
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle("is-hidden", !!hidden);
+}
+function isHiddenEl(el) {
+  return !!el?.classList?.contains("is-hidden");
+}
+function showEl(el) { setHidden(el, false); }
+function hideEl(el) { setHidden(el, true); }
+function toggleHidden(el) { setHidden(el, !isHiddenEl(el)); }
 /* =========================
    ANCHOR: PRIVATI_UNLOCK_FLOW
    ========================= */
@@ -153,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // chiudi menu hamburger (gestito da shared-ui.js)
       const gwMenu = document.getElementById("gwMenu");
-      if (gwMenu) gwMenu.style.display = "none";
+           hideEl(gwMenu);
 
       await unlockPrivateEventFlow(token, async () => {
         // ricarica eventi privati e aggiorna marker
