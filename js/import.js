@@ -7,7 +7,19 @@ function getApiBase() {
 // Opzione B: usa sempre il proxy relativo /api
 return "/api";
 }
-
+// ==============================
+// J2 helpers — show/hide via classi (no element.style.display)
+// ==============================
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle("is-hidden", !!hidden);
+}
+function isHiddenEl(el) {
+  return !!el?.classList?.contains("is-hidden");
+}
+function showEl(el) { setHidden(el, false); }
+function hideEl(el) { setHidden(el, true); }
+function toggleHidden(el) { setHidden(el, !isHiddenEl(el)); }
 // Banner messaggi (error/success/info) riusando classi di style.css
 function showAlert(message, type = "error", opts = {}) {
   const { autoHideMs = 0 } = opts;
