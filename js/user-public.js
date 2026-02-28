@@ -2,6 +2,19 @@
 import { apiGet, apiPost, apiDelete } from "./api.js";
 
 const BACKEND_ORIGIN = "https://gogoworld-api.onrender.com";
+// ==============================
+// J2 helpers — show/hide via classi (no element.style.display)
+// ==============================
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle("is-hidden", !!hidden);
+}
+function isHiddenEl(el) {
+  return !!el?.classList?.contains("is-hidden");
+}
+function showEl(el) { setHidden(el, false); }
+function hideEl(el) { setHidden(el, true); }
+function toggleHidden(el) { setHidden(el, !isHiddenEl(el)); }
 
 const $ = (sel) => document.querySelector(sel);
 const alerts = $("#alerts");
@@ -50,22 +63,22 @@ function renderProfile(profile) {
 
   if (profile.role === "organizer") {
     roleEl.textContent = "Organizzatore";
-    roleEl.style.display = "inline-block";
+    showEl(roleEl);
   } else if (profile.role === "admin") {
     roleEl.textContent = "Amministratore";
-    roleEl.style.display = "inline-block";
+    showEl(roleEl);
   } else {
     roleEl.textContent = "";
-    roleEl.style.display = "none";
+    hideEl(roleEl);
   }
 
   if (profile.profile?.avatarUrl) {
     avatarEl.src = profile.profile.avatarUrl.startsWith("http")
       ? profile.profile.avatarUrl
       : BACKEND_ORIGIN + profile.profile.avatarUrl;
-    avatarEl.style.display = "inline-block";
+    showEl(avatarEl);
   } else {
-    avatarEl.style.display = "none";
+    hideEl(avatarEl);
   }
 
   if (profile.profile?.bio) {
@@ -88,8 +101,8 @@ if (followersEl) followersEl.textContent = profile.followersCount ?? 0;
   // Se sto guardando me stesso (self=1 nell'URL) → niente bottone Follow
   const qs = new URLSearchParams(location.search);
   const isSelf = qs.get("self") === "1";
-if (isSelf && followBtn) {
-    followBtn.style.display = "none";
+  if (isSelf && followBtn) {
+     hideEl(followBtn);
   }
 }
 
@@ -156,17 +169,17 @@ function renderActivityList(items) {
   const emptyEl = $("#activityEmpty");
   const privateEl = $("#activityPrivate");
 
-  privateEl.style.display = "none";
+  hideEl(privateEl);
 
 listEl.innerHTML = "";
   if (!items || !items.length) {
     emptyEl.textContent = IS_SELF
       ? "Ancora nessuna attività registrata sulla tua bacheca."
       : "Nessuna attività da mostrare.";
-    emptyEl.style.display = "block";
+     showEl(emptyEl);
     return;
   }
-  emptyEl.style.display = "none";
+   hideEl(emptyEl);
 
 for (const item of items) {
     const li = document.createElement("li");
@@ -221,9 +234,9 @@ const profRes = await apiGet(`/users/${userId}/public`);
   if (!IS_SELF) {
     const isFollowingNow = ($("#followBtn")?.dataset?.following === "1");
     if (!isFollowingNow) {
-      $("#activityPrivate").style.display = "block";
+      showEl($("#activityPrivate"));
       $("#activityList").innerHTML = "";
-      $("#activityEmpty").style.display = "none";
+      hideEl($("#activityEmpty"));
       return;
     }
   }
@@ -233,9 +246,9 @@ const actRes = await apiGet(`/users/${userId}/activity`);
 
   // Caso bacheca privata
   if (actRes && actRes.ok === false && actRes.status === 403 && actRes.error === "activity_private") {
-    $("#activityPrivate").style.display = "block";
+    showEl($("#activityPrivate"));
     $("#activityList").innerHTML = "";
-    $("#activityEmpty").style.display = "none";
+    hideEl($("#activityEmpty"));
     return;
   }
 
