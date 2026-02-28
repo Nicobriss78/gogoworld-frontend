@@ -1,4 +1,4 @@
-// frontend/js/partecipante-mappa.js
+// frontend/js/partecipante-privati.js
 // Controller dedicato alla scheda MAPPA (UI v2)
 // Estratto/derivato da partecipante.js: init mappa + chat embedded + dettaglio evento selezionato
 
