@@ -792,7 +792,8 @@ function setupScrollRails() {
     let startLeft = 0;
 
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-
+    const setThumbW = (px) => thumb.style.setProperty("--gw-thumb-w", `${px}px`);
+    const setThumbX = (px) => thumb.style.setProperty("--gw-thumb-x", `${px}px`);
     const syncThumb = () => {
       const maxScroll = list.scrollWidth - list.clientWidth;
       const railW = rail.clientWidth;
@@ -1385,6 +1386,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
