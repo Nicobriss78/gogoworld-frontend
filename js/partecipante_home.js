@@ -62,7 +62,10 @@ function setupScrollRails() {
     const rail = wrap.querySelector(".gw-rail");
     const thumb = wrap.querySelector(".gw-rail-thumb");
     if (!list || !rail || !thumb) return;
-
+    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+    const setThumbW = (px) => thumb.style.setProperty("--gw-thumb-w", `${px}px`);
+    const setThumbX = (px) => thumb.style.setProperty("--gw-thumb-x", `${px}px`);
+    let currentX = 0;
     const syncThumb = () => {
       const maxScroll = list.scrollWidth - list.clientWidth;
       const railW = rail.clientWidth;
