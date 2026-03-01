@@ -794,25 +794,32 @@ function setupScrollRails() {
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
     const setThumbW = (px) => thumb.style.setProperty("--gw-thumb-w", `${px}px`);
     const setThumbX = (px) => thumb.style.setProperty("--gw-thumb-x", `${px}px`);
+let currentX = 0;
+
     const syncThumb = () => {
       const maxScroll = list.scrollWidth - list.clientWidth;
       const railW = rail.clientWidth;
 
       if (maxScroll <= 0 || railW <= 0) {
-        thumb.style.width = "100%";
-        thumb.style.transform = "translateX(0px)";
+        // 100% e pos 0, via CSS vars
+        thumb.style.setProperty("--gw-thumb-w", "100%");
+        setThumbX(0);
+        currentX = 0;
         return;
       }
 
       const ratio = list.clientWidth / list.scrollWidth;
       const thumbW = clamp(Math.round(railW * ratio), 28, railW);
-      thumb.style.width = `${thumbW}px`;
+      setThumbW(thumbW);
 
       const maxThumbX = railW - thumbW;
       const p = list.scrollLeft / maxScroll;
       const x = Math.round(maxThumbX * p);
-      thumb.style.transform = `translateX(${x}px)`;
+
+      setThumbX(x);
+      currentX = x;
     };
+
 
     list.addEventListener("scroll", syncThumb, { passive: true });
     window.addEventListener("resize", syncThumb);
@@ -1386,6 +1393,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
