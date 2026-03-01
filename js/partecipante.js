@@ -830,8 +830,7 @@ let currentX = 0;
       rail.classList.add("is-dragging");
 
       startX = e.clientX;
-      const m = /translateX\(([-0-9.]+)px\)/.exec(thumb.style.transform || "");
-      startLeft = m ? parseFloat(m[1]) : 0;
+      startLeft = currentX || 0;
 
       try { rail.setPointerCapture(e.pointerId); } catch {}
       e.preventDefault();
@@ -1393,6 +1392,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
