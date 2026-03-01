@@ -569,10 +569,10 @@ body.gw-page-map .gw-map{
 
 .gw-scrollthumb{
   height: 100%;
-  width: 22%;
+  width: var(--gw-thumb-w, 22%);
   background: rgba(17,24,39,.22);
   border-radius: 999px;
-  transform: translateX(0);
+  transform: translateX(var(--gw-thumb-x, 0px));
   transition: transform 60ms linear;
 }
 
