@@ -2,7 +2,8 @@
    Parentesi Operativa 3 – Fase 1
 */
 
-:root {
+:root{
+  /* Light / fallback palette (fuori dall’area app) */
   --color-primary: #2a7ae2;
   --color-secondary: #555;
   --color-bg: #f9f9f9;
@@ -13,9 +14,8 @@
   --color-error-text: #b00020;
   --color-success-bg: #e8f5e9;
   --color-success-text: #1b5e20;
-}
 
-:root{
+  /* Dark UI tokens (area app) */
   --gw-blue: #2C5AA0;
   --gw-dark: #131823;
   --gw-bg: #0b0f19;
@@ -25,36 +25,25 @@
   --gw-text-dim: rgba(255,255,255,.72);
   --gw-shadow: 0 10px 30px rgba(0,0,0,.35);
 
-/* Altezze barre */
-  --gw-bottombar-h: 64px;
-
-  /* Topbar = 2 righe, ognuna alta quanto la bottombar */
-  --gw-topbar-row-h: var(--gw-bottombar-h);
-  --gw-topbar-h: calc(var(--gw-topbar-row-h) * 2);
+  /* Spacing / radius */
   --gw-radius: 16px;
   --gw-gap: 12px;
-}
-/* === Alias + variabili mancanti (UI v2) === */
-:root{
-  /* Surface: usata da topbar / bottomnav */
-  --gw-surface: var(--gw-dark);
 
-  /* Testi secondari / muted */
+  /* Altezze barre */
+  --gw-bottombar-h: 64px;
+  --gw-bottomnav-h: var(--gw-bottombar-h);
+
+  /* Topbar split (Header + Toolbar) */
+  --gw-topbar-header-h: var(--gw-bottombar-h);
+  --gw-topbar-toolbar-h: var(--gw-bottombar-h);
+  --gw-topbar-h: calc(var(--gw-topbar-header-h) + var(--gw-topbar-toolbar-h));
+
+  /* Compat: legacy “row height” (una riga topbar) */
+  --gw-topbar-row-h: var(--gw-topbar-header-h);
+
+  /* Alias / semantic */
+  --gw-surface: var(--gw-dark);
   --gw-muted: var(--gw-text-dim);
   --gw-gray: var(--gw-text-dim);
-
-  /* Accent rosso per badge */
   --gw-red: #c83a3a;
-
-  /* Alias altezza bottomnav (nel CSS legacy usi bottomnav-h) */
-  --gw-bottomnav-h: var(--gw-bottombar-h, 64px);
-}
-
-/* === Topbar split heights (Header + Toolbar) === */
-:root{
-  --gw-topbar-header-h: var(--gw-bottombar-h, 64px);
-  --gw-topbar-toolbar-h: var(--gw-bottombar-h, 64px);
-
-  /* Topbar totale = header + toolbar */
-  --gw-topbar-h: calc(var(--gw-topbar-header-h) + var(--gw-topbar-toolbar-h));
 }
