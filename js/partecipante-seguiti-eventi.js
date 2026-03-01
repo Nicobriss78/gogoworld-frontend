@@ -55,67 +55,6 @@ async function hydrateTopbar(token) {
 /* =========================
    ANCHOR: FOLLOWING_MENU_MIN
    ========================= */
-function initHamburgerMenu() {
-  const btnHamburger = document.getElementById("btnHamburger");
-  const gwMenu = document.getElementById("gwMenu");
-  const btnLogout = document.getElementById("btnLogout");
-  const btnSwitchRole = document.getElementById("btnSwitchRole");
-  const btnGuide = document.getElementById("btnGuide");
-  const btnPrivateEventsMenu = document.getElementById("btnPrivateEvents");
-
-  const closeGwMenu = () => {
-    if (gwMenu) gwMenu.style.display = "none";
-  };
-
-  if (btnHamburger && gwMenu) {
-    btnHamburger.addEventListener("click", () => {
-      gwMenu.style.display = gwMenu.style.display === "none" ? "block" : "none";
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!gwMenu.contains(e.target) && e.target !== btnHamburger) closeGwMenu();
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeGwMenu();
-    });
-  }
-
-  if (btnGuide) {
-    btnGuide.addEventListener("click", (e) => {
-      e.preventDefault();
-      closeGwMenu();
-      alert("Guida partecipante (placeholder).");
-    });
-  }
-
-  if (btnSwitchRole) {
-    btnSwitchRole.addEventListener("click", (e) => {
-      e.preventDefault();
-      closeGwMenu();
-      sessionStorage.setItem("desiredRole", "organizer");
-      window.location.href = "organizzatore.html";
-    });
-  }
-
-  if (btnPrivateEventsMenu) {
-    btnPrivateEventsMenu.addEventListener("click", (e) => {
-      e.preventDefault();
-      closeGwMenu();
-      // per ora rimandiamo alla HOME (privati verranno spacchettati più avanti)
-      window.location.href = "partecipante.html";
-    });
-  }
-
-  if (btnLogout) {
-    btnLogout.addEventListener("click", (e) => {
-      e.preventDefault();
-      closeGwMenu();
-      localStorage.removeItem("token");
-      window.location.href = "login.html";
-    });
-  }
-}
 
 /* =========================
    ANCHOR: FOLLOWING_UTILS
