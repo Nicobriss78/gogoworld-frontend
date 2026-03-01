@@ -8,7 +8,11 @@ import { createParticipantMap } from "./map.js";
 import { createEmbeddedEventChat } from "./map-chat.js";
 import { showAlert } from "/js/participant-shared.js";
 
-
+// ==============================
+// J2 helpers — show/hide via classi (no element.style.display)
+// ==============================
+function showEl(el) { if (el) el.classList.remove("is-hidden"); }
+function hideEl(el) { if (el) el.classList.add("is-hidden"); }
 /* =========================
    ANCHOR: MAPPA_TOPBAR
    ========================= */
