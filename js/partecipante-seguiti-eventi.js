@@ -53,10 +53,6 @@ async function hydrateTopbar(token) {
 }
 
 /* =========================
-   ANCHOR: FOLLOWING_MENU_MIN
-   ========================= */
-
-/* =========================
    ANCHOR: FOLLOWING_UTILS
    ========================= */
 
@@ -190,7 +186,7 @@ function applyBannerThumbBackgrounds(root) {
   thumbs.forEach((el) => {
     const url = el.getAttribute("data-bg");
     if (!url) return;
-    el.style.backgroundImage = `url("${url}")`;
+    el.style.setProperty("--gw-bg", `url("${url}")`);
   });
 }
 function renderFollowingBlocks(events) {
