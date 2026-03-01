@@ -86,7 +86,7 @@ export function createEmbeddedEventChat({
     const input = q(inputId);
     const send = q(sendId);
 
-    if (composer) composer.style.display = "flex";
+    if (composer) composer.classList.remove("is-hidden");
     if (input) input.disabled = !enabled;
     if (send) send.disabled = !enabled;
   }
