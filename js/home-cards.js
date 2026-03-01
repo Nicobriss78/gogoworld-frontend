@@ -146,6 +146,6 @@ export function applyHomeCardThumbs(root = document) {
   thumbs.forEach((el) => {
     const url = el.getAttribute("data-bg");
     if (!url) return;
-    el.style.backgroundImage = `url("${url}")`;
+    el.style.setProperty("--gw-bg", `url("${url}")`);
   });
 }
