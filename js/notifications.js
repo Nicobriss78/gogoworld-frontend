@@ -17,16 +17,16 @@ function hideEl(el) { setHidden(el, true); }
   const ROOMS_SEL = "#roomsBadge, [data-badge='rooms']";
 
   function setBadge(el, n) {
-  if (!el) return;
+     if (!el) return;
 
-  if (!n || n <= 0) {
-    el.textContent = "";
-    hideEl(el);
-  } else {
-    el.textContent = String(n);
-    showEl(el);
-  }
-}
+     if (!n || n <= 0) {
+       el.textContent = "";
+       hideEl(el);
+     } else {
+       el.textContent = String(n);
+       showEl(el);
+     }
+ }
 
   async function refreshBadges() {
     try {
