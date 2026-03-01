@@ -67,22 +67,25 @@ function setupScrollRails() {
     const setThumbX = (px) => thumb.style.setProperty("--gw-thumb-x", `${px}px`);
     let currentX = 0;
     const syncThumb = () => {
-      const maxScroll = list.scrollWidth - list.clientWidth;
-      const railW = rail.clientWidth;
+          const maxScroll = list.scrollWidth - list.clientWidth;
+          const railW = rail.clientWidth;
 
-      if (maxScroll <= 0 || railW <= 0) {
-        thumb.style.width = "100%";
-        thumb.style.transform = "translateX(0px)";
-        return;
-      }
+          if (maxScroll <= 0 || railW <= 0) {
+            thumb.style.setProperty("--gw-thumb-w", "100%");
+            setThumbX(0);
+            currentX = 0;
+            return;
+          }
 
-      const ratio = list.clientWidth / list.scrollWidth;
-      const thumbW = clamp(Math.round(railW * ratio), 28, railW);
-      thumb.style.width = `${thumbW}px`;
+          const ratio = list.clientWidth / list.scrollWidth;
+          const thumbW = clamp(Math.round(railW * ratio), 28, railW);
+          setThumbW(thumbW);
 
-      const x = (list.scrollLeft / maxScroll) * (railW - thumbW);
-      thumb.style.transform = `translateX(${Math.round(x)}px)`;
-    };
+          const x = (list.scrollLeft / maxScroll) * (railW - thumbW);
+          const xi = Math.round(x);
+          setThumbX(xi);
+          currentX = xi;
+        };
 
     list.addEventListener("scroll", syncThumb, { passive: true });
     window.addEventListener("resize", syncThumb);
