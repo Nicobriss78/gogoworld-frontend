@@ -76,7 +76,7 @@ export function createEmbeddedEventChat({
     const n = q(noticeId);
     if (!n) return;
     n.textContent = text || "";
-    n.style.display = text ? "" : "none";
+    n.classList.toggle("is-hidden", !text);
     if (isLocked) n.classList.add("locked-info");
     else n.classList.remove("locked-info");
   }
