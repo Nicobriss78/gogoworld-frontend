@@ -152,8 +152,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         sessionStorage.removeItem("returnEventId");
       }
     } catch (err) {
-showAlert(err?.message || "Errore nel caricamento eventi (MAPPA)", "error", { autoHideMs: 4000 });
-    }
+          showAlert(err?.message || "Errore nel caricamento eventi (MAPPA)", "error", { autoHideMs: 4000 });
+        }
   }
 
   /* =========================
@@ -170,7 +170,7 @@ showAlert(err?.message || "Errore nel caricamento eventi (MAPPA)", "error", { au
 
     // Mostra composer (map-chat gestisce canSend)
      const composer = document.getElementById("mapChatComposer");
-      showEl(composer);
+         showEl(composer);
   }
 
   // Carica eventi e popola marker
