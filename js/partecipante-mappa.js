@@ -169,8 +169,8 @@ showAlert(err?.message || "Errore nel caricamento eventi (MAPPA)", "error", { au
     mapChat.openForEvent(ev._id, ev?.title || "Evento");
 
     // Mostra composer (map-chat gestisce canSend)
-    const composer = document.getElementById("mapChatComposer");
-    if (composer) composer.style.display = "flex";
+     const composer = document.getElementById("mapChatComposer");
+      showEl(composer);
   }
 
   // Carica eventi e popola marker
