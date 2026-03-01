@@ -176,3 +176,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Carica eventi e popola marker
   await loadMapEvents();
 });
+
