@@ -1,118 +1,5 @@
 /* GoGoWorld.life – CSS Components (common UI) */
 
-/* ===========================
-   TOPBAR (common)
-   =========================== */
-.gw-topbar{
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: var(--gw-topbar-h);
-  padding-top: env(safe-area-inset-top);
-  background: rgba(10,14,22,.92);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--gw-border);
-  z-index: 1000;
-}
-/* Righe topbar sempre "piene" (niente trasparenze) */
-.gw-topbar-row{
-  background: var(--gw-surface);
-}
-.gw-topbar-row{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
-  box-sizing: border-box;
-}
-.gw-topbar-row--title{
-  height: var(--gw-topbar-header-h);
-}
-.gw-topbar-row--actions{
-  height: var(--gw-topbar-toolbar-h);
-}
-.gw-title{
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: .2px;
-}
-.gw-subtitle{
-  font-size: 12px;
-  opacity: .8;
-}
-.gw-actions{
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.gw-iconbtn{
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.10);
-}
-.gw-badge{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 6px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  background: #ff3b30;
-  color: #fff;
-  position: absolute;
-  transform: translate(14px,-14px);
-}
-
-/* ===========================
-   BOTTOM NAV (common)
-   =========================== */
-.gw-bottomnav{
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  height: var(--gw-bottombar-h);
-  padding-bottom: env(safe-area-inset-bottom);
-  background: rgba(10,14,22,.92);
-  backdrop-filter: blur(8px);
-  border-top: 1px solid var(--gw-border);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-.gw-bottomnav a{
-  color: var(--gw-text-dim);
-  text-decoration: none;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 8px;
-  border-radius: 12px;
-}
-.gw-bottomnav a.active{
-  color: var(--gw-text);
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.10);
-}
-
-/* ===========================
-   Utility: prevent content under bars
-   (usata dai layout delle aree)
-   =========================== */
-.gw-safe-top{
-  padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
-}
-.gw-safe-bottom{
-  padding-bottom: calc(var(--gw-bottombar-h) + env(safe-area-inset-bottom));
-}
-
 /* =========================================================
    UI v2 — MIGRATO DA style.css (Tranche 2)
    Topbar + BottomNav + Carousel + Cards + States + Banner tips
@@ -146,7 +33,7 @@
   box-sizing: border-box;
 
   /* Altezza totale = 2 righe */
-  height: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
+  height: var(--gw-topbar-h);
   display: flex;
   flex-direction: column;
 }
@@ -256,9 +143,8 @@ top: calc(env(safe-area-inset-top) + var(--gw-topbar-h));  right: 14px;
   border-top: 1px solid var(--gw-border);
 
   /* Altezza stabile: include safe-area senza "gonfiare" la barra */
-  height: calc(var(--gw-bottomnav-h, 64px) + env(safe-area-inset-bottom) + 2px);
-
-  display: flex;
+  height: var(--gw-bottomnav-h, 64px);
+display: flex;
   align-items: center;
   justify-content: space-around;
 
@@ -1160,10 +1046,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: #2e7d
 /* =========================================================
    FASE 3 — Utilities + micro-componenti (NO inline styles)
    ========================================================= */
-
-/* Visibilità */
-.is-hidden{ display:none !important; }
-
+  /* Visibilità */
 /* Spacing utilities (coprono gli inline più usati) */
 .u-mt-035{ margin-top:.35rem !important; }
 .u-mt-05{ margin-top:.5rem !important; }
