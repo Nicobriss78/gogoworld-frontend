@@ -4,7 +4,33 @@
    ========================================================= */
 
 import { apiGet, apiPost } from "./api.js";
+/* ANCHOR: SHARED_UI_ICON_SPRITE */
+const GW_ICON_SPRITE_ID = "gw-icons-sprite";
 
+function ensureGwIconSprite() {
+  // Evita doppio inserimento tra pagine o re-init
+  if (document.getElementById(GW_ICON_SPRITE_ID)) return;
+
+  const wrap = document.createElement("div");
+  wrap.id = GW_ICON_SPRITE_ID;
+  wrap.setAttribute("aria-hidden", "true");
+  // Nascondi lo sprite senza usare style.display (J2) e senza dipendere da CSS esterno
+  // (style inline NON è display; è ok per nascondere l'asset e non impatta layout)
+  wrap.style.position = "absolute";
+  wrap.style.width = "0";
+  wrap.style.height = "0";
+  wrap.style.overflow = "hidden";
+
+  // TODO: qui inseriremo i <symbol> reali (sprite v1) nel prossimo step
+  wrap.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <!-- gw-icons-sprite: symbols go here -->
+    </svg>
+  `;
+
+  // Primo nodo del body per renderlo disponibile subito
+  document.body.insertBefore(wrap, document.body.firstChild);
+}
 /* ANCHOR: SHARED_UI_UTILS */
 function getTokenSafe() {
   try { return localStorage.getItem("token"); } catch { return null; }
