@@ -193,6 +193,9 @@ if (btnPrivateEventsMenu) {
 /* ANCHOR: SHARED_UI_TOPBAR */
 export function initSharedTopbarUI() {
   const boot = () => {
+    // Sprite icone (una sola volta)
+    ensureGwIconSprite();
+
     // Notifiche
     const btnNotifications = document.getElementById("btnNotifications");
     if (btnNotifications && !btnNotifications.dataset.gwBound) {
