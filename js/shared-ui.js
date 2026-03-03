@@ -23,10 +23,64 @@ function ensureGwIconSprite() {
 
   // TODO: qui inseriremo i <symbol> reali (sprite v1) nel prossimo step
   wrap.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg">
-      <!-- gw-icons-sprite: symbols go here -->
-    </svg>
-  `;
+  <svg xmlns="http://www.w3.org/2000/svg">
+    <symbol id="gw-icon-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="7" />
+      <path d="M20 20l-3.5-3.5" />
+    </symbol>
+
+    <symbol id="gw-icon-pin" viewBox="0 0 24 24">
+      <path d="M12 21s7-5.2 7-11a7 7 0 0 0-14 0c0 5.8 7 11 7 11z" />
+      <circle cx="12" cy="10" r="2.5" />
+    </symbol>
+
+    <symbol id="gw-icon-chat" viewBox="0 0 24 24">
+      <path d="M21 12c0 4.4-4 8-9 8-1.2 0-2.3-.2-3.3-.6L3 21l1.7-4.2A7.4 7.4 0 0 1 3 12c0-4.4 4-8 9-8s9 3.6 9 8z" />
+      <path d="M8 12h.01M12 12h.01M16 12h.01" />
+    </symbol>
+
+    <symbol id="gw-icon-bell" viewBox="0 0 24 24">
+      <path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 7h18s-3 0-3-7z" />
+      <path d="M10 19a2 2 0 0 0 4 0" />
+    </symbol>
+
+    <symbol id="gw-icon-menu" viewBox="0 0 24 24">
+      <path d="M4 6h16" />
+      <path d="M4 12h16" />
+      <path d="M4 18h16" />
+    </symbol>
+
+    <symbol id="gw-icon-map" viewBox="0 0 24 24">
+      <path d="M9 18l-6 3V6l6-3 6 3 6-3v15l-6 3-6-3z" />
+      <path d="M9 3v15" />
+      <path d="M15 6v15" />
+    </symbol>
+
+    <symbol id="gw-icon-calendar" viewBox="0 0 24 24">
+      <path d="M8 3v3" />
+      <path d="M16 3v3" />
+      <path d="M4 8h16" />
+      <rect x="4" y="5" width="16" height="16" rx="2" ry="2" />
+    </symbol>
+
+    <symbol id="gw-icon-home" viewBox="0 0 24 24">
+      <path d="M3 11l9-7 9 7" />
+      <path d="M5 10.5V20a1 1 0 0 0 1 1h5v-6h2v6h5a1 1 0 0 0 1-1v-9.5" />
+    </symbol>
+
+    <symbol id="gw-icon-users" viewBox="0 0 24 24">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
+      <circle cx="10" cy="7" r="3" />
+      <path d="M21 21v-2a3.5 3.5 0 0 0-2.5-3.4" />
+      <path d="M16.5 3.4a3 3 0 0 1 0 5.2" />
+    </symbol>
+
+    <symbol id="gw-icon-profile" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21a8 8 0 0 1 16 0" />
+    </symbol>
+  </svg>
+`;
 
   // Primo nodo del body per renderlo disponibile subito
   document.body.insertBefore(wrap, document.body.firstChild);
