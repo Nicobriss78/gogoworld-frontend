@@ -74,7 +74,40 @@
   -webkit-tap-highlight-color: transparent;
 }
 .gw-iconbtn:active{ transform: scale(.98); }
+/* =========================================================
+   ICON SYSTEM v1 (SVG sprite inline via shared-ui.js)
+   Standard: 24x24, stroke 2, round caps/joins, currentColor
+   ========================================================= */
+.gw-icon{
+  width: 24px;
+  height: 24px;
+  display: block;
+  color: currentColor;
+}
 
+/* Se il path nello sprite usa stroke, lo uniformiamo qui */
+.gw-icon *{
+  vector-effect: non-scaling-stroke;
+}
+
+/* Stati standard (usati in bottomnav/menu/CTA) */
+.gw-icon.is-active{ color: var(--gw-accent, var(--gw-blue)); }
+.gw-icon.is-danger{ color: var(--gw-red); }
+.gw-icon.is-disabled{
+  color: var(--gw-muted);
+  opacity: .6;
+}
+
+/* COMPAT: .gw-ico legacy (22px) → ora alias del nuovo sistema */
+.gw-ico{
+  width: 22px;
+  height: 22px;
+  display: block;
+  color: currentColor;
+}
+.gw-ico.is-active{ color: var(--gw-accent, var(--gw-blue)); }
+.gw-ico.is-danger{ color: var(--gw-red); }
+.gw-ico.is-disabled{ color: var(--gw-muted); opacity: .6; }
 /* azioni ancora più compatte */
 .gw-topbar-row--actions .gw-iconbtn{
   width: 34px;
