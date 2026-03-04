@@ -93,13 +93,8 @@
   stroke-linejoin: round;
 }
 
-/* Se il path nello sprite usa stroke, lo uniformiamo qui */
+/* <use> compat: non forziamo fill/stroke sui figli, lo fa .gw-icon */
 .gw-icon *{
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 
