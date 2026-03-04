@@ -23,7 +23,7 @@ function ensureGwIconSprite() {
 
   // TODO: qui inseriremo i <symbol> reali (sprite v1) nel prossimo step
   wrap.innerHTML = `
-  <svg xmlns="http://www.w3.org/2000/svg">
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <symbol id="gw-icon-search" viewBox="0 0 24 24">
       <circle cx="11" cy="11" r="7" />
       <path d="M20 20l-3.5-3.5" />
