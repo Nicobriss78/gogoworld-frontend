@@ -98,13 +98,6 @@
   vector-effect: non-scaling-stroke;
 }
 
-/* Stati standard (usati in bottomnav/menu/CTA) */
-.gw-icon.is-active{ color: var(--gw-accent, var(--gw-blue)); }
-.gw-icon.is-danger{ color: var(--gw-red); }
-.gw-icon.is-disabled{
-  color: var(--gw-muted);
-  opacity: .6;
-}
 
 /* COMPAT: .gw-ico legacy (22px) → ora alias del nuovo sistema */
 .gw-ico{
