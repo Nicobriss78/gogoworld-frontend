@@ -211,7 +211,19 @@ display: flex;
   padding: 2px 8px env(safe-area-inset-bottom);
   line-height: 1;
 }
+/* Bottom bar icons: inactive muted, active accent, home active red */
+.gw-bottomnav a{
+  color: var(--gw-muted);
+}
 
+.gw-bottomnav a.is-active{
+  color: var(--gw-accent, var(--gw-blue));
+}
+
+/* Eccezione identitaria: Home rossa SOLO nella bottom bar */
+.gw-bottomnav a.gw-navitem--home.is-active{
+  color: var(--gw-red);
+}
 .gw-bottomnav .inner{
   /* legacy wrapper: non deve alterare l'altezza */
   height: 100%;
