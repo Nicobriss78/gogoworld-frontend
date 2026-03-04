@@ -120,11 +120,6 @@
   stroke-linejoin: round;
 }
 .gw-ico *{
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 .gw-ico.is-active{ color: var(--gw-accent, var(--gw-blue)); }
