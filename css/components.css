@@ -174,9 +174,6 @@ top: calc(env(safe-area-inset-top) + var(--gw-topbar-h));  right: 14px;
   color: var(--gw-red);
 }
 
-.gw-ico{ width:22px; height:22px; display:block; color: var(--gw-gray); }
-.gw-ico.is-active{ color: var(--gw-red); }
-
 .gw-badge{
   display:inline-flex;
   align-items:center;
