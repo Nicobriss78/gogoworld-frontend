@@ -50,7 +50,7 @@
   --gw-topbar-row-h: var(--gw-topbar-header-h);
 
 /* Alias / semantic */
-  --gw-surface: var(--gw-dark);
+  --gw-surface: var(--gw-surface);
   --gw-muted: var(--gw-text-dim);
   --gw-gray: var(--gw-text-dim);
   --gw-ink: rgba(0,0,0,.88);
