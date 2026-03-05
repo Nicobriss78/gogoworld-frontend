@@ -24,13 +24,13 @@ body {
 
 .subtitle {
   margin: 0.25rem 0 0;
-  color: var(--color-secondary);
+ color: var(--gw-text-dim, var(--gw-muted));
 }
 
 .app-footer {
   margin-top: 2rem;
   text-align: center;
-  color: var(--color-secondary);
+  color: var(--gw-text-dim, var(--gw-muted));
   font-size: 0.85rem;
 }
 
