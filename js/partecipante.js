@@ -443,7 +443,7 @@ if (btnRooms) {
 function setGeoUiState(enabled) {
   if (!btnGeo) return;
 
-  const ico = btnGeo.querySelector(".gw-ico");
+  const ico = btnGeo.querySelector(".gw-icon");
   if (ico) {
     ico.classList.toggle("is-active", !!enabled);
   }
@@ -1392,6 +1392,7 @@ if (isHomePage) {
     await loadEvents();
   }
 }); // fine DOMContentLoaded
+
 
 
 
