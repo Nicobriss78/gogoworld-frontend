@@ -19,8 +19,14 @@
   --gw-blue: #2C5AA0;
   --gw-accent: var(--gw-blue);
   --gw-dark: #131823;
-  --gw-bg: #0b0f19;
-  --gw-card: rgba(255,255,255,.06);
+
+/* LIGHT THEME */
+--gw-bg: #f2f4f7;
+--gw-card: #ffffff;
+--gw-border: #e4e7eb;
+
+--gw-text: #1f2933;
+--gw-text-soft: #52606d;
   --gw-border: rgba(255,255,255,.12);
   --gw-text: rgba(255,255,255,.92);
   --gw-text-dim: rgba(255,255,255,.72);
