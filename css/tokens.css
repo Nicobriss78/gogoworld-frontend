@@ -21,16 +21,17 @@
   --gw-dark: #131823;
 
 /* LIGHT THEME */
---gw-bg: #f2f4f7;
---gw-card: #ffffff;
---gw-border: #e4e7eb;
+/* Urban Elegant Light (area app) */
+  --gw-bg: #f2f4f7;            /* background pagina */
+  --gw-surface: #ffffff;       /* superfici: topbar/bottombar/toolbar */
+  --gw-card: #ffffff;          /* card */
+  --gw-border: #e4e7eb;        /* bordi */
 
---gw-text: #1f2933;
---gw-text-soft: #52606d;
-  --gw-border: rgba(255,255,255,.12);
-  --gw-text: rgba(255,255,255,.92);
-  --gw-text-dim: rgba(255,255,255,.72);
-  --gw-shadow: 0 10px 30px rgba(0,0,0,.35);
+  --gw-text: #1f2933;          /* testo principale */
+  --gw-text-dim: #52606d;      /* testo secondario */
+  --gw-text-soft: #52606d;     /* compat (alcuni punti usano -soft) */
+
+  --gw-shadow: 0 10px 25px rgba(0,0,0,.10);
 
   /* Spacing / radius */
   --gw-radius: 16px;
