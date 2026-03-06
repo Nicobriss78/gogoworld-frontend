@@ -64,10 +64,11 @@
 
 .gw-iconbtn{
   width:40px; height:40px;
-  border-radius:12px;
+  border-radius: var(--gw-radius-btn);
   border:1px solid var(--gw-border);
-  background:#fff;
-  color: var(--gw-ink);  display:flex;
+  background: var(--gw-surface);
+  color: var(--gw-ink);
+  display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
