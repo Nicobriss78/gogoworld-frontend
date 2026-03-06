@@ -178,12 +178,12 @@ top: calc(env(safe-area-inset-top) + var(--gw-topbar-h));  right: 14px;
   position: fixed;
   left: 0; right: 0; bottom: 0;
   z-index: 999;
-  background: var(--gw-surface);
-  border-top: 1px solid var(--gw-border);
+  background-color: var(--gw-surface, #fff);
+  border-top: 1px solid var(--gw-border, #e6eaf0);
 
   /* Altezza stabile: include safe-area senza "gonfiare" la barra */
   height: var(--gw-bottomnav-h, 64px);
-display: flex;
+  display: flex;
   align-items: center;
   justify-content: space-around;
 
