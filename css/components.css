@@ -860,18 +860,18 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
-  background: #fff;
+  background: var(--gw-card);
 }
 .simple-table th,
 .simple-table td {
   padding: 8px 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--gw-border);
   text-align: left;
   vertical-align: top;
 }
 .simple-table thead th {
-  background: #f3f4f6;
-  color: var(--color-secondary);
+  background: var(--gw-bg);
+  color: var(--gw-text-dim);
   font-weight: 600;
 }
 
