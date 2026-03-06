@@ -722,11 +722,11 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
   list-style: none;
 }
 
-.event-card {
-  border: 1px solid #ddd;
-  background: white;
+  border: 1px solid var(--gw-border);
+  background: var(--gw-card);
   padding: 0.75rem;
-  border-radius: 4px;
+  border-radius: var(--gw-radius);
+  box-shadow: var(--gw-shadow);
 }
 
 .event-card h3 { margin: 0 0 0.25rem; }
