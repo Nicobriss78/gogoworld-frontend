@@ -563,18 +563,7 @@ if (badgePriv) {
       elDetails.innerHTML = renderDetails(ev);
 
     }
-    // PATCH E4: render "Inizio/Fine" nel contenitore #eventSchedule usando il formatter "smart"
-    const secSchedule = document.getElementById("eventSchedule");
-    if (secSchedule) {
-      const start = ev?.dateStart || ev?.date; // fallback: usa dateStart, se assente usa date
-      const end = ev?.dateEnd || ev?.endDate; // compat: supporta endDate se presente
 
-      // usa formatDateSmart già definita in alto
-      const startHtml = `<p><strong>Inizio:</strong> ${formatDateSmart(start)}</p>`;
-      const endHtml = end ? `<p><strong>Fine:</strong> ${formatDateSmart(end)}</p>` : "";
-
-      secSchedule.innerHTML = `${startHtml}${endHtml}`;
-    }
     // --- PATCH: Recensioni (setup sezione) ---
     const secReviews = document.getElementById("eventReviews");
     const formReview = document.getElementById("reviewForm");
@@ -1292,6 +1281,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
