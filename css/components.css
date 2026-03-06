@@ -147,7 +147,7 @@
 .gw-menu a{
   display: block;
   padding: 10px 12px;
-  border-radius: 12px;
+  border-radius: var(--gw-radius-btn);
   text-decoration: none;
   color: var(--gw-blue);
   font-weight: 700;
