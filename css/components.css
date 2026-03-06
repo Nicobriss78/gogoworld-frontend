@@ -749,8 +749,8 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
 #map {
   height: 420px;
   margin: 1rem 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: 1px solid var(--gw-border);
+  border-radius: var(--gw-radius);
 }
 
 /* B2.1 – (UI v2) NON usare sticky su #mapSection: topbar è FIXED e lo copre */
