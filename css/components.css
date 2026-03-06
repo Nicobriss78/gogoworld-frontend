@@ -835,18 +835,18 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
 }
 .kpi-label {
   font-size: 0.85rem;
-  color: var(--color-secondary);
+  color: var(--gw-text-dim);
   margin-bottom: 0.25rem;
 }
 .kpi-value {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--gw-text);
 }
 .kpi-sub {
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--color-secondary);
+  color: var(--gw-text-dim);
   margin-left: 0.25rem;
 }
 
