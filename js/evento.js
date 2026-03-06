@@ -1082,6 +1082,7 @@ function renderSchedule(ev) {
   const start = ev?.date || ev?.dateStart;
   const end = ev?.endDate || ev?.dateEnd;
   const parts = [];
+  parts.push(`<p><strong>Quando:</strong> ${formatRangeSmart(start, end)}</p>`);
   parts.push(`<p><strong>Inizio:</strong> ${formatDateSmart(start)}</p>`);
   if (end) parts.push(`<p><strong>Fine:</strong> ${formatDateSmart(end)}</p>`);
   return parts.join("\n");
@@ -1291,6 +1292,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
