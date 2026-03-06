@@ -827,11 +827,11 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
   margin: 1rem 0 1.5rem;
 }
 .kpi-card {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  background: var(--gw-card);
+  border: 1px solid var(--gw-border);
+  border-radius: var(--gw-radius);
   padding: 0.75rem 1rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  box-shadow: var(--gw-shadow);
 }
 .kpi-label {
   font-size: 0.85rem;
