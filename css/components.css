@@ -784,35 +784,35 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
 
 /* Alert banners */
 .alert {
+.alert {
   margin: 0 0 16px;
   padding: 10px 12px;
-  border-radius: 4px;
+  border-radius: var(--gw-radius);
   font-size: 0.95rem;
   line-height: 1.3;
-  background: #fff; /* fallback neutro visibile */
-  color: var(--color-text);
-  border: 1px solid #ddd;
+  background: var(--gw-card);
+  color: var(--gw-text);
+  border: 1px solid var(--gw-border);
 }
 .alert.error {
-  background: var(--color-error-bg);
-  color: var(--color-error-text);
-  border: 1px solid #f5c6cb;
+  background: rgba(181, 42, 50, 0.08);
+  color: var(--gw-red);
+  border: 1px solid rgba(181, 42, 50, 0.22);
 }
 .alert.success {
-  background: var(--color-success-bg);
-  color: var(--color-success-text);
-  border: 1px solid #c8e6c9;
+  background: var(--accent-soft);
+  color: var(--gw-blue);
+  border: 1px solid var(--accent-border);
 }
 .alert.warning {
-  background: #fff8e1;
-  border: 1px solid #f1c40f;
-  color: #7d6608;
+  background: rgba(181, 42, 50, 0.06);
+  border: 1px solid rgba(181, 42, 50, 0.18);
+  color: #7a2c31;
 }
-/* Fallback informativo, se mai usato */
 .alert.info {
-  background: #e8f0fe;
-  color: #1a237e;
-  border: 1px solid #c5cae9;
+  background: var(--accent-soft);
+  color: var(--gw-blue);
+  border: 1px solid var(--accent-border);
 }
 
 /* TODO UI/UX Overhaul:
