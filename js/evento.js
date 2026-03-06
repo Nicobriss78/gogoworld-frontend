@@ -1046,18 +1046,23 @@ function renderMeta(ev) {
   const vis = escapeHtml(ev.visibility || "");
   const lang = escapeHtml(ev.language || "");
   const tgt = escapeHtml(ev.target || "");
+  const type = escapeHtml(ev.type || "");
+  const desc = escapeHtml(ev.description || "");
   const org =
     ev.organizer && typeof ev.organizer === "object"
       ? (ev.organizer.name || ev.organizer.email || ev.organizer._id || "")
       : "";
   const orgEsc = escapeHtml(org || "");
+
   const parts = [
+    desc ? `<p><strong>Descrizione:</strong> ${desc}</p>` : "",
+    type ? `<p><strong>Tipo:</strong> ${type}</p>` : "",
     vis ? `<p><strong>Visibilità:</strong> ${vis}</p>` : "",
     lang ? `<p><strong>Lingua:</strong> ${lang}</p>` : "",
     tgt ? `<p><strong>Target:</strong> ${tgt}</p>` : "",
     orgEsc ? `<p><strong>Organizzatore:</strong> ${orgEsc}</p>` : "",
   ].filter(Boolean);
-  // Stato approvazione + motivo moderazione (se rejected/blocked)
+
   {
     const appr = ev?.approvalStatus ? escapeHtml(ev.approvalStatus) : "";
     if (appr) {
@@ -1069,6 +1074,7 @@ function renderMeta(ev) {
       parts.push(`<p><strong>Stato:</strong> ${appr}${reason}</p>`);
     }
   }
+
   return parts.join("\n");
 }
 
@@ -1285,6 +1291,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
