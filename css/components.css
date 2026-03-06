@@ -27,8 +27,8 @@
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 999;
-  background: var(--gw-surface);
-  border-bottom: 1px solid var(--gw-border);
+  background-color: var(--gw-surface, #fff);
+  border-bottom: 1px solid var(--gw-border, #e6eaf0);
   padding-top: env(safe-area-inset-top);
   box-sizing: border-box;
 
