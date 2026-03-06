@@ -128,16 +128,17 @@
 /* ---------- HAMBURGER MENU (DROPDOWN) ---------- */
 .gw-menu{
   position: fixed;
-top: calc(env(safe-area-inset-top) + var(--gw-topbar-h));  right: 14px;
+  top: calc(env(safe-area-inset-top) + var(--gw-topbar-h));
+  right: 14px;
   z-index: 2000;
 
   width: min(280px, calc(100vw - 28px));
-  background: #fff;
+  background: var(--gw-surface);
   border: 1px solid var(--gw-border);
-  border-radius: 14px;
+  border-radius: var(--gw-radius);
   box-shadow: var(--gw-shadow);
 
-  padding: 8px;
+  padding: var(--space-sm);
   display: flex;
   flex-direction: column;
   gap: 6px;
