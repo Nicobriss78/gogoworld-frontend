@@ -566,13 +566,13 @@ article.gw-rail.gw-banner--tip .gw-banner__inner{
   padding: 12px 12px;
   align-items: center;
 
-  border-left: 4px solid rgba(44,90,160,.55);
+  border-left: 4px solid var(--accent-border);
   transition: all .3s ease;
 
-  /* SFONDO (watermark + gradient) — era finito fuori blocco */
+  /* SFONDO (watermark + gradient) */
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='90' viewBox='0 0 220 90'%3E%3Cg fill='none' stroke='%2399b3d9' stroke-opacity='.55' stroke-width='2'%3E%3Cpath d='M0 70 C40 40,80 100,120 70 S180 40,220 70'/%3E%3Cpath d='M0 45 C40 15,80 75,120 45 S180 15,220 45'/%3E%3C/g%3E%3C/svg%3E") right 0 center / 220px 90px no-repeat,
-    linear-gradient(135deg, rgba(44,90,160,.22), rgba(200,58,58,.18));
+    linear-gradient(135deg, var(--accent-soft), rgba(181, 42, 50, 0.10));
 }
 
 article.gw-rail.gw-banner--tip:hover .gw-banner__inner{
