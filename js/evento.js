@@ -1080,6 +1080,7 @@ function renderSchedule(ev) {
 function renderLocation(ev) {
   const parts = [];
   if (ev.venueName) parts.push(`<p><strong>Luogo:</strong> ${escapeHtml(ev.venueName)}</p>`);
+
   const addrBits = [
     ev.street ? escapeHtml(ev.street) : "",
     ev.streetNumber ? escapeHtml(ev.streetNumber) : "",
@@ -1088,8 +1089,19 @@ function renderLocation(ev) {
     .filter(Boolean)
     .join(", ");
   if (addrBits) parts.push(`<p><strong>Indirizzo:</strong> ${addrBits}</p>`);
-  const locBits = [ev.city, ev.province, ev.region, ev.country].filter(Boolean).map(escapeHtml).join(" / ");
+
+  const locBits = [ev.city, ev.province, ev.region, ev.country]
+    .filter(Boolean)
+    .map(escapeHtml)
+    .join(" / ");
   if (locBits) parts.push(`<p><strong>Città/Provincia/Regione/Paese:</strong> ${locBits}</p>`);
+
+  const lat = ev?.latitude ?? ev?.lat;
+  const lon = ev?.longitude ?? ev?.lng ?? ev?.lon;
+  if (lat != null && lon != null) {
+    parts.push(`<p><strong>Coordinate:</strong> ${escapeHtml(String(lat))}, ${escapeHtml(String(lon))}</p>`);
+  }
+
   return parts.join("\n");
 }
 
@@ -1281,6 +1293,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
