@@ -18,7 +18,7 @@
 /* Urban Elegant Light (area app) */
   --gw-blue: #1F4E5F;
   --gw-accent: var(--gw-blue);
-   --accent-hover: #173B47;
+  --accent-hover: #173B47;
   --accent-soft: rgba(31, 78, 95, 0.08);
   --accent-border: rgba(31, 78, 95, 0.25);
   --gw-dark: #131823;
@@ -36,6 +36,7 @@
 
   /* Spacing / radius */
   --gw-radius: 12px;
+  --gw-radius-btn: 10px;
   --gw-gap: 16px;
 
   --space-xs: 6px;
