@@ -706,7 +706,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
 .linklike {
   background: none;
   border: none;
-  color: var(--color-primary);
+  color: var(--gw-blue);
   cursor: pointer;
   padding: 0;
   text-decoration: underline;
