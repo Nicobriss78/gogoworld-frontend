@@ -15,27 +15,31 @@
   --color-success-bg: #e8f5e9;
   --color-success-text: #1b5e20;
 
-  /* Dark UI tokens (area app) */
-  --gw-blue: #2C5AA0;
+/* Urban Elegant Light (area app) */
+  --gw-blue: #1F5F78;
   --gw-accent: var(--gw-blue);
   --gw-dark: #131823;
 
-/* LIGHT THEME */
-/* Urban Elegant Light (area app) */
-  --gw-bg: #f2f4f7;            /* background pagina */
-  --gw-surface: #ffffff;       /* superfici: topbar/bottombar/toolbar */
-  --gw-card: #ffffff;          /* card */
-  --gw-border: #e4e7eb;        /* bordi */
+  --gw-bg: #F4F6F8;            /* background pagina */
+  --gw-surface: #FFFFFF;       /* superfici: topbar/bottombar/toolbar */
+  --gw-card: #FFFFFF;          /* card */
+  --gw-border: #E6EAF0;        /* bordi */
 
-  --gw-text: #1f2933;          /* testo principale */
-  --gw-text-dim: #52606d;      /* testo secondario */
-  --gw-text-soft: #52606d;     /* compat (alcuni punti usano -soft) */
+  --gw-text: #1C2430;          /* testo principale */
+  --gw-text-dim: #5A6572;      /* testo secondario */
+  --gw-text-soft: #8B95A1;     /* testo tenue */
 
-  --gw-shadow: 0 10px 25px rgba(0,0,0,.10);
+  --gw-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
 
   /* Spacing / radius */
-  --gw-radius: 16px;
-  --gw-gap: 12px;
+  --gw-radius: 12px;
+  --gw-gap: 16px;
+
+  --space-xs: 6px;
+  --space-sm: 10px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
 
   /* Altezze barre */
   --gw-bottombar-h: 64px;
@@ -49,8 +53,7 @@
   /* Compat: legacy “row height” (una riga topbar) */
   --gw-topbar-row-h: var(--gw-topbar-header-h);
 
-/* Alias / semantic */
-  --gw-surface: var(--gw-surface);
+  /* Alias / semantic */
   --gw-muted: var(--gw-text-dim);
   --gw-gray: var(--gw-text-dim);
   --gw-ink: rgba(0,0,0,.88);
