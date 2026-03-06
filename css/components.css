@@ -525,8 +525,8 @@ body.gw-page-map .gw-map{
    ========================= */
 .gw-state{
   padding: 14px;
-  border-radius: 12px;
-  background: rgba(0,0,0,0.03);
+  border-radius: var(--gw-radius);
+  background: rgba(31, 78, 95, 0.06);
   line-height: 1.35;
 }
 
