@@ -673,16 +673,24 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
 
 .btn {
   padding: 0.5rem 1rem;
-  border: none;
-  background: var(--color-primary);
-  color: white;
+  border: 1px solid var(--gw-blue);
+  background: var(--gw-blue);
+  color: #fff;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: var(--gw-radius-btn);
   font-size: 1rem;
 }
-.btn:hover { background: #195db7; }
-.btn-secondary { background: var(--color-secondary); }
-.btn-secondary:hover { background: #333; }
+.btn:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn-secondary {
+  background: var(--gw-surface);
+  color: var(--gw-blue);
+  border: 1px solid var(--gw-border);
+}
+.btn-secondary:hover {
+  background: var(--accent-soft);
+  color: var(--gw-blue);
+  border-color: var(--accent-border);
+}
 .btn[disabled],
 .btn:disabled { 
   opacity: .6; 
