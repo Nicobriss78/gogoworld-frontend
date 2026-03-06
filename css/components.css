@@ -584,12 +584,12 @@ article.gw-rail.gw-banner--tip .gw-banner__icon{
   flex: 0 0 auto;
   width: 36px;
   height: 36px;
-  border-radius: 12px;
+  border-radius: var(--gw-radius-btn);
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: #fff;
+  background: var(--gw-surface);
   border: 1px solid var(--gw-border);
   box-shadow: 0 2px 10px rgba(17,24,39,.06);
   color: var(--gw-blue);
