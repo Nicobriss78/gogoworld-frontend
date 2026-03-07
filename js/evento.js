@@ -352,7 +352,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     ]);
     if (!detail.ok) throw new Error(detail.error || "Errore dettaglio evento");
 
-    const ev = detail.event;
+    const ev = detail?.event || detail?.data?.event || detail?.data || null;
+    if (!ev || typeof ev !== "object") {
+      throw new Error("Dettaglio evento non valido");
+    }
     // PATCH: myId corretto dentro me.user
   const myId = me?.user?._id || me?._id || me?.id;
 // CHIP STATUS (utente loggato)
@@ -1293,6 +1296,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
