@@ -482,6 +482,17 @@ body.gw-page-map .gw-map{
   justify-content: center;
   cursor: pointer;
 }
+.gw-detail-drawer__head{
+  position: relative;
+}
+
+.gw-detail-close{
+  position: static;
+  top: auto;
+  right: auto;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
 /* Variante "più dettagli" (usata nel drawer MAPPA): + rosso come logout */
 .gw-info-btn.gw-info-plus{
   color: var(--gw-red);
