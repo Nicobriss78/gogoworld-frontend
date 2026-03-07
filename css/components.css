@@ -1061,10 +1061,20 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
   top:10px;
   right:10px;
   display:flex;
+  align-items:center;
   gap:6px;
-  z-index:2;
+  z-index:6;
 }
-.gw-card-action-btn{ position:static; }
+
+.gw-card-actions--abs > .gw-card-action-btn{
+  position:static !important;
+  top:auto !important;
+  right:auto !important;
+  left:auto !important;
+  bottom:auto !important;
+  inset:auto !important;
+  flex:0 0 auto;
+}
    .gw-debug-plus{
   min-width: 52px;
   width: auto;
