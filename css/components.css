@@ -1075,16 +1075,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
   inset:auto !important;
   flex:0 0 auto;
 }
-   .gw-debug-plus{
-  min-width: 52px;
-  width: auto;
-  padding: 0 10px;
-  border: 2px solid #000;
-  background: #ffeb3b;
-  color: #000 !important;
-  font-size: 18px;
-  font-weight: 900;
-   }
+
 .gw-map-selected-wrap{
   position:relative;
 }
