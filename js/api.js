@@ -139,7 +139,9 @@ export async function apiDelete(path, token) {
 export async function apiPut(path, body = {}, token) {
   return apiFetch(path, { method: "PUT", body, token: token ?? getToken() });
 }
-
+export async function apiPatch(path, body = {}, token) {
+  return apiFetch(path, { method: "PATCH", body, token: token ?? getToken() });
+}
 // Helper diagnostico ruoli/token
 export async function whoami(token) {
   return apiGet("/users/whoami", token ?? getToken());
