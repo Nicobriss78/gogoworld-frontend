@@ -87,8 +87,10 @@ const coverUrl =
 
   // Wrapper posizionato in alto a destra; i bottoni sono "static" per evitare collisioni con eventuali CSS assoluti
 const infoHtml = `
-    <div class="gw-card-actions gw-card-actions--abs">
+    <div class="gw-card-actions gw-card-actions--abs"
+         style="position:absolute; top:10px; right:10px; display:flex; align-items:center; gap:6px; z-index:6;">
       <button class="${detailsBtnClass} gw-card-action-btn"
+        style="position:static; inset:auto; top:auto; right:auto; left:auto; bottom:auto; flex:0 0 auto;"
         type="button"
         title="${detailsTitle}"
         aria-label="${detailsTitle}"
@@ -98,6 +100,7 @@ const infoHtml = `
       ${
         (showCloseDetail && detailsIsPlus)
           ? `<button class="gw-info-btn gw-info-plus gw-card-action-btn"
+              style="position:static; inset:auto; top:auto; right:auto; left:auto; bottom:auto; flex:0 0 auto;"
               type="button"
               title="Chiudi dettaglio"
               aria-label="Chiudi dettaglio"
