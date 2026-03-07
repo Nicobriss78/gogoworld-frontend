@@ -76,7 +76,7 @@ const coverUrl =
   // - plus: + (Più dettagli / apri scheda completa)
   const detailsVariant = String(opts?.detailsVariant || "info").toLowerCase();
   const detailsIsPlus = detailsVariant === "plus";
-  const detailsIcon = detailsIsPlus ? "+" : "ℹ️";
+  const detailsIcon = detailsIsPlus ? "[+]" : "ℹ️";
   const detailsTitle = detailsIsPlus ? "Più dettagli" : "Dettagli evento";
   const detailsBtnClass = detailsIsPlus ? "gw-info-btn gw-info-plus" : "gw-info-btn";
 
