@@ -1064,7 +1064,9 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
   z-index:2;
 }
 .gw-card-action-btn{ position:static; }
-
+.gw-map-selected-wrap{
+  position:relative;
+}
 .gw-meta--mt6{ margin-top:6px; }
 .gw-meta--mt4{ margin-top:4px; }
 /* Galleria immagini nel dettaglio */
