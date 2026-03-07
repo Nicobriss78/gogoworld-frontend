@@ -346,16 +346,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const [detail, me] = await Promise.all([
-      apiGet(`/events/${eventId}`, token),
-      apiGet("/users/me", token),
-    ]);
+    const detail = await apiGet(`/events/${eventId}`, token);
     if (!detail.ok) throw new Error(detail.error || "Errore dettaglio evento");
 
     const ev = detail?.event || detail?.data?.event || detail?.data || null;
     if (!ev || typeof ev !== "object") {
       throw new Error("Dettaglio evento non valido");
     }
+
+    let me = null;
+    try {
+      me = await apiGet("/users/me", token);
+    } catch (e) {
+      console.debug("[evento] /users/me non disponibile:", e?.message || e);
+      me = null;
+    }
+
     // PATCH: myId corretto dentro me.user
   const myId = me?.user?._id || me?._id || me?.id;
 // CHIP STATUS (utente loggato)
@@ -1296,6 +1302,7 @@ function buildUpdatePayloadFromForm(form) {
 
   return payload;
 }
+
 
 
 
