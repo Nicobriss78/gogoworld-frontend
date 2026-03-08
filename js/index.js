@@ -36,24 +36,10 @@ return;
   let deferredInstallPrompt = null;
   let installBannerTimer = null;
 
-  const INSTALL_BANNER_INSTALLED_KEY = "gw_pwa_installed";
   function selectRole(role) {
     try { sessionStorage.setItem("desiredRole", role); } catch {}
     window.location.href = "login.html";
   }
-
-  function markPwaInstalled() {
-    try {
-      localStorage.setItem(INSTALL_BANNER_INSTALLED_KEY, "1");
-    } catch {}
-  }
-function isPwaInstalled() {
-  try {
-    return localStorage.getItem(INSTALL_BANNER_INSTALLED_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
 
 function isStandaloneMode() {
   return window.matchMedia("(display-mode: standalone)").matches ||
@@ -113,6 +99,7 @@ if (installDismissBtn) {
     deferredInstallPrompt = null;
   });
 });
+
 
 
 
