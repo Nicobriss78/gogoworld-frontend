@@ -2,8 +2,15 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Chat Evento</title>
+
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#1F4E5F" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="GoGoWorld" />
+
   <link rel="stylesheet" href="../style.css" />
   <link rel="stylesheet" href="/css/areas/public.css" />
 
@@ -20,7 +27,7 @@
   background: #fafafa;
   display: flex;
   flex-direction: column;
-}    .msg { margin:.3rem 0; padding:.35rem .6rem; border-radius:8px; max-width:75%; }
+} .msg { margin:.3rem 0; padding:.35rem .6rem; border-radius:8px; max-width:75%; }
     .msg.me { background:#dff0ff; align-self:flex-end; }
     .msg.them { background:#f1f1f3; align-self:flex-start; }
     #composer { display:flex; gap:.5rem; border-top:1px solid #ddd; padding:.5rem; }
@@ -31,6 +38,7 @@
     .muted { opacity:.65; }
   </style>
 </head>
+
 <body>
   <header>
     <h1>Chat Evento</h1>
