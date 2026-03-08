@@ -82,16 +82,13 @@ if (btnRegister) {
   }
 
   window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-
-    if (wasInstallBannerDismissed()) return;
-
-    if (installBannerTimer) clearTimeout(installBannerTimer);
-    installBannerTimer = setTimeout(() => {
-      showInstallBanner();
-    }, 1200);
-  });
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (installBannerTimer) clearTimeout(installBannerTimer);
+  installBannerTimer = setTimeout(() => {
+    showInstallBanner();
+  }, 1200);
+});
 
   if (installBtn) {
     installBtn.addEventListener("click", async () => {
@@ -121,6 +118,7 @@ if (btnRegister) {
     deferredInstallPrompt = null;
   });
 });
+
 
 
 
