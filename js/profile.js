@@ -170,7 +170,7 @@ function setAvatarPreview(url) {
     // caso edge: percorso relativo non previsto
     src = API_PREFIX + "/" + url.replace(/^\/+/, "");
   }
-avatarPreview.onerror = () => {
+    avatarPreview.onerror = () => {
     avatarPreview.onerror = null; // evita loop
     hideEl(avatarPreview);
   };
@@ -217,10 +217,9 @@ function renderProfileView(p) {
       if (!isUploads && !isApiUploads && !/^https?:\/\//i.test(p.avatarUrl)) {
         src = API_PREFIX + "/" + p.avatarUrl.replace(/^\/+/, "");
       }
-      avatarView.onerror = () => {
-        const path = src.startsWith(API_PREFIX) ? src : (API_PREFIX + src);
+        avatarView.onerror = () => {
         avatarView.onerror = null;
-        avatarView.src = BACKEND_ORIGIN + path;
+        hideEl(avatarView);
       };
       avatarView.src = src;
       showEl(avatarView);
