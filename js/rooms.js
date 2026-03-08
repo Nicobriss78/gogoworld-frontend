@@ -212,10 +212,13 @@ async function init() {
 // Popola subito la lista "Le mie stanze" nella colonna sinistra
 await loadMyRooms();
 
-  if (eventId) {
-    // crea/entra stanza dell'evento (pubblica)
+if (eventId) {
+    // crea/entra stanza dell'evento
     const res = await openOrJoinEvent(eventId);
-    if (res?.ok) {
+
+    if (res?.ok && res?.data?.locked) {
+      showEmpty(`Questa chat evento è ancora bloccata. Apri prima il dettaglio evento e inserisci il codice di accesso.`);
+    } else if (res?.ok && res?.data?.roomId) {
       bindRoom({
         roomId: res.data.roomId,
         eventId,
