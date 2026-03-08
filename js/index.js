@@ -45,12 +45,6 @@ function wasInstallBannerDismissed() {
   return false;
 }
 
-  function markInstallBannerDismissed() {
-    try {
-      localStorage.setItem(INSTALL_BANNER_DISMISSED_KEY, "1");
-    } catch {}
-  }
-
   function markPwaInstalled() {
     try {
       localStorage.setItem(INSTALL_BANNER_INSTALLED_KEY, "1");
@@ -116,6 +110,7 @@ if (btnRegister) {
     deferredInstallPrompt = null;
   });
 });
+
 
 
 
