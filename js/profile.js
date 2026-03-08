@@ -170,11 +170,9 @@ function setAvatarPreview(url) {
     // caso edge: percorso relativo non previsto
     src = API_PREFIX + "/" + url.replace(/^\/+/, "");
   }
-  avatarPreview.onerror = () => {
-    // fallback diretto al dominio Render
-    const path = src.startsWith(API_PREFIX) ? src : (API_PREFIX + src);
+avatarPreview.onerror = () => {
     avatarPreview.onerror = null; // evita loop
-    avatarPreview.src = BACKEND_ORIGIN + path;
+    hideEl(avatarPreview);
   };
   avatarPreview.src = src;
   showEl(avatarPreview);
