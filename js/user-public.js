@@ -1,7 +1,6 @@
 // js/user-public.js — Profilo pubblico + bacheca attività (stile social B)
 import { apiGet, apiPost, apiDelete } from "./api.js";
 
-const BACKEND_ORIGIN = "https://gogoworld-api.onrender.com";
 // ==============================
 // J2 helpers — show/hide via classi (no element.style.display)
 // ==============================
