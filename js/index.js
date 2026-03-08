@@ -67,11 +67,11 @@ function isStandaloneMode() {
   }
 
   function showInstallBanner() {
-    if (!installBanner) return;
-    if (wasInstallBannerDismissed()) return;
-
-    installBanner.classList.remove("is-hidden");
-  }
+  if (!installBanner) return;
+  if (isPwaInstalled()) return;
+  if (isStandaloneMode()) return;
+  installBanner.classList.remove("is-hidden");
+}
   if (btnOrganizer) btnOrganizer.addEventListener("click", () => selectRole("organizer"));
   if (btnParticipant) btnParticipant.addEventListener("click", () => selectRole("participant"));
 
@@ -121,6 +121,7 @@ if (btnRegister) {
     deferredInstallPrompt = null;
   });
 });
+
 
 
 
