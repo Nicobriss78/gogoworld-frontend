@@ -182,7 +182,10 @@ export async function getActiveBannersBatch(
 }
 
 export async function getPublicProfile(userId) {
-  return apiGet(`/profile/${userId}`);
+  if (!userId) {
+    return { ok: false, error: "NO_USER_ID" };
+  }
+  return apiGet(`/users/${encodeURIComponent(String(userId))}/public`);
 }
 // Ricerca utenti (autenticata)
 export async function searchUsers(query, token) {
