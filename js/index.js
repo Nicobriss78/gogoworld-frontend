@@ -105,12 +105,11 @@ if (btnRegister) {
     });
   }
 
-  if (installDismissBtn) {
-    installDismissBtn.addEventListener("click", () => {
-      markInstallBannerDismissed();
-      hideInstallBanner();
-    });
-  }
+if (installDismissBtn) {
+  installDismissBtn.addEventListener("click", () => {
+    hideInstallBanner();
+  });
+}
 
   window.addEventListener("appinstalled", () => {
     markPwaInstalled();
@@ -118,6 +117,7 @@ if (btnRegister) {
     deferredInstallPrompt = null;
   });
 });
+
 
 
 
