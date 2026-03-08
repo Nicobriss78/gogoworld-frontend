@@ -42,7 +42,36 @@ return;
     try { sessionStorage.setItem("desiredRole", role); } catch {}
     window.location.href = "login.html";
   }
+function wasInstallBannerDismissed() {
+    try {
+      return localStorage.getItem(INSTALL_BANNER_DISMISSED_KEY) === "1";
+    } catch {
+      return false;
+    }
+  }
 
+  function markInstallBannerDismissed() {
+    try {
+      localStorage.setItem(INSTALL_BANNER_DISMISSED_KEY, "1");
+    } catch {}
+  }
+
+  function markPwaInstalled() {
+    try {
+      localStorage.setItem(INSTALL_BANNER_INSTALLED_KEY, "1");
+    } catch {}
+  }
+
+  function hideInstallBanner() {
+    if (installBanner) installBanner.classList.add("is-hidden");
+  }
+
+  function showInstallBanner() {
+    if (!installBanner) return;
+    if (wasInstallBannerDismissed()) return;
+
+    installBanner.classList.remove("is-hidden");
+  }
   if (btnOrganizer) btnOrganizer.addEventListener("click", () => selectRole("organizer"));
   if (btnParticipant) btnParticipant.addEventListener("click", () => selectRole("participant"));
 
@@ -52,6 +81,7 @@ return;
     });
   }
 });
+
 
 
 
