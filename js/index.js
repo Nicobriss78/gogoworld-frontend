@@ -43,12 +43,8 @@ return;
     window.location.href = "login.html";
   }
 function wasInstallBannerDismissed() {
-    try {
-      return localStorage.getItem(INSTALL_BANNER_DISMISSED_KEY) === "1";
-    } catch {
-      return false;
-    }
-  }
+  return false;
+}
 
   function markInstallBannerDismissed() {
     try {
@@ -121,6 +117,7 @@ if (btnRegister) {
     deferredInstallPrompt = null;
   });
 });
+
 
 
 
