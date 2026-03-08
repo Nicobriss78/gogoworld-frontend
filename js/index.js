@@ -75,12 +75,53 @@ function wasInstallBannerDismissed() {
   if (btnOrganizer) btnOrganizer.addEventListener("click", () => selectRole("organizer"));
   if (btnParticipant) btnParticipant.addEventListener("click", () => selectRole("participant"));
 
-  if (btnRegister) {
+if (btnRegister) {
     btnRegister.addEventListener("click", () => {
       window.location.href = "pages/register.html"; // <- percorso giusto per register
     });
   }
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+
+    if (wasInstallBannerDismissed()) return;
+
+    if (installBannerTimer) clearTimeout(installBannerTimer);
+    installBannerTimer = setTimeout(() => {
+      showInstallBanner();
+    }, 1200);
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener("click", async () => {
+      if (!deferredInstallPrompt) return;
+
+      deferredInstallPrompt.prompt();
+      const choiceResult = await deferredInstallPrompt.userChoice;
+
+      if (choiceResult?.outcome === "accepted") {
+        hideInstallBanner();
+      }
+
+      deferredInstallPrompt = null;
+    });
+  }
+
+  if (installDismissBtn) {
+    installDismissBtn.addEventListener("click", () => {
+      markInstallBannerDismissed();
+      hideInstallBanner();
+    });
+  }
+
+  window.addEventListener("appinstalled", () => {
+    markPwaInstalled();
+    hideInstallBanner();
+    deferredInstallPrompt = null;
+  });
 });
+
 
 
 
