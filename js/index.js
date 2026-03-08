@@ -36,7 +36,6 @@ return;
   let deferredInstallPrompt = null;
   let installBannerTimer = null;
 
-  const INSTALL_BANNER_DISMISSED_KEY = "gw_install_banner_dismissed";
   const INSTALL_BANNER_INSTALLED_KEY = "gw_pwa_installed";
   function selectRole(role) {
     try { sessionStorage.setItem("desiredRole", role); } catch {}
@@ -117,6 +116,7 @@ if (btnRegister) {
     deferredInstallPrompt = null;
   });
 });
+
 
 
 
