@@ -94,11 +94,11 @@ if (installDismissBtn) {
 }
 
   window.addEventListener("appinstalled", () => {
-    markPwaInstalled();
     hideInstallBanner();
     deferredInstallPrompt = null;
   });
 });
+
 
 
 
