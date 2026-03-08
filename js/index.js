@@ -65,7 +65,6 @@ function isStandaloneMode() {
 
   function showInstallBanner() {
   if (!installBanner) return;
-  if (isPwaInstalled()) return;
   if (isStandaloneMode()) return;
   installBanner.classList.remove("is-hidden");
 }
@@ -114,6 +113,7 @@ if (installDismissBtn) {
     deferredInstallPrompt = null;
   });
 });
+
 
 
 
