@@ -50,7 +50,18 @@ function wasInstallBannerDismissed() {
       localStorage.setItem(INSTALL_BANNER_INSTALLED_KEY, "1");
     } catch {}
   }
+function isPwaInstalled() {
+  try {
+    return localStorage.getItem(INSTALL_BANNER_INSTALLED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
 
+function isStandaloneMode() {
+  return window.matchMedia("(display-mode: standalone)").matches ||
+         window.navigator.standalone === true;
+}
   function hideInstallBanner() {
     if (installBanner) installBanner.classList.add("is-hidden");
   }
@@ -110,6 +121,7 @@ if (btnRegister) {
     deferredInstallPrompt = null;
   });
 });
+
 
 
 
