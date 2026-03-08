@@ -80,10 +80,8 @@ function renderProfile(profile) {
     hideEl(roleEl);
   }
 
-  if (profile.profile?.avatarUrl) {
-    avatarEl.src = profile.profile.avatarUrl.startsWith("http")
-      ? profile.profile.avatarUrl
-      : BACKEND_ORIGIN + profile.profile.avatarUrl;
+if (profile.profile?.avatarUrl) {
+    avatarEl.src = profile.profile.avatarUrl;
     showEl(avatarEl);
   } else {
     hideEl(avatarEl);
