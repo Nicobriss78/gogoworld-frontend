@@ -1,8 +1,5 @@
 // js/profile.js — C1 Profilo (UI)
 import { getMyProfile, updateMyProfile, whoami, apiGet, apiPost } from "./api.js";
-// Fallback assoluto al backend Render se il proxy Netlify /api fallisce (404)
-// Mantieni sincronizzato questo valore con netlify.toml
-const BACKEND_ORIGIN = "https://gogoworld-api.onrender.com";
 const API_PREFIX = "/api";
 
 // --- helpers UI ---
