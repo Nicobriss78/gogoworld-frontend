@@ -29,7 +29,15 @@ return;
   const btnOrganizer = document.getElementById("btnOrganizer");
   const btnParticipant = document.getElementById("btnParticipant");
   const btnRegister = document.getElementById("btnRegister");
+  const installBanner = document.getElementById("installBanner");
+  const installBtn = document.getElementById("installBtn");
+  const installDismissBtn = document.getElementById("installDismissBtn");
 
+  let deferredInstallPrompt = null;
+  let installBannerTimer = null;
+
+  const INSTALL_BANNER_DISMISSED_KEY = "gw_install_banner_dismissed";
+  const INSTALL_BANNER_INSTALLED_KEY = "gw_pwa_installed";
   function selectRole(role) {
     try { sessionStorage.setItem("desiredRole", role); } catch {}
     window.location.href = "login.html";
@@ -44,5 +52,6 @@ return;
     });
   }
 });
+
 
 
