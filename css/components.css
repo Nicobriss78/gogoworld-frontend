@@ -1195,3 +1195,166 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
   font-size:.8rem;
   line-height:1.2;
 }
+/* =========================================================
+   PWA Install Banner — Homepage
+   ========================================================= */
+.gw-install-banner{
+  position: relative;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+
+  width: min(100%, 560px);
+  margin: 18px auto 0;
+  padding: 14px 14px 14px 12px;
+
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.92));
+  border: 1px solid var(--gw-border, #e6eaf0);
+  border-radius: 18px;
+  box-shadow:
+    0 10px 28px rgba(16, 24, 40, 0.08),
+    0 2px 8px rgba(16, 24, 40, 0.04);
+
+  overflow: hidden;
+}
+
+.gw-install-banner::before{
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--gw-red, #C63C46), var(--gw-blue, #1F4E5F));
+  opacity: 0.95;
+}
+
+.gw-install-banner__media{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gw-install-banner__icon{
+  width: 56px;
+  height: 56px;
+  display: block;
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.10);
+  background: #fff;
+}
+
+.gw-install-banner__body{
+  min-width: 0;
+}
+
+.gw-install-banner__eyebrow{
+  margin: 0 0 4px;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gw-red, #C63C46);
+  opacity: 0.92;
+}
+
+.gw-install-banner__title{
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--gw-text, #111827);
+}
+
+.gw-install-banner__text{
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--gw-muted, #667085);
+}
+
+.gw-install-banner__actions{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.gw-install-banner__cta{
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.gw-install-banner__dismiss{
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--gw-border, #e6eaf0);
+  border-radius: 10px;
+  background: var(--gw-surface, #fff);
+  color: var(--gw-muted, #667085);
+  font-size: 22px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gw-install-banner__dismiss:active,
+.gw-install-banner__cta:active{
+  transform: scale(.985);
+}
+
+@media (max-width: 640px){
+  .gw-install-banner{
+    grid-template-columns: 60px minmax(0, 1fr);
+    gap: 12px;
+    padding: 13px 13px 13px 12px;
+    border-radius: 16px;
+  }
+
+  .gw-install-banner__icon{
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+  }
+
+  .gw-install-banner__title{
+    font-size: 17px;
+  }
+
+  .gw-install-banner__text{
+    font-size: 12.5px;
+  }
+
+  .gw-install-banner__actions{
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .gw-install-banner__cta{
+    min-height: 38px;
+    padding: 0 12px;
+  }
+
+  .gw-install-banner__dismiss{
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 420px){
+  .gw-install-banner{
+    grid-template-columns: 1fr;
+  }
+
+  .gw-install-banner__media{
+    justify-content: flex-start;
+  }
+}
