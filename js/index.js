@@ -41,9 +41,6 @@ return;
     try { sessionStorage.setItem("desiredRole", role); } catch {}
     window.location.href = "login.html";
   }
-function wasInstallBannerDismissed() {
-  return false;
-}
 
   function markPwaInstalled() {
     try {
@@ -117,6 +114,7 @@ if (installDismissBtn) {
     deferredInstallPrompt = null;
   });
 });
+
 
 
 
