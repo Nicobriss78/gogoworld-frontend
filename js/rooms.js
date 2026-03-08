@@ -250,7 +250,7 @@ const mine = await getMyRooms({ onlyActive: 1 });
           if (found.event && (found.event._id || found.event.id)) {
             const evId2 = found.event._id || found.event.id;
             const res2 = await openOrJoinEvent(evId2);
-            if (res2?.ok) {
+            if (res2?.ok && res2?.data?.roomId) {
               bindRoom({
                 roomId: res2.data.roomId,
                 eventId: evId2,
