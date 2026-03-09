@@ -33,7 +33,6 @@ main.gw-home{
   display: flex;
   flex-direction: column;
 }
-
 /* Il “corpo” deve espandersi e spingere il footer in basso */
 main.gw-home > section{
   flex: 1 1 auto;
