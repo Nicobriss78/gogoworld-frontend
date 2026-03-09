@@ -33,6 +33,22 @@ main.gw-home{
   display: flex;
   flex-direction: column;
 }
+.gw-body{
+  width: 100%;
+  max-width: var(--gw-page-max);
+  margin-inline: auto;
+  padding-inline: var(--gw-page-pad-x);
+  padding-block: var(--gw-page-pad-y);
+  box-sizing: border-box;
+}
+
+.gw-body--wide{
+  width: 100%;
+  max-width: 100%;
+  padding-inline: 0;
+  padding-block: var(--gw-page-pad-y);
+  box-sizing: border-box;
+}
 /* Il “corpo” deve espandersi e spingere il footer in basso */
 main.gw-home > section{
   flex: 1 1 auto;
