@@ -234,8 +234,8 @@ body.gw-page-map #mapSection{
 /* Mobile: preview a percentuale */
 @media (max-width: 520px){
   #followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap{
-    flex: 0 0 78%;
-    max-width: 78%;
+    flex: 0 0 calc(100% - 4px);
+    max-width: calc(100% - 4px);
     min-width: 260px;
   }
 }
