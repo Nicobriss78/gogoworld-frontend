@@ -321,14 +321,14 @@ body.gw-page-map #mapSection{
 
 .gw-countdown-badge--following{
   position:absolute;
-  top:10px;
-  left:10px;
+  top:8px;
+  left:8px;
   z-index:3;
   background:rgba(0,0,0,.65);
   color:#fff;
-  padding:4px 8px;
+  padding:3px 7px;
   border-radius:10px;
-  font-size:12px;
+  font-size:11px;
 }
 
 .gw-following-cta{ margin-top:6px; }
