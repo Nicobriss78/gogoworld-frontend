@@ -408,7 +408,7 @@ body.gw-page-map .gw-map{
   -webkit-overflow-scrolling: touch;
   display:flex;
   flex-direction: column;
-  padding: 10px 12px 8px;
+  padding: 8px 10px 8px;
 }
 
 .gw-rail .title{
