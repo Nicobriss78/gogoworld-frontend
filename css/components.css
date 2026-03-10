@@ -390,7 +390,7 @@ body.gw-page-map .gw-map{
 /* locandina */
 .gw-thumb{
   flex: 0 0 auto;
-  height: 84px;
+  height: 72px;
   background: #f3f4f6;
   background-image: var(--gw-bg, none);
   border-bottom: 1px solid var(--gw-border);
