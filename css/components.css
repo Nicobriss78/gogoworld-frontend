@@ -433,9 +433,9 @@ body.gw-page-map .gw-map{
   z-index: 2;
   background: var(--gw-surface);
   border-top: 1px solid var(--gw-border);
-  padding: 10px 12px 12px;
+  padding: 8px 10px 10px;
   display:flex;
-  gap: 10px;
+  gap: 8px;
 }
 /* --- Banner come card nel carosello (events_list_inline) --- */
 .gw-banner-card{
