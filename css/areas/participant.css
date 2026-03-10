@@ -331,7 +331,7 @@ body.gw-page-map #mapSection{
   font-size:12px;
 }
 
-.gw-following-cta{ margin-top:8px; }
+.gw-following-cta{ margin-top:6px; }
 .gw-following-cta--joined{ font-size:13px; opacity:.85; }
 .gw-following-cta--join{ width:100%; }
 
@@ -342,8 +342,7 @@ body.gw-page-map #mapSection{
 
 .gw-banner-meta--tight{ margin-top:0; }
 
-.gw-following-block{ margin-top:14px; }
-
+.gw-following-block{ margin-top:10px; }
 .gw-following-count{ opacity:.75; }
 
 /* FASE 4 — partecipante.js (J1) */
