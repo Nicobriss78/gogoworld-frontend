@@ -216,9 +216,9 @@ body.gw-page-map #mapSection{
    ========================================================= */
 
 #followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap{
-  flex: 0 0 420px;
-  max-width: 420px;
-  min-width: 320px; /* evita card troppo strette */
+  flex: 0 0 calc(100% - 8px);
+  max-width: calc(100% - 8px);
+  min-width: 320px;
   box-sizing: border-box;
   scroll-snap-align: start;
 }
