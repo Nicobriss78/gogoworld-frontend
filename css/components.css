@@ -414,8 +414,9 @@ body.gw-page-map .gw-map{
 .gw-rail .title{
   font-weight: 800;
   font-size: 14px;
-  margin: 0 0 6px;
+  margin: 0 0 4px;
   color: var(--gw-text);
+  line-height: 1.15;
 }
 
 .gw-rail .meta{
