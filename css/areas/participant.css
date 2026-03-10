@@ -345,6 +345,29 @@ body.gw-page-map #mapSection{
 .gw-following-block{ margin-top:10px; }
 .gw-following-count{ opacity:.75; }
 
+/* Following page: non stirare il blocco e le card in altezza */
+.gw-following-events .gw-block{
+  flex: 0 0 auto;
+}
+
+#followingEventsContainer .gw-carousel-wrap{
+  flex: 0 0 auto;
+  min-height: auto;
+  align-items: flex-start;
+}
+
+#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap{
+  align-self: flex-start;
+}
+
+#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap > .event-card{
+  height: auto;
+}
+
+#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap > .event-card .content{
+  overflow-y: visible;
+}
+
 /* FASE 4 — partecipante.js (J1) */
 .gw-meta--tight{ margin-top:0; }
 
