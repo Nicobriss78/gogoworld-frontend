@@ -423,8 +423,9 @@ body.gw-page-map .gw-map{
   font-size: 12px;
   color: var(--gw-muted);
   display:flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
+  line-height: 1.2;
 }
 
 .gw-rail .actions{
