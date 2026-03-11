@@ -60,7 +60,7 @@ const coverUrl =
   const thumbBgAttr = coverUrl
     ? `data-bg="${escAttr(coverUrl)}"`
     : "";
-
+  const thumbClass = coverUrl ? "gw-thumb" : "gw-thumb gw-thumb--empty";
   const priceStr = ev?.isFree
     ? "Gratuito"
     : (ev?.price != null ? `${ev.price} ${ev.currency || "EUR"}` : "-");
