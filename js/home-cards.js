@@ -117,7 +117,7 @@ const infoHtml = `
       ${infoHtml}
 
       <div class="gw-card-scroll">
-<div class="gw-thumb" ${thumbBgAttr}></div>
+<div class="${thumbClass}" ${thumbBgAttr}></div>
 
         <div class="content">
           <h3 class="title">${ev.title || "(Senza titolo)"}</h3>
