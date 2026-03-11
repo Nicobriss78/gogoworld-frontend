@@ -296,8 +296,8 @@ body.gw-page-map .gw-map{
 /* ---------- CAROUSEL (A e B identici) ---------- */
 .gw-carousel-wrap{
   width: 100%;
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 auto;
+  min-height: auto;
 
   overflow-x:auto;
   overflow-y:hidden;
@@ -305,7 +305,7 @@ body.gw-page-map .gw-map{
 
   /* IMPORTANT: stretch verticale delle card (evita taglio bottoni) */
   display:flex;
-  align-items: stretch;
+  align-items: flex-start;
   gap: 12px;
 
   scroll-snap-type: x mandatory;
