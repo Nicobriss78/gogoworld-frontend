@@ -342,21 +342,42 @@ body.gw-page-map #mapSection{
 
 .gw-banner-meta--tight{ margin-top:0; }
 
-.gw-following-block{ margin-top:10px; }
+.gw-following-block{
+  margin-top: 0;
+  min-height: calc(100dvh - var(--gw-topbar-h) - var(--gw-bottomnav-h) - (var(--gw-page-pad-y) * 2));
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+}
+
 .gw-following-count{ opacity:.75; }
 
-/* Following page: non stirare il blocco e le card in altezza */
-.gw-following-events .gw-block{
-  flex: 0 0 auto;
+/* Following page = viewport verticale dei blocchi-organizzatore */
+#followingEventsContainer{
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: calc(100dvh - var(--gw-topbar-h) - var(--gw-bottomnav-h) - (var(--gw-page-pad-y) * 2));
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
 }
 
-#followingEventsContainer .gw-carousel-wrap{
+.gw-following-events .gw-block{
   flex: 0 0 auto;
-  min-height: auto;
-  align-items: flex-start;
+  padding: 0;
 }
-/* Following page: nasconde l'indicatore di scroll orizzontale nativo */
+
+.gw-following-events .gw-block-body{
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0;
+}
+
+/* Carousel interno al blocco: prende il resto della videata del blocco */
 #followingEventsContainer .gw-carousel-wrap{
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: flex-start;
   scrollbar-width: none;      /* Firefox */
   -ms-overflow-style: none;   /* vecchio Edge/IE */
 }
@@ -366,7 +387,7 @@ body.gw-page-map #mapSection{
   width: 0;
   height: 0;
 }
-/* Following page: card davvero full-width nel corpo pagina */
+
 #followingEventsContainer .gw-carousel{
   width: 100%;
   min-width: 100%;
@@ -376,27 +397,22 @@ body.gw-page-map #mapSection{
   width: 100%;
   flex: 0 0 100%;
   max-width: 100%;
+  align-self: flex-start;
 }
 
 #followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap > .event-card{
   width: 100%;
   max-width: 100%;
-}
-
-#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap > .gw-following-cta--join{
-  width: 100%;
-  display: block;
-}
-#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap{
-  align-self: flex-start;
-}
-
-#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap > .event-card{
   height: auto;
 }
 
 #followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap > .event-card .content{
   overflow-y: visible;
+}
+
+#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap > .gw-following-cta--join{
+  width: 100%;
+  display: block;
 }
 
 /* FASE 4 — partecipante.js (J1) */
