@@ -256,23 +256,25 @@ return renderFollowingCard(item, joined);
   })
   .join("");
 
-      return `
-   <section class="gw-block gw-following-block">
-          <div class="gw-block-head">
-            <h2 class="gw-block-title">${g.orgName} <span class="gw-following-count">(${count})</span></h2>
-          </div>
+return `
+  <section class="gw-following-block">
+    <div class="gw-block-head">
+      <h2 class="gw-block-title">
+        ${g.orgName} <span class="gw-following-count">(${count})</span>
+      </h2>
+    </div>
 
-<div id="${railId}" class="gw-carousel-wrap">
-  <div class="gw-carousel">
-    ${cardsHtml}
-  </div>
-</div>
-<div class="gw-scrollrail" data-rail-for="${railId}">
-  <div class="gw-scrollthumb"></div>
-</div>
+    <div id="${railId}" class="gw-carousel-wrap">
+      <div class="gw-carousel">
+        ${cardsHtml}
+      </div>
+    </div>
 
-        </section>
-      `;
+    <div class="gw-scrollrail" data-rail-for="${railId}">
+      <div class="gw-scrollthumb"></div>
+    </div>
+  </section>
+`;
     })
     .join("");
 
