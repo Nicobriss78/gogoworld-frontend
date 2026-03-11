@@ -79,22 +79,17 @@
        ANCHOR: FOLLOWING_EVENTS_MAIN
        ========================= -->
 <main class="gw-home">
-    <section class="gw-body">
-    <!-- Corpo pagina: blocchi verticali per organizer, ciascuno con carousel orizzontale -->
+  <section class="gw-body gw-body--following">
+    <!-- Modulo autonomo: titolo pagina + viewport verticale organizer -->
     <section class="gw-following-events">
-      <div class="gw-block">
-        <div class="gw-block-head">
-          <h2 class="gw-block-title">Eventi degli utenti che segui</h2>
-        </div>
-
-        <div class="gw-block-body">
-          <!-- Qui renderizzeremo N blocchi (uno per organizer) -->
-          <div id="followingEventsContainer"></div>
-        </div>
+      <div class="gw-following-pagehead">
+        <h2 class="gw-block-title">Eventi degli utenti che segui</h2>
       </div>
-    </section>
 
-</section>
+      <!-- Qui renderizzeremo N blocchi, uno per organizer -->
+      <div id="followingEventsContainer"></div>
+    </section>
+  </section>
     <!-- =========================
          ANCHOR: BOTTOMNAV
          ========================= -->
