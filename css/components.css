@@ -397,7 +397,11 @@ body.gw-page-map .gw-map{
   background-position: center;
   background-repeat: no-repeat;
 }
-
+.gw-thumb--empty{
+  height: 24px;
+  background: transparent;
+  border-bottom: none;
+}
 
 .gw-rail .content{
   flex: 1;
