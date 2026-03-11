@@ -355,7 +355,17 @@ body.gw-page-map #mapSection{
   min-height: auto;
   align-items: flex-start;
 }
+/* Following page: nasconde l'indicatore di scroll orizzontale nativo */
+#followingEventsContainer .gw-carousel-wrap{
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* vecchio Edge/IE */
+}
 
+#followingEventsContainer .gw-carousel-wrap::-webkit-scrollbar{
+  display: none;              /* Chrome/Android/WebKit */
+  width: 0;
+  height: 0;
+}
 #followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap{
   align-self: flex-start;
 }
