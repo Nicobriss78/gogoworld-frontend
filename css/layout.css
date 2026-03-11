@@ -51,8 +51,8 @@ main.gw-home{
 }
 /* Il “corpo” deve espandersi e spingere il footer in basso */
 main.gw-home > section{
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 0 0 auto;
+  min-height: auto;
 }
 
 /* Footer sempre “giù” */
