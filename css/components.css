@@ -336,7 +336,6 @@ body.gw-page-map .gw-map{
   box-shadow: var(--gw-shadow);
 
   /* layout colonna per tenere actions in basso */
-  height: 100%;
   display:flex;
   flex-direction: column;
   overflow: hidden;
