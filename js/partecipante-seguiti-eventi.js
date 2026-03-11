@@ -133,7 +133,7 @@ function renderFollowingCard(ev, joined = false) {
          data-id="${ev._id}">Partecipa</button>`;
 
 return `
-<div class="gw-rail gw-following-card-wrap gw-following-card-wrap--rel">
+<div class="gw-following-card-wrap gw-following-card-wrap--rel">
       ${badgeHtml}
       ${base}
       ${cta}
