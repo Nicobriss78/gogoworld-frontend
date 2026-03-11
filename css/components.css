@@ -231,13 +231,12 @@
 
 .gw-block{
   width: 100%;
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 auto;
+  min-height: auto;
   display:flex;
   flex-direction: column;
   gap: 0;
   padding: 4px;
-  box-sizing: border-box;
 }
 
  .gw-block-head,
