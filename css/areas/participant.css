@@ -366,6 +366,27 @@ body.gw-page-map #mapSection{
   width: 0;
   height: 0;
 }
+/* Following page: card davvero full-width nel corpo pagina */
+#followingEventsContainer .gw-carousel{
+  width: 100%;
+  min-width: 100%;
+}
+
+#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap{
+  width: 100%;
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap > .event-card{
+  width: 100%;
+  max-width: 100%;
+}
+
+#followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap > .gw-following-cta--join{
+  width: 100%;
+  display: block;
+}
 #followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap{
   align-self: flex-start;
 }
