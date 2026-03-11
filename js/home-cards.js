@@ -113,7 +113,8 @@ const infoHtml = `
 
 
   return `
-       <article class="event-card"      ${infoHtml}
+    <article class="gw-rail event-card" data-status="${rawStatus}" data-event-id="${ev._id}">
+      ${infoHtml}
 
       <div class="gw-card-scroll">
 <div class="gw-thumb" ${thumbBgAttr}></div>
