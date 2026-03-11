@@ -211,32 +211,31 @@ body.gw-page-map #mapSection{
 
 /* =========================================================
    Scoped sizing — Scheda "Eventi seguiti"
-   FIX: il wrapper è anche .gw-rail, e dentro c’è una .gw-rail.event-card
-   Quindi NON targettiamo ".gw-rail" genericamente: targettiamo il wrapper.
+   FULL SCREEN BLOCK
    ========================================================= */
 
 #followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap{
-  flex: 0 0 calc(100% - 8px);
-  max-width: calc(100% - 8px);
-  min-width: 320px;
+  flex: 0 0 100%;
+  max-width: 100%;
+  min-width: 0;
   box-sizing: border-box;
   scroll-snap-align: start;
 }
 
-/* La card dentro deve riempire il wrapper, ma NON deve allargare il carosello */
+/* La card dentro deve riempire il wrapper */
 #followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap > .event-card{
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  flex: 0 0 auto; /* IMPORTANT: disinnesca il flex della .gw-rail interna */
+  flex: 0 0 auto;
 }
 
-/* Mobile: preview a percentuale */
+/* Mobile */
 @media (max-width: 520px){
   #followingEventsContainer .gw-carousel-wrap .gw-following-card-wrap{
-    flex: 0 0 calc(100% - 4px);
-    max-width: calc(100% - 4px);
-    min-width: 260px;
+    flex: 0 0 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 }
 
