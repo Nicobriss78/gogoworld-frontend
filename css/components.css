@@ -325,7 +325,7 @@ body.gw-page-map .gw-map{
 
 /* Card evento */
 .gw-rail{
-  flex: 0 0 78%;
+  flex:1;
   max-width: 78%;
   min-width: 0;
   scroll-snap-align: center;
