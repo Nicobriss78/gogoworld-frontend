@@ -731,6 +731,7 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
   list-style: none;
 }
 
+.event-card {
   border: 1px solid var(--gw-border);
   background: var(--gw-card);
   padding: 0.75rem;
