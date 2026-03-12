@@ -56,7 +56,19 @@ main.gw-home > section{
   display:flex;
   flex-direction:column;
 }
+.gw-body--following{
+  flex:1;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+}
 
+.gw-following-events{
+  flex:1;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+}
 /* Footer sempre “giù” */
 main.gw-home > .app-footer{
   margin-top: auto;
