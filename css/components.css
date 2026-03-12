@@ -794,7 +794,6 @@ article.gw-rail.gw-banner--tip[data-tip="follow"] .gw-banner__icon{ color: var(-
 
 /* Alert banners */
 .alert {
-.alert {
   margin: 0 0 16px;
   padding: 10px 12px;
   border-radius: var(--gw-radius);
