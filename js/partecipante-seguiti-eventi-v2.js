@@ -411,13 +411,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const res = await apiGet("/events/following/list", token);
-    const events = res?.events || res?.data?.events || [];
+const events = getFollowingEventsFromResponse(res);
 
-    if (!Array.isArray(events)) {
-      throw new Error("Formato eventi non valido");
-    }
+if (!Array.isArray(events)) {
+  throw new Error("Formato eventi non valido");
+}
 
-    renderFollowingBlocksV2(events);
+renderFollowingBlocksV2(events);
   } catch (err) {
     showAlert(err?.message || "Errore nel caricamento eventi seguiti", "error", {
       autoHideMs: 4000,
