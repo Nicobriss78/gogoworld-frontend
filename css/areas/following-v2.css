@@ -241,3 +241,42 @@
   font-size:18px;
   line-height:1;
 }
+/* ========================================
+   FOLLOWING V2 — fade laterale rail
+======================================== */
+
+.gw-following-v2-railwrap{
+  position:relative;
+}
+
+.gw-following-v2-railwrap::before,
+.gw-following-v2-railwrap::after{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:18px;
+  pointer-events:none;
+  z-index:2;
+  opacity:.9;
+}
+
+.gw-following-v2-railwrap::before{
+  left:0;
+  background:linear-gradient(to right, var(--gw-bg, #f3f4f6), transparent);
+}
+
+.gw-following-v2-railwrap::after{
+  right:0;
+  background:linear-gradient(to left, var(--gw-bg, #f3f4f6), transparent);
+}
+
+/* quando il rail è all'inizio, nascondi fade sinistro */
+.gw-following-v2-railwrap.is-at-start::before{
+  opacity:0;
+}
+
+/* quando il rail è alla fine, nascondi fade destro */
+.gw-following-v2-railwrap.is-at-end::after{
+  opacity:0;
+}
