@@ -185,3 +185,59 @@
   min-width:0;
   overflow:hidden;
 }
+/* ========================================
+   FOLLOWING V2 — hint UX scroll
+======================================== */
+
+.gw-following-v2-railwrap{
+  width:100%;
+  min-width:0;
+}
+
+.gw-following-v2-railhint{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin:0 0 10px;
+  font-size:12px;
+  line-height:1;
+  opacity:.72;
+  user-select:none;
+  pointer-events:none;
+}
+
+.gw-following-v2-railhint-arrow{
+  font-size:14px;
+  opacity:.9;
+}
+
+.gw-following-v2-railhint-text{
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  font-size:11px;
+}
+
+.gw-following-v2-verticalhint{
+  margin-top:auto;
+  padding-top:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  opacity:.68;
+  user-select:none;
+  pointer-events:none;
+}
+
+.gw-following-v2-verticalhint-text{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+
+.gw-following-v2-verticalhint-arrow{
+  font-size:18px;
+  line-height:1;
+}
