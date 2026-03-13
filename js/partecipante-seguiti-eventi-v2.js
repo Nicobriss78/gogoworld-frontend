@@ -145,7 +145,19 @@ function renderFollowingCardV2(ev, joined = false) {
     </div>
   `;
 }
+/* =========================
+   ANCHOR: FOLLOWING_V2_VIEWPORT_METRICS
+   ========================= */
+function syncFollowingV2Metrics() {
+  const head = document.querySelector(".gw-following-v2-pagehead");
+  if (!head) return;
 
+  const h = Math.ceil(head.getBoundingClientRect().height);
+  document.documentElement.style.setProperty(
+    "--gw-following-v2-pagehead-h",
+    `${h}px`
+  );
+}
 /* =========================
    ANCHOR: FOLLOWING_V2_RENDER
    ========================= */
