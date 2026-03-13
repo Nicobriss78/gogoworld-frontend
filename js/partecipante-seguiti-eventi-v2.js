@@ -165,20 +165,31 @@ function renderFollowingRailV2(list) {
   const arr = Array.isArray(list) ? list : [];
   if (!arr.length) return "";
 
+  const showHint = arr.length > 1;
+
   return `
-    <div class="gw-following-v2-rail">
-      ${arr
-        .map((ev) => {
-          const joined = isJoined(ev);
-          return `
-            <div class="gw-following-v2-railitem">
-              ${renderFollowingCardV2(ev, joined)}
-            </div>
-          `;
-        })
-        .join("")}
+    <div class="gw-following-v2-railwrap">
+      ${showHint ? `
+        <div class="gw-following-v2-railhint" aria-hidden="true">
+          <span class="gw-following-v2-railhint-arrow">←</span>
+          <span class="gw-following-v2-railhint-text">Scorri</span>
+          <span class="gw-following-v2-railhint-arrow">→</span>
+        </div>
+      ` : ""}
+
+      <div class="gw-following-v2-rail">
+        ${arr
+          .map((ev) => {
+            const joined = isJoined(ev);
+            return `
+              <div class="gw-following-v2-railitem">
+                ${renderFollowingCardV2(ev, joined)}
+              </div>
+            `;
+          })
+          .join("")}
+      </div>
     </div>
-    ${arr.length > 1 ? `<div class="gw-following-v2-railhint">Scorri in orizzontale per vedere gli altri eventi</div>` : ``}
   `;
 }
 /* =========================
