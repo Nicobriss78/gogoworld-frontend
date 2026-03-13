@@ -289,7 +289,8 @@ function initActionsDelegation(token) {
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   FOLLOWING_TOKEN = token;
-
+  syncFollowingV2Metrics();
+  window.addEventListener("resize", syncFollowingV2Metrics);
   if (!token) {
     window.location.href = "index.html";
     return;
