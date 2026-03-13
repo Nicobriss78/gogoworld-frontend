@@ -55,7 +55,31 @@ function escapeHtml(str) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+function getMeId(me) {
+  return me?._id || me?.user?._id || me?.id || me?.user?.id || null;
+}
 
+function getMeName(me) {
+  return (
+    me?.name ||
+    me?.user?.name ||
+    me?.email ||
+    me?.user?.email ||
+    "Utente"
+  );
+}
+
+function getMeStatusLabel(me) {
+  const raw = (me?.status || me?.user?.status || "")
+    .toString()
+    .toLowerCase();
+
+  return raw ? raw[0].toUpperCase() + raw.slice(1) : "Partecipante";
+}
+
+function getFollowingEventsFromResponse(res) {
+  return res?.events || res?.data?.events || [];
+}
 // timestamp inizio robusto
 function getEventStartMs(ev) {
   const candidates = [
