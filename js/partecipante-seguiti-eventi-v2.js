@@ -192,6 +192,16 @@ function renderFollowingRailV2(list) {
     </div>
   `;
 }
+function renderVerticalHintV2(show) {
+  if (!show) return "";
+
+  return `
+    <div class="gw-following-v2-verticalhint" aria-hidden="true">
+      <span class="gw-following-v2-verticalhint-text">Altri organizzatori</span>
+      <span class="gw-following-v2-verticalhint-arrow">↓</span>
+    </div>
+  `;
+}
 /* =========================
    ANCHOR: FOLLOWING_V2_RENDER
    ========================= */
