@@ -266,11 +266,12 @@ ${renderVerticalHintV2(index < sortedGroups.length - 1)}
     .join("");
 
 container.innerHTML = html;
-  syncFollowingV2Metrics();
+syncFollowingV2Metrics();
+enhanceFollowingRails();
 
-  try {
-    applyHomeCardThumbs(container);
-  } catch {}
+try {
+  applyHomeCardThumbs(container);
+} catch {}
 }
 /* =========================
    ANCHOR: FOLLOWING_V2_RAIL_ENHANCE
