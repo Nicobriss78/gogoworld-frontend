@@ -159,6 +159,29 @@ function syncFollowingV2Metrics() {
   );
 }
 /* =========================
+   ANCHOR: FOLLOWING_V2_RAIL
+   ========================= */
+function renderFollowingRailV2(list) {
+  const arr = Array.isArray(list) ? list : [];
+  if (!arr.length) return "";
+
+  return `
+    <div class="gw-following-v2-rail">
+      ${arr
+        .map((ev) => {
+          const joined = isJoined(ev);
+          return `
+            <div class="gw-following-v2-railitem">
+              ${renderFollowingCardV2(ev, joined)}
+            </div>
+          `;
+        })
+        .join("")}
+    </div>
+    ${arr.length > 1 ? `<div class="gw-following-v2-railhint">Scorri in orizzontale per vedere gli altri eventi</div>` : ``}
+  `;
+}
+/* =========================
    ANCHOR: FOLLOWING_V2_RENDER
    ========================= */
 function renderFollowingBlocksV2(events) {
