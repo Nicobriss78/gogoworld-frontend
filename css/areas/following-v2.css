@@ -116,10 +116,9 @@
   opacity:0.7;
 
 }
-========================================
+/* ========================================
    FOLLOWING V2 — rail interno eventi
 ======================================== */
-
 .gw-following-v2-rail{
   display:grid;
   grid-auto-flow:column;
