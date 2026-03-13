@@ -340,6 +340,22 @@ enhanceFollowingRails();
 try {
   applyHomeCardThumbs(container);
 } catch {}
+
+applyBannerThumbBackgroundsV2(container);
+
+const token = FOLLOWING_TOKEN;
+if (token) {
+  const wraps = Array.from(container.querySelectorAll(".gw-following-v2-railwrap"));
+  wraps.forEach((wrap) => {
+    activateHomeBannerSlots({
+      container: wrap,
+      country: "",
+      region: "",
+      token,
+      renderBannerCard: renderBannerCardV2,
+    });
+  });
+}
 }
 /* =========================
    ANCHOR: FOLLOWING_V2_RAIL_ENHANCE
