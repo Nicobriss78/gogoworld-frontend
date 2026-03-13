@@ -390,8 +390,9 @@ renderFollowingBlocksV2(getFollowingEventsFromResponse(data));
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   FOLLOWING_TOKEN = token;
-  syncFollowingV2Metrics();
-  window.addEventListener("resize", syncFollowingV2Metrics);
+requestAnimationFrame(syncFollowingV2Metrics);
+window.addEventListener("resize", syncFollowingV2Metrics);
+window.addEventListener("load", syncFollowingV2Metrics);
   if (!token) {
     window.location.href = "index.html";
     return;
