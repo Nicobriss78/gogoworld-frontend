@@ -5,6 +5,11 @@
 import { apiGet, apiPost } from "./api.js";
 import { renderEventCard, applyHomeCardThumbs } from "./home-cards.js";
 import { showAlert } from "./participant-shared.js";
+import {
+  injectBannerSlots,
+  renderBannerSlotHTML,
+  activateHomeBannerSlots,
+} from "./home-banners.js";
 
 // Memorizzo id utente loggato per capire se un evento è già joined
 let ME_ID = null;
