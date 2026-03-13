@@ -39,8 +39,14 @@
 /* blocco organizer */
 
 .gw-following-v2-block{
-  flex:0 0 100%;
-  min-height:100%;
+  flex:0 0 auto;
+  min-height: calc(
+    100dvh
+    - var(--gw-topbar-h)
+    - var(--gw-bottomnav-h)
+    - (var(--gw-page-pad-y) * 2)
+    - var(--gw-following-v2-pagehead-h, 0px)
+  );
 
   display:flex;
   flex-direction:column;
