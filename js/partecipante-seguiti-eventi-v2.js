@@ -224,7 +224,8 @@ function renderFollowingRailV2(list) {
   const arr = Array.isArray(list) ? list : [];
   if (!arr.length) return "";
 
-  const showHint = arr.length > 1;
+  const mixed = injectBannerSlots(arr);
+  const showHint = mixed.length > 1;
 
   return `
     <div class="gw-following-v2-railwrap">
@@ -237,12 +238,20 @@ function renderFollowingRailV2(list) {
       ` : ""}
 
       <div class="gw-following-v2-rail">
-        ${arr
-          .map((ev) => {
-            const joined = isJoined(ev);
+        ${mixed
+          .map((item) => {
+            if (item && item.__kind === "banner-slot") {
+              return `
+                <div class="gw-following-v2-railitem gw-following-v2-railitem--banner">
+                  ${renderBannerSlotHTML()}
+                </div>
+              `;
+            }
+
+            const joined = isJoined(item);
             return `
               <div class="gw-following-v2-railitem">
-                ${renderFollowingCardV2(ev, joined)}
+                ${renderFollowingCardV2(item, joined)}
               </div>
             `;
           })
