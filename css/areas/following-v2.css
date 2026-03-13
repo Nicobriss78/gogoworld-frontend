@@ -120,17 +120,26 @@
 ======================================== */
 
 .gw-following-v2-rail{
-  display:flex;
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:100%;
   gap:14px;
+
   width:100%;
+  min-width:0;
+
   overflow-x:auto;
   overflow-y:hidden;
+
   scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-  min-width:0;
-}
+  overscroll-behavior-x:contain;
+  touch-action:pan-x;
 
+  align-items:start;
+
+  scrollbar-width:none;
+}
 .gw-following-v2-rail::-webkit-scrollbar{
   display:none;
   width:0;
