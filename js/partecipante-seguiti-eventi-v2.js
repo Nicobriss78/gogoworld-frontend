@@ -254,10 +254,12 @@ const html = sortedGroups
           </div>
 
           <div class="gw-following-v2-body">
-            <div class="gw-following-v2-card">
-              ${renderFollowingRailV2(list)}
-            </div>
-          </div>
+  <div class="gw-following-v2-card">
+    ${renderFollowingRailV2(list)}
+  </div>
+</div>
+
+${renderVerticalHintV2(index < sortedGroups.length - 1)}
         </section>
       `;
     })
