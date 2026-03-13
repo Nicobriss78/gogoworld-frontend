@@ -1,1 +1,119 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+<title>Eventi degli utenti che segui • GoGoWorld.life</title>
+
+<link rel="stylesheet" href="/css/tokens.css" />
+<link rel="stylesheet" href="/css/base.css" />
+<link rel="stylesheet" href="/css/layout.css" />
+<link rel="stylesheet" href="/css/components.css" />
+<link rel="stylesheet" href="/css/areas/participant.css" />
+
+<!-- CSS dedicato alla nuova architettura -->
+<link rel="stylesheet" href="/css/areas/following-v2.css" />
+
+</head>
+
+
+<body class="gw-page">
+
+<!-- TOPBAR -->
+<header class="gw-topbar">
+
+  <div class="gw-topbar-left">
+    <a href="partecipante.html" class="gw-icon-btn">
+      <span class="material-icons">arrow_back</span>
+    </a>
+  </div>
+
+  <div class="gw-topbar-center">
+    <div class="gw-topbar-title">
+      Eventi degli utenti che segui
+    </div>
+  </div>
+
+  <div class="gw-topbar-right">
+
+    <button class="gw-icon-btn" id="notificationsBtn">
+      <span class="material-icons">notifications</span>
+    </button>
+
+    <button class="gw-icon-btn" id="menuBtn">
+      <span class="material-icons">menu</span>
+    </button>
+
+  </div>
+
+</header>
+
+
+<!-- AREA CENTRALE -->
+<main class="gw-body">
+
+  <div class="gw-following-v2">
+
+    <div class="gw-following-v2-pagehead">
+
+      <div class="gw-following-v2-user">
+
+        <span id="gwUserName"></span>
+
+        <span id="gwUserStatus"></span>
+
+      </div>
+
+    </div>
+
+
+    <!-- VIEWPORT EVENTI -->
+    <div id="followingEventsContainerV2">
+
+      <!-- LOADING -->
+      <div class="gw-loading">
+        Caricamento eventi...
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+
+<!-- BOTTOM NAV -->
+<nav class="gw-bottomnav">
+
+  <a href="partecipante-mappa.html">
+    <span class="material-icons">map</span>
+  </a>
+
+  <a href="partecipante-seguiti-eventi.html">
+    <span class="material-icons">event</span>
+  </a>
+
+  <a href="partecipante.html">
+    <span class="material-icons">home</span>
+  </a>
+
+  <a href="partecipante-seguiti-utenti.html">
+    <span class="material-icons">group</span>
+  </a>
+
+  <a href="profile.html">
+    <span class="material-icons">person</span>
+  </a>
+
+</nav>
+
+
+<!-- SCRIPT GLOBALI -->
+
+<script src="/js/notifications.js"></script>
+
+<script type="module" src="/js/partecipante-seguiti-eventi-v2.js"></script>
+
+</body>
+</html>
