@@ -221,7 +221,8 @@ function renderFollowingBlocksV2(events) {
     })
     .join("");
 
-  container.innerHTML = html;
+container.innerHTML = html;
+  syncFollowingV2Metrics();
 
   try {
     applyHomeCardThumbs(container);
