@@ -1,1 +1,108 @@
+/* ========================================
+   FOLLOWING V2
+   Layout completamente isolato
+======================================== */
 
+.gw-following-v2{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  min-height:0;
+}
+
+
+/* header pagina */
+
+.gw-following-v2-pagehead{
+  padding:16px;
+  border-bottom:1px solid var(--gw-border);
+}
+
+
+/* viewport eventi */
+
+#followingEventsContainerV2{
+  flex:1 1 auto;
+  min-height:0;
+
+  overflow-y:auto;
+
+  display:flex;
+  flex-direction:column;
+
+  scroll-snap-type:y mandatory;
+}
+
+
+
+/* blocco organizer */
+
+.gw-following-v2-block{
+
+  min-height:100%;
+
+  display:flex;
+  flex-direction:column;
+
+  scroll-snap-align:start;
+
+  padding:16px;
+  gap:16px;
+}
+
+
+
+/* header organizer */
+
+.gw-following-v2-orghead{
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+}
+
+
+
+.gw-following-v2-count{
+  opacity:0.6;
+  font-size:0.9em;
+}
+
+
+
+/* body eventi */
+
+.gw-following-v2-body{
+
+  display:flex;
+  flex-direction:column;
+
+  gap:12px;
+
+  align-items:flex-start;
+
+}
+
+
+
+/* wrapper card */
+
+.gw-following-v2-card{
+
+  width:100%;
+}
+
+
+
+/* stato loading */
+
+.gw-loading{
+
+  padding:40px 16px;
+
+  text-align:center;
+
+  opacity:0.7;
+
+}
