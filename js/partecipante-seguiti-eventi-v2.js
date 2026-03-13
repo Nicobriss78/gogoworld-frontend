@@ -222,8 +222,6 @@ function renderFollowingBlocksV2(events) {
     .map((g) => {
       const list = [...g.events].sort(sortByStatusAndStart);
       const count = list.length;
-      const firstEvent = list[0];
-      const joined = isJoined(firstEvent);
 
       return `
         <section class="gw-following-v2-block" data-org-id="${escapeHtml(g.orgId)}">
@@ -236,7 +234,7 @@ function renderFollowingBlocksV2(events) {
 
           <div class="gw-following-v2-body">
             <div class="gw-following-v2-card">
-              ${renderFollowingCardV2(firstEvent, joined)}
+              ${renderFollowingRailV2(list)}
             </div>
           </div>
         </section>
