@@ -17,22 +17,9 @@ async function hydrateTopbar(token) {
   try {
     const me = await apiGet("/users/me", token);
 
-    ME_ID = me?._id || me?.user?._id || me?.id || me?.user?.id || null;
-
-    const name =
-      me?.name ||
-      me?.user?.name ||
-      me?.email ||
-      me?.user?.email ||
-      "Utente";
-
-    const statusRaw = (me?.status || me?.user?.status || "")
-      .toString()
-      .toLowerCase();
-
-    const statusLabel = statusRaw
-      ? statusRaw[0].toUpperCase() + statusRaw.slice(1)
-      : "Partecipante";
+    ME_ID = getMeId(me);
+const name = getMeName(me);
+const statusLabel = getMeStatusLabel(me);
 
     const topName = document.getElementById("gwUserName");
     if (topName) topName.textContent = name;
