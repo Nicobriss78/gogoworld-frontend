@@ -174,6 +174,49 @@ function syncFollowingV2Metrics() {
     `${h}px`
   );
 }
+function renderBannerCardV2(b) {
+  if (!b) return "";
+
+  const id = String(b?.id || b?._id || "");
+  const title = (b?.title || b?.name || "Promozione").toString();
+  const img = (b?.imageUrl || b?.image || "").toString();
+  const type = String(b?.type || "").toUpperCase();
+
+  const kicker =
+    type === "SPONSOR" ? "Sponsor" :
+    type === "HOUSE" ? "Comunicazione" :
+    "Promo";
+
+  const clickHref = id
+    ? `/api/banners/${encodeURIComponent(id)}/click?redirect=1`
+    : (b?.targetUrl || b?.linkUrl || b?.url || "#");
+
+  const bgAttr = img ? ` data-bg="${escapeHtml(img)}"` : "";
+
+  return `
+    <article class="gw-rail event-card gw-banner-card" data-banner-id="${id}">
+      <a class="gw-banner-link" href="${clickHref}" aria-label="${escapeHtml(title)}">
+        <div class="gw-thumb"${bgAttr}></div>
+        <div class="content">
+          <div class="meta gw-banner-meta--tight">
+            <span><strong>${kicker}</strong></span>
+          </div>
+          <h3 class="title">${escapeHtml(title)}</h3>
+        </div>
+      </a>
+    </article>
+  `;
+}
+
+function applyBannerThumbBackgroundsV2(root) {
+  if (!root) return;
+  const thumbs = root.querySelectorAll(".gw-banner-card .gw-thumb[data-bg]");
+  thumbs.forEach((el) => {
+    const url = el.getAttribute("data-bg");
+    if (!url) return;
+    el.style.setProperty("--gw-bg", `url("${url}")`);
+  });
+}
 /* =========================
    ANCHOR: FOLLOWING_V2_RAIL
    ========================= */
