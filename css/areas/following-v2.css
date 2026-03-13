@@ -147,11 +147,12 @@
 }
 
 .gw-following-v2-railitem{
-  flex:0 0 100%;
+  width:100%;
   max-width:100%;
   min-width:0;
   box-sizing:border-box;
   scroll-snap-align:start;
+  align-self:start;
 }
 
 .gw-following-v2-railitem .event-card{
