@@ -39,16 +39,18 @@
 /* blocco organizer */
 
 .gw-following-v2-block{
-
+  flex:0 0 100%;
   min-height:100%;
 
   display:flex;
   flex-direction:column;
+  justify-content:flex-start;
 
   scroll-snap-align:start;
 
   padding:16px;
   gap:16px;
+  box-sizing:border-box;
 }
 
 
