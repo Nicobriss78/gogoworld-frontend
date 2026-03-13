@@ -254,7 +254,10 @@ container.innerHTML = html;
    ANCHOR: FOLLOWING_V2_ACTIONS
    ========================= */
 function initActionsDelegation(token) {
-  document.addEventListener("click", async (e) => {
+  const root = document.getElementById("followingEventsContainerV2");
+  if (!root) return;
+
+  root.addEventListener("click", async (e) => {
     const btn = e.target.closest("button[data-action]");
     if (!btn) return;
 
