@@ -371,8 +371,7 @@ function initActionsDelegation(token) {
         showAlert("Iscrizione effettuata", "success", { autoHideMs: 2200 });
 
         const data = await apiGet("/events/following/list", token);
-        const events = data?.events || data?.data?.events || [];
-        renderFollowingBlocksV2(events);
+renderFollowingBlocksV2(getFollowingEventsFromResponse(data));
       } catch (err) {
         showAlert(err?.message || "Errore iscrizione", "error", {
           autoHideMs: 4000,
