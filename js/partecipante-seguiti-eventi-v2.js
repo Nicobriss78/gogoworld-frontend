@@ -239,8 +239,8 @@ function renderFollowingBlocksV2(events) {
     a.orgName.localeCompare(b.orgName)
   );
 
-  const html = sortedGroups
-    .map((g) => {
+const html = sortedGroups
+  .map((g, index) => {
       const list = [...g.events].sort(sortByStatusAndStart);
       const count = list.length;
 
