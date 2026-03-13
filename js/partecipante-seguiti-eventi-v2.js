@@ -272,7 +272,50 @@ container.innerHTML = html;
     applyHomeCardThumbs(container);
   } catch {}
 }
+/* =========================
+   ANCHOR: FOLLOWING_V2_RAIL_ENHANCE
+   ========================= */
+function updateRailEdgeState(rail) {
+  if (!rail) return;
+  const wrap = rail.closest(".gw-following-v2-railwrap");
+  if (!wrap) return;
 
+  const max = Math.max(0, rail.scrollWidth - rail.clientWidth);
+  const left = Math.max(0, rail.scrollLeft);
+
+  wrap.classList.toggle("is-at-start", left <= 4);
+  wrap.classList.toggle("is-at-end", left >= max - 4);
+}
+
+function enhanceFollowingRails() {
+  const rails = document.querySelectorAll(".gw-following-v2-rail");
+
+  rails.forEach((rail) => {
+    if (rail.dataset.enhanced === "1") {
+      updateRailEdgeState(rail);
+      return;
+    }
+
+    rail.dataset.enhanced = "1";
+
+    const wrap = rail.closest(".gw-following-v2-railwrap");
+    const hint = wrap?.querySelector(".gw-following-v2-railhint") || null;
+
+    updateRailEdgeState(rail);
+
+    rail.addEventListener(
+      "scroll",
+      () => {
+        updateRailEdgeState(rail);
+
+        if (hint && rail.scrollLeft > 12) {
+          hint.classList.add("is-hidden");
+        }
+      },
+      { passive: true }
+    );
+  });
+     }
 /* =========================
    ANCHOR: FOLLOWING_V2_ACTIONS
    ========================= */
