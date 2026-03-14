@@ -644,7 +644,7 @@ body.gw-page-map #mapSection{
   flex: 0 0 92%;
   max-width: 92%;
   min-width: 0;
-  height: 100%;
+  height: calc(100% - 8px);
   scroll-snap-align: start;
 }
 
