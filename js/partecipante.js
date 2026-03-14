@@ -753,10 +753,10 @@ if (ENABLE_LEGACY_MAPPA) {
 }
 
   
-// C1.1 — Auto-focus sugli eventi imminenti/ongoing/futuri nel CAROUSEL "Tutti gli eventi"
-function autoFocusOnRelevantEvent() {
+// C1.1 — Auto-focus sugli eventi rilevanti nel rail richiesto
+function autoFocusOnRelevantEvent(containerId) {
   try {
-    const container = document.getElementById("allEventsRail");
+    const container = document.getElementById(containerId);
     if (!container) return;
 
     const statusOrder = ["ongoing", "imminent", "future", "concluded"];
