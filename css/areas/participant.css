@@ -572,7 +572,30 @@ body.gw-page-map #mapSection{
   display: flex;
   flex-direction: column;
 }
+.gw-home-v2-section .gw-home-rail > .event-card{
+  height: 100%;
+  padding: 0;
+}
 
+.gw-home-v2-section .gw-home-rail > .event-card > .gw-card-scroll{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.gw-home-v2-section .gw-home-rail > .event-card > .gw-card-scroll > .gw-thumb{
+  flex: 0 0 140px;
+  height: 140px;
+}
+
+.gw-home-v2-section .gw-home-rail > .event-card > .gw-card-scroll > .content{
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-y: auto;
+}
 /* La card deve respirare e non sembrare "troncata" */
 .gw-home-v2-section .gw-home-rail > .event-card .gw-card-scroll{
   flex: 1 1 auto;
