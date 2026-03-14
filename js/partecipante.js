@@ -1132,13 +1132,22 @@ const bgStyle = img ? ` data-bg="${img}"` : "";
     </article>
   `;
 };      
-// Popola lista "tutti" (ordinata) + SLOT banner (dopo prima card, poi ogni 2)
+// Popola rail principale "Eventi generali" + banner solo qui
 if (allList) {
-  const allItems = injectBannerSlots(notJoinedSorted);
+  const generalItems = injectBannerSlots(generalActive);
+  const allItems = generalPast.length
+    ? [{ __kind: "past-entry", target: "general", count: generalPast.length, limit: 10 }, ...generalItems]
+    : generalItems;
 
   const renderRailItem = (item, includeLeave) => {
+    if (item && item.__kind === "past-entry") {
+      return renderPastEntryCard(item.target, item.count, item.limit);
+    }
+    if (item && item.__kind === "back-to-active") {
+      return renderBackToActiveCard(item.target);
+    }
     if (item && item.__kind === "banner-slot") return renderBannerSlotHTML();
-    if (item && item.__kind === "banner") return renderBannerCard(item); // fallback/compat
+    if (item && item.__kind === "banner") return renderBannerCard(item);
     return renderEventCard(item, includeLeave);
   };
 
@@ -1150,8 +1159,19 @@ if (allList) {
         Nessun evento disponibile.
       </div>
     `;
-try { applyHomeCardThumbs(allList); } catch {}
-  // Attiva rotazione banner SOLO se lo slot è visibile (IntersectionObserver)
+
+  if (allPastList) {
+    const pastItems = generalPast.length
+      ? [{ __kind: "back-to-active", target: "general" }, ...generalPast]
+      : [];
+    allPastList.innerHTML = pastItems.length
+      ? pastItems.map((it) => renderRailItem(it, false)).join("")
+      : "";
+  }
+
+  try { applyHomeCardThumbs(allList); } catch {}
+  try { if (allPastList) applyHomeCardThumbs(allPastList); } catch {}
+
   activateHomeBannerSlots({
     container: allList,
     country: meCountry,
@@ -1160,9 +1180,8 @@ try { applyHomeCardThumbs(allList); } catch {}
     renderBannerCard
   });
 }
-
  
-// Popola lista "Eventi delle persone che segui"
+// Popola lista "Eventi delle persone che segui" (legacy hidden)
 if (followingList) {
   followingList.innerHTML = followingSorted.length
     ? followingSorted.map(ev => renderEventCard(ev, false)).join("")
@@ -1174,16 +1193,42 @@ if (followingList) {
     `;
 }
 
-// Popola lista "a cui partecipo" (ordinata)
+// Popola rail principale "Eventi a cui partecipo"
 if (myList) {
-  myList.innerHTML = joinedSorted.length
-    ? joinedSorted.map(ev => renderEventCard(ev, true)).join("")
+  const joinedItems = joinedPast.length
+    ? [{ __kind: "past-entry", target: "joined", count: joinedPast.length, limit: 15 }, ...joinedActive]
+    : joinedActive;
+
+  const renderJoinedItem = (item) => {
+    if (item && item.__kind === "past-entry") {
+      return renderPastEntryCard(item.target, item.count, item.limit);
+    }
+    if (item && item.__kind === "back-to-active") {
+      return renderBackToActiveCard(item.target);
+    }
+    return renderEventCard(item, true);
+  };
+
+  myList.innerHTML = joinedItems.length
+    ? joinedItems.map((it) => renderJoinedItem(it)).join("")
     : `
       <div class="gw-state gw-state--empty">
         <strong>Nessun risultato</strong>
         Nessun evento a cui partecipi.
       </div>
     `;
+
+  if (myPastList) {
+    const pastItems = joinedPast.length
+      ? [{ __kind: "back-to-active", target: "joined" }, ...joinedPast]
+      : [];
+    myPastList.innerHTML = pastItems.length
+      ? pastItems.map((it) => renderJoinedItem(it)).join("")
+      : "";
+  }
+
+  try { applyHomeCardThumbs(myList); } catch {}
+  try { if (myPastList) applyHomeCardThumbs(myPastList); } catch {}
 }
 
       // C1.1 — Auto-focus solo al primo caricamento, senza filtri e se l'utente non ha già scrollato
