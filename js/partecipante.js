@@ -1231,10 +1231,9 @@ if (myList) {
   try { if (myPastList) applyHomeCardThumbs(myPastList); } catch {}
 }
 
-      // C1.1 — Auto-focus solo al primo caricamento, senza filtri e se l'utente non ha già scrollato
+// C1.1 — Auto-focus solo al primo caricamento, senza filtri e se l'utente non ha già scrollato
       const noFilters =
         !filters || (typeof filters === "object" && Object.keys(filters).length === 0);
-
       if (!_autoFocusDone && noFilters && window.scrollY < 20) {
         autoFocusOnRelevantEvent();
         _autoFocusDone = true;
@@ -1242,6 +1241,8 @@ if (myList) {
           sessionStorage.setItem("participant:autoFocusDone", "1");
         } catch {}
       }
+
+      try { window.dispatchEvent(new Event("resize")); } catch {}
 
     } catch (err) {
 showAlert(err?.message || "Si è verificato un errore", "error", { autoHideMs: 4000 });
