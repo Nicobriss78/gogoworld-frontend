@@ -206,16 +206,8 @@ function populateFilterOptions() {
 document.addEventListener("DOMContentLoaded", async () => {
   // Token: se non c'è, esci subito (niente polling)
   const token = localStorage.getItem("token");
-  // C1.1 — Flag per auto-focus iniziale (persistito nella sessione)
+// C1.1 — Flag per auto-focus iniziale (solo per il caricamento corrente della pagina)
 let _autoFocusDone = false;
-const HOME_V2_AUTOFOCUS_KEY = "participant:homeV2AutoFocusDone";
-try {
-  if (sessionStorage.getItem(HOME_V2_AUTOFOCUS_KEY) === "1") {
-    _autoFocusDone = true;
-  }
-} catch {
-    // se sessionStorage non è disponibile, ignoriamo e useremo solo il flag in memoria
-  }
 
   // 🔁 Aggiorna le liste quando cambia la partecipazione in un'altra scheda
   window.addEventListener("events:joined-changed", () => {
