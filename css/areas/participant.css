@@ -572,7 +572,7 @@ body.gw-page-map #mapSection{
   flex-direction: column;
 }
 .gw-home-v2-section .gw-home-rail > .event-card{
-  height: 100%;
+  height: calc(100% - 8px);
   padding: 0;
 }
 
