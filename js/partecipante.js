@@ -1215,7 +1215,7 @@ if (followingList) {
 // Popola rail principale "Eventi a cui partecipo"
 if (myList) {
   const joinedItems = joinedPast.length
-    ? [{ __kind: "past-entry", target: "joined", count: joinedPast.length, limit: 15 }, ...joinedActive]
+    ? [...joinedActive, { __kind: "past-entry", target: "joined", count: joinedPast.length, limit: 15 }]
     : joinedActive;
 
   const renderJoinedItem = (item) => {
