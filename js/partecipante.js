@@ -1155,7 +1155,7 @@ const bgStyle = img ? ` data-bg="${img}"` : "";
 if (allList) {
   const generalItems = injectBannerSlots(generalActive);
   const allItems = generalPast.length
-    ? [...generalItems, { __kind: "past-entry", target: "general", count: generalPast.length, limit: 10 }]
+    ? [{ __kind: "past-entry", target: "general", count: generalPast.length, limit: 10 }, ...generalItems]
     : generalItems;
 
   const renderRailItem = (item, includeLeave) => {
