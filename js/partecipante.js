@@ -959,7 +959,9 @@ async function loadEvents(filters = {}) {
       </div>
     `;
   }
-
+  if (allPastList) {
+    allPastList.innerHTML = "";
+  }
   if (followingList) {
     followingList.innerHTML = `
       <div class="gw-state gw-state--loading">
@@ -967,7 +969,6 @@ async function loadEvents(filters = {}) {
       </div>
     `;
   }
-
   if (myList) {
     myList.innerHTML = `
       <div class="gw-state gw-state--loading">
@@ -975,6 +976,12 @@ async function loadEvents(filters = {}) {
       </div>
     `;
   }
+  if (myPastList) {
+    myPastList.innerHTML = "";
+  }
+
+  setHomeRailMode("general", "active");
+  setHomeRailMode("joined", "active");
 
 
 
