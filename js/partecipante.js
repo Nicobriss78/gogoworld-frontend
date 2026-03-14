@@ -755,25 +755,104 @@ if (ENABLE_LEGACY_MAPPA) {
 // C1.1 — Auto-focus sugli eventi imminenti/ongoing/futuri nel CAROUSEL "Tutti gli eventi"
 function autoFocusOnRelevantEvent() {
   try {
-    const container = document.getElementById("allEventsList");
+    const container = document.getElementById("allEventsRail");
     if (!container) return;
-
-    // Se l’utente ha già interagito (scroll orizzontale) non forzare
-    // (non possiamo leggere facilmente lo swipe, quindi evitiamo forzature aggressive)
-    const statusOrder = ["imminent", "ongoing", "future"];
+    const statusOrder = ["ongoing", "imminent", "future", "concluded"];
     let targetCard = null;
-
     for (const st of statusOrder) {
       targetCard = container.querySelector(`.event-card[data-status="${st}"]`);
       if (targetCard) break;
     }
     if (!targetCard) return;
-
-    // Centro nel carousel
     targetCard.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
   } catch (err) {
     console.debug("[autoFocus] skip:", err);
   }
+}
+
+function renderPastEntryCard(target, count, limit) {
+  const label = target === "joined" ? "Eventi a cui hai partecipato" : "Eventi passati";
+  const subtitle = `Rivedi gli ultimi ${limit}`;
+  return `
+    <article class="gw-rail event-card gw-home-switch-card" data-home-card="${target}-past-entry">
+      <div class="content">
+        <div class="meta gw-meta--tight">
+          <span><strong>Archivio recente</strong></span>
+          <span>${count} disponibili</span>
+        </div>
+        <h3 class="title">${label}</h3>
+        <p class="subtitle">${subtitle}</p>
+        <div class="actions">
+          <button class="btn btn-secondary" type="button" data-home-action="show-past" data-target="${target}">
+            Apri
+          </button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderBackToActiveCard(target) {
+  return `
+    <article class="gw-rail event-card gw-home-switch-card" data-home-card="${target}-back-active">
+      <div class="content">
+        <div class="meta gw-meta--tight">
+          <span><strong>Torna indietro</strong></span>
+        </div>
+        <h3 class="title">Eventi attivi</h3>
+        <p class="subtitle">In corso, imminenti e futuri</p>
+        <div class="actions">
+          <button class="btn btn-secondary" type="button" data-home-action="show-active" data-target="${target}">
+            Torna
+          </button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function setHomeRailMode(target, mode) {
+  const shell = document.querySelector(`.gw-home-rail-shell[data-rail-shell="${target}"]`);
+  if (!shell) return;
+
+  const activeRail = document.getElementById(target === "general" ? "allEventsRail" : "myEventsRail");
+  const pastRail = document.getElementById(target === "general" ? "allEventsPastRail" : "myEventsPastRail");
+  const activeScroll = activeRail ? document.querySelector(`.gw-scrollrail[data-rail-for="${activeRail.id}"]`) : null;
+  const pastScroll = pastRail ? document.querySelector(`.gw-scrollrail[data-rail-for="${pastRail.id}"]`) : null;
+
+  shell.dataset.mode = mode;
+
+  setHidden(activeRail, mode !== "active");
+  setHidden(activeScroll, mode !== "active");
+  setHidden(pastRail, mode !== "past");
+  setHidden(pastScroll, mode !== "past");
+
+  if (mode === "active" && activeRail) activeRail.scrollLeft = 0;
+  if (mode === "past" && pastRail) pastRail.scrollLeft = 0;
+
+  try { window.dispatchEvent(new Event("resize")); } catch {}
+}
+
+function bindHomeRailModeDelegation() {
+  if (window.__gwHomeRailModeDelegationInstalled) return;
+  window.__gwHomeRailModeDelegationInstalled = true;
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-home-action][data-target]");
+    if (!btn) return;
+
+    const action = btn.getAttribute("data-home-action");
+    const target = btn.getAttribute("data-target");
+    if (!action || !target) return;
+
+    if (action === "show-past") {
+      setHomeRailMode(target, "past");
+      return;
+    }
+    if (action === "show-active") {
+      setHomeRailMode(target, "active");
+    }
+  });
 }
 
 // ==============================
