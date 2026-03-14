@@ -1253,13 +1253,13 @@ if (myList) {
 // C1.1 — Auto-focus solo al primo caricamento, senza filtri e se l'utente non ha già scrollato
       const noFilters =
         !filters || (typeof filters === "object" && Object.keys(filters).length === 0);
-      if (!_autoFocusDone && noFilters && window.scrollY < 20) {
-        autoFocusOnRelevantEvent();
-        _autoFocusDone = true;
-        try {
-          sessionStorage.setItem("participant:autoFocusDone", "1");
-        } catch {}
-      }
+if (!_autoFocusDone && noFilters) {
+  autoFocusOnRelevantEvent();
+  _autoFocusDone = true;
+  try {
+    sessionStorage.setItem(HOME_V2_AUTOFOCUS_KEY, "1");
+  } catch {}
+}
 
       try { window.dispatchEvent(new Event("resize")); } catch {}
 
