@@ -635,8 +635,9 @@ body.gw-page-map #mapSection{
 /* Mobile stretto */
 @media (max-width: 520px){
   .gw-home-v2-body{
-    padding-top: calc(var(--gw-topbar-h) + 8px);
-    padding-bottom: calc(var(--gw-bottomnav-h) + 8px);
+    height: calc(100dvh - var(--gw-topbar-h) - var(--gw-bottomnav-h));
+    padding-top: var(--gw-topbar-h);
+    padding-bottom: var(--gw-bottomnav-h);
   }
 
   .gw-home-v2-viewport{
@@ -644,7 +645,7 @@ body.gw-page-map #mapSection{
   }
 
   .gw-home-v2-section{
-    padding: 4px 0 8px;
+    padding: 0;
   }
 
   .gw-home-v2-section .gw-home-rail > .gw-rail,
