@@ -220,14 +220,6 @@
 
 /* ---------- HOME (50/50 stabile + viewport mobile corretto) ---------- */
 /* Niente calc “sottrai barre”: usiamo height:100dvh e padding per lasciare spazio a barre FIXED */
-.gw-home{
-  box-sizing: border-box;
-  background: var(--gw-bg);
-  padding: 0;
-  display:flex;
-  flex-direction: column;
-  gap: var(--gw-gap);
-}
 
 .gw-block{
   width: 100%;
@@ -323,23 +315,7 @@ body.gw-page-map .gw-map{
   box-sizing: border-box;
 }
 
-/* Card evento */
-.gw-rail{
-  flex: 0 0 78%;
-  max-width: 78%;
-  min-width: 0;
-  scroll-snap-align: center;
-  box-sizing: border-box;
-  background: var(--gw-surface);
-  border: 1px solid var(--gw-border);
-  border-radius: var(--gw-radius);
-  box-shadow: var(--gw-shadow);
 
-  /* layout colonna per tenere actions in basso */
-  display:flex;
-  flex-direction: column;
-  overflow: hidden;
-}
 /* --- FOLLOWED EVENTS: card dentro .gw-carousel-wrap (pagina Eventi Seguiti) --- */
 /* Vincola la larghezza delle card, evitando “schede infinite” (caso NicoBriss) */
 
