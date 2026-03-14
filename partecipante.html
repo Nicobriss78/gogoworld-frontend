@@ -76,32 +76,48 @@
 </header>
 <!-- HOME (tra topbar e bottom bar) -->
 <section class="gw-body">
-  <section class="gw-home">
-  <!-- BLOCCO A (50%) -->
-  <section class="gw-block">
-    <div class="gw-block-head">
-      <h2 class="gw-block-title">Eventi generali</h2>
-    </div>
+<section class="gw-body gw-home-v2-body">
+  <section class="gw-home-v2-viewport">
 
-    <!-- Banner inline (lo lasciamo vivo) -->
-<div id="allEventsList" class="gw-carousel-wrap"></div>
-<div class="gw-scrollrail" data-rail-for="allEventsList">
-  <div class="gw-scrollthumb"></div>
-</div>
+    <section class="gw-home-v2-section gw-home-v2-section--general" data-home-block="general">
+      <div class="gw-block-head gw-home-v2-head">
+        <h2 class="gw-block-title">Eventi generali</h2>
+        <p class="gw-scroll-hint" data-hint-for="allEventsRail">← scorri →</p>
+      </div>
+
+      <div class="gw-home-rail-shell" data-mode="active" data-rail-shell="general">
+        <div id="allEventsRail" class="gw-carousel-wrap gw-home-rail gw-home-rail--active"></div>
+        <div class="gw-scrollrail" data-rail-for="allEventsRail">
+          <div class="gw-scrollthumb"></div>
+        </div>
+
+        <div id="allEventsPastRail" class="gw-carousel-wrap gw-home-rail gw-home-rail--past is-hidden"></div>
+        <div class="gw-scrollrail is-hidden" data-rail-for="allEventsPastRail">
+          <div class="gw-scrollthumb"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="gw-home-v2-section gw-home-v2-section--joined" data-home-block="joined">
+      <div class="gw-block-head gw-home-v2-head">
+        <h2 class="gw-block-title">Eventi a cui partecipo</h2>
+        <p class="gw-scroll-hint" data-hint-for="myEventsRail">← scorri →</p>
+      </div>
+
+      <div class="gw-home-rail-shell" data-mode="active" data-rail-shell="joined">
+        <div id="myEventsRail" class="gw-carousel-wrap gw-home-rail gw-home-rail--active"></div>
+        <div class="gw-scrollrail" data-rail-for="myEventsRail">
+          <div class="gw-scrollthumb"></div>
+        </div>
+
+        <div id="myEventsPastRail" class="gw-carousel-wrap gw-home-rail gw-home-rail--past is-hidden"></div>
+        <div class="gw-scrollrail is-hidden" data-rail-for="myEventsPastRail">
+          <div class="gw-scrollthumb"></div>
+        </div>
+      </div>
+    </section>
+
   </section>
-
-  <!-- BLOCCO B (50%) -->
-  <section class="gw-block">
-    <div class="gw-block-head">
-      <h2 class="gw-block-title">Eventi a cui partecipo</h2>
-    </div>
-
-<div id="myEventsList" class="gw-carousel-wrap"></div>
-<div class="gw-scrollrail" data-rail-for="myEventsList">
-  <div class="gw-scrollthumb"></div>
-</div>
-  </section>
-</section>
   <section class="legacy is-hidden">
     <!-- Filtri -->
     <section class="filters">
