@@ -207,12 +207,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Token: se non c'è, esci subito (niente polling)
   const token = localStorage.getItem("token");
   // C1.1 — Flag per auto-focus iniziale (persistito nella sessione)
-  let _autoFocusDone = false;
-  try {
-    if (sessionStorage.getItem("participant:autoFocusDone") === "1") {
-      _autoFocusDone = true;
-    }
-  } catch {
+let _autoFocusDone = false;
+const HOME_V2_AUTOFOCUS_KEY = "participant:homeV2AutoFocusDone";
+try {
+  if (sessionStorage.getItem(HOME_V2_AUTOFOCUS_KEY) === "1") {
+    _autoFocusDone = true;
+  }
+} catch {
     // se sessionStorage non è disponibile, ignoriamo e useremo solo il flag in memoria
   }
 
