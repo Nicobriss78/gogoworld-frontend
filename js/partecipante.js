@@ -423,9 +423,11 @@ if (btnRooms) {
   });
 }
 }
- const allList = document.getElementById("allEventsList");
+ const allList = document.getElementById("allEventsRail");
+ const allPastList = document.getElementById("allEventsPastRail");
  const followingList = document.getElementById("followingEventsList");
- const myList = document.getElementById("myEventsList");
+ const myList = document.getElementById("myEventsRail");
+ const myPastList = document.getElementById("myEventsPastRail");
  const btnFilters = document.getElementById("btnApplyFilters");
  const btnLogout = document.getElementById("btnLogout");
  const btnSwitchRole = document.getElementById("btnSwitchRole");
