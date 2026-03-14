@@ -681,9 +681,10 @@ body.gw-page-map #mapSection{
     max-width: 96%;
   }
 
-  .gw-home-v2-section .gw-home-rail > .event-card .gw-thumb{
-    height: 108px;
-  }
+.gw-home-v2-section .gw-home-rail > .event-card > .gw-card-scroll > .gw-thumb{
+  flex: 0 0 124px;
+  height: 124px;
+}
 
   .gw-home-switch-card .title{
     font-size: 15px;
