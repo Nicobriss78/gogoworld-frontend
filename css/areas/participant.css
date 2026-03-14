@@ -505,6 +505,7 @@ body.gw-page-map #mapSection{
   scroll-snap-stop: always;
   padding: 0;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .gw-home-v2-head{
