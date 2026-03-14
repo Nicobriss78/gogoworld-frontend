@@ -753,19 +753,16 @@ if (ENABLE_LEGACY_MAPPA) {
 }
 
   
-// C1.1 — Auto-focus sugli eventi rilevanti nel rail richiesto
+// C1.1 — Auto-focus sul primo vero evento del rail,
+// lasciando la card ponte a sinistra
 function autoFocusOnRelevantEvent(containerId) {
   try {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    const statusOrder = ["ongoing", "imminent", "future", "concluded"];
-    let targetCard = null;
-
-    for (const st of statusOrder) {
-      targetCard = container.querySelector(`.event-card[data-status="${st}"]`);
-      if (targetCard) break;
-    }
+    // La card ponte NON ha data-event-id.
+    // I veri eventi sì.
+    const targetCard = container.querySelector('.event-card[data-event-id]');
     if (!targetCard) return;
 
     const applyFocus = () => {
@@ -779,9 +776,9 @@ function autoFocusOnRelevantEvent(containerId) {
       applyFocus();
       requestAnimationFrame(() => {
         applyFocus();
-        try {
-          targetCard.scrollIntoView({ behavior: "auto", inline: "start", block: "nearest" });
-        } catch {}
+        requestAnimationFrame(() => {
+          applyFocus();
+        });
       });
     });
   } catch (err) {
