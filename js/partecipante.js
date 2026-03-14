@@ -757,14 +757,32 @@ function autoFocusOnRelevantEvent() {
   try {
     const container = document.getElementById("allEventsRail");
     if (!container) return;
+
     const statusOrder = ["ongoing", "imminent", "future", "concluded"];
     let targetCard = null;
+
     for (const st of statusOrder) {
       targetCard = container.querySelector(`.event-card[data-status="${st}"]`);
       if (targetCard) break;
     }
     if (!targetCard) return;
-    targetCard.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
+
+    const applyFocus = () => {
+      try {
+        const left = targetCard.offsetLeft || 0;
+        container.scrollLeft = Math.max(0, left);
+      } catch {}
+    };
+
+    requestAnimationFrame(() => {
+      applyFocus();
+      requestAnimationFrame(() => {
+        applyFocus();
+        try {
+          targetCard.scrollIntoView({ behavior: "auto", inline: "start", block: "nearest" });
+        } catch {}
+      });
+    });
   } catch (err) {
     console.debug("[autoFocus] skip:", err);
   }
