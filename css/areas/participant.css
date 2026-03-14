@@ -628,7 +628,8 @@ body.gw-page-map #mapSection{
 .gw-home-rail-shell > .gw-scrollrail{
   display: block;
   margin-top: 8px;
-  margin-bottom: 2px;
+  margin-bottom: 10px;
+  flex: 0 0 auto;
 }
 
 /* Mobile stretto */
