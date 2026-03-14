@@ -1239,16 +1239,13 @@ if (myList) {
   try { if (myPastList) applyHomeCardThumbs(myPastList); } catch {}
 }
 
-// C1.1 — Auto-focus solo al primo caricamento, senza filtri
+// C1.1 — Auto-focus solo al primo caricamento della pagina, senza filtri
       const noFilters =
         !filters || (typeof filters === "object" && Object.keys(filters).length === 0);
 if (!_autoFocusDone && noFilters) {
   autoFocusOnRelevantEvent("allEventsRail");
   autoFocusOnRelevantEvent("myEventsRail");
   _autoFocusDone = true;
-  try {
-    sessionStorage.setItem(HOME_V2_AUTOFOCUS_KEY, "1");
-  } catch {}
 }
       try { window.dispatchEvent(new Event("resize")); } catch {}
 
