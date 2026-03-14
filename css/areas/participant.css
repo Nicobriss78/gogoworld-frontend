@@ -660,8 +660,7 @@ body.gw-page-map #mapSection{
 @media (max-width: 520px){
   .gw-home-v2-body{
     height: calc(100dvh - var(--gw-topbar-h) - var(--gw-bottomnav-h));
-    padding-top: var(--gw-topbar-h);
-    padding-bottom: var(--gw-bottomnav-h);
+    padding: 0;
   }
 
   .gw-home-v2-viewport{
