@@ -651,8 +651,8 @@ body.gw-page-map #mapSection{
 /* Scrollbar custom sotto ogni rail */
 .gw-home-rail-shell > .gw-scrollrail{
   display: block;
-  margin-top: 8px;
-  margin-bottom: 10px;
+  margin-top: 6px;
+  margin-bottom: 0;
   flex: 0 0 auto;
 }
 
