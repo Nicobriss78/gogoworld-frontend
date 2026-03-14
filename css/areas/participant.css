@@ -474,8 +474,7 @@ body.gw-page-map #mapSection{
   flex: 1 1 auto;
   min-height: 0;
   height: calc(100dvh - var(--gw-topbar-h) - var(--gw-bottomnav-h));
-  padding-top: var(--gw-topbar-h);
-  padding-bottom: var(--gw-bottomnav-h);
+  padding: 0;
   box-sizing: border-box;
   overflow: hidden;
 }
