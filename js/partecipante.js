@@ -1255,9 +1255,10 @@ if (allList) {
     </div>
   `;
 }
-
+if (allPastList) allPastList.innerHTML = "";
 if (followingList) followingList.innerHTML = "";
 if (myList) myList.innerHTML = "";
+if (myPastList) myPastList.innerHTML = "";
 
   }
 } // END loadEvents
