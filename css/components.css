@@ -376,44 +376,6 @@ body.gw-page-map .gw-map{
   border-bottom: none;
 }
 
-.gw-rail .content{
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  display:flex;
-  flex-direction: column;
-  padding: 8px 10px 8px;
-}
-
-.gw-rail .title{
-  font-weight: 800;
-  font-size: 14px;
-  margin: 0 0 4px;
-  color: var(--gw-text);
-  line-height: 1.15;
-}
-
-.gw-rail .meta{
-  font-size: 12px;
-  color: var(--gw-muted);
-  display:flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  line-height: 1.2;
-}
-
-.gw-rail .actions{
-  margin-top: auto;
-  position: sticky;
-  bottom: 0;
-  z-index: 2;
-  background: var(--gw-surface);
-  border-top: 1px solid var(--gw-border);
-  padding: 8px 10px 10px;
-  display:flex;
-  gap: 8px;
-}
 /* --- Banner come card nel carosello (events_list_inline) --- */
 .gw-banner-card{
   padding: 0; /* sicurezza: niente padding esterno extra */
@@ -433,19 +395,6 @@ body.gw-page-map .gw-map{
 }
 
 /* --- UI v2: Card scroll + Info button (Opzione 4.4) --- */
-
-/* la card deve poter ospitare overlay */
-.gw-rail.event-card{
-  position: relative;
-  overflow: hidden;
-}
-
-/* wrapper che contiene locandina + contenuto e scorre in verticale */
-.gw-card-scroll{
-  height: 100%;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
 
 /* icona info sempre visibile (non scrolla) */
 .gw-info-btn{
