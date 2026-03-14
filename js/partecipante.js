@@ -1003,24 +1003,29 @@ async function loadEvents(filters = {}) {
           }
         }
       }
-// B1.3 — Lista "Tutti gli eventi": escludi gli eventi completamente passati
-      const notJoined = res.events.filter((ev) => {
-        // Se l'utente è già iscritto, questo evento NON va nella lista "Tutti gli eventi"
-        if (joinedIds.has(ev._id)) return false;
+const notJoined = res.events.filter((ev) => !joinedIds.has(ev._id));
+      const notJoinedSorted = sortEventsForParticipant(notJoined);
 
-        // Normalizza lo stato evento
+      const joined = res.events.filter((ev) => joinedIds.has(ev._id));
+      const joinedSorted = sortEventsForParticipant(joined);
+
+      const generalActive = notJoinedSorted.filter((ev) => {
         const s = String(ev?.status || "").toLowerCase();
-
-        // Nascondi gli eventi "past" dalla lista pubblica
         return s !== "past";
       });
-      // C1.1 — Ordinamento eventi per partecipante:
-      // future → imminent → ongoing → concluded → past, con data di inizio crescente
 
+      const generalPast = notJoinedSorted
+        .filter((ev) => String(ev?.status || "").toLowerCase() === "past")
+        .slice(0, 10);
 
- const notJoinedSorted = sortEventsForParticipant(notJoined);
- const joined = res.events.filter(ev => joinedIds.has(ev._id));
- const joinedSorted = sortEventsForParticipant(joined);
+      const joinedActive = joinedSorted.filter((ev) => {
+        const s = String(ev?.status || "").toLowerCase();
+        return s !== "past";
+      });
+
+      const joinedPast = joinedSorted
+        .filter((ev) => String(ev?.status || "").toLowerCase() === "past")
+        .slice(0, 15);
       
  // Cx — Eventi organizzati da utenti che seguo
  let followingSorted = [];
