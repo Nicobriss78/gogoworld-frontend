@@ -1515,9 +1515,10 @@ if (DISABLE_LEGACY_TOPBAR_UI) {
 // Inizializza
 hookFilters();
 setupEventCardDelegation();
+bindHomeRailModeDelegation();
 
 // Avvio per-pagina
-const isHomePage = !!document.getElementById("allEventsList");
+const isHomePage = !!document.getElementById("allEventsRail");
 const isMapPage = !!document.getElementById("map");
 
 // HOME
