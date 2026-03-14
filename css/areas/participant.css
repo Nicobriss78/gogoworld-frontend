@@ -465,3 +465,195 @@ body.gw-page-map #mapSection{
   display:block;
   text-align:left;
 }
+/* =========================================================
+   HOME V2 — layout autonomo
+   2 blocchi verticali full-screen + rail orizzontali
+   ========================================================= */
+
+.gw-home-v2-body{
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-top: calc(var(--gw-topbar-h) + 10px);
+  padding-bottom: calc(var(--gw-bottomnav-h) + 10px);
+  box-sizing: border-box;
+}
+
+.gw-home-v2-viewport{
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  gap: 0;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.gw-home-v2-section{
+  flex: 0 0 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  padding: 6px 0 10px;
+  box-sizing: border-box;
+}
+
+.gw-home-v2-head{
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 2px 2px 10px;
+}
+
+.gw-home-v2-head .gw-block-title{
+  font-size: 16px;
+  line-height: 1.15;
+}
+
+.gw-scroll-hint{
+  margin: 0;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--gw-muted);
+  opacity: .82;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.gw-home-rail-shell{
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gw-home-rail{
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.gw-home-rail::-webkit-scrollbar{
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Home V2: card più immersive del default shared */
+.gw-home-v2-section .gw-home-rail > .gw-rail,
+.gw-home-v2-section .gw-home-rail > .event-card{
+  flex: 0 0 92%;
+  max-width: 92%;
+  min-width: 0;
+  align-self: stretch;
+  scroll-snap-align: start;
+}
+
+/* Card evento dentro Home V2 */
+.gw-home-v2-section .gw-home-rail > .event-card{
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* La card deve respirare e non sembrare "troncata" */
+.gw-home-v2-section .gw-home-rail > .event-card .gw-card-scroll{
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.gw-home-v2-section .gw-home-rail > .event-card .content{
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Thumb un po' più alta in Home V2 per impatto visivo */
+.gw-home-v2-section .gw-home-rail > .event-card .gw-thumb{
+  height: 120px;
+}
+
+/* Card ponte / card ritorno */
+.gw-home-switch-card{
+  justify-content: stretch;
+}
+
+.gw-home-switch-card .content{
+  justify-content: center;
+  gap: 8px;
+}
+
+.gw-home-switch-card .title{
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+.gw-home-switch-card .subtitle{
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--gw-muted);
+}
+
+.gw-home-switch-card .actions{
+  margin-top: 10px;
+}
+
+/* Rail passato: stessa dignità visiva del rail attivo */
+.gw-home-rail--past > .gw-rail,
+.gw-home-rail--past > .event-card{
+  flex: 0 0 92%;
+  max-width: 92%;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+/* Scrollbar custom sotto ogni rail */
+.gw-home-rail-shell > .gw-scrollrail{
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 2px;
+}
+
+/* Mobile stretto */
+@media (max-width: 520px){
+  .gw-home-v2-body{
+    padding-top: calc(var(--gw-topbar-h) + 8px);
+    padding-bottom: calc(var(--gw-bottomnav-h) + 8px);
+  }
+
+  .gw-home-v2-viewport{
+    padding: 0 8px;
+  }
+
+  .gw-home-v2-section{
+    padding: 4px 0 8px;
+  }
+
+  .gw-home-v2-section .gw-home-rail > .gw-rail,
+  .gw-home-v2-section .gw-home-rail > .event-card,
+  .gw-home-rail--past > .gw-rail,
+  .gw-home-rail--past > .event-card{
+    flex: 0 0 96%;
+    max-width: 96%;
+  }
+
+  .gw-home-v2-section .gw-home-rail > .event-card .gw-thumb{
+    height: 108px;
+  }
+
+  .gw-home-switch-card .title{
+    font-size: 15px;
+  }
+
+  .gw-home-switch-card .subtitle{
+    font-size: 12px;
+  }
+}
