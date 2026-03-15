@@ -556,7 +556,6 @@ body.gw-page-map #mapSection{
   height: 0;
 }
 .gw-home-card{
-.gw-home-card{
   flex: 0 0 var(--gw-home-card-width);
   max-width: var(--gw-home-card-width);
   min-width: 0;
