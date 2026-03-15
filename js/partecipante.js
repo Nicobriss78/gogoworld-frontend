@@ -801,8 +801,7 @@ function renderPastEntryCard(target, count, limit) {
 
 function renderBackToActiveCard(target) {
   return `
-    <article class="gw-rail event-card gw-home-switch-card" data-home-card="${target}-back-active">
-      <div class="content">
+<article class="gw-home-switch-card" data-home-card="${target}-back-active">      <div class="content">
         <div class="meta gw-meta--tight">
           <span><strong>Torna indietro</strong></span>
         </div>
