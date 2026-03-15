@@ -644,7 +644,13 @@ body.gw-page-map #mapSection{
 .gw-home-switch-card .actions{
   margin-top: 10px;
 }
-
+.gw-home-rail--past > .gw-home-card{
+  flex: 0 0 var(--gw-home-card-width);
+  max-width: var(--gw-home-card-width);
+  min-width: 0;
+  height: calc(100% - 8px);
+  scroll-snap-align: start;
+}
 /* Scrollbar custom sotto ogni rail */
 .gw-home-rail-shell > .gw-scrollrail{
   display: block;
