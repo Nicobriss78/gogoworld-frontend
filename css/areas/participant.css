@@ -673,7 +673,16 @@ body.gw-page-map #mapSection{
   .gw-home-v2-section{
     padding: 0;
   }
+  .gw-home-v2-section .gw-home-rail > .gw-home-card,
+  .gw-home-rail--past > .gw-home-card{
+    flex: 0 0 96%;
+    max-width: 96%;
+  }
 
+  .gw-home-card__thumb{
+    flex: 0 0 124px;
+    height: 124px;
+  }
   .gw-home-switch-card .title{
     font-size: 15px;
   }
