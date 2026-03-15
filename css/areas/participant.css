@@ -556,11 +556,12 @@ body.gw-page-map #mapSection{
   height: 0;
 }
 .gw-home-card{
+.gw-home-card{
   flex: 0 0 var(--gw-home-card-width);
   max-width: var(--gw-home-card-width);
   min-width: 0;
-  min-height: 100%;
-  height: calc(100% - 8px);
+  height: 100%;
+  max-height: 100%;
   align-self: stretch;
   scroll-snap-align: start;
   display: flex;
