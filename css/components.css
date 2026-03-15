@@ -342,13 +342,6 @@ body.gw-page-map .gw-map{
   }
 }
 
-/* anti “card infinita”: consenti al contenuto di restringersi e spezzare testo/URL */
-.gw-rail .content {
-  min-width: 0;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
 /* su schermi più grandi: card a dimensione “card” */
 @media (min-width: 768px) {
   .gw-following-card-wrap {
