@@ -118,7 +118,7 @@ return `
 
       <div class="gw-home-card__scroll">
 <div class="gw-home-card__thumb ${thumbClass}" ${thumbBgAttr}></div>
-        <div class="content">
+        <div class="gw-home-card__content">
           <h3 class="title">${ev.title || "(Senza titolo)"}</h3>
           ${renderStatus(ev.status)}
           <div class="meta">
