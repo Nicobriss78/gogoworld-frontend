@@ -1111,33 +1111,29 @@ const renderBannerCard = (b) => {
   const title = b?.title || "Promozione";
   const img = b?.imageUrl || b?.image || "";
   const type = String(b?.type || "").toUpperCase();
-
   const kicker =
     type === "SPONSOR" ? "Sponsor" :
     type === "HOUSE" ? "Comunicazione" :
     "Promo";
-
-  // Se hai un endpoint click con redirect, ok. Altrimenti usa targetUrl
   const clickHref = id
     ? `/api/banners/${encodeURIComponent(id)}/click?redirect=1`
     : (b?.targetUrl || "#");
-
-const bgStyle = img ? ` data-bg="${img}"` : "";
+  const bgStyle = img ? ` data-bg="${img}"` : "";
 
   return `
-    <article class="gw-rail event-card gw-banner-card" data-banner-id="${id}">
-      <a class="gw-banner-link" href="${clickHref}" aria-label="${title}">
-        <div class="gw-thumb"${bgStyle}></div>
-        <div class="content">
-        <div class="meta gw-meta--tight">
+    <article class="gw-home-card gw-home-banner-card" data-banner-id="${id}">
+      <a class="gw-banner-link gw-home-banner-card__link" href="${clickHref}" aria-label="${title}">
+        <div class="gw-home-card__thumb gw-home-banner-card__thumb"${bgStyle}></div>
+        <div class="gw-home-card__content gw-home-banner-card__content">
+          <div class="gw-home-card__meta gw-home-banner-card__meta">
             <span><strong>${kicker}</strong></span>
           </div>
-          <h3 class="title">${title}</h3>
+          <h3 class="gw-home-card__title gw-home-banner-card__title">${title}</h3>
         </div>
       </a>
     </article>
   `;
-};      
+};
 // Popola rail principale "Eventi generali" + banner solo qui
 if (allList) {
   const generalItems = injectBannerSlots(generalActive);
