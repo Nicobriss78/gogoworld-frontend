@@ -754,7 +754,7 @@ function autoFocusOnRelevantEvent(containerId) {
 
     // La card ponte NON ha data-event-id.
     // I veri eventi sì.
-    const targetCard = container.querySelector('.event-card[data-event-id]');
+const targetCard = container.querySelector('.gw-home-card[data-event-id]');
     if (!targetCard) return;
 
     const applyFocus = () => {
