@@ -590,16 +590,6 @@ body.gw-page-map #mapSection{
   margin-top: 10px;
 }
 
-/* Rail passato: stessa dignità visiva del rail attivo */
-.gw-home-rail--past > .gw-rail,
-.gw-home-rail--past > .event-card{
-  flex: 0 0 92%;
-  max-width: 92%;
-  min-width: 0;
-  height: calc(100% - 8px);
-  scroll-snap-align: start;
-}
-
 /* Scrollbar custom sotto ogni rail */
 .gw-home-rail-shell > .gw-scrollrail{
   display: block;
