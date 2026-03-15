@@ -564,12 +564,6 @@ body.gw-page-map #mapSection{
   flex-direction: column;
 }
 
-.gw-home-v2-section .gw-home-rail > .event-card .content{
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-}
-
 /* Thumb un po' più alta in Home V2 per impatto visivo */
 .gw-home-v2-section .gw-home-rail > .event-card .gw-thumb{
   height: 120px;
