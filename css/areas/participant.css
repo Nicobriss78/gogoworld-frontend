@@ -662,8 +662,6 @@ body.gw-page-map #mapSection{
   flex: 0 0 var(--gw-home-card-width);
   max-width: var(--gw-home-card-width);
   min-width: 0;
-  height: 100%;
-  max-height: 100%;
   scroll-snap-align: start;
 }
 /* Scrollbar custom sotto ogni rail */
