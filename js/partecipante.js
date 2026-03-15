@@ -782,12 +782,13 @@ function renderPastEntryCard(target, count, limit) {
   const label = target === "joined" ? "Eventi a cui hai partecipato" : "Eventi passati";
   const subtitle = `Rivedi gli ultimi ${limit}`;
   return `
-<article class="gw-home-switch-card" data-home-card="${target}-past-entry">      <div class="content">
-        <div class="meta gw-meta--tight">
+    <article class="gw-home-card gw-home-switch-card" data-home-card="${target}-past-entry">
+      <div class="gw-home-card__content">
+        <div class="gw-home-card__meta">
           <span><strong>Archivio recente</strong></span>
           <span>${count} disponibili</span>
         </div>
-        <h3 class="title">${label}</h3>
+        <h3 class="gw-home-card__title">${label}</h3>
         <p class="subtitle">${subtitle}</p>
         <div class="actions">
           <button class="btn btn-secondary" type="button" data-home-action="show-past" data-target="${target}">
