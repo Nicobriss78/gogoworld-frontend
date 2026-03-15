@@ -112,8 +112,8 @@ const infoHtml = `
   `;
 
 
-  return `
-    <article class="gw-rail event-card" data-status="${rawStatus}" data-event-id="${ev._id}">
+return `
+  <article class="gw-home-card" data-status="${rawStatus}" data-event-id="${ev._id}">
       ${infoHtml}
 
       <div class="gw-card-scroll">
