@@ -119,7 +119,8 @@ return `
       <div class="gw-home-card__scroll">
 <div class="gw-home-card__thumb ${thumbClass}" ${thumbBgAttr}></div>
         <div class="gw-home-card__content">
-          <h3 class="title">${ev.title || "(Senza titolo)"}</h3>
+          <h3 class="gw-home-card__title">
+          ${ev.title || "(Senza titolo)"}</h3>
           ${renderStatus(ev.status)}
           <div class="gw-home-card__meta">
             ${whereLine ? `<span>${whereLine}</span>` : ""}
