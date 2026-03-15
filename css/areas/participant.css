@@ -555,7 +555,66 @@ body.gw-page-map #mapSection{
   width: 0;
   height: 0;
 }
+.gw-home-card{
+  flex: 0 0 var(--gw-home-card-width);
+  max-width: var(--gw-home-card-width);
+  min-width: 0;
+  min-height: 100%;
+  height: calc(100% - 8px);
+  align-self: stretch;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: var(--gw-home-card-bg);
+  border: 1px solid var(--gw-home-card-border);
+  border-radius: var(--gw-home-card-radius);
+  box-shadow: var(--gw-home-card-shadow);
+  overflow: hidden;
+  box-sizing: border-box;
+}
 
+.gw-home-card__scroll{
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gw-home-card__thumb{
+  flex: 0 0 var(--gw-home-card-thumb-h);
+  height: var(--gw-home-card-thumb-h);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.gw-home-card__content{
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-y: auto;
+  padding: var(--gw-home-card-padding);
+  box-sizing: border-box;
+}
+
+.gw-home-card__title{
+  margin: 0 0 6px;
+  font-size: var(--gw-home-card-title-size);
+  line-height: 1.2;
+}
+
+.gw-home-card__meta{
+  font-size: var(--gw-home-card-meta-size);
+  line-height: 1.35;
+}
+
+.gw-home-card__actions{
+  position: relative;
+  z-index: 2;
+}
 /* Home V2: card più immersive del default shared */
 
 .gw-home-v2-section .gw-home-rail > .event-card > .gw-card-scroll{
