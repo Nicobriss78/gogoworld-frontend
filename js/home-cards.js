@@ -145,8 +145,7 @@ return `
 };
 // Applica cover thumb senza inline style nei template
 export function applyHomeCardThumbs(root = document) {
-  const thumbs = root.querySelectorAll(".event-card .gw-thumb[data-bg]");
-  thumbs.forEach((el) => {
+const thumbs = root.querySelectorAll(".gw-home-card .gw-home-card__thumb[data-bg]");  thumbs.forEach((el) => {
     const url = el.getAttribute("data-bg");
     if (!url) return;
     el.style.setProperty("--gw-bg", `url("${url}")`);
