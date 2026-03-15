@@ -620,7 +620,8 @@ body.gw-page-map #mapSection{
   flex: 0 0 var(--gw-home-card-width);
   max-width: var(--gw-home-card-width);
   min-width: 0;
-  align-self: flex-start;
+  align-self: stretch;
+  height: 100%;
   scroll-snap-align: start;
   box-sizing: border-box;
 }
