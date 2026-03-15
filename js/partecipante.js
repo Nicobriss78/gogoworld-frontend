@@ -1278,8 +1278,7 @@ const setupEventCardDelegation = () => {
 
     // 🔹 Nessun bottone azione: interpretiamo il click come "focus su mappa"
 if (!btn) {
-  const card = e.target.closest(".event-card");
-  if (card) {
+const card = e.target.closest(".gw-home-card");  if (card) {
     const evId = card.getAttribute("data-event-id");
 if (participantMap && typeof participantMap.focusOnEventId === "function" && evId) {
       participantMap.focusOnEventId(evId);
