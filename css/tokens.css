@@ -66,5 +66,24 @@
   --gw-gray: var(--gw-text-dim);
   --gw-ink: rgba(0,0,0,.88);
   --gw-red: #B52A32;
-   
+/* HOME V2 TOKENS */
+  --gw-home-section-gap: 12px;
+  --gw-home-rail-gap: 12px;
+  --gw-home-rail-pad-inline: 0px;
+
+  --gw-home-card-width: 78%;
+  --gw-home-card-radius: 12px;
+  --gw-home-card-padding: 12px;
+  --gw-home-card-bg: var(--gw-card);
+  --gw-home-card-border: var(--gw-border);
+  --gw-home-card-shadow: var(--gw-shadow);
+
+  --gw-home-card-thumb-h: 72px;
+
+  --gw-home-card-title-size: 15px;
+  --gw-home-card-meta-size: 13px;
+
+  --gw-home-switch-bg: var(--accent-soft);
+  --gw-home-switch-border: var(--accent-border);
+  --gw-home-switch-text: var(--gw-blue);   
 }
