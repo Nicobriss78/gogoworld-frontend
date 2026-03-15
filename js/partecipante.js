@@ -1288,8 +1288,7 @@ if (participantMap && typeof participantMap.focusOnEventId === "function" && evI
     const id = btn.getAttribute("data-id");
     const action = btn.getAttribute("data-action");
     if (btn.disabled || btn.dataset.loading === "1") return;
-    const cardEl = btn.closest(".event-card");
-    const evTitleText = cardEl?.querySelector("h3")?.textContent?.trim() || "";
+const cardEl = btn.closest(".gw-home-card");    const evTitleText = cardEl?.querySelector("h3")?.textContent?.trim() || "";
 // 🔹 Chiudi SOLO il blocco dettaglio (drawer MAPPA), senza uscire dalla chat e senza resettare l’evento
     if (action === "close-detail") {
       const isMapPage = document.body.classList.contains("gw-page-map");
