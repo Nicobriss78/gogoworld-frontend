@@ -116,7 +116,7 @@ return `
   <article class="gw-home-card" data-status="${rawStatus}" data-event-id="${ev._id}">
       ${infoHtml}
 
-      <div class="gw-card-scroll">
+      <div class="gw-home-card__scroll">
 <div class="${thumbClass}" ${thumbBgAttr}></div>
 
         <div class="content">
