@@ -88,7 +88,7 @@ export function injectBannerSlots(events) {
  */
 export function renderBannerSlotHTML() {
   return `
-    <article class="gw-home-card gw-home-banner-slot" data-kind="banner-slot" data-banner-slot="1"></article>
+    <div class="gw-home-banner-slot" data-kind="banner-slot" data-banner-slot="1"></div>
   `.trim();
 }
 
