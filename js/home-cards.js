@@ -127,15 +127,14 @@ return `
             ${when ? `<span>${when}</span>` : ""}
           </div>
 
-          <div class="meta gw-meta--mt6">
-            <span><strong>Categoria:</strong> ${ev.category || ""}${ev.subcategory ? " • " + ev.subcategory : ""}</span>
+         <div class="gw-home-card__meta gw-meta--mt6">            <span><strong>Categoria:</strong> ${ev.category || ""}${ev.subcategory ? " • " + ev.subcategory : ""}</span>
           </div>
 
-          <div class="meta gw-meta--mt4">
+          <div class="gw-home-card__meta gw-meta--mt4">
             <span><strong>Lingua/Target:</strong> ${ev.language || ""}${ev.target ? " • " + ev.target : ""}</span>
           </div>
 
-          <div class="meta gw-meta--mt4">
+          <div class="gw-home-card__meta gw-meta--mt4">
             <span><strong>Prezzo:</strong> ${priceStr}</span>
           </div>
         </div>
