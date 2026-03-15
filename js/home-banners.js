@@ -156,13 +156,14 @@ function renderFallbackTipCard(tip) {
   if (!tip) return "";
 
   return `
-   <article class="gw-rail gw-banner gw-banner--tip" data-kind="banner-tip" data-tip="${tip.tipKey || "geo"}">
-      <div class="gw-banner__inner">
-        <div class="gw-banner__icon">${tip.iconSvg || ""}</div>
-        <div class="gw-banner__content">
-          <div class="gw-banner__title">${tip.title || ""}</div>
-          <div class="gw-banner__text">${tip.text || ""}</div>
+    <article class="gw-home-card gw-home-banner-card gw-home-banner-card--tip" data-kind="banner-tip" data-tip="${tip.tipKey || "geo"}">
+      <div class="gw-home-card__content gw-home-banner-card__content">
+        <div class="gw-home-banner-card__icon">${tip.iconSvg || ""}</div>
+        <div class="gw-home-card__meta gw-home-banner-card__meta">
+          <span><strong>Suggerimento</strong></span>
         </div>
+        <h3 class="gw-home-card__title gw-home-banner-card__title">${tip.title || ""}</h3>
+        <p class="gw-home-banner-card__text">${tip.text || ""}</p>
       </div>
     </article>
   `.trim();
