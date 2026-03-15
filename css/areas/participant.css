@@ -564,11 +564,6 @@ body.gw-page-map #mapSection{
   flex-direction: column;
 }
 
-/* Thumb un po' più alta in Home V2 per impatto visivo */
-.gw-home-v2-section .gw-home-rail > .event-card .gw-thumb{
-  height: 120px;
-}
-
 /* Card ponte / card ritorno */
 .gw-home-switch-card{
   justify-content: stretch;
