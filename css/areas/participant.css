@@ -613,11 +613,6 @@ body.gw-page-map #mapSection{
     padding: 0;
   }
 
-.gw-home-v2-section .gw-home-rail > .event-card > .gw-card-scroll > .gw-thumb{
-  flex: 0 0 124px;
-  height: 124px;
-}
-
   .gw-home-switch-card .title{
     font-size: 15px;
   }
