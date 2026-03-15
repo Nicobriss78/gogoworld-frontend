@@ -802,11 +802,12 @@ function renderPastEntryCard(target, count, limit) {
 
 function renderBackToActiveCard(target) {
   return `
-<article class="gw-home-switch-card" data-home-card="${target}-back-active">      <div class="content">
-        <div class="meta gw-meta--tight">
+    <article class="gw-home-card gw-home-switch-card" data-home-card="${target}-back-active">
+      <div class="gw-home-card__content">
+        <div class="gw-home-card__meta">
           <span><strong>Torna indietro</strong></span>
         </div>
-        <h3 class="title">Eventi attivi</h3>
+        <h3 class="gw-home-card__title">Eventi attivi</h3>
         <p class="subtitle">In corso, imminenti e futuri</p>
         <div class="actions">
           <button class="btn btn-secondary" type="button" data-home-action="show-active" data-target="${target}">
