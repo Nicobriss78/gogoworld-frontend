@@ -697,7 +697,12 @@ body.gw-page-map #mapSection{
     flex: 0 0 96%;
     max-width: 96%;
   }
-
+  .gw-home-v2-section .gw-home-rail > .gw-home-switch-card,
+  .gw-home-v2-section .gw-home-rail > .gw-home-banner-slot,
+  .gw-home-rail--past > .gw-home-switch-card{
+    flex: 0 0 96%;
+    max-width: 96%;
+  }
   .gw-home-card__thumb{
     flex: 0 0 124px;
     height: 124px;
