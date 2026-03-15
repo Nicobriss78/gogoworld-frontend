@@ -557,14 +557,6 @@ body.gw-page-map #mapSection{
 }
 
 /* Home V2: card più immersive del default shared */
-.gw-home-v2-section .gw-home-rail > .gw-rail,
-.gw-home-v2-section .gw-home-rail > .event-card{
-  flex: 0 0 92%;
-  max-width: 92%;
-  min-width: 0;
-  align-self: stretch;
-  scroll-snap-align: start;
-}
 
 /* Card evento dentro Home V2 */
 .gw-home-v2-section .gw-home-rail > .event-card{
