@@ -121,7 +121,7 @@ return `
         <div class="gw-home-card__content">
           <h3 class="title">${ev.title || "(Senza titolo)"}</h3>
           ${renderStatus(ev.status)}
-          <div class="meta">
+          <div class="gw-home-card__meta">
             ${whereLine ? `<span>${whereLine}</span>` : ""}
             ${when ? `<span>${when}</span>` : ""}
           </div>
