@@ -708,3 +708,12 @@ body.gw-page-map #mapSection{
     font-size: 12px;
   }
 }
+/* HOME v2 — disinnesca stretch verticale del carousel */
+
+.gw-home-rail{
+  align-items:flex-start;
+}
+
+.gw-home-rail > *{
+  align-self:flex-start;
+}
