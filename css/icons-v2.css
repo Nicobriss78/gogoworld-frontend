@@ -1,1 +1,74 @@
+/* =========================================================
+   GoGoWorld.life — Icons V2
+   Sistema icone shared del nuovo ecosistema
+   Solo base icone e pulsanti icona neutri
+   ========================================================= */
 
+.gw-icon{
+  width: var(--gw-icon-size, 24px);
+  height: var(--gw-icon-size, 24px);
+  display: inline-block;
+  vertical-align: middle;
+
+  color: currentColor;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--gw-icon-stroke, 2);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.gw-icon *{
+  vector-effect: non-scaling-stroke;
+}
+
+.gw-icon.is-active{
+  color: var(--gw-accent, #3F7C96);
+}
+
+.gw-icon.is-danger{
+  color: var(--gw-danger, #B52A32);
+}
+
+.gw-icon.is-disabled{
+  color: var(--gw-text-muted, #8B95A1);
+  opacity: .7;
+}
+
+/* Pulsante icona neutro condivisibile */
+.gw-iconbtn{
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--gw-border, #E6EAF0);
+  border-radius: var(--gw-radius-btn, 10px);
+  background: var(--gw-surface, #FFFFFF);
+  color: var(--gw-text-secondary, #5A6572);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gw-iconbtn:active{
+  transform: scale(.98);
+}
+
+.gw-iconbtn.is-active{
+  color: var(--gw-accent, #3F7C96);
+  border-color: var(--gw-accent-border, #C2D6DF);
+  background: var(--gw-accent-soft, #E6F0F4);
+}
+
+.gw-iconbtn.is-danger{
+  color: var(--gw-danger, #B52A32);
+}
+
+.gw-iconbtn.is-disabled{
+  color: var(--gw-text-muted, #8B95A1);
+  opacity: .7;
+  cursor: default;
+}
