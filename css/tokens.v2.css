@@ -1,1 +1,158 @@
+/* =========================================================
+   GoGoWorld.life — TOKENS V2
+   Base globale del nuovo sistema
+   Pulito, unico, senza legacy
+   ========================================================= */
 
+:root{
+  /* =====================================================
+     1) BRAND / COLORI
+     ===================================================== */
+
+  /* Accent principale (nuova scelta) */
+  --gw-accent: #3F7C96;
+  --gw-accent-hover: #35697F;
+  --gw-accent-soft: #E6F0F4;
+  --gw-accent-border: #C2D6DF;
+  --gw-accent-focus: #2E5C6F;
+
+  /* Colore danger / identitario rosso */
+  --gw-danger: #B52A32;
+  --gw-danger-soft: rgba(181, 42, 50, 0.08);
+  --gw-danger-border: rgba(181, 42, 50, 0.25);
+
+  /* Success */
+  --gw-success: #2E7D32;
+  --gw-success-soft: #E8F5E9;
+  --gw-success-text: #1B5E20;
+
+  /* Warning */
+  --gw-warning: #B45309;
+  --gw-warning-soft: #FFF7ED;
+  --gw-warning-border: #FED7AA;
+
+  /* =====================================================
+     2) NEUTRI UI
+     ===================================================== */
+
+  --gw-bg: #F4F6F8;          /* background pagina */
+  --gw-surface: #FFFFFF;     /* superfici principali */
+  --gw-card: #FFFFFF;        /* card */
+  --gw-border: #E6EAF0;      /* bordi soft */
+
+  --gw-text: #1C2430;        /* testo principale */
+  --gw-text-secondary: #5A6572;
+  --gw-text-muted: #8B95A1;
+
+  --gw-ink: rgba(0, 0, 0, 0.88);
+
+  /* =====================================================
+     3) SHADOWS
+     ===================================================== */
+
+  --gw-shadow-sm: 0 4px 12px rgba(16, 24, 40, 0.04);
+  --gw-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+  --gw-shadow-md: 0 10px 24px rgba(16, 24, 40, 0.10);
+
+  /* =====================================================
+     4) RADIUS
+     ===================================================== */
+
+  --gw-radius: 12px;
+  --gw-radius-btn: 10px;
+  --gw-radius-pill: 999px;
+
+  /* =====================================================
+     5) SPACING SCALE
+     ===================================================== */
+
+  --gw-space-xs: 6px;
+  --gw-space-sm: 10px;
+  --gw-space-md: 16px;
+  --gw-space-lg: 24px;
+  --gw-space-xl: 32px;
+
+  /* Alias corti ammessi nel nuovo sistema */
+  --space-xs: var(--gw-space-xs);
+  --space-sm: var(--gw-space-sm);
+  --space-md: var(--gw-space-md);
+  --space-lg: var(--gw-space-lg);
+  --space-xl: var(--gw-space-xl);
+
+  /* =====================================================
+     6) TYPOGRAPHY
+     ===================================================== */
+
+  --gw-font-family: Arial, sans-serif;
+
+  --gw-font-size-xs: 11px;
+  --gw-font-size-sm: 13px;
+  --gw-font-size-base: 16px;
+  --gw-font-size-title: 18px;
+  --gw-font-size-display: 20px;
+
+  --gw-line-height-tight: 1.15;
+  --gw-line-height-base: 1.35;
+  --gw-line-height-loose: 1.45;
+
+  --gw-font-weight-medium: 600;
+  --gw-font-weight-bold: 700;
+  --gw-font-weight-heavy: 800;
+
+  /* =====================================================
+     7) PAGE LAYOUT BASE
+     ===================================================== */
+
+  --gw-page-max: 640px;
+  --gw-page-pad-x: 16px;
+  --gw-page-pad-x-tight: 12px;
+  --gw-page-pad-y: 12px;
+
+  /* =====================================================
+     8) BAR ALTEZZE GLOBALI
+     Questi restano globali perché topbar/bottomnav sono
+     candidati shared di area in futuro.
+     ===================================================== */
+
+  --gw-topbar-h: 64px;
+  --gw-bottomnav-h: 72px;
+  --gw-footer-h: 40px;
+
+  /* Variante topbar a due righe (area partecipante futura) */
+  --gw-topbar-row-h: 32px;
+  --gw-topbar-double-h: 64px;
+
+  /* =====================================================
+     9) Z-INDEX BASE
+     ===================================================== */
+
+  --gw-z-base: 1;
+  --gw-z-sticky: 100;
+  --gw-z-overlay: 500;
+  --gw-z-modal: 1000;
+
+  /* =====================================================
+     10) MOTION
+     ===================================================== */
+
+  --gw-motion-fast: 150ms;
+  --gw-motion-base: 180ms;
+  --gw-motion-soft: 220ms;
+  --gw-ease-standard: ease;
+
+  /* =====================================================
+     11) ICON SYSTEM BASE
+     Il linguaggio iconografico shared userà questi valori.
+     ===================================================== */
+
+  --gw-icon-size: 24px;
+  --gw-icon-stroke: 2;
+
+  /* =====================================================
+     12) COMPATIBILITÀ NUOVO SISTEMA
+     Alias consentiti nel nuovo ecosistema
+     (solo questi, niente legacy vecchia)
+     ===================================================== */
+
+  --gw-muted: var(--gw-text-secondary);
+}
