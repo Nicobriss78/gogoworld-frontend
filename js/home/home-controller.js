@@ -1,1 +1,646 @@
+/**
+ * GoGoWorld.life — HOME vNext Controller
+ * Controller dedicato della nuova Home.
+ * Solo logica Home: stato, split eventi, rendering, rail mode,
+ * banner engine, autofocus, scrollbars, delegation.
+ */
 
+import {
+  createEventCard,
+  createSwitchCard,
+  createBannerSlot,
+  createStateBlock,
+  renderRail,
+} from "./home-renderer.js";
+
+import { createBannerEngine } from "./home-banners.js";
+
+/* =========================================================
+   CONFIG
+   ========================================================= */
+
+const HOME_CONFIG = {
+  generalPastPreviewLimit: 10,
+  joinedPastPreviewLimit: 15,
+  bannerRotationInterval: 8000,
+  detailsIcon: "info",
+  showCloseDetail: false,
+};
+
+/* =========================================================
+   FALLBACK TIPS
+   ========================================================= */
+
+const HOME_FALLBACK_TIPS = [
+  {
+    id: "geo",
+    title: "Esplora gli eventi vicini",
+    text: "Apri la mappa e scopri cosa succede intorno a te.",
+  },
+  {
+    id: "follow",
+    title: "Segui le persone e gli organizzatori",
+    text: "Costruisci il tuo flusso di eventi partendo da chi segui.",
+  },
+  {
+    id: "checkin",
+    title: "Partecipa e resta aggiornato",
+    text: "Controlla i tuoi eventi attivi e tieni d’occhio quelli passati.",
+  },
+];
+
+/* =========================================================
+   API ADAPTER
+   Sostituisci qui solo se i tuoi endpoint reali differiscono.
+   ========================================================= */
+
+async function fetchHomePayload() {
+  const response = await fetch("/api/events", {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Impossibile caricare gli eventi della Home.");
+  }
+
+  const events = await response.json();
+
+  // Se in futuro hai endpoint banner reali, sostituisci qui.
+  return {
+    events: Array.isArray(events) ? events : [],
+    banners: [],
+    tips: HOME_FALLBACK_TIPS,
+    currentUserId: null,
+  };
+}
+
+/* =========================================================
+   HELPERS DOM
+   ========================================================= */
+
+function getRequiredElement(selector, root = document) {
+  const node = root.querySelector(selector);
+  if (!node) {
+    throw new Error(`Elemento obbligatorio non trovato: ${selector}`);
+  }
+  return node;
+}
+
+function createDomRefs(root = document) {
+  return {
+    root: getRequiredElement("#homeRoot", root),
+    viewport: getRequiredElement("#homeViewport", root),
+
+    generalShell: getRequiredElement("#homeRailShellGeneral", root),
+    generalActiveRail: getRequiredElement("#homeRailGeneralActive", root),
+    generalPastRail: getRequiredElement("#homeRailGeneralPast", root),
+    generalActiveScrollbar: getRequiredElement("#homeScrollbarGeneralActive", root),
+    generalPastScrollbar: getRequiredElement("#homeScrollbarGeneralPast", root),
+
+    joinedShell: getRequiredElement("#homeRailShellJoined", root),
+    joinedActiveRail: getRequiredElement("#homeRailJoinedActive", root),
+    joinedPastRail: getRequiredElement("#homeRailJoinedPast", root),
+    joinedActiveScrollbar: getRequiredElement("#homeScrollbarJoinedActive", root),
+    joinedPastScrollbar: getRequiredElement("#homeScrollbarJoinedPast", root),
+  };
+}
+
+/* =========================================================
+   HELPERS DATA
+   ========================================================= */
+
+function toTime(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.getTime();
+}
+
+function isPastEvent(event) {
+  const end =
+    event?.dateEnd ??
+    event?.endDate ??
+    event?.dateStart ??
+    event?.startDate ??
+    event?.date ??
+    null;
+
+  const endTime = toTime(end);
+  if (!endTime) return false;
+
+  return endTime < Date.now();
+}
+
+function sortEventsAscending(events = []) {
+  return [...events].sort((a, b) => {
+    const aTime =
+      toTime(a?.dateStart ?? a?.startDate ?? a?.date ?? a?.createdAt) ?? Number.MAX_SAFE_INTEGER;
+    const bTime =
+      toTime(b?.dateStart ?? b?.startDate ?? b?.date ?? b?.createdAt) ?? Number.MAX_SAFE_INTEGER;
+    return aTime - bTime;
+  });
+}
+
+function sortEventsDescending(events = []) {
+  return [...events].sort((a, b) => {
+    const aTime =
+      toTime(a?.dateEnd ?? a?.endDate ?? a?.dateStart ?? a?.startDate ?? a?.date ?? a?.createdAt) ?? 0;
+    const bTime =
+      toTime(b?.dateEnd ?? b?.endDate ?? b?.dateStart ?? b?.startDate ?? b?.date ?? b?.createdAt) ?? 0;
+    return bTime - aTime;
+  });
+}
+
+function isJoinedByCurrentUser(event, currentUserId) {
+  if (!currentUserId) return false;
+
+  const attendees = Array.isArray(event?.attendees) ? event.attendees : [];
+  return attendees.some((item) => {
+    if (!item) return false;
+    if (typeof item === "string") return item === currentUserId;
+    return item?._id === currentUserId || item?.id === currentUserId || item?.userId === currentUserId;
+  });
+}
+
+function splitEvents(events = [], currentUserId = null) {
+  const joined = [];
+  const general = [];
+
+  for (const event of events) {
+    if (isJoinedByCurrentUser(event, currentUserId)) {
+      joined.push(event);
+    } else {
+      general.push(event);
+    }
+  }
+
+  const generalActive = sortEventsAscending(general.filter((event) => !isPastEvent(event)));
+  const generalPast = sortEventsDescending(general.filter((event) => isPastEvent(event)));
+
+  const joinedActive = sortEventsAscending(joined.filter((event) => !isPastEvent(event)));
+  const joinedPast = sortEventsDescending(joined.filter((event) => isPastEvent(event)));
+
+  return {
+    generalActive,
+    generalPast,
+    joinedActive,
+    joinedPast,
+  };
+}
+
+/* =========================================================
+   BANNER SLOT INJECTION
+   ========================================================= */
+
+function injectBannerSlots(events = []) {
+  const result = [];
+  let slotIndex = 0;
+
+  events.forEach((event, index) => {
+    result.push({ type: "event", data: event });
+
+    const isAfterFirst = index === 0;
+    const isEveryTwoAfter = index > 0 && (index + 1) % 2 === 1;
+
+    if (isAfterFirst || isEveryTwoAfter) {
+      result.push({ type: "banner-slot", slotIndex });
+      slotIndex += 1;
+    }
+  });
+
+  return result;
+}
+
+/* =========================================================
+   NODES BUILDERS
+   ========================================================= */
+
+function buildGeneralActiveNodes(events = []) {
+  const injected = injectBannerSlots(events);
+
+  return injected.map((item) => {
+    if (item.type === "banner-slot") {
+      return createBannerSlot(item.slotIndex);
+    }
+
+    return createEventCard(item.data, {
+      detailsIcon: HOME_CONFIG.detailsIcon,
+      showClose: HOME_CONFIG.showCloseDetail,
+    });
+  });
+}
+
+function buildGeneralPastNodes(events = []) {
+  const nodes = [];
+
+  nodes.push(
+    createSwitchCard({
+      direction: "to-active",
+      title: "Torna agli eventi attivi",
+      subtitle: "Rientra nella vista principale degli eventi disponibili.",
+      buttonLabel: "Torna agli attivi",
+    })
+  );
+
+  events.forEach((event) => {
+    nodes.push(
+      createEventCard(event, {
+        detailsIcon: HOME_CONFIG.detailsIcon,
+        showClose: HOME_CONFIG.showCloseDetail,
+      })
+    );
+  });
+
+  return nodes;
+}
+
+function buildJoinedActiveNodes(activeEvents = [], pastCount = 0) {
+  const nodes = [];
+
+  if (pastCount > 0) {
+    nodes.push(
+      createSwitchCard({
+        direction: "to-past",
+        count: pastCount,
+        title: "Rivedi i tuoi eventi passati",
+        subtitle: "Apri l’archivio recente degli eventi a cui hai partecipato.",
+        buttonLabel: "Apri archivio",
+      })
+    );
+  }
+
+  activeEvents.forEach((event) => {
+    nodes.push(
+      createEventCard(event, {
+        detailsIcon: HOME_CONFIG.detailsIcon,
+        showClose: HOME_CONFIG.showCloseDetail,
+      })
+    );
+  });
+
+  return nodes;
+}
+
+function buildJoinedPastNodes(events = []) {
+  const nodes = [];
+
+  nodes.push(
+    createSwitchCard({
+      direction: "to-active",
+      title: "Torna ai tuoi eventi attivi",
+      subtitle: "Rientra nella vista principale dei tuoi eventi correnti.",
+      buttonLabel: "Torna agli attivi",
+    })
+  );
+
+  events.forEach((event) => {
+    nodes.push(
+      createEventCard(event, {
+        detailsIcon: HOME_CONFIG.detailsIcon,
+        showClose: HOME_CONFIG.showCloseDetail,
+      })
+    );
+  });
+
+  return nodes;
+}
+
+/* =========================================================
+   EMPTY / ERROR / LOADING
+   ========================================================= */
+
+function renderLoading(dom) {
+  renderRail(dom.generalActiveRail, [
+    createStateBlock({
+      title: "Caricamento Home",
+      text: "Sto preparando i contenuti principali della tua Home.",
+    }),
+  ]);
+
+  renderRail(dom.generalPastRail, []);
+  renderRail(dom.joinedActiveRail, []);
+  renderRail(dom.joinedPastRail, []);
+}
+
+function renderError(dom, message) {
+  renderRail(dom.generalActiveRail, [
+    createStateBlock({
+      type: "error",
+      title: "Errore",
+      text: message,
+    }),
+  ]);
+
+  renderRail(dom.generalPastRail, []);
+  renderRail(dom.joinedActiveRail, []);
+  renderRail(dom.joinedPastRail, []);
+}
+
+function buildEmptyGeneralNodes() {
+  return [
+    createStateBlock({
+      title: "Nessun evento disponibile",
+      text: "Al momento non ci sono eventi generali da mostrarti.",
+    }),
+  ];
+}
+
+function buildEmptyJoinedNodes() {
+  return [
+    createStateBlock({
+      title: "Nessun evento seguito",
+      text: "Quando parteciperai a un evento, lo troverai qui.",
+    }),
+  ];
+}
+
+/* =========================================================
+   RAIL MODE
+   ========================================================= */
+
+function setRailMode(shell, mode) {
+  if (!shell) return;
+  shell.dataset.railMode = mode === "past" ? "past" : "active";
+}
+
+function bindRailModeDelegation(dom) {
+  dom.root.addEventListener("click", (event) => {
+    const actionNode = event.target.closest("[data-home-action]");
+    if (!actionNode) return;
+
+    const action = actionNode.dataset.homeAction;
+
+    if (action === "show-past") {
+      const shell = actionNode.closest(".home-rail-shell");
+      setRailMode(shell, "past");
+      resetRailScrollForMode(shell, "past");
+    }
+
+    if (action === "show-active") {
+      const shell = actionNode.closest(".home-rail-shell");
+      setRailMode(shell, "active");
+      resetRailScrollForMode(shell, "active");
+    }
+  });
+}
+
+function getVisibleRailAndScrollbar(shell, dom) {
+  if (!shell) return null;
+
+  if (shell === dom.generalShell) {
+    return shell.dataset.railMode === "past"
+      ? { rail: dom.generalPastRail, scrollbar: dom.generalPastScrollbar }
+      : { rail: dom.generalActiveRail, scrollbar: dom.generalActiveScrollbar };
+  }
+
+  if (shell === dom.joinedShell) {
+    return shell.dataset.railMode === "past"
+      ? { rail: dom.joinedPastRail, scrollbar: dom.joinedPastScrollbar }
+      : { rail: dom.joinedActiveRail, scrollbar: dom.joinedActiveScrollbar };
+  }
+
+  return null;
+}
+
+function resetRailScrollForMode(shell, mode) {
+  const rail =
+    mode === "past"
+      ? shell.querySelector(".home-rail--past")
+      : shell.querySelector(".home-rail--active");
+
+  if (rail) {
+    rail.scrollTo({ left: 0, behavior: "smooth" });
+  }
+}
+
+/* =========================================================
+   SCROLLBAR CUSTOM
+   ========================================================= */
+
+function attachScrollbar(rail, scrollbar) {
+  if (!rail || !scrollbar) return;
+
+  const thumb = scrollbar.querySelector(".home-scrollbar-thumb");
+  if (!thumb) return;
+
+  let isDragging = false;
+  let dragStartX = 0;
+  let startScrollLeft = 0;
+
+  function updateThumb() {
+    const maxScroll = rail.scrollWidth - rail.clientWidth;
+
+    if (maxScroll <= 0) {
+      thumb.style.width = "100%";
+      rail.style.scrollSnapType = "none";
+      scrollbar.style.opacity = "0.45";
+      thumb.style.setProperty("--home-scrollbar-x", "0px");
+      thumb.style.transform = "translateX(0px)";
+      return;
+    }
+
+    rail.style.scrollSnapType = "x mandatory";
+    scrollbar.style.opacity = "1";
+
+    const ratio = rail.clientWidth / rail.scrollWidth;
+    const thumbWidth = Math.max(scrollbar.clientWidth * ratio, 36);
+    const maxThumbX = scrollbar.clientWidth - thumbWidth;
+    const scrollRatio = rail.scrollLeft / maxScroll;
+    const thumbX = maxThumbX * scrollRatio;
+
+    thumb.style.width = `${thumbWidth}px`;
+    thumb.style.transform = `translateX(${thumbX}px)`;
+  }
+
+  rail.addEventListener("scroll", updateThumb, { passive: true });
+  window.addEventListener("resize", updateThumb);
+
+  scrollbar.addEventListener("pointerdown", (event) => {
+    isDragging = true;
+    dragStartX = event.clientX;
+    startScrollLeft = rail.scrollLeft;
+    scrollbar.classList.add("is-dragging");
+    scrollbar.setPointerCapture?.(event.pointerId);
+  });
+
+  scrollbar.addEventListener("pointermove", (event) => {
+    if (!isDragging) return;
+
+    const maxScroll = rail.scrollWidth - rail.clientWidth;
+    if (maxScroll <= 0) return;
+
+    const thumbWidth = thumb.offsetWidth || 1;
+    const trackWidth = scrollbar.clientWidth - thumbWidth || 1;
+    const deltaX = event.clientX - dragStartX;
+    const scrollDelta = (deltaX / trackWidth) * maxScroll;
+
+    rail.scrollLeft = startScrollLeft + scrollDelta;
+  });
+
+  function stopDragging(event) {
+    if (!isDragging) return;
+    isDragging = false;
+    scrollbar.classList.remove("is-dragging");
+    if (event?.pointerId != null) {
+      scrollbar.releasePointerCapture?.(event.pointerId);
+    }
+  }
+
+  scrollbar.addEventListener("pointerup", stopDragging);
+  scrollbar.addEventListener("pointercancel", stopDragging);
+
+  requestAnimationFrame(updateThumb);
+}
+
+/* =========================================================
+   AUTOFOCUS
+   ========================================================= */
+
+function autoFocusFirstRealEvent(rail) {
+  if (!rail) return;
+
+  const firstEventCard = rail.querySelector(".home-card[data-event-id]");
+  if (!firstEventCard) return;
+
+  const railRect = rail.getBoundingClientRect();
+  const cardRect = firstEventCard.getBoundingClientRect();
+  const offset = cardRect.left - railRect.left + rail.scrollLeft;
+
+  rail.scrollTo({
+    left: offset,
+    behavior: "smooth",
+  });
+}
+
+/* =========================================================
+   CARD ACTIONS
+   ========================================================= */
+
+function bindCardActions(dom) {
+  dom.root.addEventListener("click", (event) => {
+    const actionButton = event.target.closest("[data-home-action]");
+    const card = event.target.closest(".home-card");
+    const eventId = card?.dataset?.eventId ?? "";
+
+    if (actionButton) {
+      const action = actionButton.dataset.homeAction;
+
+      if (action === "details" && eventId) {
+        console.log("[HOME] details", eventId);
+      }
+
+      if (action === "close-detail" && eventId) {
+        console.log("[HOME] close-detail", eventId);
+      }
+
+      return;
+    }
+
+    if (card && eventId) {
+      console.log("[HOME] card-click", eventId);
+    }
+  });
+}
+
+/* =========================================================
+   BANNERS
+   ========================================================= */
+
+function setupBannerEngine(dom, banners = [], tips = []) {
+  const engine = createBannerEngine({
+    rotationInterval: HOME_CONFIG.bannerRotationInterval,
+  });
+
+  const allSlots = dom.generalActiveRail.querySelectorAll(".home-banner-slot");
+
+  engine.bindSlots(allSlots);
+  engine.setData({ banners, tips });
+  engine.fillInitial();
+  engine.start();
+
+  return engine;
+}
+
+/* =========================================================
+   MAIN RENDER
+   ========================================================= */
+
+function renderHome(dom, payload) {
+  const split = splitEvents(payload.events, payload.currentUserId);
+
+  const generalActiveNodes = split.generalActive.length
+    ? buildGeneralActiveNodes(split.generalActive)
+    : buildEmptyGeneralNodes();
+
+  const generalPastPreview = split.generalPast.slice(
+    0,
+    HOME_CONFIG.generalPastPreviewLimit
+  );
+
+  const generalPastNodes = generalPastPreview.length
+    ? buildGeneralPastNodes(generalPastPreview)
+    : buildEmptyGeneralNodes();
+
+  const joinedPastPreview = split.joinedPast.slice(
+    0,
+    HOME_CONFIG.joinedPastPreviewLimit
+  );
+
+  const joinedActiveNodes = split.joinedActive.length || joinedPastPreview.length
+    ? buildJoinedActiveNodes(split.joinedActive, split.joinedPast.length)
+    : buildEmptyJoinedNodes();
+
+  const joinedPastNodes = joinedPastPreview.length
+    ? buildJoinedPastNodes(joinedPastPreview)
+    : buildEmptyJoinedNodes();
+
+  renderRail(dom.generalActiveRail, generalActiveNodes);
+  renderRail(dom.generalPastRail, generalPastNodes);
+  renderRail(dom.joinedActiveRail, joinedActiveNodes);
+  renderRail(dom.joinedPastRail, joinedPastNodes);
+
+  setRailMode(dom.generalShell, "active");
+  setRailMode(dom.joinedShell, "active");
+
+  attachScrollbar(dom.generalActiveRail, dom.generalActiveScrollbar);
+  attachScrollbar(dom.generalPastRail, dom.generalPastScrollbar);
+  attachScrollbar(dom.joinedActiveRail, dom.joinedActiveScrollbar);
+  attachScrollbar(dom.joinedPastRail, dom.joinedPastScrollbar);
+
+  requestAnimationFrame(() => {
+    autoFocusFirstRealEvent(dom.generalActiveRail);
+    autoFocusFirstRealEvent(dom.joinedActiveRail);
+  });
+
+  const bannerEngine = setupBannerEngine(
+    dom,
+    payload.banners,
+    payload.tips?.length ? payload.tips : HOME_FALLBACK_TIPS
+  );
+
+  return { bannerEngine };
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+
+export async function initHome(root = document) {
+  const dom = createDomRefs(root);
+
+  renderLoading(dom);
+  bindRailModeDelegation(dom);
+  bindCardActions(dom);
+
+  try {
+    const payload = await fetchHomePayload();
+    return renderHome(dom, payload);
+  } catch (error) {
+    console.error("[HOME] init error:", error);
+    renderError(
+      dom,
+      error instanceof Error
+        ? error.message
+        : "Si è verificato un errore durante il caricamento della Home."
+    );
+    return null;
+  }
+}
