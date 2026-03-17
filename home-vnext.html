@@ -1,1 +1,126 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home • GoGoWorld.life</title>
 
+  <!-- BASE MINIMA -->
+  <link rel="stylesheet" href="/css/tokens.css" />
+
+  <!-- SOLO SE ESISTE ED È NEUTRO -->
+  <!-- <link rel="stylesheet" href="/css/base.css" /> -->
+
+  <!-- CSS DEDICATO HOME -->
+  <link rel="stylesheet" href="/css/areas/home.css" />
+</head>
+
+<body>
+
+  <!-- =========================
+       TOPBAR (MINIMA AUTONOMA)
+       ========================= -->
+  <header class="home-topbar">
+    <div class="home-topbar__inner">
+      <div class="home-topbar__logo">GoGoWorld</div>
+      <div class="home-topbar__actions">
+        <button class="home-topbar__btn">🔔</button>
+        <button class="home-topbar__btn">💬</button>
+        <button class="home-topbar__btn">👤</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================
+       HOME ROOT
+       ========================= -->
+  <main>
+    <!-- INCOLLA QUI IL TUO HTML HOME (senza topbar/nav/footer) -->
+    
+    <section class="home" id="homeRoot" aria-label="Home partecipante">
+      <div class="home-viewport" id="homeViewport">
+
+        <!-- =========================
+             BLOCCO 1 — GENERALE
+             ========================= -->
+        <section class="home-section">
+          <header class="home-section__header">
+            <h2 class="home-section__title">Eventi per te</h2>
+          </header>
+
+          <div class="home-rail-shell" id="homeRailShellGeneral" data-rail-mode="active">
+
+            <div class="home-rail home-rail--active" id="homeRailGeneralActive"></div>
+            <div class="home-rail home-rail--past" id="homeRailGeneralPast"></div>
+
+            <div class="home-scrollbar" id="homeScrollbarGeneralActive">
+              <div class="home-scrollbar-thumb"></div>
+            </div>
+
+            <div class="home-scrollbar" id="homeScrollbarGeneralPast">
+              <div class="home-scrollbar-thumb"></div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- =========================
+             BLOCCO 2 — PARTECIPAZIONI
+             ========================= -->
+        <section class="home-section">
+          <header class="home-section__header">
+            <h2 class="home-section__title">I tuoi eventi</h2>
+          </header>
+
+          <div class="home-rail-shell" id="homeRailShellJoined" data-rail-mode="active">
+
+            <div class="home-rail home-rail--active" id="homeRailJoinedActive"></div>
+            <div class="home-rail home-rail--past" id="homeRailJoinedPast"></div>
+
+            <div class="home-scrollbar" id="homeScrollbarJoinedActive">
+              <div class="home-scrollbar-thumb"></div>
+            </div>
+
+            <div class="home-scrollbar" id="homeScrollbarJoinedPast">
+              <div class="home-scrollbar-thumb"></div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================
+       BOTTOM NAV (MINIMA)
+       ========================= -->
+  <nav class="home-bottomnav">
+    <button>🗺️</button>
+    <button>⭐</button>
+    <button class="active">🏠</button>
+    <button>👥</button>
+    <button>👤</button>
+  </nav>
+
+  <!-- =========================
+       FOOTER
+       ========================= -->
+  <footer class="home-footer">
+    <span>© GoGoWorld.life</span>
+  </footer>
+
+  <!-- =========================
+       INIT HOME
+       ========================= -->
+  <script type="module">
+    import { initHome } from "/js/home/home-controller.js";
+
+    window.addEventListener("DOMContentLoaded", () => {
+      initHome(document);
+    });
+  </script>
+
+</body>
+</html>
