@@ -1,1 +1,734 @@
+/* =========================================================
+   GoGoWorld.life — HOME vNext
+   Modulo dedicato, autonomo, senza dipendenze grafiche spurie
+   ========================================================= */
 
+/* =========================================================
+   1) TOKENS LOCALI HOME
+   Tutto deriva dai token globali. Nessun colore identitario
+   hardcoded fuori dal sistema tokenizzato.
+   ========================================================= */
+
+.home-page{
+  --home-accent: var(--gw-accent, #3F7C96);
+  --home-accent-hover: var(--gw-accent-hover, #35697F);
+  --home-accent-soft: var(--gw-accent-soft, #E6F0F4);
+  --home-accent-border: var(--gw-accent-border, #C2D6DF);
+  --home-accent-focus: var(--gw-accent-focus, #2E5C6F);
+
+  --home-bg: var(--gw-bg, #F7F9FA);
+  --home-surface: var(--gw-surface, #FFFFFF);
+  --home-text: var(--gw-text, #1F2933);
+  --home-text-soft: var(--gw-text-soft, #52606D);
+  --home-border: var(--gw-border, #E4E7EB);
+  --home-danger: var(--gw-danger, #B52A32);
+
+  --home-shadow-sm: 0 6px 16px rgba(31, 41, 51, 0.09);
+  --home-shadow-md: 0 10px 28px rgba(31, 41, 51, 0.12);
+
+  --home-radius-card: 12px;
+  --home-radius-btn: 10px;
+  --home-radius-pill: 999px;
+
+  --home-page-pad-x: 14px;
+  --home-page-pad-top: 12px;
+  --home-page-pad-bottom: 12px;
+
+  --home-section-gap: 14px;
+  --home-head-gap: 8px;
+  --home-rail-gap: 12px;
+
+  --home-card-width: 320px;
+  --home-card-min-width: 260px;
+
+  --home-card-thumb-h: 152px;
+  --home-card-thumb-h-mobile: 156px;
+
+  --home-scrollbar-h: 8px;
+  --home-scrollbar-thumb-w: 22%;
+
+  background: var(--home-bg);
+  color: var(--home-text);
+}
+
+/* =========================================================
+   2) PERIMETRO PAGINA
+   ========================================================= */
+
+.home-page{
+  min-height: 100dvh;
+}
+
+.home{
+  position: relative;
+  background: var(--home-bg);
+}
+
+/* =========================================================
+   3) VIEWPORT VERTICALE HOME
+   ========================================================= */
+
+.home-viewport{
+  min-height: 100dvh;
+  padding:
+    calc(var(--gw-topbar-h, 88px) + var(--home-page-pad-top))
+    var(--home-page-pad-x)
+    calc(var(--gw-bottomnav-h, 64px) + var(--home-page-pad-bottom))
+    var(--home-page-pad-x);
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  scroll-snap-type: y mandatory;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* =========================================================
+   4) SEZIONI VERTICALI
+   ========================================================= */
+
+.home-section{
+  min-height: calc(
+    100dvh - var(--gw-topbar-h, 88px) - var(--gw-bottomnav-h, 64px)
+    - var(--home-page-pad-top) - var(--home-page-pad-bottom)
+  );
+
+  box-sizing: border-box;
+  padding: 6px 0 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: var(--home-section-gap);
+
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.home-section + .home-section{
+  border-top: 1px solid var(--home-accent-border);
+  padding-top: 14px;
+}
+
+/* =========================================================
+   5) HEADER SEZIONE
+   ========================================================= */
+
+.home-section-head{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.home-section-head__text{
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.home-section-title{
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: var(--home-text);
+}
+
+.home-section-subtitle{
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--home-text-soft);
+}
+
+.home-section-head__hint{
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.home-scroll-hint{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--home-accent-border);
+  border-radius: var(--home-radius-pill);
+  background: var(--home-accent-soft);
+  color: var(--home-accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   6) SHELL RAIL
+   ========================================================= */
+
+.home-rail-shell{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.home-rail-shell[data-rail-mode="past"] .home-rail--active,
+.home-rail-shell[data-rail-mode="active"] .home-rail--past,
+.home-rail-shell[data-rail-mode="past"] .home-scrollbar:not(.home-scrollbar--past),
+.home-rail-shell[data-rail-mode="active"] .home-scrollbar--past{
+  display: none;
+}
+
+/* =========================================================
+   7) RAIL ORIZZONTALI
+   ========================================================= */
+
+.home-rail{
+  display: flex;
+  align-items: flex-start;
+  gap: var(--home-rail-gap);
+
+  width: 100%;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 0;
+
+  padding: 2px 2px 4px;
+  box-sizing: border-box;
+}
+
+.home-rail::-webkit-scrollbar{
+  display: none;
+}
+
+.home-rail{
+  scrollbar-width: none;
+}
+
+/* =========================================================
+   8) CARD BASE
+   Event card, switch card e banner slot condividono geometria
+   ========================================================= */
+
+.home-card,
+.home-switch-card,
+.home-banner-slot{
+  position: relative;
+  flex: 0 0 var(--home-card-width);
+  width: var(--home-card-width);
+  min-width: var(--home-card-min-width);
+  max-width: var(--home-card-width);
+
+  scroll-snap-align: start;
+  box-sizing: border-box;
+
+  border: 1px solid var(--home-border);
+  border-radius: var(--home-radius-card);
+  background: var(--home-surface);
+  box-shadow: var(--home-shadow-sm);
+
+  overflow: hidden;
+}
+
+/* =========================================================
+   9) EVENT CARD
+   ========================================================= */
+
+.home-card{
+  display: flex;
+  flex-direction: column;
+  min-height: 372px;
+}
+
+.home-card-thumb{
+  position: relative;
+  flex: 0 0 auto;
+  height: var(--home-card-thumb-h);
+
+  background-color: #EEF3F5;
+  background-image: var(--home-card-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  border-bottom: 1px solid var(--home-border);
+}
+
+.home-card-thumb--empty{
+  background-image: none;
+  background-color: #F3F6F8;
+}
+
+.home-card-content{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  min-width: 0;
+}
+
+.home-card-title{
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 800;
+  color: var(--home-text);
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.home-card-meta{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.home-card-meta-row{
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.home-card-meta-label{
+  flex: 0 0 auto;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 700;
+  color: var(--home-accent);
+}
+
+.home-card-meta-value{
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--home-text-soft);
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.home-card-price{
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: var(--home-radius-pill);
+  background: var(--home-accent-soft);
+  border: 1px solid var(--home-accent-border);
+  color: var(--home-accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.home-card-actions{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.home-card-action-btn{
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255,255,255,0.78);
+  border-radius: var(--home-radius-btn);
+  background: rgba(255,255,255,0.92);
+  color: var(--home-accent);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(31, 41, 51, 0.10);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-card-action-btn:active{
+  transform: scale(.98);
+}
+
+.home-card-action-btn--danger{
+  color: var(--home-danger);
+}
+
+.home-card-badge{
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: var(--home-radius-pill);
+  border: 1px solid var(--home-accent-border);
+  background: #FFFFFF;
+  color: var(--home-accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   10) SWITCH CARD
+   ========================================================= */
+
+.home-switch-card{
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  min-height: 372px;
+  background:
+    linear-gradient(180deg, rgba(230,240,244,0.9), rgba(255,255,255,1));
+  border-color: var(--home-accent-border);
+}
+
+.home-switch-card__body{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.home-switch-card__eyebrow{
+  margin: 0;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--home-accent);
+}
+
+.home-switch-card__title{
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--home-text);
+}
+
+.home-switch-card__subtitle{
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--home-text-soft);
+}
+
+.home-switch-card__actions{
+  display: flex;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.home-switch-card__btn{
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--home-accent-border);
+  border-radius: var(--home-radius-btn);
+  background: var(--home-surface);
+  color: var(--home-accent);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-switch-card__btn:active{
+  transform: scale(.985);
+}
+
+/* =========================================================
+   11) BANNER SLOT + BANNER CARD
+   ========================================================= */
+
+.home-banner-slot{
+  min-height: 372px;
+  display: flex;
+  background: var(--home-surface);
+}
+
+.home-banner-slot__inner{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.home-banner-slot--empty .home-banner-slot__inner{
+  justify-content: center;
+  align-items: center;
+  padding: 18px;
+  text-align: center;
+  color: var(--home-text-soft);
+  font-size: 13px;
+}
+
+.home-banner-card{
+  display: flex;
+  flex-direction: column;
+  min-height: 372px;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+  background: var(--home-surface);
+}
+
+.home-banner-card__thumb{
+  height: var(--home-card-thumb-h);
+  background-color: #EEF3F5;
+  background-image: var(--home-banner-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid var(--home-border);
+}
+
+.home-banner-card__content{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+}
+
+.home-banner-card__eyebrow{
+  margin: 0;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--home-danger);
+}
+
+.home-banner-card__title{
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 800;
+  color: var(--home-text);
+}
+
+.home-banner-card__text{
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--home-text-soft);
+}
+
+.home-banner-card--tip{
+  background:
+    linear-gradient(180deg, rgba(230,240,244,0.85), rgba(255,255,255,1));
+}
+
+.home-banner-card--tip .home-banner-card__eyebrow{
+  color: var(--home-accent);
+}
+
+/* =========================================================
+   12) SCROLLBAR CUSTOM
+   ========================================================= */
+
+.home-scrollbar{
+  position: relative;
+  height: var(--home-scrollbar-h);
+  border-radius: var(--home-radius-pill);
+  background: rgba(31, 41, 51, 0.12);
+  overflow: hidden;
+  touch-action: pan-x;
+}
+
+.home-scrollbar-thumb{
+  height: 100%;
+  width: var(--home-scrollbar-thumb-w);
+  border-radius: var(--home-radius-pill);
+  background: rgba(63, 124, 150, 0.40);
+  transform: translateX(var(--home-scrollbar-x, 0px));
+  transition: transform 60ms linear;
+}
+
+.home-scrollbar.is-dragging .home-scrollbar-thumb{
+  background: rgba(46, 92, 111, 0.54);
+  transition: none;
+}
+
+/* =========================================================
+   13) STATI HOME
+   ========================================================= */
+
+.home-state{
+  padding: 16px;
+  border: 1px solid var(--home-accent-border);
+  border-radius: var(--home-radius-card);
+  background: var(--home-accent-soft);
+  color: var(--home-text);
+  box-shadow: var(--home-shadow-sm);
+}
+
+.home-state__title{
+  display: block;
+  margin: 0 0 4px;
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.home-state__text{
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--home-text-soft);
+}
+
+.home-state--error{
+  border-color: rgba(181, 42, 50, 0.28);
+  background: rgba(181, 42, 50, 0.06);
+}
+
+/* =========================================================
+   14) VISIBILITÀ
+   ========================================================= */
+
+.home-hidden{
+  display: none !important;
+}
+
+.home .is-hidden{
+  display: none !important;
+}
+
+/* =========================================================
+   15) INTERAZIONI
+   ========================================================= */
+
+.home-card,
+.home-switch-card,
+.home-banner-slot,
+.home-banner-card{
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease;
+}
+
+.home-card:active,
+.home-switch-card:active,
+.home-banner-card:active{
+  transform: scale(.992);
+}
+
+@media (hover: hover) and (pointer: fine){
+  .home-card:hover,
+  .home-switch-card:hover,
+  .home-banner-slot:hover{
+    border-color: var(--home-accent-border);
+    box-shadow: var(--home-shadow-md);
+  }
+
+  .home-card-action-btn:hover,
+  .home-switch-card__btn:hover{
+    border-color: var(--home-accent-border);
+    background: #FFFFFF;
+  }
+}
+
+/* =========================================================
+   16) RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 860px){
+  .home-section{
+    padding-top: 4px;
+    padding-bottom: 8px;
+  }
+}
+
+@media (max-width: 640px){
+  .home-page{
+    --home-page-pad-x: 12px;
+    --home-page-pad-top: 10px;
+    --home-page-pad-bottom: 10px;
+    --home-section-gap: 12px;
+    --home-card-thumb-h: var(--home-card-thumb-h-mobile);
+    --home-rail-gap: 10px;
+  }
+
+  .home-section-head{
+    gap: 10px;
+  }
+
+  .home-section-title{
+    font-size: 17px;
+  }
+
+  .home-section-subtitle{
+    font-size: 12.5px;
+  }
+
+  .home-scroll-hint{
+    min-height: 26px;
+    padding: 0 9px;
+    font-size: 10px;
+  }
+
+  .home-card,
+  .home-switch-card,
+  .home-banner-slot{
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+  }
+
+  .home-card,
+  .home-switch-card,
+  .home-banner-slot,
+  .home-banner-card{
+    min-height: 388px;
+  }
+
+  .home-card-content,
+  .home-banner-card__content{
+    padding: 13px;
+    gap: 7px;
+  }
+}
+
+@media (max-width: 420px){
+  .home-card-title,
+  .home-banner-card__title{
+    font-size: 15px;
+  }
+
+  .home-switch-card__title{
+    font-size: 17px;
+  }
+  }
