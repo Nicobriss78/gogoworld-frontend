@@ -1,239 +1,830 @@
 /* =========================================================
-   HOME V2 — FILE COMPLETO (NO PATCH, VERSIONE UNICA)
-   Dipendenze: tokens.css
-   Scope: SOLO home-vnext.html
-========================================================= */
+   GoGoWorld.life — Home vNext
+   Versione completa, pulita, definitiva
+   Basata su:
+   - home-vnext.html reale
+   - home-renderer.js reale
+   - home-banners.js reale
+   - home-controller.js reale
+   - Urban Elegant Light
+   ========================================================= */
 
-/* =========================
-   ROOT HOME
-========================= */
-.home-page {
-  --home-page-pad-x: 16px;
-  --home-page-pad-top: 12px;
-  --home-section-gap: 28px;
+/* =========================================================
+   1) RESET E TOKENS LOCALI
+   ========================================================= */
 
-  --home-rail-gap: 12px;
-
-  --home-card-width: 78%;
-  --home-card-radius: 16px;
-  --home-card-thumb-h: 140px;
-
-  --home-muted: #6b7280;
-}
-
-/* =========================
-   RESET ISOLATO HOME
-========================= */
 html,
 body {
   margin: 0;
   padding: 0;
 }
 
-/* =========================
-   STRUTTURA BASE
-========================= */
 body.home-page {
+  --home-accent: var(--gw-accent, #3F7C96);
+  --home-accent-hover: var(--gw-accent-hover, #35697F);
+  --home-accent-soft: var(--gw-accent-soft, #E6F0F4);
+  --home-accent-border: var(--gw-accent-border, #C2D6DF);
+  --home-danger: var(--gw-danger, #B52A32);
+
+  --home-bg: var(--gw-bg, #F4F6F8);
+  --home-surface: var(--gw-surface, #FFFFFF);
+  --home-border: var(--gw-border, #E6EAF0);
+
+  --home-text: var(--gw-text, #1C2430);
+  --home-text-secondary: var(--gw-text-soft, #5A6572);
+  --home-text-muted: var(--gw-text-muted, #8B95A1);
+
+  --home-radius-main: 12px;
+  --home-radius-btn: 10px;
+  --home-radius-pill: 999px;
+
+  --home-shadow-main: 0 6px 18px rgba(16, 24, 40, 0.06);
+  --home-shadow-strong: 0 10px 24px rgba(16, 24, 40, 0.10);
+
+  --home-space-xs: 6px;
+  --home-space-sm: 10px;
+  --home-space-md: 16px;
+  --home-space-lg: 24px;
+  --home-space-xl: 32px;
+
+  --home-topbar-h: 64px;
+  --home-bottomnav-h: 72px;
+  --home-footer-h: 40px;
+
+  --home-page-pad-x: 16px;
+  --home-page-pad-y: 16px;
+
+  --home-section-gap: 18px;
+  --home-rail-gap: 12px;
+
+  --home-card-width: 340px;
+  --home-card-min-width: 300px;
+  --home-card-thumb-h: 168px;
+  --home-card-min-h: 390px;
+
+  --home-scrollbar-h: 10px;
+  --home-scrollbar-track: rgba(28, 36, 48, 0.08);
+  --home-scrollbar-thumb: rgba(63, 124, 150, 0.42);
+  --home-scrollbar-thumb-active: rgba(63, 124, 150, 0.60);
+
+  min-height: 100dvh;
+  background: var(--home-bg);
+  color: var(--home-text);
+  font-family: Arial, sans-serif;
+  line-height: 1.35;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background: var(--color-bg);
-  color: var(--color-text);
 }
 
-.home-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: var(--home-page-pad-top) var(--home-page-pad-x);
-  gap: var(--home-section-gap);
+body.home-page *,
+body.home-page *::before,
+body.home-page *::after {
+  box-sizing: border-box;
 }
 
-/* =========================
-   TOPBAR
-========================= */
+body.home-page h1,
+body.home-page h2,
+body.home-page h3,
+body.home-page p {
+  margin: 0;
+}
+
+body.home-page button {
+  font: inherit;
+}
+
+body.home-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =========================================================
+   2) TOPBAR AUTONOMA
+   ========================================================= */
+
 .home-topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-bg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: var(--home-topbar-h);
+  background: var(--home-surface);
+  border-bottom: 1px solid var(--home-border);
+  box-shadow: 0 1px 0 rgba(16, 24, 40, 0.02);
 }
 
-.home-topbar__title {
-  font-size: 18px;
-  font-weight: 600;
+.home-topbar__inner {
+  min-height: var(--home-topbar-h);
+  padding: 0 var(--home-page-pad-x);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--home-space-md);
+}
+
+.home-topbar__logo {
+  min-width: 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: var(--home-text);
 }
 
 .home-topbar__actions {
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
-/* =========================
-   SEZIONI
-========================= */
-.home-section {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+.home-topbar__btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--home-border);
+  border-radius: var(--home-radius-btn);
+  background: var(--home-surface);
+  color: var(--home-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* HEADER SEZIONE */
+.home-topbar__btn:active {
+  transform: scale(.98);
+}
+
+/* =========================================================
+   3) MAIN + ROOT HOME
+   ========================================================= */
+
+body.home-page > main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.home {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--home-bg);
+}
+
+.home-viewport {
+  min-height: calc(
+    100dvh - var(--home-topbar-h) - var(--home-bottomnav-h) - var(--home-footer-h)
+  );
+  padding: var(--home-page-pad-y) var(--home-page-pad-x);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* =========================================================
+   4) SEZIONI VERTICALI
+   ========================================================= */
+
+.home-section {
+  min-height: calc(
+    100dvh - var(--home-topbar-h) - var(--home-bottomnav-h) - var(--home-footer-h)
+    - (var(--home-page-pad-y) * 2)
+  );
+  padding: 8px 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--home-section-gap);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.home-section + .home-section {
+  border-top: 1px solid var(--home-accent-border);
+  padding-top: 24px;
+}
+
+/* =========================================================
+   5) HEADER SEZIONE
+   ========================================================= */
+
 .home-section-head {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
+  justify-content: space-between;
+  gap: var(--home-space-md);
 }
 
 .home-section-head__text {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 .home-section-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0;
+  font-size: 18px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--home-text);
+  letter-spacing: 0.01em;
 }
 
 .home-section-subtitle {
-  font-size: 14px;
-  color: var(--home-muted);
-  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--home-text-secondary);
 }
 
-/* SCROLL HINT */
+.home-section-head__hint {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
 .home-scroll-hint {
-  font-size: 12px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(0,0,0,0.05);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: var(--home-radius-pill);
+  border: 1px solid var(--home-accent-border);
+  background: var(--home-accent-soft);
+  color: var(--home-accent-hover);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-/* =========================
-   RAIL
-========================= */
+/* =========================================================
+   6) SHELL E RAIL
+   ========================================================= */
+
 .home-rail-shell {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--home-space-sm);
+  min-height: 0;
+}
+
+.home-rail-shell[data-rail-mode="past"] .home-rail--active,
+.home-rail-shell[data-rail-mode="active"] .home-rail--past,
+.home-rail-shell[data-rail-mode="past"] .home-scrollbar:not(.home-scrollbar--past),
+.home-rail-shell[data-rail-mode="active"] .home-scrollbar--past {
+  display: none;
 }
 
 .home-rail {
   display: flex;
+  align-items: flex-start;
   gap: var(--home-rail-gap);
+  width: 100%;
+  min-height: 0;
   overflow-x: auto;
-  padding-bottom: 6px;
-
+  overflow-y: hidden;
+  padding: 2px 2px 6px;
   scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
 
 .home-rail::-webkit-scrollbar {
   display: none;
 }
 
-/* =========================
-   CARD
-========================= */
-.home-card {
-  flex: 0 0 var(--home-card-width);
-  scroll-snap-align: start;
+/* =========================================================
+   7) GEOMETRIA BASE CARD
+   ========================================================= */
 
-  background: var(--color-surface);
-  border-radius: var(--home-card-radius);
-  border: 1px solid var(--color-border);
+.home-card,
+.home-switch-card,
+.home-banner-slot {
+  position: relative;
+  flex: 0 0 var(--home-card-width);
+  width: var(--home-card-width);
+  min-width: var(--home-card-min-width);
+  max-width: var(--home-card-width);
+  min-height: var(--home-card-min-h);
+  scroll-snap-align: start;
+  border: 1px solid var(--home-border);
+  border-radius: var(--home-radius-main);
+  background: var(--home-surface);
+  box-shadow: var(--home-shadow-main);
   overflow: hidden;
 }
 
-/* THUMB */
-.home-card-thumb {
-  height: var(--home-card-thumb-h);
-  background: #d1d5db;
+/* =========================================================
+   8) EVENT CARD
+   ========================================================= */
+
+.home-card {
+  display: flex;
+  flex-direction: column;
 }
 
-/* BODY */
-.home-card-body {
-  padding: 12px;
+.home-card-thumb {
+  flex: 0 0 auto;
+  height: var(--home-card-thumb-h);
+  background-color: #E7EDF1;
+  background-image: var(--home-card-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid var(--home-border);
+}
+
+.home-card-thumb--empty {
+  background-image: none;
+  background-color: #EEF2F5;
+}
+
+.home-card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.home-card-action-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255,255,255,0.84);
+  border-radius: var(--home-radius-btn);
+  background: rgba(255,255,255,0.94);
+  color: var(--home-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 24, 40, 0.08);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-card-action-btn--danger {
+  color: var(--home-danger);
+}
+
+.home-card-action-btn:active {
+  transform: scale(.98);
+}
+
+.home-card-content {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
 }
 
 .home-card-title {
   font-size: 16px;
-  font-weight: 600;
-  margin: 0 0 6px;
+  line-height: 1.3;
+  font-weight: 800;
+  color: var(--home-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.home-card-badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: var(--home-radius-pill);
+  border: 1px solid var(--home-accent-border);
+  background: #FFFFFF;
+  color: var(--home-accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .home-card-meta {
-  font-size: 13px;
-  color: var(--home-muted);
-}
-
-/* =========================
-   EMPTY STATE
-========================= */
-.home-empty {
-  padding: 16px;
-  border-radius: 14px;
-  background: rgba(0,0,0,0.04);
-  border: 1px solid var(--color-border);
-}
-
-.home-empty-title {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.home-empty-text {
-  font-size: 14px;
-  color: var(--home-muted);
-}
-
-/* =========================
-   SKELETON
-========================= */
-.home-skeleton-line {
-  height: 10px;
-  border-radius: 999px;
-  background: #e5e7eb;
-  overflow: hidden;
-  position: relative;
-}
-
-.home-skeleton-line::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  width: 40%;
-  background: #cbd5e1;
-}
-
-/* =========================
-   BOTTOM NAV
-========================= */
-.home-bottomnav {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-
-  padding: 10px 0;
-  border-top: 1px solid var(--color-border);
-  background: var(--color-bg);
+  flex-direction: column;
+  gap: 6px;
 }
 
-.home-bottomnav__item {
-  font-size: 18px;
+.home-card-meta-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
 }
 
-/* =========================
-   FOOTER
-========================= */
-.home-footer {
-  text-align: center;
+.home-card-meta-label {
+  flex: 0 0 auto;
   font-size: 12px;
-  padding: 10px 0;
-  color: var(--home-muted);
+  line-height: 1.35;
+  font-weight: 700;
+  color: var(--home-accent);
 }
+
+.home-card-meta-value {
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.42;
+  color: var(--home-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.home-card-price {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: var(--home-radius-pill);
+  background: var(--home-accent-soft);
+  border: 1px solid var(--home-accent-border);
+  color: var(--home-accent-hover);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   9) SWITCH CARD
+   ========================================================= */
+
+.home-switch-card {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: linear-gradient(
+    180deg,
+    rgba(230, 240, 244, 0.95),
+    rgba(255, 255, 255, 1)
+  );
+  border-color: var(--home-accent-border);
+}
+
+.home-switch-card__body {
+  width: 100%;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.home-switch-card__eyebrow {
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--home-accent);
+}
+
+.home-switch-card__title {
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--home-text);
+}
+
+.home-switch-card__subtitle {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--home-text-secondary);
+}
+
+.home-switch-card__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.home-switch-card__btn {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--home-accent-border);
+  border-radius: var(--home-radius-btn);
+  background: var(--home-surface);
+  color: var(--home-accent-hover);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-switch-card__btn:active {
+  transform: scale(.985);
+}
+
+/* =========================================================
+   10) BANNER SLOT + BANNER CARD
+   ========================================================= */
+
+.home-banner-slot {
+  display: flex;
+}
+
+.home-banner-slot__inner {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-banner-slot--empty .home-banner-slot__inner {
+  justify-content: center;
+  align-items: center;
+  padding: 18px;
+  text-align: center;
+  color: var(--home-text-muted);
+  font-size: 13px;
+}
+
+.home-banner-card {
+  width: 100%;
+  min-height: var(--home-card-min-h);
+  display: flex;
+  flex-direction: column;
+  background: var(--home-surface);
+}
+
+.home-banner-card__thumb {
+  height: var(--home-card-thumb-h);
+  background-color: #E7EDF1;
+  background-image: var(--home-banner-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid var(--home-border);
+}
+
+.home-banner-card__content {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-banner-card__eyebrow {
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--home-danger);
+}
+
+.home-banner-card__title {
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 800;
+  color: var(--home-text);
+}
+
+.home-banner-card__text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--home-text-secondary);
+}
+
+.home-banner-card--tip {
+  background: linear-gradient(
+    180deg,
+    rgba(230, 240, 244, 0.90),
+    rgba(255, 255, 255, 1)
+  );
+}
+
+.home-banner-card--tip .home-banner-card__eyebrow {
+  color: var(--home-accent);
+}
+
+/* =========================================================
+   11) STATE BLOCK
+   ========================================================= */
+
+.home-state {
+  width: 100%;
+  padding: 18px;
+  border: 1px solid var(--home-accent-border);
+  border-radius: var(--home-radius-main);
+  background: var(--home-accent-soft);
+  color: var(--home-text);
+  box-shadow: var(--home-shadow-main);
+}
+
+.home-state__title {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.home-state__text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--home-text-secondary);
+}
+
+.home-state--error {
+  border-color: rgba(181, 42, 50, 0.28);
+  background: rgba(181, 42, 50, 0.06);
+}
+
+/* =========================================================
+   12) SCROLLBAR CUSTOM
+   ========================================================= */
+
+.home-scrollbar {
+  position: relative;
+  height: var(--home-scrollbar-h);
+  border-radius: var(--home-radius-pill);
+  background: var(--home-scrollbar-track);
+  overflow: hidden;
+  touch-action: pan-x;
+}
+
+.home-scrollbar-thumb {
+  height: 100%;
+  width: var(--home-scrollbar-thumb-w);
+  border-radius: var(--home-radius-pill);
+  background: var(--home-scrollbar-thumb);
+  transform: translateX(var(--home-scrollbar-x, 0px));
+  transition: transform 60ms linear;
+}
+
+.home-scrollbar.is-dragging .home-scrollbar-thumb {
+  background: var(--home-scrollbar-thumb-active);
+  transition: none;
+}
+
+/* =========================================================
+   13) BOTTOM NAV AUTONOMA
+   ========================================================= */
+
+.home-bottomnav {
+  min-height: var(--home-bottomnav-h);
+  padding: 10px var(--home-page-pad-x);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 10px;
+  border-top: 1px solid var(--home-border);
+  background: var(--home-surface);
+}
+
+.home-bottomnav > button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--home-border);
+  border-radius: var(--home-radius-btn);
+  background: var(--home-surface);
+  color: var(--home-text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.03);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-bottomnav > button.active {
+  color: var(--home-danger);
+  border-color: var(--home-accent-border);
+  background: var(--home-accent-soft);
+}
+
+.home-bottomnav > button:active {
+  transform: scale(.98);
+}
+
+/* =========================================================
+   14) FOOTER AUTONOMO
+   ========================================================= */
+
+.home-footer {
+  min-height: var(--home-footer-h);
+  padding: 8px var(--home-page-pad-x) 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid var(--home-border);
+  background: var(--home-bg);
+  color: var(--home-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   15) VISIBILITÀ E INTERAZIONI
+   ========================================================= */
+
+.home-hidden,
+.home .is-hidden {
+  display: none !important;
+}
+
+.home-card,
+.home-switch-card,
+.home-banner-slot,
+.home-banner-card {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.home-card:active,
+.home-switch-card:active,
+.home-banner-card:active {
+  transform: scale(.992);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-card:hover,
+  .home-switch-card:hover,
+  .home-banner-slot:hover {
+    border-color: var(--home-accent-border);
+    box-shadow: var(--home-shadow-strong);
+  }
+
+  .home-topbar__btn:hover,
+  .home-bottomnav > button:hover,
+  .home-card-action-btn:hover,
+  .home-switch-card__btn:hover {
+    border-color: var(--home-accent-border);
+  }
+}
+
+/* =========================================================
+   16) RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  body.home-page {
+    --home-page-pad-x: 14px;
+    --home-page-pad-y: 14px;
+    --home-card-width: 100%;
+    --home-card-min-width: 100%;
+    --home-card-thumb-h: 156px;
+    --home-card-min-h: 400px;
+    --home-rail-gap: 10px;
+  }
+
+  .home-section {
+    padding: 10px 0 12px;
+  }
+
+  .home-section + .home-section {
+    padding-top: 20px;
+  }
+
+  .home-section-title {
+    font-size: 17px;
+  }
+
+  .home-section-subtitle {
+    font-size: 12.5px;
+  }
+
+  .home-scroll-hint {
+    min-height: 26px;
+    padding: 0 10px;
+    font-size: 10px;
+  }
+
+  .home-card-content,
+  .home-banner-card__content {
+    padding: 13px;
+    gap: 7px;
+  }
+
+  .home-topbar__logo {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  .home-card-title,
+  .home-banner-card__title {
+    font-size: 15px;
+  }
+
+  .home-switch-card__title {
+    font-size: 17px;
+  }
+   }
