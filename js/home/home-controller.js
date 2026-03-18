@@ -579,7 +579,12 @@ function setupBannerEngine(dom, banners = [], tips = []) {
 
 function renderHome(dom, payload) {
   const split = splitEvents(payload.events, payload.currentUserId);
-
+console.log("[HOME] currentUserId:", payload.currentUserId);
+  console.log("[HOME] total events:", Array.isArray(payload.events) ? payload.events.length : 0);
+  console.log("[HOME] generalActive:", split.generalActive.length);
+  console.log("[HOME] generalPast:", split.generalPast.length);
+  console.log("[HOME] joinedActive:", split.joinedActive.length);
+  console.log("[HOME] joinedPast:", split.joinedPast.length);
   const generalActiveNodes = split.generalActive.length
     ? buildGeneralActiveNodes(split.generalActive)
     : buildEmptyGeneralNodes();
