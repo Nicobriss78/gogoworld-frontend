@@ -799,6 +799,8 @@ body.home-page > main {
   body.home-page {
     --home-page-pad-x: 14px;
     --home-page-pad-y: 14px;
+    --home-topbar-h: 132px;
+    --home-bottomnav-h: 86px;
     --home-card-width: 100%;
     --home-card-min-width: 100%;
     --home-card-thumb-h: 156px;
@@ -834,8 +836,36 @@ body.home-page > main {
     gap: 7px;
   }
 
-  .home-topbar__logo {
+  .home-topbar__row--identity {
+    min-height: 58px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+  }
+
+  .home-topbar__greeting {
+    font-size: 15px;
+  }
+
+  .home-topbar__role {
+    font-size: 12px;
+  }
+
+  .home-topbar__brand {
     font-size: 18px;
+  }
+
+  .home-topbar__row--actions {
+    min-height: 70px;
+    padding-top: 8px;
+    padding-bottom: 12px;
+    gap: 10px;
+  }
+
+  .home-topbar__btn,
+  .home-bottomnav > button {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
   }
 }
 
