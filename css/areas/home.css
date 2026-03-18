@@ -751,23 +751,6 @@ body.home-page > main {
 }
 
 /* =========================================================
-   14) FOOTER AUTONOMO
-   ========================================================= */
-
-.home-footer {
-  min-height: var(--home-footer-h);
-  padding: 8px var(--home-page-pad-x) 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top: 1px solid var(--home-border);
-  background: var(--home-bg);
-  color: var(--home-text-secondary);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-/* =========================================================
    15) VISIBILITÀ E INTERAZIONI
    ========================================================= */
 
