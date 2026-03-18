@@ -70,7 +70,28 @@ function getEventImage(event) {
 }
 
 function normalizeText(value, fallback = "—") {
-  const text = String(value ?? "").trim();
+  if (value == null) return fallback;
+
+  if (typeof value === "string" || typeof value === "number") {
+    const text = String(value).trim();
+    return text || fallback;
+  }
+
+  if (typeof value === "object") {
+    const candidate =
+      value?.label ??
+      value?.name ??
+      value?.title ??
+      value?.city ??
+      value?.text ??
+      value?.value ??
+      "";
+
+    const text = String(candidate).trim();
+    return text || fallback;
+  }
+
+  const text = String(value).trim();
   return text || fallback;
 }
 
