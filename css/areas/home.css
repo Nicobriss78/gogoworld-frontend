@@ -204,10 +204,8 @@ body.home-page > main {
 }
 
 .home-viewport {
-  min-height: calc(
-    100dvh - var(--home-topbar-h) - var(--home-bottomnav-h) - var(--home-footer-h)
-  );
-  padding: var(--home-page-pad-y) var(--home-page-pad-x);
+  height: calc(100dvh - var(--home-topbar-h) - var(--home-bottomnav-h));
+  padding: var(--home-page-pad-y) var(--home-page-pad-x) calc(var(--home-page-pad-y) + 6px);
   display: flex;
   flex-direction: column;
   gap: 0;
