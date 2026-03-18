@@ -5,6 +5,8 @@
  * banner engine, autofocus, scrollbars, delegation.
  */
 
+import { apiGet } from "../api.js";
+
 import {
   createEventCard,
   createSwitchCard,
@@ -14,7 +16,6 @@ import {
 } from "./home-renderer.js";
 
 import { createBannerEngine } from "./home-banners.js";
-
 /* =========================================================
    CONFIG
    ========================================================= */
