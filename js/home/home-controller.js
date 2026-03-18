@@ -147,18 +147,31 @@ function sortEventsDescending(events = []) {
   });
 }
 
+function normalizeComparableId(value) {
+  if (!value) return "";
+  if (typeof value === "string") return value.trim();
+  if (typeof value === "object") {
+    return String(
+      value?._id ??
+      value?.id ??
+      value?.userId ??
+      value?.user?._id ??
+      value?.user?.id ??
+      ""
+    ).trim();
+  }
+  return String(value).trim();
+}
+
 function isJoinedByCurrentUser(event, currentUserId) {
-  if (!currentUserId) return false;
+  const currentId = normalizeComparableId(currentUserId);
+  if (!currentId) return false;
 
   const participants = Array.isArray(event?.participants) ? event.participants : [];
   const attendees = Array.isArray(event?.attendees) ? event.attendees : [];
   const list = participants.length ? participants : attendees;
 
-  return list.some((item) => {
-    if (!item) return false;
-    if (typeof item === "string") return item === currentUserId;
-    return item?._id === currentUserId || item?.id === currentUserId || item?.userId === currentUserId;
-  });
+  return list.some((item) => normalizeComparableId(item) === currentId);
 }
 
 function splitEvents(events = [], currentUserId = null) {
