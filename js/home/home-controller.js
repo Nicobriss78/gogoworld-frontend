@@ -160,7 +160,6 @@ function isJoinedByCurrentUser(event, currentUserId) {
     return item?._id === currentUserId || item?.id === currentUserId || item?.userId === currentUserId;
   });
 }
-}
 
 function splitEvents(events = [], currentUserId = null) {
   const joined = [];
