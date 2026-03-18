@@ -707,21 +707,28 @@ body.home-page > main {
    ========================================================= */
 
 .home-bottomnav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 110;
   min-height: var(--home-bottomnav-h);
-  padding: 10px var(--home-page-pad-x);
+  padding: 10px 18px 16px;
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 12px;
   border-top: 1px solid var(--home-border);
   background: var(--home-surface);
+  box-shadow: 0 -4px 14px rgba(16, 24, 40, 0.04);
 }
 
 .home-bottomnav > button {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
   border: 1px solid var(--home-border);
-  border-radius: var(--home-radius-btn);
+  border-radius: 16px;
   background: var(--home-surface);
   color: var(--home-text-muted);
   display: inline-flex;
@@ -732,7 +739,8 @@ body.home-page > main {
   -webkit-tap-highlight-color: transparent;
 }
 
-.home-bottomnav > button.active {
+.home-bottomnav > button.active,
+.home-bottomnav > button.is-active {
   color: var(--home-danger);
   border-color: var(--home-accent-border);
   background: var(--home-accent-soft);
