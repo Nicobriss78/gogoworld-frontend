@@ -150,12 +150,16 @@ function sortEventsDescending(events = []) {
 function isJoinedByCurrentUser(event, currentUserId) {
   if (!currentUserId) return false;
 
+  const participants = Array.isArray(event?.participants) ? event.participants : [];
   const attendees = Array.isArray(event?.attendees) ? event.attendees : [];
-  return attendees.some((item) => {
+  const list = participants.length ? participants : attendees;
+
+  return list.some((item) => {
     if (!item) return false;
     if (typeof item === "string") return item === currentUserId;
     return item?._id === currentUserId || item?.id === currentUserId || item?.userId === currentUserId;
   });
+}
 }
 
 function splitEvents(events = [], currentUserId = null) {
