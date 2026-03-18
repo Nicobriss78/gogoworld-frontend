@@ -56,22 +56,19 @@ const HOME_FALLBACK_TIPS = [
    ========================================================= */
 
 async function fetchHomePayload() {
-  const response = await fetch("/api/events", {
-    credentials: "include",
-  });
+  const token = localStorage.getItem("token");
 
-  if (!response.ok) {
-    throw new Error("Impossibile caricare gli eventi della Home.");
-  }
+  const meRes = await apiGet("/users/me", token);
+  const currentUserId = meRes?.user?._id || null;
 
-  const events = await response.json();
+  const evRes = await apiGet("/events", token);
+  const events = Array.isArray(evRes?.events) ? evRes.events : [];
 
-  // Se in futuro hai endpoint banner reali, sostituisci qui.
   return {
-    events: Array.isArray(events) ? events : [],
+    events,
     banners: [],
     tips: HOME_FALLBACK_TIPS,
-    currentUserId: null,
+    currentUserId,
   };
 }
 
