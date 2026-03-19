@@ -63,6 +63,8 @@ async function fetchHomePayload() {
 
   const evRes = await apiGet("/events", token);
   const events = Array.isArray(evRes?.events) ? evRes.events : [];
+console.log("[HOME RAW EVENTS]", events.slice(0, 5));
+console.log("[HOME USER]", currentUserId);
 
   return {
     events,
