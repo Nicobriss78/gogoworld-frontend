@@ -611,8 +611,8 @@ console.log("[HOME] currentUserId:", payload.currentUserId);
   console.log("[HOME] generalPast:", split.generalPast.length);
   console.log("[HOME] joinedActive:", split.joinedActive.length);
   console.log("[HOME] joinedPast:", split.joinedPast.length);
-  const generalActiveNodes = split.generalActive.length
-    ? buildGeneralActiveNodes(split.generalActive)
+const generalActiveNodes = split.generalActive.length || split.generalPast.length
+    ? buildGeneralActiveNodes(split.generalActive, split.generalPast.length)
     : buildEmptyGeneralNodes();
 
   const generalPastPreview = split.generalPast.slice(
