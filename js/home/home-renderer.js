@@ -94,7 +94,60 @@ function normalizeText(value, fallback = "—") {
   const text = String(value).trim();
   return text || fallback;
 }
+function normalizeLocationValue(value) {
+  if (value == null) return "";
 
+  if (typeof value === "string" || typeof value === "number") {
+    return String(value).trim();
+  }
+
+  if (typeof value === "object") {
+    const candidates = [
+      value?.label,
+      value?.name,
+      value?.title,
+      value?.address,
+      value?.street,
+      value?.city,
+      value?.region,
+      value?.country,
+      value?.value,
+      value?.text,
+    ];
+
+    const parts = candidates
+      .map((v) =>
+        typeof v === "string" || typeof v === "number"
+          ? String(v).trim()
+          : ""
+      )
+      .filter(Boolean);
+
+    return [...new Set(parts)].join(" • ");
+  }
+
+  return "";
+}
+
+function buildEventPlace(event) {
+  const rawParts = [
+    event?.locationLabel,
+    event?.location,
+    event?.venue,
+    event?.venueName,
+    event?.address,
+    event?.city,
+    event?.region,
+    event?.country,
+  ];
+
+  const parts = rawParts
+    .map(normalizeLocationValue)
+    .filter(Boolean)
+    .filter((v) => v !== "[object Object]");
+
+  return normalizeText([...new Set(parts)].join(" • "), "Luogo da definire");
+}
 function formatPrice(event) {
   const raw =
     event?.priceLabel ??
