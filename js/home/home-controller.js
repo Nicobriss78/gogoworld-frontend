@@ -220,10 +220,10 @@ function splitEvents(events = [], currentUserId = null) {
     }
   }
 
-  const generalActive = sortEventsAscending(general.filter((event) => !isPastEvent(event)));
+const generalActive = sortEventsAscending(general.filter((event) => isActiveEvent(event)));
   const generalPast = sortEventsDescending(general.filter((event) => isPastEvent(event)));
 
-  const joinedActive = sortEventsAscending(joined.filter((event) => !isPastEvent(event)));
+  const joinedActive = sortEventsAscending(joined.filter((event) => isActiveEvent(event)));
   const joinedPast = sortEventsDescending(joined.filter((event) => isPastEvent(event)));
 
   return {
