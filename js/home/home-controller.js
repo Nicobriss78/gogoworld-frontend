@@ -59,7 +59,12 @@ async function fetchHomePayload() {
   const token = localStorage.getItem("token");
 
   const meRes = await apiGet("/users/me", token);
-  const currentUserId = meRes?.user?._id || null;
+const currentUserId =
+  meRes?._id ||
+  meRes?.id ||
+  meRes?.user?._id ||
+  meRes?.user?.id ||
+  null;
 
   const evRes = await apiGet("/events", token);
   const events = Array.isArray(evRes?.events) ? evRes.events : [];
