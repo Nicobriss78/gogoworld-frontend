@@ -141,19 +141,24 @@ function toTime(value) {
   return Number.isNaN(date.getTime()) ? null : date.getTime();
 }
 
+function getEventStatus(event) {
+  return String(event?.status ?? "").trim().toLowerCase();
+}
+
+function isActiveStatus(status) {
+  return status === "future" || status === "imminent" || status === "ongoing";
+}
+
+function isPastStatus(status) {
+  return status === "concluded" || status === "past";
+}
+
+function isActiveEvent(event) {
+  return isActiveStatus(getEventStatus(event));
+}
+
 function isPastEvent(event) {
-  const end =
-    event?.dateEnd ??
-    event?.endDate ??
-    event?.dateStart ??
-    event?.startDate ??
-    event?.date ??
-    null;
-
-  const endTime = toTime(end);
-  if (!endTime) return false;
-
-  return endTime < Date.now();
+  return isPastStatus(getEventStatus(event));
 }
 
 function sortEventsAscending(events = []) {
