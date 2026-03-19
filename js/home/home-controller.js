@@ -575,7 +575,7 @@ function bindCardActions(dom) {
     }
 
     if (card && eventId) {
-      window.location.href = `/pages/evento.html?id=${encodeURIComponent(eventId)}`;
+      console.log("[HOME] card-click", eventId);
     }
   });
 }
