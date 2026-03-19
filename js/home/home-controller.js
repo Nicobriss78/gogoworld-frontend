@@ -234,19 +234,38 @@ function injectBannerSlots(events = []) {
    NODES BUILDERS
    ========================================================= */
 
-function buildGeneralActiveNodes(events = []) {
+function buildGeneralActiveNodes(events = [], pastCount = 0) {
+  const nodes = [];
+
+  if (pastCount > 0) {
+    nodes.push(
+      createSwitchCard({
+        direction: "to-past",
+        count: pastCount,
+        title: "Rivedi gli eventi passati",
+        subtitle: "Apri l’archivio recente degli eventi già conclusi.",
+        buttonLabel: "Apri archivio",
+      })
+    );
+  }
+
   const injected = injectBannerSlots(events);
 
-  return injected.map((item) => {
+  injected.forEach((item) => {
     if (item.type === "banner-slot") {
-      return createBannerSlot(item.slotIndex);
+      nodes.push(createBannerSlot(item.slotIndex));
+      return;
     }
 
-    return createEventCard(item.data, {
-      detailsIcon: HOME_CONFIG.detailsIcon,
-      showClose: HOME_CONFIG.showCloseDetail,
-    });
+    nodes.push(
+      createEventCard(item.data, {
+        detailsIcon: HOME_CONFIG.detailsIcon,
+        showClose: HOME_CONFIG.showCloseDetail,
+      })
+    );
   });
+
+  return nodes;
 }
 
 function buildGeneralPastNodes(events = []) {
