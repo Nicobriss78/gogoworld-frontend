@@ -5,8 +5,7 @@
  * banner engine, autofocus, scrollbars, delegation.
  */
 
-import { apiGet } from "../api.js";
-
+import { apiGet, getActiveBannersBatch } from "../api.js";
 import {
   createEventCard,
   createSwitchCard,
