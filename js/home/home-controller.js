@@ -564,7 +564,7 @@ function bindCardActions(dom) {
       const action = actionButton.dataset.homeAction;
 
       if (action === "details" && eventId) {
-        window.location.href = `/pages/evento.html?id=${encodeURIComponent(eventId)}`;
+        window.location.href = `/evento.html?id=${encodeURIComponent(eventId)}`;
       }
 
       if (action === "close-detail" && eventId) {
