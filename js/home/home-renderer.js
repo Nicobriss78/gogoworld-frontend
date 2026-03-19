@@ -207,10 +207,23 @@ export function createEventCard(event, options = {}) {
 
   const imageUrl = getEventImage(event);
   const title = normalizeText(event?.title, "Evento senza titolo");
-  const place = normalizeText(
-    event?.locationLabel ?? event?.location ?? event?.venue ?? "",
-    "Luogo da definire"
-  );
+  const placeParts = [
+  event?.locationLabel,
+  event?.location,
+  event?.venue,
+  event?.venueName,
+  event?.address,
+  event?.city,
+  event?.region,
+  event?.country,
+]
+  .map((v) => String(v ?? "").trim())
+  .filter(Boolean);
+
+const place = normalizeText(
+  [...new Set(placeParts)].join(" • "),
+  "Luogo da definire"
+);
   const dateText = formatEventDate(event) || "Data da definire";
   const category = normalizeText(event?.categoryLabel ?? event?.category ?? "", "Categoria non indicata");
   const target = normalizeText(event?.targetLabel ?? event?.targetAudience ?? event?.target ?? "", "Target non indicato");
