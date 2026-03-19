@@ -160,7 +160,37 @@ function isActiveEvent(event) {
 function isPastEvent(event) {
   return isPastStatus(getEventStatus(event));
 }
+function isConcludedEvent(event) {
+  return getEventStatus(event) === "concluded";
+}
 
+function isArchivedPastEvent(event) {
+  return getEventStatus(event) === "past";
+}
+
+function sortPastEventsForHome(events = []) {
+  const concluded = [];
+  const archived = [];
+
+  for (const event of events) {
+    if (isConcludedEvent(event)) {
+      concluded.push(event);
+      continue;
+    }
+
+    if (isArchivedPastEvent(event)) {
+      archived.push(event);
+      continue;
+    }
+
+    archived.push(event);
+  }
+
+  return [
+    ...sortEventsDescending(concluded),
+    ...sortEventsDescending(archived),
+  ];
+}
 function sortEventsAscending(events = []) {
   return [...events].sort((a, b) => {
     const aTime =
