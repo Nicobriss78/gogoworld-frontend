@@ -641,11 +641,18 @@ function attachScrollbar(rail, scrollbar) {
 function autoFocusFirstRealEvent(rail) {
   if (!rail) return;
 
-  const firstEventCard = rail.querySelector(".home-card[data-event-id]");
-  if (!firstEventCard) return;
+  const firstDirectionalCard = rail.querySelector(
+    '.home-directional-card[data-home-card-type="directional-bridge"]'
+  );
+
+  const target =
+    firstDirectionalCard ||
+    rail.querySelector(".home-card[data-event-id]");
+
+  if (!target) return;
 
   const railRect = rail.getBoundingClientRect();
-  const cardRect = firstEventCard.getBoundingClientRect();
+  const cardRect = target.getBoundingClientRect();
   const offset = cardRect.left - railRect.left + rail.scrollLeft;
 
   rail.scrollTo({
@@ -653,7 +660,6 @@ function autoFocusFirstRealEvent(rail) {
     behavior: "smooth",
   });
 }
-
 /* =========================================================
    CARD ACTIONS
    ========================================================= */
