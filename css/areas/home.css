@@ -857,8 +857,9 @@ body.home-page > main {
   transform: scale(.992);
 }
 @media (hover: hover) and (pointer: fine) {
-  .home-card:hover,
+.home-card:hover,
   .home-switch-card:hover,
+  .home-directional-card:hover,
   .home-banner-slot:hover {
     border-color: var(--home-accent-border);
     box-shadow: var(--home-shadow-strong);
