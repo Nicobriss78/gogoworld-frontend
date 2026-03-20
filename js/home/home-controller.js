@@ -328,14 +328,6 @@ function createHotPastDirectionalCard(scope = "general") {
   });
 }
 
-  return createDirectionalBridgeCard({
-    scope: "general",
-    leftTitle: "Eventi appena conclusi",
-    leftText: "Scorri a sinistra per raggiungere gli eventi con chat ancora attiva.",
-    rightTitle: "Eventi attivi",
-    rightText: "Scorri a destra per esplorare gli eventi attualmente disponibili.",
-  });
-}
 function buildGeneralActiveNodes(
   events = [],
   pastCount = 0,
