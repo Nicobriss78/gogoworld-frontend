@@ -326,10 +326,16 @@ function createHotPastDirectionalCard(scope = "general") {
     rightText: "Scorri a destra per esplorare gli eventi attualmente disponibili.",
   });
 }
-function buildGeneralActiveNodes(events = [], pastCount = 0) {
+function buildGeneralActiveNodes(
+  events = [],
+  pastCount = 0,
+  { hasHotPast = false } = {}
+) {
   const nodes = [];
 
-  if (pastCount > 0) {
+  if (hasHotPast) {
+    nodes.push(createHotPastDirectionalCard("general"));
+  } else if (pastCount > 0) {
     nodes.push(
       createSwitchCard({
         direction: "to-past",
