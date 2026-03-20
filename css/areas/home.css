@@ -573,6 +573,7 @@ body.home-page > main {
     rgba(230, 240, 244, 0.95),
     rgba(255, 255, 255, 1)
   );
+  animation: homeDirectionalCardIn 280ms ease-out both;
 }
 
 .home-directional-card__inner {
