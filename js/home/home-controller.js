@@ -740,7 +740,9 @@ const generalActiveNodes = split.generalActive.length || split.generalPast.lengt
   );
 
   const joinedActiveNodes = split.joinedActive.length || joinedPastPreview.length
-    ? buildJoinedActiveNodes(split.joinedActive, split.joinedPast.length)
+    ? buildJoinedActiveNodes(split.joinedActive, split.joinedPast.length, {
+        hasHotPast: split.hasHotJoinedPast,
+      })
     : buildEmptyJoinedNodes();
 
   const joinedPastNodes = joinedPastPreview.length
