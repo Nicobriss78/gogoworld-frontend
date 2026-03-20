@@ -786,6 +786,16 @@ const generalActiveNodes = split.generalActive.length || split.generalPast.lengt
     payload.tips?.length ? payload.tips : HOME_FALLBACK_TIPS
   );
 
+  requestAnimationFrame(() => {
+    if (hasDirectionalBridgeCard(dom.generalActiveRail)) {
+      dom.generalActiveRail.scrollLeft = 0;
+    }
+
+    if (hasDirectionalBridgeCard(dom.joinedActiveRail)) {
+      dom.joinedActiveRail.scrollLeft = 0;
+    }
+  });
+
   return { bannerEngine };
 }
 
