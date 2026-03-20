@@ -650,14 +650,12 @@ function hasDirectionalBridgeCard(rail) {
 function autoFocusFirstRealEvent(rail) {
   if (!rail) return;
 
-  const firstDirectionalCard = rail.querySelector(
-    '.home-directional-card[data-home-card-type="directional-bridge"]'
-  );
+  if (hasDirectionalBridgeCard(rail)) {
+    rail.scrollLeft = 0;
+    return;
+  }
 
-  const target =
-    firstDirectionalCard ||
-    rail.querySelector(".home-card[data-event-id]");
-
+  const target = rail.querySelector(".home-card[data-event-id]");
   if (!target) return;
 
   const railRect = rail.getBoundingClientRect();
