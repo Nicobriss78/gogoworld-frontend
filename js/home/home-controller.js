@@ -307,7 +307,25 @@ function injectBannerSlots(events = []) {
 /* =========================================================
    NODES BUILDERS
    ========================================================= */
+function createHotPastDirectionalCard(scope = "general") {
+  if (scope === "joined") {
+    return createDirectionalBridgeCard({
+      scope: "joined",
+      leftTitle: "Eventi appena conclusi",
+      leftText: "Scorri a sinistra per chat e recensioni ancora disponibili.",
+      rightTitle: "Eventi attivi",
+      rightText: "Scorri a destra per continuare con i tuoi eventi correnti.",
+    });
+  }
 
+  return createDirectionalBridgeCard({
+    scope: "general",
+    leftTitle: "Eventi appena conclusi",
+    leftText: "Scorri a sinistra per raggiungere gli eventi con chat ancora attiva.",
+    rightTitle: "Eventi attivi",
+    rightText: "Scorri a destra per esplorare gli eventi attualmente disponibili.",
+  });
+}
 function buildGeneralActiveNodes(events = [], pastCount = 0) {
   const nodes = [];
 
