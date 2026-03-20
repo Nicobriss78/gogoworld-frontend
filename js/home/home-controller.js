@@ -696,7 +696,21 @@ function bindCardActions(dom) {
     }
   });
 }
+function scrollToFirstActiveEventCard(rail) {
+  if (!rail) return;
 
+  const target = rail.querySelector(".home-card[data-event-id]");
+  if (!target) return;
+
+  const railRect = rail.getBoundingClientRect();
+  const cardRect = target.getBoundingClientRect();
+  const offset = cardRect.left - railRect.left + rail.scrollLeft;
+
+  rail.scrollTo({
+    left: offset,
+    behavior: "smooth",
+  });
+  }
 /* =========================================================
    BANNERS
    ========================================================= */
