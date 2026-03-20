@@ -334,6 +334,7 @@ body.home-page > main {
 
 .home-card,
 .home-switch-card,
+.home-directional-card,
 .home-banner-slot {
   position: relative;
   flex: 0 0 var(--home-card-width);
