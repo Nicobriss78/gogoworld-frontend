@@ -559,7 +559,86 @@ body.home-page > main {
 .home-switch-card__btn:active {
   transform: scale(.985);
 }
+/* =========================================================
+   9.5) DIRECTIONAL MINI CARD
+   ========================================================= */
 
+.home-directional-card {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  border-color: var(--home-accent-border);
+  background: linear-gradient(
+    180deg,
+    rgba(230, 240, 244, 0.95),
+    rgba(255, 255, 255, 1)
+  );
+}
+
+.home-directional-card__inner {
+  width: 100%;
+  min-height: var(--home-card-min-h);
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+
+.home-directional-card__side {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  color: var(--home-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-directional-card__side + .home-directional-card__side {
+  border-top: 1px solid var(--home-accent-border);
+}
+
+.home-directional-card__title {
+  font-size: 17px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--home-text);
+}
+
+.home-directional-card__text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--home-text-secondary);
+}
+
+.home-directional-card__arrow {
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 800;
+  color: var(--home-accent);
+}
+
+.home-directional-card__side--left .home-directional-card__arrow {
+  align-self: flex-start;
+}
+
+.home-directional-card__side--right .home-directional-card__arrow {
+  align-self: flex-end;
+}
+
+.home-directional-card__side:active {
+  transform: scale(.995);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-directional-card:hover {
+    border-color: var(--home-accent-border);
+    box-shadow: var(--home-shadow-strong);
+  }
+}
 /* =========================================================
    10) BANNER SLOT + BANNER CARD
    ========================================================= */
