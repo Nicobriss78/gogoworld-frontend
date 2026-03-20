@@ -330,7 +330,74 @@ export function createEventCard(event, options = {}) {
 
   return article;
 }
+/* =========================================================
+   Directional bridge card
+   ========================================================= */
 
+export function createDirectionalBridgeCard({
+  scope = "general",
+  leftTitle = "",
+  leftText = "",
+  rightTitle = "",
+  rightText = "",
+} = {}) {
+  const article = document.createElement("article");
+  article.className =
+    scope === "joined"
+      ? "home-directional-card home-directional-card--joined"
+      : "home-directional-card home-directional-card--general";
+
+  article.dataset.homeCardType = "directional-bridge";
+  article.dataset.homeDirectionalScope = scope;
+
+  const inner = document.createElement("div");
+  inner.className = "home-directional-card__inner";
+
+  const leftBtn = document.createElement("button");
+  leftBtn.type = "button";
+  leftBtn.className = "home-directional-card__side home-directional-card__side--left";
+  leftBtn.dataset.homeAction = "show-hot-past";
+
+  const leftArrow = document.createElement("span");
+  leftArrow.className = "home-directional-card__arrow";
+  leftArrow.setAttribute("aria-hidden", "true");
+  leftArrow.textContent = "←";
+
+  const leftHeading = document.createElement("strong");
+  leftHeading.className = "home-directional-card__title";
+  leftHeading.textContent = leftTitle;
+
+  const leftBody = document.createElement("span");
+  leftBody.className = "home-directional-card__text";
+  leftBody.textContent = leftText;
+
+  leftBtn.append(leftArrow, leftHeading, leftBody);
+
+  const rightBtn = document.createElement("button");
+  rightBtn.type = "button";
+  rightBtn.className = "home-directional-card__side home-directional-card__side--right";
+  rightBtn.dataset.homeAction = "stay-active";
+
+  const rightArrow = document.createElement("span");
+  rightArrow.className = "home-directional-card__arrow";
+  rightArrow.setAttribute("aria-hidden", "true");
+  rightArrow.textContent = "→";
+
+  const rightHeading = document.createElement("strong");
+  rightHeading.className = "home-directional-card__title";
+  rightHeading.textContent = rightTitle;
+
+  const rightBody = document.createElement("span");
+  rightBody.className = "home-directional-card__text";
+  rightBody.textContent = rightText;
+
+  rightBtn.append(rightHeading, rightBody, rightArrow);
+
+  inner.append(leftBtn, rightBtn);
+  article.appendChild(inner);
+
+  return article;
+}
 /* =========================================================
    Switch card
    ========================================================= */
