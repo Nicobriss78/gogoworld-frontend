@@ -519,10 +519,26 @@ function bindRailModeDelegation(dom) {
       resetRailScrollForMode(shell, "past");
     }
 
-    if (action === "show-active" || action === "stay-active") {
+    if (action === "show-active") {
       const shell = actionNode.closest(".home-rail-shell");
       setRailMode(shell, "active");
       resetRailScrollForMode(shell, "active");
+    }
+
+    if (action === "stay-active") {
+      const shell = actionNode.closest(".home-rail-shell");
+      setRailMode(shell, "active");
+
+      const visible =
+        shell === dom.generalShell
+          ? dom.generalActiveRail
+          : shell === dom.joinedShell
+            ? dom.joinedActiveRail
+            : null;
+
+      requestAnimationFrame(() => {
+        scrollToFirstActiveEventCard(visible);
+      });
     }
   });
 }
