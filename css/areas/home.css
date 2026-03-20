@@ -852,10 +852,10 @@ body.home-page > main {
 
 .home-card:active,
 .home-switch-card:active,
+.home-directional-card:active,
 .home-banner-card:active {
   transform: scale(.992);
 }
-
 @media (hover: hover) and (pointer: fine) {
   .home-card:hover,
   .home-switch-card:hover,
