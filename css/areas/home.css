@@ -651,6 +651,11 @@ body.home-page > main {
     transform: translateY(0);
   }
 }
+@media (prefers-reduced-motion: reduce) {
+  .home-directional-card {
+    animation: none;
+  }
+}
 /* =========================================================
    10) BANNER SLOT + BANNER CARD
    ========================================================= */
