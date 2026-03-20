@@ -512,13 +512,13 @@ function bindRailModeDelegation(dom) {
 
     const action = actionNode.dataset.homeAction;
 
-    if (action === "show-past") {
+    if (action === "show-past" || action === "show-hot-past") {
       const shell = actionNode.closest(".home-rail-shell");
       setRailMode(shell, "past");
       resetRailScrollForMode(shell, "past");
     }
 
-    if (action === "show-active") {
+    if (action === "show-active" || action === "stay-active") {
       const shell = actionNode.closest(".home-rail-shell");
       setRailMode(shell, "active");
       resetRailScrollForMode(shell, "active");
