@@ -720,7 +720,9 @@ function renderHome(dom, payload) {
   console.log("[HOME] joinedHotPast:", split.joinedHotPast.length);
   console.log("[HOME] hasHotJoinedPast:", split.hasHotJoinedPast);
 const generalActiveNodes = split.generalActive.length || split.generalPast.length
-    ? buildGeneralActiveNodes(split.generalActive, split.generalPast.length)
+    ? buildGeneralActiveNodes(split.generalActive, split.generalPast.length, {
+        hasHotPast: split.hasHotGeneralPast,
+      })
     : buildEmptyGeneralNodes();
 
   const generalPastPreview = split.generalPast.slice(
