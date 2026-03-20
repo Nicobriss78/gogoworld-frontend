@@ -390,10 +390,16 @@ function buildGeneralPastNodes(events = []) {
   return nodes;
 }
 
-function buildJoinedActiveNodes(activeEvents = [], pastCount = 0) {
+function buildJoinedActiveNodes(
+  activeEvents = [],
+  pastCount = 0,
+  { hasHotPast = false } = {}
+) {
   const nodes = [];
 
-  if (pastCount > 0) {
+  if (hasHotPast) {
+    nodes.push(createHotPastDirectionalCard("joined"));
+  } else if (pastCount > 0) {
     nodes.push(
       createSwitchCard({
         direction: "to-past",
