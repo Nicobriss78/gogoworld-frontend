@@ -312,12 +312,21 @@ function createHotPastDirectionalCard(scope = "general") {
   if (scope === "joined") {
     return createDirectionalBridgeCard({
       scope: "joined",
-      leftTitle: "Eventi appena conclusi",
-      leftText: "Scorri a sinistra per chat e recensioni ancora disponibili.",
+      leftTitle: "Appena conclusi",
+      leftText: "A sinistra trovi chat e recensioni ancora disponibili.",
       rightTitle: "Eventi attivi",
-      rightText: "Scorri a destra per continuare con i tuoi eventi correnti.",
+      rightText: "A destra torni subito ai tuoi eventi in corso.",
     });
   }
+
+  return createDirectionalBridgeCard({
+    scope: "general",
+    leftTitle: "Appena conclusi",
+    leftText: "A sinistra trovi gli eventi con chat ancora attiva.",
+    rightTitle: "Eventi attivi",
+    rightText: "A destra torni subito agli eventi disponibili.",
+  });
+}
 
   return createDirectionalBridgeCard({
     scope: "general",
