@@ -638,7 +638,15 @@ function attachScrollbar(rail, scrollbar) {
 /* =========================================================
    AUTOFOCUS
    ========================================================= */
+function hasDirectionalBridgeCard(rail) {
+  if (!rail) return false;
 
+  return Boolean(
+    rail.querySelector(
+      '.home-directional-card[data-home-card-type="directional-bridge"]'
+    )
+  );
+}
 function autoFocusFirstRealEvent(rail) {
   if (!rail) return;
 
