@@ -137,7 +137,15 @@ function createDomRefs(root = document) {
     joinedPastScrollbar: getRequiredElement("#homeScrollbarJoinedPast", root),
   };
 }
+async function setHomeTopbarIdentity(dom) {
+  const identity = await resolveUserIdentity();
 
+  applyUserIdentityToTopbar({
+    greetingEl: dom.greeting,
+    roleEl: dom.role,
+    identity,
+  });
+}
 /* =========================================================
    HELPERS DATA
    ========================================================= */
