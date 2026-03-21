@@ -447,16 +447,6 @@ function renderOrganizerSection(refs, sectionData) {
   updateRailEmpty(root, "active", sectionData.activeEvents.length > 0);
   updateRailEmpty(root, "past", sectionData.pastEvents.length > 0);
 
-  const activeTab = root.querySelector('.seguiti-rail-tab[data-rail-target="active"]');
-  const pastTab = root.querySelector('.seguiti-rail-tab[data-rail-target="past"]');
-
-  if (!sectionData.pastEvents.length) {
-    pastTab.hidden = true;
-  }
-  if (!sectionData.activeEvents.length) {
-    activeTab.hidden = true;
-  }
-
   setRailMode(root, sectionData.initialMode);
 
   return fragment;
