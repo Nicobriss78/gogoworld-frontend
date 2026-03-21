@@ -450,13 +450,27 @@ function renderOrganizerSection(refs, sectionData) {
   section.setAttribute("aria-label", `Eventi di ${sectionData.organizerName}`);
   title.textContent = sectionData.organizerName;
 
-  sectionData.activeEvents.forEach((event) => {
-    activeRail.appendChild(createCard(refs, event));
-  });
+  // ACTIVE RAIL
+if (sectionData.pastEvents.length > 0) {
+  activeRail.appendChild(
+    createSwitchCard("Vedi eventi passati", "show-past")
+  );
+}
 
-  sectionData.pastEvents.forEach((event) => {
-    pastRail.appendChild(createCard(refs, event));
-  });
+sectionData.activeEvents.forEach((event) => {
+  activeRail.appendChild(createCard(refs, event));
+});
+
+// PAST RAIL
+if (sectionData.activeEvents.length > 0) {
+  pastRail.appendChild(
+    createSwitchCard("Torna agli eventi attivi", "show-active")
+  );
+}
+
+sectionData.pastEvents.forEach((event) => {
+  pastRail.appendChild(createCard(refs, event));
+});
 
   updateRailEmpty(root, "active", sectionData.activeEvents.length > 0);
   updateRailEmpty(root, "past", sectionData.pastEvents.length > 0);
