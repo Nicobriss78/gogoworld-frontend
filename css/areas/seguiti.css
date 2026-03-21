@@ -220,7 +220,7 @@ body.seguiti-page button {
 .seguiti-loading,
 .seguiti-state,
 .seguiti-sections {
-  min-height: calc(100dvh - var(--seguiti-topbar-h) - var(--seguiti-bottomnav-h) - (var(--seguiti-page-pad-y) * 2));
+  min-height: calc(100dvh - var(--seguiti-topbar-h) - var(--seguiti-bottomnav-h));
 }
 
 .seguiti-loading {
