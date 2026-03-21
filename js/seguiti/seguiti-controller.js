@@ -689,7 +689,7 @@ async function loadAndRender(refs) {
 export async function initSeguitiController(root = document) {
   const refs = getRefs(root);
 
-  setTopbarIdentity(refs);
+  await setTopbarIdentity(refs);
   syncBottomnavActive(refs);
   bindCardActions(refs);
 
