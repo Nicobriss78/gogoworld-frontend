@@ -480,7 +480,6 @@ body.seguiti-page button {
   align-items: flex-start;
   gap: var(--seguiti-rail-gap);
   width: 100%;
-  min-height: 0;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 2px 2px 6px;
