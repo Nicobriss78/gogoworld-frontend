@@ -633,7 +633,6 @@ async function loadAndRender(refs) {
     );
 
     renderedSections.forEach((sectionEl) => {
-      bindRailMode(sectionEl);
       bindRailScrollbars(sectionEl);
       syncRailScrollbar(sectionEl);
     });
