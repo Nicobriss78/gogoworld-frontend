@@ -439,6 +439,8 @@ body.seguiti-page button {
   flex-direction: column;
   gap: var(--seguiti-space-sm);
   min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .seguiti-rail-toolbar {
