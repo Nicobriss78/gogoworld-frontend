@@ -486,16 +486,6 @@ function setRailMode(sectionEl, mode) {
   if (activeEmpty) activeEmpty.hidden = !showActive || activeHasCards;
   if (pastEmpty) pastEmpty.hidden = showActive || pastHasCards;
 
-  if (activeTab) {
-    activeTab.classList.toggle("is-active", showActive);
-    activeTab.setAttribute("aria-selected", String(showActive));
-  }
-
-  if (pastTab) {
-    pastTab.classList.toggle("is-active", !showActive);
-    pastTab.setAttribute("aria-selected", String(!showActive));
-  }
-
   syncRailScrollbar(sectionEl);
 }
 
