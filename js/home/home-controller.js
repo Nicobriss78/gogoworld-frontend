@@ -122,7 +122,8 @@ function createDomRefs(root = document) {
   return {
     root: getRequiredElement("#homeRoot", root),
     viewport: getRequiredElement("#homeViewport", root),
-
+    greeting: getRequiredElement("#homeGreeting", root),
+    role: getRequiredElement("#homeRole", root),
     generalShell: getRequiredElement("#homeRailShellGeneral", root),
     generalActiveRail: getRequiredElement("#homeRailGeneralActive", root),
     generalPastRail: getRequiredElement("#homeRailGeneralPast", root),
