@@ -775,7 +775,10 @@ body.seguiti-page button {
   .seguiti-organizer-section + .seguiti-organizer-section {
     padding-top: var(--seguiti-page-pad-y);
   }
-
+.seguiti-viewport {
+    padding-left: var(--seguiti-page-pad-x);
+    padding-right: var(--seguiti-page-pad-x);
+}
   .seguiti-organizer-title {
     font-size: 17px;
   }
