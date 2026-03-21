@@ -101,8 +101,7 @@ function getRefs(root = document) {
     retryBtn: root.getElementById("seguitiRetryBtn"),
     organizerTpl: root.getElementById("seguitiOrganizerSectionTemplate"),
     cardTpl: root.getElementById("seguitiCardTemplate"),
-    bottomnav: root.querySelector(".seguiti-bottomnav"),
-  };
+    bottomnav: root.querySelector(".seguiti-bottomnav"),  };
 }
 
 const seguitiState = {
