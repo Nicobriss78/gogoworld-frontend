@@ -701,4 +701,4 @@ export async function initSeguitiController(root = document) {
 
   await loadAndRender(refs);
   seguitiState.initialized = true;
-    }
+}
