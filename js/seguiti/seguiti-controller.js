@@ -422,7 +422,21 @@ function updateRailEmpty(sectionEl, mode, hasItems) {
   if (!empty) return;
   empty.hidden = hasItems;
 }
+function createSwitchCard(label, action) {
+  const card = document.createElement("article");
+  card.className = "seguiti-card seguiti-card--switch";
+  card.dataset.action = action;
 
+  card.innerHTML = `
+    <button class="seguiti-card__surface" type="button" data-action="${action}">
+      <div class="seguiti-card__content" style="justify-content:center;align-items:center;text-align:center;">
+        <h3 class="seguiti-card__title">${label}</h3>
+      </div>
+    </button>
+  `;
+
+  return card;
+}
 function renderOrganizerSection(refs, sectionData) {
   const fragment = refs.organizerTpl.content.cloneNode(true);
   const section = fragment.querySelector(".seguiti-organizer-section");
