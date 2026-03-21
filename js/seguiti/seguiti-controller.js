@@ -483,20 +483,30 @@ function setRailMode(sectionEl, mode) {
   const pastRail = sectionEl.querySelector('.seguiti-rail[data-rail="past"]');
   const activeScrollbar = sectionEl.querySelector('.seguiti-scrollbar[data-scrollbar="active"]');
   const pastScrollbar = sectionEl.querySelector('.seguiti-scrollbar[data-scrollbar="past"]');
+  const activeEmpty = sectionEl.querySelector('.seguiti-rail-empty[data-empty="active"]');
+  const pastEmpty = sectionEl.querySelector('.seguiti-rail-empty[data-empty="past"]');
   const activeTab = sectionEl.querySelector('.seguiti-rail-tab[data-rail-target="active"]');
   const pastTab = sectionEl.querySelector('.seguiti-rail-tab[data-rail-target="past"]');
 
   const showActive = nextMode === "active";
 
-  if (activeRail) activeRail.hidden = !showActive;
-  if (pastRail) pastRail.hidden = showActive;
-  if (activeScrollbar) activeScrollbar.hidden = !showActive;
-  if (pastScrollbar) pastScrollbar.hidden = showActive;
+  const activeHasCards = !!activeRail && activeRail.children.length > 0;
+  const pastHasCards = !!pastRail && pastRail.children.length > 0;
+
+  if (activeRail) activeRail.hidden = !showActive || !activeHasCards;
+  if (pastRail) pastRail.hidden = showActive || !pastHasCards;
+
+  if (activeScrollbar) activeScrollbar.hidden = !showActive || !activeHasCards;
+  if (pastScrollbar) pastScrollbar.hidden = showActive || !pastHasCards;
+
+  if (activeEmpty) activeEmpty.hidden = !showActive || activeHasCards;
+  if (pastEmpty) pastEmpty.hidden = showActive || pastHasCards;
 
   if (activeTab) {
     activeTab.classList.toggle("is-active", showActive);
     activeTab.setAttribute("aria-selected", String(showActive));
   }
+
   if (pastTab) {
     pastTab.classList.toggle("is-active", !showActive);
     pastTab.setAttribute("aria-selected", String(!showActive));
