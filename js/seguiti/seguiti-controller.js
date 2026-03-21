@@ -581,6 +581,20 @@ async function joinEvent(eventId, buttonEl, refs) {
 
 function bindCardActions(refs) {
   refs.sections.addEventListener("click", async (event) => {
+    const switchBtn = event.target.closest('[data-action="show-past"], [data-action="show-active"]');
+
+if (switchBtn) {
+  const section = switchBtn.closest(".seguiti-organizer-section");
+  const action = switchBtn.dataset.action;
+
+  if (action === "show-past") {
+    setRailMode(section, "past");
+  } else if (action === "show-active") {
+    setRailMode(section, "active");
+  }
+
+  return;
+}
     const openBtn = event.target.closest('[data-action="open-detail"]');
     if (openBtn) {
       const eventId = openBtn.dataset.eventId || openBtn.closest(".seguiti-card")?.dataset.eventId;
