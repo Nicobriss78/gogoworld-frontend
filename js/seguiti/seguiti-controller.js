@@ -116,18 +116,59 @@ const seguitiState = {
 
 function setTopbarIdentity(refs) {
   try {
-    const rawUser = localStorage.getItem("user");
-    if (!rawUser) return;
-    const user = JSON.parse(rawUser);
+    const candidates = [
+      "user",
+      "currentUser",
+      "loggedUser",
+      "profile",
+      "me"
+    ];
 
-    const name =
-      String(user?.name || user?.username || "Ciao").trim() || "Ciao";
-    const role =
-      String(user?.roleLabel || user?.role || "Partecipante").trim() || "Partecipante";
+    let user = null;
 
-    if (refs.greeting) refs.greeting.textContent = `Ciao ${name}`;
-    if (refs.role) refs.role.textContent = role;
-  } catch {}
+    for (const key of candidates) {
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") {
+          user = parsed;
+          break;
+        }
+      } catch {}
+    }
+
+    const fallbackName = localStorage.getItem("username") || localStorage.getItem("name") || "";
+    const fallbackRole = localStorage.getItem("roleLabel") || localStorage.getItem("role") || "";
+
+    const name = String(
+      user?.name ||
+      user?.username ||
+      user?.displayName ||
+      user?.fullName ||
+      fallbackName ||
+      ""
+    ).trim();
+
+    const role = String(
+      user?.roleLabel ||
+      user?.role ||
+      fallbackRole ||
+      "Esploratore"
+    ).trim();
+
+    if (refs.greeting) {
+      refs.greeting.textContent = name ? `Ciao ${name}` : "Ciao";
+    }
+
+    if (refs.role) {
+      refs.role.textContent = role || "Esploratore";
+    }
+  } catch {
+    if (refs.greeting) refs.greeting.textContent = "Ciao";
+    if (refs.role) refs.role.textContent = "Esploratore";
+  }
 }
 
 function showOnly(refs, key) {
