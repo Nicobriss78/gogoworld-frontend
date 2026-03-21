@@ -203,15 +203,16 @@ body.seguiti-page button {
 
 .seguiti-viewport {
   height: calc(100dvh - var(--seguiti-topbar-h) - var(--seguiti-bottomnav-h));
-  padding: var(--seguiti-page-pad-y) var(--seguiti-page-pad-x) calc(var(--seguiti-page-pad-y) + 6px);
+  min-height: calc(100dvh - var(--seguiti-topbar-h) - var(--seguiti-bottomnav-h));
+  padding: 0 var(--seguiti-page-pad-x);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
   scroll-snap-type: y mandatory;
+  scroll-padding-top: 0;
   -webkit-overflow-scrolling: touch;
 }
-
 /* =========================================================
    STATI GLOBALI
    ========================================================= */
