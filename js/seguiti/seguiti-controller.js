@@ -513,16 +513,6 @@ function setRailMode(sectionEl, mode) {
   syncRailScrollbar(sectionEl);
 }
 
-function bindRailMode(sectionEl) {
-  const tabs = Array.from(sectionEl.querySelectorAll(".seguiti-rail-tab"));
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      const target = tab.dataset.railTarget === "past" ? "past" : "active";
-      setRailMode(sectionEl, target);
-    });
-  });
-}
-
 function syncRailScrollbar(sectionEl) {
   const mode = sectionEl.dataset.railMode === "past" ? "past" : "active";
   const rail = sectionEl.querySelector(`.seguiti-rail[data-rail="${mode}"]`);
