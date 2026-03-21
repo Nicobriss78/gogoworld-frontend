@@ -16,6 +16,10 @@ import {
 
 import { apiGet, getActiveBannersBatch } from "../api.js";
 import { createBannerEngine } from "./home-banners.js";
+import {
+  resolveUserIdentity,
+  applyUserIdentityToTopbar,
+} from "../shared/user-identity.js";
 /* =========================================================
    CONFIG
    ========================================================= */
