@@ -478,6 +478,7 @@ body.seguiti-page button {
 .seguiti-rail {
   flex: 1 1 auto;
   min-height: 0;
+  max-height: 100%;
   display: flex;
   align-items: flex-start;
   gap: var(--seguiti-rail-gap);
