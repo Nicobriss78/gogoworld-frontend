@@ -473,11 +473,7 @@ function setRailMode(sectionEl, mode) {
   const pastScrollbar = sectionEl.querySelector('.seguiti-scrollbar[data-scrollbar="past"]');
   const activeEmpty = sectionEl.querySelector('.seguiti-rail-empty[data-empty="active"]');
   const pastEmpty = sectionEl.querySelector('.seguiti-rail-empty[data-empty="past"]');
-  const activeTab = sectionEl.querySelector('.seguiti-rail-tab[data-rail-target="active"]');
-  const pastTab = sectionEl.querySelector('.seguiti-rail-tab[data-rail-target="past"]');
-
   const showActive = nextMode === "active";
-
   const activeHasCards = !!activeRail && activeRail.children.length > 0;
   const pastHasCards = !!pastRail && pastRail.children.length > 0;
 
