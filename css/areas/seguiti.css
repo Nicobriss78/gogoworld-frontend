@@ -527,6 +527,7 @@ body.seguiti-page button {
   border-radius: var(--seguiti-radius-main);
   background: var(--seguiti-surface);
   text-align: center;
+  flex: 0 0 auto;
 }
 
 .seguiti-rail-empty[hidden] {
