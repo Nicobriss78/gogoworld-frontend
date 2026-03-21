@@ -1,3 +1,8 @@
+import {
+  resolveUserIdentity,
+  applyUserIdentityToTopbar,
+} from "../shared/user-identity.js";
+
 const ACTIVE_STATUSES = new Set(["future", "imminent", "ongoing"]);
 const PAST_STATUSES = new Set(["concluded", "past"]);
 
