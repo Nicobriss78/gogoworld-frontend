@@ -442,6 +442,7 @@ body.seguiti-page button {
   min-height: 0;
   flex: 1 1 auto;
   overflow: hidden;
+  justify-content: space-between;
 }
 
 .seguiti-rail-toolbar {
