@@ -769,11 +769,11 @@ body.seguiti-page button {
   }
 
   .seguiti-organizer-section {
-    padding: 10px 0 12px;
+    padding: var(--seguiti-page-pad-y) 0;
   }
 
   .seguiti-organizer-section + .seguiti-organizer-section {
-    padding-top: 20px;
+    padding-top: var(--seguiti-page-pad-y);
   }
 
   .seguiti-organizer-title {
