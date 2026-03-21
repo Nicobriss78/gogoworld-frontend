@@ -360,6 +360,7 @@ body.seguiti-page button {
   display: flex;
   flex-direction: column;
   gap: 0;
+  min-height: calc(100dvh - var(--seguiti-topbar-h) - var(--seguiti-bottomnav-h));
 }
 
 .seguiti-organizer-section {
