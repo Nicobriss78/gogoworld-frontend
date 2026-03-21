@@ -10,11 +10,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="GoGoWorld" />
 
-  <!-- BASE MINIMA V2 -->
   <link rel="stylesheet" href="/css/tokens.v2.css" />
   <link rel="stylesheet" href="/css/icons-v2.css" />
-
-  <!-- CSS DEDICATO FOLLOWING -->
   <link rel="stylesheet" href="/css/areas/seguiti.css" />
 </head>
 
@@ -99,215 +96,103 @@
     </div>
 
     <div class="seguiti-topbar__row seguiti-topbar__row--actions">
-      <a
-        class="seguiti-topbar__btn gw-iconbtn"
-        href="/pages/cerca-utenti.html"
-        aria-label="Cerca"
-        title="Cerca"
-      >
-        <svg class="gw-icon" aria-hidden="true">
-          <use href="#gw-icon-search"></use>
-        </svg>
+      <a class="seguiti-topbar__btn" href="/pages/cerca-utenti.html" aria-label="Cerca" title="Cerca">
+        <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-search"></use></svg>
       </a>
 
-      <a
-        class="seguiti-topbar__btn gw-iconbtn"
-        href="/partecipante-mappa.html"
-        aria-label="Mappa"
-        title="Mappa"
-      >
-        <svg class="gw-icon" aria-hidden="true">
-          <use href="#gw-icon-pin"></use>
-        </svg>
+      <a class="seguiti-topbar__btn" href="/partecipante-mappa.html" aria-label="Mappa" title="Mappa">
+        <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-pin"></use></svg>
       </a>
 
-      <a
-        class="seguiti-topbar__btn gw-iconbtn"
-        href="/messages.html"
-        aria-label="Messaggi"
-        title="Messaggi"
-      >
-        <svg class="gw-icon" aria-hidden="true">
-          <use href="#gw-icon-chat"></use>
-        </svg>
+      <a class="seguiti-topbar__btn" href="/messages.html" aria-label="Messaggi" title="Messaggi">
+        <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-chat"></use></svg>
       </a>
 
-      <button
-        class="seguiti-topbar__btn gw-iconbtn"
-        type="button"
-        aria-label="Notifiche"
-        title="Notifiche"
-        id="seguitiNotificationsBtn"
-      >
-        <svg class="gw-icon" aria-hidden="true">
-          <use href="#gw-icon-bell"></use>
-        </svg>
+      <button class="seguiti-topbar__btn" type="button" id="seguitiNotificationsBtn" aria-label="Notifiche" title="Notifiche">
+        <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-bell"></use></svg>
       </button>
 
-      <button
-        class="seguiti-topbar__btn gw-iconbtn"
-        type="button"
-        aria-label="Menu"
-        title="Menu"
-        id="seguitiMenuBtn"
-      >
-        <svg class="gw-icon" aria-hidden="true">
-          <use href="#gw-icon-menu"></use>
-        </svg>
+      <button class="seguiti-topbar__btn" type="button" id="seguitiMenuBtn" aria-label="Menu" title="Menu">
+        <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-menu"></use></svg>
       </button>
     </div>
   </header>
 
   <main class="seguiti-main">
-    <section
-      class="seguiti-body"
-      id="seguitiBody"
-      aria-label="Eventi degli organizzatori che segui"
-    >
-      <div class="seguiti-loading" id="seguitiLoadingState" aria-live="polite">
-        <div class="seguiti-loading__panel">
-          <div class="seguiti-loading__head"></div>
-          <div class="seguiti-loading__subhead"></div>
+    <section class="seguiti-shell" id="seguitiRoot" aria-label="Eventi degli organizzatori che segui">
+      <div class="seguiti-viewport" id="seguitiViewport">
+        <div class="seguiti-loading" id="seguitiLoadingState" aria-live="polite">
+          <div class="seguiti-loading__panel">
+            <div class="seguiti-loading__head"></div>
+            <div class="seguiti-loading__subhead"></div>
 
-          <div class="seguiti-loading__rail">
-            <div class="seguiti-loading__card"></div>
-            <div class="seguiti-loading__card"></div>
-            <div class="seguiti-loading__card"></div>
+            <div class="seguiti-loading__rail">
+              <div class="seguiti-loading__card"></div>
+              <div class="seguiti-loading__card"></div>
+              <div class="seguiti-loading__card"></div>
+            </div>
+
+            <div class="seguiti-loading__scrollbar"></div>
           </div>
-
-          <div class="seguiti-loading__scrollbar"></div>
         </div>
-      </div>
 
-      <div
-        class="seguiti-sections"
-        id="seguitiSections"
-        hidden
-        aria-live="polite"
-      ></div>
+        <div class="seguiti-sections" id="seguitiSections" hidden aria-live="polite"></div>
 
-      <div
-        class="seguiti-state seguiti-state--empty-global"
-        id="seguitiEmptyState"
-        hidden
-        role="status"
-        aria-live="polite"
-      >
-        <h2 class="seguiti-state__title">
-          Non segui ancora nessun organizzatore
-        </h2>
-        <p class="seguiti-state__text">
-          Non segui ancora nessun organizzatore, cercalo oppure dai un'occhiata
-          agli eventi in Home. Decidi chi seguire per rimanere sempre aggiornato
-          sui migliori eventi!
-        </p>
-      </div>
+        <div class="seguiti-state seguiti-state--empty-global" id="seguitiEmptyState" hidden role="status" aria-live="polite">
+          <h2 class="seguiti-state__title">Non segui ancora nessun organizzatore</h2>
+          <p class="seguiti-state__text">
+            Non segui ancora nessun organizzatore, cercalo oppure dai un'occhiata agli eventi in Home.
+            Decidi chi seguire per rimanere sempre aggiornato sui migliori eventi!
+          </p>
+        </div>
 
-      <div
-        class="seguiti-state seguiti-state--error"
-        id="seguitiErrorState"
-        hidden
-        role="alert"
-        aria-live="assertive"
-      >
-        <h2 class="seguiti-state__title">Non è stato possibile caricare gli eventi seguiti</h2>
-        <p class="seguiti-state__text" id="seguitiErrorText">
-          Riprova tra poco.
-        </p>
-        <button
-          class="seguiti-state__action"
-          type="button"
-          id="seguitiRetryBtn"
-        >
-          <svg class="gw-icon" aria-hidden="true">
-            <use href="#gw-icon-refresh"></use>
-          </svg>
-          <span>Riprova</span>
-        </button>
+        <div class="seguiti-state seguiti-state--error" id="seguitiErrorState" hidden role="alert" aria-live="assertive">
+          <h2 class="seguiti-state__title">Non è stato possibile caricare gli eventi seguiti</h2>
+          <p class="seguiti-state__text" id="seguitiErrorText">Riprova tra poco.</p>
+          <button class="seguiti-state__action" type="button" id="seguitiRetryBtn">
+            <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-refresh"></use></svg>
+            <span>Riprova</span>
+          </button>
+        </div>
       </div>
     </section>
   </main>
 
   <nav class="seguiti-bottomnav" aria-label="Navigazione principale">
-    <a
-      class="seguiti-bottomnav__item gw-iconbtn"
-      href="/partecipante-mappa.html"
-      aria-label="Mappa"
-      title="Mappa"
-      data-nav-key="map"
-    >
-      <svg class="gw-icon" aria-hidden="true">
-        <use href="#gw-icon-map"></use>
-      </svg>
+    <a class="seguiti-bottomnav__item" href="/partecipante-mappa.html" aria-label="Mappa" title="Mappa" data-nav-key="map">
+      <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-map"></use></svg>
     </a>
 
     <a
-      class="seguiti-bottomnav__item gw-iconbtn is-active active"
+      class="seguiti-bottomnav__item is-active active"
       href="/pages/partecipante-seguiti-v2.html"
       aria-label="Eventi seguiti"
       title="Eventi seguiti"
       data-nav-key="following-events"
       aria-current="page"
     >
-      <svg class="gw-icon" aria-hidden="true">
-        <use href="#gw-icon-calendar"></use>
-      </svg>
+      <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-calendar"></use></svg>
     </a>
 
-    <a
-      class="seguiti-bottomnav__item gw-iconbtn"
-      href="/home-vnext.html"
-      aria-label="Home"
-      title="Home"
-      data-nav-key="home"
-    >
-      <svg class="gw-icon" aria-hidden="true">
-        <use href="#gw-icon-home"></use>
-      </svg>
+    <a class="seguiti-bottomnav__item" href="/home-vnext.html" aria-label="Home" title="Home" data-nav-key="home">
+      <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-home"></use></svg>
     </a>
 
-    <a
-      class="seguiti-bottomnav__item gw-iconbtn"
-      href="/partecipante-seguiti-utenti.html"
-      aria-label="Utenti seguiti"
-      title="Utenti seguiti"
-      data-nav-key="following-users"
-    >
-      <svg class="gw-icon" aria-hidden="true">
-        <use href="#gw-icon-users"></use>
-      </svg>
+    <a class="seguiti-bottomnav__item" href="/partecipante-seguiti-utenti.html" aria-label="Utenti seguiti" title="Utenti seguiti" data-nav-key="following-users">
+      <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-users"></use></svg>
     </a>
 
-    <a
-      class="seguiti-bottomnav__item gw-iconbtn"
-      href="/profile.html"
-      aria-label="Profilo"
-      title="Profilo"
-      data-nav-key="profile"
-    >
-      <svg class="gw-icon" aria-hidden="true">
-        <use href="#gw-icon-profile"></use>
-      </svg>
+    <a class="seguiti-bottomnav__item" href="/profile.html" aria-label="Profilo" title="Profilo" data-nav-key="profile">
+      <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-profile"></use></svg>
     </a>
   </nav>
 
-  <footer class="app-footer">
-    GoGoWorld.life – Area Partecipante
-  </footer>
-
   <template id="seguitiOrganizerSectionTemplate">
-    <section
-      class="seguiti-organizer-section"
-      data-organizer-id=""
-      data-rail-mode="active"
-      aria-label=""
-    >
+    <section class="seguiti-organizer-section" data-organizer-id="" data-rail-mode="active" aria-label="">
       <header class="seguiti-organizer-head">
         <div class="seguiti-organizer-head__text">
           <h2 class="seguiti-organizer-title"></h2>
-          <p class="seguiti-organizer-subtitle">
-            Eventi attivi e archivio recente
-          </p>
+          <p class="seguiti-organizer-subtitle">Eventi attivi e archivio recente</p>
         </div>
 
         <div class="seguiti-organizer-head__hint" aria-hidden="true">
@@ -317,40 +202,18 @@
 
       <div class="seguiti-rail-shell">
         <div class="seguiti-rail-toolbar" role="tablist" aria-label="Filtro eventi organizzatore">
-          <button
-            class="seguiti-rail-tab is-active"
-            type="button"
-            data-rail-target="active"
-            role="tab"
-            aria-selected="true"
-          >
+          <button class="seguiti-rail-tab is-active" type="button" data-rail-target="active" role="tab" aria-selected="true">
             Attivi
           </button>
-          <button
-            class="seguiti-rail-tab"
-            type="button"
-            data-rail-target="past"
-            role="tab"
-            aria-selected="false"
-          >
+          <button class="seguiti-rail-tab" type="button" data-rail-target="past" role="tab" aria-selected="false">
             Passati
           </button>
         </div>
 
-        <div
-          class="seguiti-rail seguiti-rail--active"
-          data-rail="active"
-          aria-label="Eventi attivi"
-        ></div>
+        <div class="seguiti-rail seguiti-rail--active" data-rail="active" aria-label="Eventi attivi"></div>
+        <div class="seguiti-rail seguiti-rail--past" data-rail="past" aria-label="Eventi passati" hidden></div>
 
-        <div
-          class="seguiti-rail seguiti-rail--past"
-          data-rail="past"
-          aria-label="Eventi passati"
-          hidden
-        ></div>
-
-        <div class="seguiti-scrollbar seguiti-scrollbar--active" data-scrollbar="active">
+        <div class="seguiti-scrollbar" data-scrollbar="active">
           <div class="seguiti-scrollbar-thumb"></div>
         </div>
 
@@ -371,18 +234,9 @@
 
   <template id="seguitiCardTemplate">
     <article class="seguiti-card" data-event-id="">
-      <button
-        class="seguiti-card__surface"
-        type="button"
-        data-action="open-detail"
-      >
+      <button class="seguiti-card__surface" type="button" data-action="open-detail">
         <div class="seguiti-card__thumb-wrap">
-          <img
-            class="seguiti-card__thumb"
-            src=""
-            alt=""
-            loading="lazy"
-          />
+          <img class="seguiti-card__thumb" src="" alt="" loading="lazy" />
           <span class="seguiti-card__status-badge"></span>
         </div>
 
@@ -390,28 +244,27 @@
           <h3 class="seguiti-card__title"></h3>
 
           <div class="seguiti-card__meta">
-            <span class="seguiti-card__meta-row" data-field="date"></span>
-            <span class="seguiti-card__meta-row" data-field="place"></span>
-            <span class="seguiti-card__meta-row" data-field="category"></span>
+            <div class="seguiti-card__meta-row">
+              <span class="seguiti-card__meta-label">Luogo</span>
+              <span class="seguiti-card__meta-value" data-field="place"></span>
+            </div>
+
+            <div class="seguiti-card__meta-row">
+              <span class="seguiti-card__meta-label">Data</span>
+              <span class="seguiti-card__meta-value" data-field="date"></span>
+            </div>
+
+            <div class="seguiti-card__meta-row">
+              <span class="seguiti-card__meta-label">Categoria</span>
+              <span class="seguiti-card__meta-value" data-field="category"></span>
+            </div>
           </div>
 
-          <div class="seguiti-card__footer">
-            <span class="seguiti-card__price"></span>
-            <span class="seguiti-card__cta-inline">
-              <span>Dettagli</span>
-              <svg class="gw-icon" aria-hidden="true">
-                <use href="#gw-icon-chevron-right"></use>
-              </svg>
-            </span>
-          </div>
+          <div class="seguiti-card__price"></div>
         </div>
       </button>
 
-      <button
-        class="seguiti-card__action-btn"
-        type="button"
-        data-action="join-event"
-      >
+      <button class="seguiti-card__action-btn" type="button" data-action="join-event">
         Partecipa
       </button>
     </article>
@@ -425,4 +278,4 @@
     });
   </script>
 </body>
-        </html>
+            </html>        
