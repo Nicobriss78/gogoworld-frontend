@@ -201,34 +201,26 @@
       </header>
 
       <div class="seguiti-rail-shell">
-        <div class="seguiti-rail-toolbar" role="tablist" aria-label="Filtro eventi organizzatore">
-          <button class="seguiti-rail-tab is-active" type="button" data-rail-target="active" role="tab" aria-selected="true">
-            Attivi
-          </button>
-          <button class="seguiti-rail-tab" type="button" data-rail-target="past" role="tab" aria-selected="false">
-            Passati
-          </button>
-        </div>
+  <div class="seguiti-rail seguiti-rail--active" data-rail="active" aria-label="Eventi attivi"></div>
 
-        <div class="seguiti-rail seguiti-rail--active" data-rail="active" aria-label="Eventi attivi"></div>
-        <div class="seguiti-rail seguiti-rail--past" data-rail="past" aria-label="Eventi passati" hidden></div>
+  <div class="seguiti-rail seguiti-rail--past" data-rail="past" aria-label="Eventi passati" hidden></div>
 
-        <div class="seguiti-scrollbar" data-scrollbar="active">
-          <div class="seguiti-scrollbar-thumb"></div>
-        </div>
+  <div class="seguiti-scrollbar" data-scrollbar="active">
+    <div class="seguiti-scrollbar-thumb"></div>
+  </div>
 
-        <div class="seguiti-scrollbar seguiti-scrollbar--past" data-scrollbar="past" hidden>
-          <div class="seguiti-scrollbar-thumb"></div>
-        </div>
+  <div class="seguiti-scrollbar seguiti-scrollbar--past" data-scrollbar="past" hidden>
+    <div class="seguiti-scrollbar-thumb"></div>
+  </div>
 
-        <div class="seguiti-rail-empty" data-empty="active" hidden>
-          <p class="seguiti-rail-empty__text">Nessun evento attivo disponibile.</p>
-        </div>
+  <div class="seguiti-rail-empty" data-empty="active" hidden>
+    <p class="seguiti-rail-empty__text">Nessun evento attivo disponibile.</p>
+  </div>
 
-        <div class="seguiti-rail-empty" data-empty="past" hidden>
-          <p class="seguiti-rail-empty__text">Nessun evento passato disponibile.</p>
-        </div>
-      </div>
+  <div class="seguiti-rail-empty" data-empty="past" hidden>
+    <p class="seguiti-rail-empty__text">Nessun evento passato disponibile.</p>
+  </div>
+</div>
     </section>
   </template>
 
