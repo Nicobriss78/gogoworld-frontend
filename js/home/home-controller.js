@@ -849,7 +849,7 @@ const generalActiveNodes = split.generalActive.length || split.generalPast.lengt
 
 export async function initHome(root = document) {
   const dom = createDomRefs(root);
-
+  await setHomeTopbarIdentity(dom);
   renderLoading(dom);
   bindRailModeDelegation(dom);
   bindCardActions(dom);
