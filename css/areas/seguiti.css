@@ -1085,7 +1085,8 @@ body.seguiti-page button {
 }
 
 @media (max-width: 420px) {
-  .seguiti-card__title {
+.seguiti-card__title,
+  .seguiti-banner-card__title {
     font-size: 15px;
   }
 }
