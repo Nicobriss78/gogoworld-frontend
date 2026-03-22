@@ -2,7 +2,11 @@ import {
   resolveUserIdentity,
   applyUserIdentityToTopbar,
 } from "../shared/user-identity.js";
-
+import { getActiveBannersBatch } from "../api.js";
+import {
+  createSeguitiBannerEngine,
+  createSeguitiBannerSlot,
+} from "./seguiti-banners.js";
 const ACTIVE_STATUSES = new Set(["future", "imminent", "ongoing"]);
 const PAST_STATUSES = new Set(["concluded", "past"]);
 
