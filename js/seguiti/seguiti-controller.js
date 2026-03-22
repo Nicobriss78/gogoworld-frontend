@@ -169,19 +169,12 @@ function normalizeEvent(event) {
 
   const participants = Array.isArray(event?.participants) ? event.participants : [];
 
-  const joined =
-    Boolean(event?.joined) ||
-    participants.some((p) => {
-      const pid = typeof p === "object" ? p?._id || p?.id : p;
-      try {
-        const rawUser = localStorage.getItem("user");
-        if (!rawUser) return false;
-        const user = JSON.parse(rawUser);
-        return String(pid) === String(user?._id || user?.id || "");
-      } catch {
-        return false;
-      }
-    });
+const joined =
+  Boolean(event?.joined) ||
+  participants.some((p) => {
+    const pid = typeof p === "object" ? p?._id || p?.id : p;
+    return String(pid) === String(currentUserId || "");
+  });
 
   const coverImage =
     normalizeText(event?.coverImage) ||
