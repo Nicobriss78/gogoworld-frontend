@@ -636,8 +636,15 @@ if (sectionData.hotPastEvents?.length > 0) {
   );
 }
 
-sectionData.activeEvents.forEach((event) => {
-  activeRail.appendChild(createCard(refs, event));
+const injectedActiveItems = injectBannerSlots(sectionData.activeEvents);
+
+injectedActiveItems.forEach((item) => {
+  if (item.type === "banner-slot") {
+    activeRail.appendChild(createSeguitiBannerSlot(item.slotIndex));
+    return;
+  }
+
+  activeRail.appendChild(createCard(refs, item.data));
 });
 
 // PAST RAIL
