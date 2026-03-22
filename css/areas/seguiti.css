@@ -546,7 +546,9 @@ body.seguiti-page button {
    CARD
    ========================================================= */
 
-.seguiti-card {
+.seguiti-card,
+.seguiti-switch-card,
+.seguiti-directional-card {
   position: relative;
   flex: 0 0 var(--seguiti-card-width);
   width: var(--seguiti-card-width);
@@ -559,9 +561,12 @@ body.seguiti-page button {
   background: var(--seguiti-surface);
   box-shadow: var(--seguiti-shadow-main);
   overflow: hidden;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.seguiti-card {
   display: flex;
   flex-direction: column;
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
 .seguiti-card__surface {
