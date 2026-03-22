@@ -365,7 +365,22 @@ return {
     a.organizerName.localeCompare(b.organizerName, "it", { sensitivity: "base" })
   );
 }
+function prefersReducedMotion() {
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
 
+function getSmoothScrollBehavior() {
+  return prefersReducedMotion() ? "auto" : "smooth";
+}
+
+function scrollRailTo(rail, left) {
+  if (!rail) return;
+
+  rail.scrollTo({
+    left,
+    behavior: getSmoothScrollBehavior(),
+  });
+}
 function formatDateRange(dateStart, dateEnd) {
   if (!dateStart) return "Data da definire";
   const start = new Date(dateStart);
