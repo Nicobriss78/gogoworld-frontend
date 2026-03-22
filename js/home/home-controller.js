@@ -596,9 +596,7 @@ function resetRailScrollForMode(shell, mode) {
       ? shell.querySelector(".home-rail--past")
       : shell.querySelector(".home-rail--active");
 
-  if (rail) {
-    rail.scrollTo({ left: 0, behavior: "smooth" });
-  }
+  scrollRailTo(rail, 0);
 }
 
 /* =========================================================
