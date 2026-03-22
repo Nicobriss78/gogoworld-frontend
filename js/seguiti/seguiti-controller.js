@@ -143,6 +143,7 @@ const seguitiState = {
   bannerEngine: null,
 };
 let currentUserId = null;
+let currentUserProfile = null;
 async function setTopbarIdentity(refs) {
   const identity = await resolveUserIdentity();
 
