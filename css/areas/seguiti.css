@@ -548,7 +548,8 @@ body.seguiti-page button {
 
 .seguiti-card,
 .seguiti-switch-card,
-.seguiti-directional-card {
+.seguiti-directional-card,
+.seguiti-banner-slot {
   position: relative;
   flex: 0 0 var(--seguiti-card-width);
   width: var(--seguiti-card-width);
