@@ -1,8 +1,9 @@
 /**
  * GoGoWorld.life — FOLLOWING V2 Banner Engine
- * Motore banner isolato.
- * Nessun fetch, nessuna dipendenza dal controller.
+ * Factory locali + wrapper sul motore shared.
  */
+
+import { createSharedBannerEngine } from "../shared/banner-engine.js";
 
 function normalizeText(value, fallback = "") {
   const text = typeof value === "string" ? value.trim() : "";
@@ -103,112 +104,14 @@ export function createSeguitiTipCard(tip) {
   return article;
 }
 
-function shuffleArray(array = []) {
-  const copy = [...array];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-
 export function createSeguitiBannerEngine({
   rotationInterval = 8000,
 } = {}) {
-  let slots = [];
-  let pool = [];
-  let timer = null;
-  let currentIndex = 0;
-
-  function setData({ banners = [], tips = [] } = {}) {
-    const bannerItems = banners.map((banner) => ({
-      type: "banner",
-      data: banner,
-    }));
-
-    const tipItems = tips.map((tip) => ({
-      type: "tip",
-      data: tip,
-    }));
-
-    pool = shuffleArray([...bannerItems, ...tipItems]);
-    currentIndex = 0;
-  }
-
-  function bindSlots(slotElements = []) {
-    slots = Array.from(slotElements || []);
-  }
-
-  function renderIntoSlot(slot, item) {
-    if (!slot) return;
-
-    slot.classList.remove("seguiti-banner-slot--empty");
-
-    const inner = slot.querySelector(".seguiti-banner-slot__inner");
-    if (!inner) return;
-
-    inner.replaceChildren();
-
-    if (!item) {
-      slot.classList.add("seguiti-banner-slot--empty");
-      inner.textContent = "Spazio informativo";
-      return;
-    }
-
-    let node = null;
-
-    if (item.type === "banner") {
-      node = createSeguitiBannerCard(item.data);
-    } else if (item.type === "tip") {
-      node = createSeguitiTipCard(item.data);
-    }
-
-    if (node) {
-      inner.appendChild(node);
-    }
-  }
-
-  function fillInitial() {
-    if (!slots.length || !pool.length) return;
-
-    slots.forEach((slot, index) => {
-      const item = pool[(currentIndex + index) % pool.length];
-      renderIntoSlot(slot, item);
-    });
-
-    currentIndex = (currentIndex + slots.length) % pool.length;
-  }
-
-  function rotate() {
-    if (!slots.length || !pool.length) return;
-
-    slots.forEach((slot) => {
-      const item = pool[currentIndex % pool.length];
-      renderIntoSlot(slot, item);
-      currentIndex += 1;
-    });
-  }
-
-  function start() {
-    stop();
-
-    if (!slots.length || !pool.length) return;
-
-    timer = setInterval(rotate, rotationInterval);
-  }
-
-  function stop() {
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
-    }
-  }
-
-  return {
-    setData,
-    bindSlots,
-    fillInitial,
-    start,
-    stop,
-  };
-    }
+  return createSharedBannerEngine({
+    rotationInterval,
+    emptyClassName: "seguiti-banner-slot--empty",
+    emptyText: "Spazio informativo",
+    createBannerCard: createSeguitiBannerCard,
+    createTipCard: createSeguitiTipCard,
+  });
+}
