@@ -485,8 +485,10 @@ body.seguiti-page button {
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  overscroll-behavior-x: contain;
   padding: 2px 2px 6px;
   scroll-snap-type: x mandatory;
+  scroll-padding-left: 2px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
