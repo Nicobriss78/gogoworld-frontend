@@ -518,7 +518,7 @@ body.seguiti-page button {
   height: 100%;
   border-radius: 999px;
   background: var(--seguiti-scrollbar-thumb);
-  transition: transform 180ms ease, width 180ms ease;
+  transition: transform 120ms ease-out, width 120ms ease-out;
 }
 
 .seguiti-rail-empty {
