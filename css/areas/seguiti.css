@@ -904,14 +904,17 @@ body.seguiti-page button {
    ========================================================= */
 
 @media (hover: hover) and (pointer: fine) {
-  .seguiti-card:hover {
+  .seguiti-card:hover,
+  .seguiti-switch-card:hover,
+  .seguiti-directional-card:hover {
     border-color: var(--seguiti-accent-border);
     box-shadow: var(--seguiti-shadow-strong);
   }
 
   .seguiti-topbar__btn:hover,
   .seguiti-bottomnav__item:hover,
-  .seguiti-state__action:hover {
+  .seguiti-state__action:hover,
+  .seguiti-switch-card__btn:hover {
     border-color: var(--seguiti-accent-border);
   }
 }
