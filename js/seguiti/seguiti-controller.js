@@ -305,6 +305,24 @@ function splitEventsAdvanced(events) {
     pastEvents: [...hotPastEvents, ...coldPastEvents],
   };
 }
+function injectBannerSlots(events = []) {
+  const result = [];
+  let slotIndex = 0;
+
+  events.forEach((event, index) => {
+    result.push({ type: "event", data: event });
+
+    const isAfterFirst = index === 0;
+    const isEveryTwoAfter = index > 0 && (index + 1) % 2 === 1;
+
+    if (isAfterFirst || isEveryTwoAfter) {
+      result.push({ type: "banner-slot", slotIndex });
+      slotIndex += 1;
+    }
+  });
+
+  return result;
+}
 function groupByOrganizer(events) {
   const map = new Map();
 
