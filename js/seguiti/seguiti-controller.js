@@ -252,7 +252,32 @@ function splitEvents(events) {
 
   return { activeEvents, pastEvents };
 }
+function splitEventsAdvanced(events) {
+  const { activeEvents, pastEvents } = splitEvents(events);
+  const now = Date.now();
 
+  const hotPastEvents = pastEvents.filter((event) => {
+    const rawDate = event.dateEnd || event.dateStart;
+    if (!rawDate) return false;
+
+    const time = new Date(rawDate).getTime();
+    if (Number.isNaN(time)) return false;
+
+    const diffDays = (now - time) / (1000 * 60 * 60 * 24);
+    return diffDays >= 0 && diffDays <= 7;
+  });
+
+  const coldPastEvents = pastEvents.filter(
+    (event) => !hotPastEvents.includes(event)
+  );
+
+  return {
+    activeEvents,
+    hotPastEvents,
+    coldPastEvents,
+    pastEvents: [...hotPastEvents, ...coldPastEvents],
+  };
+}
 function groupByOrganizer(events) {
   const map = new Map();
 
