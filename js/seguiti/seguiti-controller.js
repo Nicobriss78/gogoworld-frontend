@@ -961,6 +961,10 @@ async function loadAndRender(refs) {
     showOnly(refs, "sections");
     bindVisibleSectionTracking(refs);
   } catch (error) {
+    if (seguitiState.bannerEngine) {
+      seguitiState.bannerEngine.stop();
+      seguitiState.bannerEngine = null;
+    }
     seguitiState.error = error;
     if (refs.errorText) {
       refs.errorText.textContent =
