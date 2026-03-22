@@ -864,7 +864,31 @@ async function fetchFollowingEvents() {
   const data = await apiGet(FOLLOWING_ENDPOINT);
   return Array.isArray(data?.events) ? data.events : [];
 }
+async function fetchFollowingBanners() {
+  const token = getToken();
 
+  const country =
+    (currentUserProfile?.country || "").trim() || null;
+
+  const region =
+    (currentUserProfile?.region || "").trim() || null;
+
+  try {
+    const bannerRes = await getActiveBannersBatch(
+      {
+        placement: "events_list_inline",
+        country,
+        region,
+        limit: 8,
+      },
+      token
+    );
+
+    return Array.isArray(bannerRes?.data) ? bannerRes.data : [];
+  } catch {
+    return [];
+  }
+}
 async function loadAndRender(refs) {
   seguitiState.loading = true;
   seguitiState.error = null;
