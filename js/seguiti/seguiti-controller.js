@@ -118,7 +118,7 @@ const seguitiState = {
   initialized: false,
   activeSectionIndex: 0,
 };
-
+let currentUserId = null;
 async function setTopbarIdentity(refs) {
   const identity = await resolveUserIdentity();
   applyUserIdentityToTopbar({
