@@ -989,7 +989,8 @@ body.seguiti-page button {
 @media (hover: hover) and (pointer: fine) {
   .seguiti-card:hover,
   .seguiti-switch-card:hover,
-  .seguiti-directional-card:hover {
+  .seguiti-directional-card:hover,
+  .seguiti-banner-slot:hover {
     border-color: var(--seguiti-accent-border);
     box-shadow: var(--seguiti-shadow-strong);
   }
