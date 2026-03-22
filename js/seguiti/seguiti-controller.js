@@ -748,16 +748,23 @@ async function joinEvent(eventId, buttonEl, refs) {
 
 function bindCardActions(refs) {
   refs.sections.addEventListener("click", async (event) => {
-    const switchBtn = event.target.closest('[data-action="show-past"], [data-action="show-active"]');
+    const switchBtn = event.target.closest(
+  '[data-action="show-past"], [data-action="show-hot-past"], [data-action="show-active"], [data-action="stay-active"]'
+);
 
 if (switchBtn) {
   const section = switchBtn.closest(".seguiti-organizer-section");
   const action = switchBtn.dataset.action;
 
-  if (action === "show-past") {
+  if (action === "show-past" || action === "show-hot-past") {
     setRailMode(section, "past");
-  } else if (action === "show-active") {
+  } else if (action === "show-active" || action === "stay-active") {
     setRailMode(section, "active");
+
+    const activeRail = section?.querySelector('.seguiti-rail[data-rail="active"]');
+    requestAnimationFrame(() => {
+      scrollToFirstActiveEventCard(activeRail);
+    });
   }
 
   return;
