@@ -571,11 +571,22 @@ function renderOrganizerSection(refs, sectionData) {
 // ACTIVE RAIL
 if (sectionData.hotPastEvents?.length > 0) {
   activeRail.appendChild(
-    createSwitchCard("Vedi eventi recenti", "show-past")
+    createDirectionalBridgeCard({
+      leftTitle: "Appena conclusi",
+      leftText: "A sinistra trovi gli eventi recenti di questo organizzatore.",
+      rightTitle: "Eventi attivi",
+      rightText: "A destra torni subito agli eventi disponibili.",
+    })
   );
 } else if (sectionData.coldPastEvents?.length > 0) {
   activeRail.appendChild(
-    createSwitchCard("Vedi eventi passati", "show-past")
+    createSwitchCard({
+      direction: "to-past",
+      count: sectionData.pastEvents.length,
+      title: "Rivedi gli eventi passati",
+      subtitle: "Apri l’archivio recente degli eventi già conclusi.",
+      buttonLabel: "Apri archivio",
+    })
   );
 }
 
@@ -586,7 +597,12 @@ sectionData.activeEvents.forEach((event) => {
 // PAST RAIL
 if (sectionData.activeEvents.length > 0) {
   pastRail.appendChild(
-    createSwitchCard("Torna agli eventi attivi", "show-active")
+    createSwitchCard({
+      direction: "to-active",
+      title: "Torna agli eventi attivi",
+      subtitle: "Rientra nella vista principale degli eventi disponibili.",
+      buttonLabel: "Torna agli attivi",
+    })
   );
 }
 
