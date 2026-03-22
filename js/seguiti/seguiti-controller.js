@@ -480,8 +480,12 @@ function renderOrganizerSection(refs, sectionData) {
   section.setAttribute("aria-label", `Eventi di ${sectionData.organizerName}`);
   title.textContent = sectionData.organizerName;
 
-  // ACTIVE RAIL
-if (sectionData.pastEvents.length > 0) {
+// ACTIVE RAIL
+if (sectionData.hotPastEvents?.length > 0) {
+  activeRail.appendChild(
+    createSwitchCard("Vedi eventi recenti", "show-past")
+  );
+} else if (sectionData.coldPastEvents?.length > 0) {
   activeRail.appendChild(
     createSwitchCard("Vedi eventi passati", "show-past")
   );
