@@ -819,6 +819,11 @@ if (switchBtn) {
 
   if (action === "show-past" || action === "show-hot-past") {
     setRailMode(section, "past");
+
+    const pastRail = section?.querySelector('.seguiti-rail[data-rail="past"]');
+    requestAnimationFrame(() => {
+      scrollRailTo(pastRail, 0);
+    });
   } else if (action === "show-active" || action === "stay-active") {
     setRailMode(section, "active");
 
