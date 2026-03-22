@@ -147,6 +147,8 @@ let currentUserProfile = null;
 async function setTopbarIdentity(refs) {
   const identity = await resolveUserIdentity();
 
+  currentUserProfile = identity?.raw || null;
+
   currentUserId =
     identity?.raw?._id ||
     identity?.raw?.id ||
