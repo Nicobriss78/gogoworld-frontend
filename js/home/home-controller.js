@@ -154,7 +154,22 @@ function toTime(value) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : date.getTime();
 }
+function prefersReducedMotion() {
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
 
+function getSmoothScrollBehavior() {
+  return prefersReducedMotion() ? "auto" : "smooth";
+}
+
+function scrollRailTo(rail, left) {
+  if (!rail) return;
+
+  rail.scrollTo({
+    left,
+    behavior: getSmoothScrollBehavior(),
+  });
+}
 function getEventStatus(event) {
   return String(event?.status ?? "").trim().toLowerCase();
 }
