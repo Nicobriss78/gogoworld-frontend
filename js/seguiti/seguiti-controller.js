@@ -121,6 +121,14 @@ const seguitiState = {
 let currentUserId = null;
 async function setTopbarIdentity(refs) {
   const identity = await resolveUserIdentity();
+
+  currentUserId =
+    identity?.raw?._id ||
+    identity?.raw?.id ||
+    identity?._id ||
+    identity?.id ||
+    null;
+
   applyUserIdentityToTopbar({
     greetingEl: refs.greeting,
     roleEl: refs.role,
