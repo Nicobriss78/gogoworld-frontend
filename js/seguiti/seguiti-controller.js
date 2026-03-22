@@ -451,18 +451,49 @@ function updateRailEmpty(sectionEl, mode, hasItems) {
   if (!empty) return;
   empty.hidden = hasItems;
 }
-function createSwitchCard(label, action) {
+function createSwitchCard({
+  direction,
+  count = 0,
+  title = "",
+  subtitle = "",
+  buttonLabel = "",
+}) {
   const card = document.createElement("article");
-  card.className = "seguiti-card seguiti-card--switch";
-  card.dataset.action = action;
+  card.className = "seguiti-switch-card";
+  card.dataset.seguitiCardType = "switch";
+  card.dataset.seguitiSwitchDirection = direction;
 
-  card.innerHTML = `
-    <button class="seguiti-card__surface" type="button" data-action="${action}">
-      <div class="seguiti-card__content" style="justify-content:center;align-items:center;text-align:center;">
-        <h3 class="seguiti-card__title">${label}</h3>
-      </div>
-    </button>
-  `;
+  const body = document.createElement("div");
+  body.className = "seguiti-switch-card__body";
+
+  const eyebrow = document.createElement("p");
+  eyebrow.className = "seguiti-switch-card__eyebrow";
+  eyebrow.textContent =
+    direction === "to-past"
+      ? `${count} eventi`
+      : "Vista attiva";
+
+  const heading = document.createElement("h3");
+  heading.className = "seguiti-switch-card__title";
+  heading.textContent = title;
+
+  const text = document.createElement("p");
+  text.className = "seguiti-switch-card__subtitle";
+  text.textContent = subtitle;
+
+  const actions = document.createElement("div");
+  actions.className = "seguiti-switch-card__actions";
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "seguiti-switch-card__btn";
+  button.dataset.action =
+    direction === "to-past" ? "show-past" : "show-active";
+  button.textContent = buttonLabel;
+
+  actions.appendChild(button);
+  body.append(eyebrow, heading, text, actions);
+  card.appendChild(body);
 
   return card;
 }
