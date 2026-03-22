@@ -923,7 +923,11 @@ async function loadAndRender(refs) {
   showOnly(refs, "loading");
 
   try {
-    const rawEvents = await fetchFollowingEvents();
+    const [rawEvents, banners] = await Promise.all([
+      fetchFollowingEvents(),
+      fetchFollowingBanners(),
+    ]);
+
     const normalizedEvents = normalizeEvents(rawEvents);
     const organizerSections = groupByOrganizer(normalizedEvents);
 
