@@ -694,7 +694,76 @@ body.seguiti-page button {
   opacity: 0.72;
   pointer-events: none;
 }
+/* =========================================================
+   SWITCH CARD
+   ========================================================= */
 
+.seguiti-switch-card {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: linear-gradient(
+    180deg,
+    rgba(230, 240, 244, 0.95),
+    rgba(255, 255, 255, 1)
+  );
+  border-color: var(--seguiti-accent-border);
+}
+
+.seguiti-switch-card__body {
+  width: 100%;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.seguiti-switch-card__eyebrow {
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--seguiti-accent);
+}
+
+.seguiti-switch-card__title {
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--seguiti-text);
+}
+
+.seguiti-switch-card__subtitle {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--seguiti-text-secondary);
+}
+
+.seguiti-switch-card__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.seguiti-switch-card__btn {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--seguiti-accent-border);
+  border-radius: var(--seguiti-radius-btn);
+  background: var(--seguiti-surface);
+  color: var(--seguiti-accent-hover);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.seguiti-switch-card__btn:active {
+  transform: scale(.985);
+}
 /* =========================================================
    BOTTOMNAV — DEVE ESSERE IDENTICA A HOME
    ========================================================= */
