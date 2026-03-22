@@ -936,6 +936,11 @@ async function loadAndRender(refs) {
     seguitiState.organizerSections = organizerSections;
 
     if (!organizerSections.length) {
+      if (seguitiState.bannerEngine) {
+        seguitiState.bannerEngine.stop();
+        seguitiState.bannerEngine = null;
+      }
+
       showOnly(refs, "empty");
       return;
     }
