@@ -1013,6 +1013,10 @@ body.seguiti-page button {
     transition: none !important;
     scroll-behavior: auto !important;
   }
+
+  .seguiti-directional-card {
+    animation: none !important;
+  }
 }
 
 @keyframes seguitiShimmer {
