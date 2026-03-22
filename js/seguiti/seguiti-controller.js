@@ -638,7 +638,36 @@ function setRailMode(sectionEl, mode) {
 
   syncRailScrollbar(sectionEl);
 }
+function hasDirectionalBridgeCard(rail) {
+  if (!rail) return false;
 
+  return Boolean(
+    rail.querySelector(
+      '.seguiti-directional-card[data-seguiti-card-type="directional-bridge"]'
+    )
+  );
+}
+
+function scrollToFirstActiveEventCard(rail) {
+  if (!rail) return;
+
+  if (hasDirectionalBridgeCard(rail)) {
+    rail.scrollLeft = 0;
+    return;
+  }
+
+  const target = rail.querySelector(".seguiti-card[data-event-id]");
+  if (!target) return;
+
+  const railRect = rail.getBoundingClientRect();
+  const cardRect = target.getBoundingClientRect();
+  const offset = cardRect.left - railRect.left + rail.scrollLeft;
+
+  rail.scrollTo({
+    left: offset,
+    behavior: "smooth",
+  });
+}
 function syncRailScrollbar(sectionEl) {
   const mode = sectionEl.dataset.railMode === "past" ? "past" : "active";
   const rail = sectionEl.querySelector(`.seguiti-rail[data-rail="${mode}"]`);
