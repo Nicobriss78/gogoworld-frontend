@@ -765,6 +765,92 @@ body.seguiti-page button {
   transform: scale(.985);
 }
 /* =========================================================
+   DIRECTIONAL MINI CARD
+   ========================================================= */
+
+.seguiti-directional-card {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  border-color: var(--seguiti-accent-border);
+  background: linear-gradient(
+    180deg,
+    rgba(230, 240, 244, 0.95),
+    rgba(255, 255, 255, 1)
+  );
+  animation: seguitiDirectionalCardIn 280ms ease-out both;
+}
+
+.seguiti-directional-card__inner {
+  width: 100%;
+  min-height: var(--seguiti-card-min-h);
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+
+.seguiti-directional-card__side {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  color: var(--seguiti-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.seguiti-directional-card__side + .seguiti-directional-card__side {
+  border-top: 1px solid var(--seguiti-accent-border);
+}
+
+.seguiti-directional-card__title {
+  font-size: 17px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--seguiti-text);
+}
+
+.seguiti-directional-card__text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--seguiti-text-secondary);
+}
+
+.seguiti-directional-card__arrow {
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 800;
+  color: var(--seguiti-accent);
+}
+
+.seguiti-directional-card__side--left .seguiti-directional-card__arrow {
+  align-self: flex-start;
+}
+
+.seguiti-directional-card__side--right .seguiti-directional-card__arrow {
+  align-self: flex-end;
+}
+
+.seguiti-directional-card__side:active {
+  transform: scale(.995);
+}
+
+@keyframes seguitiDirectionalCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* =========================================================
    BOTTOMNAV — DEVE ESSERE IDENTICA A HOME
    ========================================================= */
 
