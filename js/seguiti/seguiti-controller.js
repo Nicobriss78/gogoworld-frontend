@@ -679,11 +679,6 @@ function scrollToFirstActiveEventCard(rail) {
     behavior: "smooth",
   });
 }
-function syncRailScrollbar(sectionEl) {
-  const mode = sectionEl.dataset.railMode === "past" ? "past" : "active";
-  const rail = sectionEl.querySelector(`.seguiti-rail[data-rail="${mode}"]`);
-  const scrollbar = sectionEl.querySelector(`.seguiti-scrollbar[data-scrollbar="${mode}"]`);
-  const thumb = scrollbar?.querySelector(".seguiti-scrollbar-thumb");
 
   if (!rail || !scrollbar || !thumb) return;
 
