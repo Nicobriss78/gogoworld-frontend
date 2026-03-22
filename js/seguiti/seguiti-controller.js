@@ -97,7 +97,6 @@ function getRefs(root = document) {
     root,
     greeting: root.getElementById("seguitiGreeting"),
     role: root.getElementById("seguitiRole"),
-    body: root.getElementById("seguitiBody"),
     loading: root.getElementById("seguitiLoadingState"),
     sections: root.getElementById("seguitiSections"),
     empty: root.getElementById("seguitiEmptyState"),
