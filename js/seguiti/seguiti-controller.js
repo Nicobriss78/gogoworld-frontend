@@ -836,7 +836,28 @@ function syncBottomnavActive(refs) {
     else item.removeAttribute("aria-current");
   });
 }
+function setupSeguitiBannerEngine(refs, banners = [], tips = []) {
+  if (seguitiState.bannerEngine) {
+    seguitiState.bannerEngine.stop();
+    seguitiState.bannerEngine = null;
+  }
 
+  const engine = createSeguitiBannerEngine({
+    rotationInterval: SEGUITI_CONFIG.bannerRotationInterval,
+  });
+
+  const allSlots = refs.sections.querySelectorAll(
+    '.seguiti-rail[data-rail="active"] .seguiti-banner-slot'
+  );
+
+  engine.bindSlots(allSlots);
+  engine.setData({ banners, tips });
+  engine.fillInitial();
+  engine.start();
+
+  seguitiState.bannerEngine = engine;
+  return engine;
+}
 function bindVisibleSectionTracking(refs) {
   const sections = Array.from(refs.sections.querySelectorAll(".seguiti-organizer-section"));
   if (!sections.length) return;
