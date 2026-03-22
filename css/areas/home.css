@@ -793,7 +793,7 @@ body.home-page > main {
   border-radius: var(--home-radius-pill);
   background: var(--home-scrollbar-thumb);
   transform: translateX(var(--home-scrollbar-x, 0px));
-  transition: transform 60ms linear;
+  transition: transform 120ms ease-out, width 120ms ease-out;
 }
 
 .home-scrollbar.is-dragging .home-scrollbar-thumb {
