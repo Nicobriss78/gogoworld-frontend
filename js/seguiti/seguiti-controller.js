@@ -295,20 +295,24 @@ function groupByOrganizer(events) {
 
   const groups = Array.from(map.values())
     .map((group) => {
-      const { activeEvents, pastEvents } = splitEvents(group.events);
-      const initialMode = activeEvents.length
-        ? "active"
-        : pastEvents.length
-          ? "past"
-          : "active";
+      const { activeEvents, hotPastEvents, coldPastEvents, pastEvents } =
+  splitEventsAdvanced(group.events);
 
-      return {
-        organizerId: group.organizerId,
-        organizerName: group.organizerName,
-        activeEvents,
-        pastEvents,
-        initialMode,
-      };
+const initialMode = activeEvents.length
+  ? "active"
+  : pastEvents.length
+    ? "past"
+    : "active";
+
+return {
+  organizerId: group.organizerId,
+  organizerName: group.organizerName,
+  activeEvents,
+  hotPastEvents,
+  coldPastEvents,
+  pastEvents,
+  initialMode,
+};
     })
     .filter((group) => group.activeEvents.length || group.pastEvents.length);
 
