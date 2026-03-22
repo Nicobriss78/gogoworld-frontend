@@ -705,10 +705,7 @@ function autoFocusFirstRealEvent(rail) {
   const cardRect = target.getBoundingClientRect();
   const offset = cardRect.left - railRect.left + rail.scrollLeft;
 
-  rail.scrollTo({
-    left: offset,
-    behavior: "smooth",
-  });
+  scrollRailTo(rail, offset);
 }
 /* =========================================================
    CARD ACTIONS
