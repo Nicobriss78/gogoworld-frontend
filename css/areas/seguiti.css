@@ -1045,7 +1045,8 @@ body.seguiti-page button {
     font-size: 10px;
   }
 
-  .seguiti-card__content {
+  .seguiti-card__content,
+  .seguiti-banner-card__content {
     padding: 13px;
     gap: 7px;
   }
