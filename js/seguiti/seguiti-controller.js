@@ -497,6 +497,64 @@ function createSwitchCard({
 
   return card;
 }
+function createDirectionalBridgeCard({
+  leftTitle = "",
+  leftText = "",
+  rightTitle = "",
+  rightText = "",
+} = {}) {
+  const card = document.createElement("article");
+  card.className = "seguiti-directional-card";
+  card.dataset.seguitiCardType = "directional-bridge";
+
+  const inner = document.createElement("div");
+  inner.className = "seguiti-directional-card__inner";
+
+  const leftBtn = document.createElement("button");
+  leftBtn.type = "button";
+  leftBtn.className = "seguiti-directional-card__side seguiti-directional-card__side--left";
+  leftBtn.dataset.action = "show-hot-past";
+
+  const leftArrow = document.createElement("span");
+  leftArrow.className = "seguiti-directional-card__arrow";
+  leftArrow.setAttribute("aria-hidden", "true");
+  leftArrow.textContent = "←";
+
+  const leftHeading = document.createElement("strong");
+  leftHeading.className = "seguiti-directional-card__title";
+  leftHeading.textContent = leftTitle;
+
+  const leftBody = document.createElement("span");
+  leftBody.className = "seguiti-directional-card__text";
+  leftBody.textContent = leftText;
+
+  leftBtn.append(leftArrow, leftHeading, leftBody);
+
+  const rightBtn = document.createElement("button");
+  rightBtn.type = "button";
+  rightBtn.className = "seguiti-directional-card__side seguiti-directional-card__side--right";
+  rightBtn.dataset.action = "stay-active";
+
+  const rightHeading = document.createElement("strong");
+  rightHeading.className = "seguiti-directional-card__title";
+  rightHeading.textContent = rightTitle;
+
+  const rightBody = document.createElement("span");
+  rightBody.className = "seguiti-directional-card__text";
+  rightBody.textContent = rightText;
+
+  const rightArrow = document.createElement("span");
+  rightArrow.className = "seguiti-directional-card__arrow";
+  rightArrow.setAttribute("aria-hidden", "true");
+  rightArrow.textContent = "→";
+
+  rightBtn.append(rightHeading, rightBody, rightArrow);
+
+  inner.append(leftBtn, rightBtn);
+  card.appendChild(inner);
+
+  return card;
+}
 function renderOrganizerSection(refs, sectionData) {
   const fragment = refs.organizerTpl.content.cloneNode(true);
   const section = fragment.querySelector(".seguiti-organizer-section");
