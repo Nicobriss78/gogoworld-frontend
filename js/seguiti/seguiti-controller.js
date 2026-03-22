@@ -140,6 +140,7 @@ const seguitiState = {
   error: null,
   initialized: false,
   activeSectionIndex: 0,
+  bannerEngine: null,
 };
 let currentUserId = null;
 async function setTopbarIdentity(refs) {
