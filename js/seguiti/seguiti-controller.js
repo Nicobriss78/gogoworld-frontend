@@ -667,11 +667,6 @@ function hasDirectionalBridgeCard(rail) {
 function scrollToFirstActiveEventCard(rail) {
   if (!rail) return;
 
-  if (hasDirectionalBridgeCard(rail)) {
-    rail.scrollLeft = 0;
-    return;
-  }
-
   const target = rail.querySelector(".seguiti-card[data-event-id]");
   if (!target) return;
 
