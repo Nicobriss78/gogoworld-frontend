@@ -70,7 +70,7 @@ async function init() {
 
   function unbindUi() {
     elements.infoBtn?.removeEventListener("click", handleOpenDetail);
-    document.removeEventListener("click", handleGlobalClick);
+    elements.drawerContent?.removeEventListener("click", handleDrawerActions);
   }
 
   function handleGlobalClick(event) {
