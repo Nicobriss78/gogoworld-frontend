@@ -29,71 +29,37 @@
   <link rel="stylesheet" href="/css/areas/mappa.css" />
 </head>
 <body class="mappa-page">
-  <!-- TOPBAR V2 -->
-  <header class="gw-topbar" aria-label="Barra superiore">
-    <div class="gw-topbar-left">
-      <div class="gw-userbox" aria-live="polite">
-        <div id="gwUserName" class="gw-userbox-name">Utente</div>
-        <div id="gwUserStatus" class="gw-userbox-status">Partecipante</div>
-      </div>
+<header class="mappa-topbar">
+  <!-- Riga 1 -->
+  <div class="mappa-topbar__row mappa-topbar__row--identity">
+    <div class="mappa-topbar__identity">
+      <div id="mappaGreeting" class="mappa-topbar__greeting">Ciao</div>
+      <div id="mappaRole" class="mappa-topbar__role">...</div>
     </div>
 
-    <div class="gw-topbar-center">
-      <div class="gw-brand" aria-label="GoGoWorld.life">GoGoWorld.life</div>
+    <div class="mappa-topbar__brand">
+      GoGoWorld.life
     </div>
+  </div>
 
-    <div class="gw-topbar-right">
-      <button
-        type="button"
-        class="gw-icon-btn"
-        data-action="search"
-        aria-label="Cerca"
-        title="Cerca"
-      >
-        <span aria-hidden="true">⌕</span>
+  <!-- Riga 2 -->
+  <div class="mappa-topbar__row mappa-topbar__row--actions">
+    <div class="mappa-topbar__actions">
+      <button class="gw-iconbtn">
+        <svg><use href="#i-search"></use></svg>
       </button>
-
-      <button
-        type="button"
-        class="gw-icon-btn"
-        data-action="location"
-        aria-label="Posizione"
-        title="Posizione"
-      >
-        <span aria-hidden="true">◎</span>
+      <button class="gw-iconbtn">
+        <svg><use href="#i-bell"></use></svg>
       </button>
-
-      <button
-        type="button"
-        class="gw-icon-btn"
-        data-action="messages"
-        aria-label="Messaggi"
-        title="Messaggi"
-      >
-        <span aria-hidden="true">✉</span>
+      <button class="gw-iconbtn">
+        <svg><use href="#i-chat"></use></svg>
       </button>
-
-      <button
-        type="button"
-        class="gw-icon-btn"
-        data-action="notifications"
-        aria-label="Notifiche"
-        title="Notifiche"
-      >
-        <span aria-hidden="true">◔</span>
-      </button>
-
-      <button
-        type="button"
-        class="gw-icon-btn"
-        data-action="menu"
-        aria-label="Menu"
-        title="Menu"
-      >
-        <span aria-hidden="true">☰</span>
+      <button class="gw-iconbtn">
+        <svg><use href="#i-menu"></use></svg>
       </button>
     </div>
-  </header>
+  </div>
+</header>
 
   <main class="mappa-main" aria-label="Scheda mappa eventi">
     <!-- BLOCCO MAPPA -->
