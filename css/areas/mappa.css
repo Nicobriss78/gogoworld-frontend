@@ -1,1 +1,356 @@
+/* ===============================
+   MAPPA V2 — AREA CSS
+   =============================== */
 
+/* ===== ROOT LOCALE ===== */
+
+.mappa-page {
+  --mappa-bg: var(--gw-bg, #f5f7fb);
+  --mappa-surface: var(--gw-surface, #ffffff);
+  --mappa-text: var(--gw-text, #1f2937);
+  --mappa-text-soft: var(--gw-text-secondary, #5c6b80);
+  --mappa-primary: var(--gw-primary, #3b82f6); /* azzurro */
+  --mappa-radius: 12px;
+  --mappa-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== SHELL ===== */
+
+.mappa-page {
+  background: var(--mappa-bg);
+  color: var(--mappa-text);
+  min-height: 100vh;
+}
+
+.mappa-main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 12px;
+  padding-bottom: 90px;
+}
+
+/* ===== MAPPA ===== */
+
+.mappa-header {
+  padding: 4px 4px 0;
+}
+
+.mappa-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* CARD */
+
+.mappa-card {
+  background: var(--mappa-surface);
+  border-radius: var(--mappa-radius);
+  box-shadow: var(--mappa-shadow);
+  overflow: hidden;
+}
+
+/* VIEWPORT */
+
+.mappa-viewport {
+  width: 100%;
+  height: 260px;
+  position: relative;
+}
+
+#mappaMap {
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== LEGENDA ===== */
+
+.mappa-legend {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 8px;
+  font-size: 12px;
+  color: var(--mappa-text-soft);
+}
+
+.mappa-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mappa-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.mappa-dot--ongoing {
+  background: #ef4444;
+}
+
+.mappa-dot--imminent {
+  background: #f59e0b;
+}
+
+.mappa-dot--future {
+  background: var(--mappa-primary);
+}
+
+/* ===== DRAWER ===== */
+
+.mappa-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 40;
+}
+
+.mappa-detail-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mappa-detail-drawer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: -100%;
+  background: var(--mappa-surface);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.15);
+  padding: 14px;
+  transition: bottom 0.25s ease;
+  z-index: 50;
+}
+
+.mappa-detail-drawer.active {
+  bottom: 0;
+}
+
+/* LOCK BODY */
+body.mappa-detail-open {
+  overflow: hidden;
+}
+
+/* HEADER */
+
+.mappa-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.mappa-detail-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mappa-detail-close {
+  font-size: 18px;
+}
+
+/* CONTENT */
+
+.mappa-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ===== EVENT CARD (RENDERER) ===== */
+
+.mappa-event-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mappa-event-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mappa-event-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mappa-event-meta {
+  font-size: 13px;
+  color: var(--mappa-text-soft);
+  display: flex;
+  justify-content: space-between;
+}
+
+.mappa-event-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.mappa-event-tags span {
+  background: rgba(0,0,0,0.05);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.mappa-event-price {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.mappa-event-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ===== BADGE ===== */
+
+.mappa-status-badge {
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.mappa-status-badge--ongoing {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.mappa-status-badge--imminent {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.mappa-status-badge--future {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* ===== CHAT ===== */
+
+.mappa-chat-card {
+  background: var(--mappa-surface);
+  border-radius: var(--mappa-radius);
+  box-shadow: var(--mappa-shadow);
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+}
+
+.mappa-chat-headerbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.mappa-chat-heading {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mappa-chat-header {
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--mappa-text-soft);
+}
+
+.mappa-chat-notice {
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--mappa-text-soft);
+}
+
+.mappa-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  font-size: 13px;
+}
+
+/* MESSAGGI */
+
+.mappa-msg {
+  margin-bottom: 8px;
+  max-width: 80%;
+}
+
+.mappa-msg--me {
+  margin-left: auto;
+  text-align: right;
+}
+
+.mappa-msg-text {
+  background: rgba(0,0,0,0.05);
+  padding: 6px 8px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.mappa-msg--me .mappa-msg-text {
+  background: var(--mappa-primary);
+  color: #fff;
+}
+
+.mappa-msg-time {
+  font-size: 10px;
+  color: var(--mappa-text-soft);
+  margin-top: 2px;
+}
+
+/* COMPOSER */
+
+.mappa-chat-composer {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+#mappaChatInput {
+  flex: 1;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 8px;
+}
+
+#mappaChatSend {
+  background: var(--mappa-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+/* ===== MICRO UX ===== */
+
+.mappa-card,
+.mappa-chat-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mappa-card:active {
+  transform: scale(0.99);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (min-width: 768px) {
+  .mappa-main {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  }
