@@ -95,23 +95,27 @@ if (currentEventId !== requestEventId) return;
      =============================== */
 
   async function loadMessages() {
-    if (!currentRoomId) return;
+  if (!currentRoomId) return;
 
-    try {
-      const messages = await api.fetchRoomMessages(currentRoomId);
+  const requestRoomId = currentRoomId;
 
-      elements.chatMessages.innerHTML =
-        renderer.renderChatMessages(messages);
+  try {
+    const messages = await api.fetchRoomMessages(currentRoomId);
 
-      elements.chatNotice.innerHTML = "";
+    if (currentRoomId !== requestRoomId) return;
 
-      await api.markRoomRead(currentRoomId);
+    elements.chatMessages.innerHTML =
+      renderer.renderChatMessages(messages);
 
-    } catch {
-      elements.chatNotice.innerHTML =
-        renderer.renderChatError("Errore caricamento messaggi");
-    }
+    elements.chatNotice.innerHTML = "";
+
+    await api.markRoomRead(currentRoomId);
+
+  } catch {
+    elements.chatNotice.innerHTML =
+      renderer.renderChatError("Errore caricamento messaggi");
   }
+}
 
   /* ===============================
      POLLING
