@@ -82,19 +82,17 @@ export function createMappaMap({
   }
 
   function resetMarkerStyle(marker) {
-    const ev = findEventByMarker(marker);
-    if (!ev) return;
+  const status = marker?._gwEventMeta?.status;
+  const color = getColorByStatus(status);
 
-    const color = getColorByStatus(ev.status);
-
-    marker.setStyle({
-      radius: 8,
-      color,
-      fillColor: color,
-      fillOpacity: 0.9,
-      weight: 1
-    });
-  }
+  marker.setStyle({
+    radius: 8,
+    color,
+    fillColor: color,
+    fillOpacity: 0.9,
+    weight: 1
+  });
+}
 
   function findEventByMarker(targetMarker) {
     for (const [id, marker] of markersById.entries()) {
