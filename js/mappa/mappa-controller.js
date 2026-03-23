@@ -45,8 +45,8 @@ async function init() {
     }
   });
 
-  bindUi();
-  hydrateTopbar();
+ bindUi();
+  await hydrateTopbar();
   drawer.mount();
   map.mount();
   chat.mount();
