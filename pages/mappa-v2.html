@@ -1,1 +1,277 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mappa eventi • GoGoWorld.life</title>
 
+  <!-- Base V2 -->
+  <link rel="stylesheet" href="/css/tokens.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+  />
+
+  <!-- Area -->
+  <link rel="stylesheet" href="/css/areas/mappa.css" />
+</head>
+<body class="mappa-page">
+  <!-- TOPBAR V2 -->
+  <header class="gw-topbar" aria-label="Barra superiore">
+    <div class="gw-topbar-left">
+      <div class="gw-userbox" aria-live="polite">
+        <div id="gwUserName" class="gw-userbox-name">Utente</div>
+        <div id="gwUserStatus" class="gw-userbox-status">Partecipante</div>
+      </div>
+    </div>
+
+    <div class="gw-topbar-center">
+      <div class="gw-brand" aria-label="GoGoWorld.life">GoGoWorld.life</div>
+    </div>
+
+    <div class="gw-topbar-right">
+      <button
+        type="button"
+        class="gw-icon-btn"
+        data-action="search"
+        aria-label="Cerca"
+        title="Cerca"
+      >
+        <span aria-hidden="true">⌕</span>
+      </button>
+
+      <button
+        type="button"
+        class="gw-icon-btn"
+        data-action="location"
+        aria-label="Posizione"
+        title="Posizione"
+      >
+        <span aria-hidden="true">◎</span>
+      </button>
+
+      <button
+        type="button"
+        class="gw-icon-btn"
+        data-action="messages"
+        aria-label="Messaggi"
+        title="Messaggi"
+      >
+        <span aria-hidden="true">✉</span>
+      </button>
+
+      <button
+        type="button"
+        class="gw-icon-btn"
+        data-action="notifications"
+        aria-label="Notifiche"
+        title="Notifiche"
+      >
+        <span aria-hidden="true">◔</span>
+      </button>
+
+      <button
+        type="button"
+        class="gw-icon-btn"
+        data-action="menu"
+        aria-label="Menu"
+        title="Menu"
+      >
+        <span aria-hidden="true">☰</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="mappa-main" aria-label="Scheda mappa eventi">
+    <!-- BLOCCO MAPPA -->
+    <section id="mappaMapSection" class="mappa-section" aria-labelledby="mappaTitle">
+      <div class="mappa-header">
+        <h1 id="mappaTitle" class="mappa-title">Mappa eventi</h1>
+      </div>
+
+      <div class="mappa-card">
+        <div id="mappaMapViewport" class="mappa-viewport">
+          <div
+            id="mappaMap"
+            class="mappa-map"
+            role="region"
+            aria-label="Mappa degli eventi pubblici"
+          ></div>
+        </div>
+
+        <div id="mappaLegend" class="mappa-legend" aria-label="Legenda stati evento">
+          <div class="mappa-legend-item">
+            <span class="mappa-dot mappa-dot--ongoing" aria-hidden="true"></span>
+            <span>In corso</span>
+          </div>
+
+          <div class="mappa-legend-item">
+            <span class="mappa-dot mappa-dot--imminent" aria-hidden="true"></span>
+            <span>Imminente</span>
+          </div>
+
+          <div class="mappa-legend-item">
+            <span class="mappa-dot mappa-dot--future" aria-hidden="true"></span>
+            <span>In arrivo</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DRAWER DETTAGLIO PRIMO LIVELLO -->
+    <div
+      id="mappaDetailOverlay"
+      class="mappa-detail-overlay"
+      hidden
+      aria-hidden="true"
+    ></div>
+
+    <aside
+      id="mappaDetailDrawer"
+      class="mappa-detail-drawer"
+      hidden
+      aria-hidden="true"
+      aria-labelledby="mappaDetailTitle"
+    >
+      <div class="mappa-detail-header">
+        <div id="mappaDetailTitle" class="mappa-detail-title">Evento selezionato</div>
+
+        <button
+          id="mappaDetailClose"
+          type="button"
+          class="gw-icon-btn mappa-detail-close"
+          data-action="close-detail"
+          aria-label="Chiudi dettaglio evento"
+          title="Chiudi"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <div id="mappaDetailContent" class="mappa-detail-content">
+        <!-- Render dinamico -->
+      </div>
+    </aside>
+
+    <!-- BLOCCO CHAT -->
+    <section
+      id="mappaChatSection"
+      class="mappa-chat-section"
+      aria-labelledby="mappaChatHeading"
+    >
+      <div class="mappa-chat-card">
+        <div class="mappa-chat-headerbar">
+          <h2 id="mappaChatHeading" class="mappa-chat-heading">Chat evento</h2>
+
+          <button
+            id="mappaChatInfoBtn"
+            type="button"
+            class="gw-icon-btn"
+            data-action="open-detail"
+            aria-label="Apri dettaglio evento selezionato"
+            title="Dettaglio evento"
+            disabled
+          >
+            <span aria-hidden="true">i</span>
+          </button>
+        </div>
+
+        <div
+          id="mappaChatHeader"
+          class="mappa-chat-header"
+          aria-live="polite"
+        >
+          Chat evento
+        </div>
+
+        <div
+          id="mappaChatNotice"
+          class="mappa-chat-notice"
+          aria-live="polite"
+        >
+          Seleziona un evento dalla mappa per attivare la chat.
+        </div>
+
+        <div
+          id="mappaChatMessages"
+          class="mappa-chat-messages"
+          aria-live="polite"
+          aria-label="Messaggi della chat evento"
+        >
+          <!-- Render dinamico -->
+        </div>
+
+        <div id="mappaChatComposer" class="mappa-chat-composer">
+          <label for="mappaChatInput" class="sr-only">Scrivi un messaggio</label>
+          <input
+            id="mappaChatInput"
+            type="text"
+            maxlength="1000"
+            placeholder="Scrivi un messaggio..."
+            autocomplete="off"
+            disabled
+          />
+
+          <button
+            id="mappaChatSend"
+            type="button"
+            class="gw-btn-primary"
+            data-action="send-message"
+            disabled
+          >
+            Invia
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- BOTTOM NAV V2 -->
+  <nav class="gw-bottomnav" aria-label="Navigazione principale">
+    <a href="/pages/mappa-v2.html" class="gw-bottomnav-item active" aria-current="page">
+      <span>Mappa</span>
+    </a>
+
+    <a href="/pages/seguiti-v2.html" class="gw-bottomnav-item">
+      <span>Eventi</span>
+    </a>
+
+    <a href="/pages/home-v2.html" class="gw-bottomnav-item">
+      <span>Home</span>
+    </a>
+
+    <a href="/pages/utenti-v2.html" class="gw-bottomnav-item">
+      <span>Utenti</span>
+    </a>
+
+    <a href="/pages/profilo-v2.html" class="gw-bottomnav-item">
+      <span>Profilo</span>
+    </a>
+  </nav>
+
+  <!-- Leaflet -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+  <!-- Controller -->
+  <script type="module" src="/js/mappa/mappa-controller.js"></script>
+</body>
+  </html>
