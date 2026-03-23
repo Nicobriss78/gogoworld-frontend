@@ -9,12 +9,11 @@ export function createMappaApi({ fetchImpl } = {}) {
     try {
       const res = await fetcher("/api/events?visibility=public");
       const data = await handleResponse(res);
+const rawEvents = Array.isArray(data?.events) ? data.events : [];
 
-      if (!Array.isArray(data)) return [];
-
-      return data
-        .map(normalizeEventForMap)
-        .filter(isValidMapEvent);
+return rawEvents
+  .map(normalizeEventForMap)
+  .filter(isValidMapEvent);
 
     } catch (err) {
       throw new Error("MAPPA_API_FETCH_EVENTS_ERROR");
