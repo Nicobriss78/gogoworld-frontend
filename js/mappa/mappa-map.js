@@ -8,6 +8,8 @@ export function createMappaMap({
   let selectedMarker = null;
 
   function mount() {
+    if (map) return;
+
     map = L.map(mapElementId, {
       zoomControl: true
     }).setView([41.9, 12.5], 6); // Italia
