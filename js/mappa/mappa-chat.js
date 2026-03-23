@@ -35,9 +35,10 @@ export function createMappaChat({
      =============================== */
 
   async function openForEvent(event) {
-    if (!event || !event.id) return;
+  if (!event || !event.id) return;
 
-    currentEventId = event.id;
+  const requestEventId = event.id;
+  currentEventId = requestEventId;
 
     elements.chatHeader.textContent = renderer.renderChatHeader(event.title);
     elements.chatNotice.innerHTML = renderer.renderChatLoading(event.title);
