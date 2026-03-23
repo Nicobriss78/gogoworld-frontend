@@ -73,7 +73,7 @@ async function init() {
     elements.drawerContent?.removeEventListener("click", handleDrawerActions);
   }
 
-  function handleGlobalClick(event) {
+  function handleDrawerActions(event) {
     const action = event.target?.closest?.("[data-action]")?.dataset?.action;
     if (!action) return;
 
