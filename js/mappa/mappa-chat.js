@@ -56,7 +56,7 @@ export function createMappaChat({
 
     try {
       const room = await api.openEventRoom(event.id);
-
+if (currentEventId !== requestEventId) return;
       currentRoomId = room.roomId;
 
       state.setChatState({
