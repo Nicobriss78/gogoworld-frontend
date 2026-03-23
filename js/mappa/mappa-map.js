@@ -45,20 +45,25 @@ export function createMappaMap({
   }
 
   function createMarker(ev) {
-    const color = getColorByStatus(ev.status);
+  const color = getColorByStatus(ev.status);
 
-    const marker = L.circleMarker([ev.lat, ev.lon], {
-      radius: 8,
-      color,
-      fillColor: color,
-      fillOpacity: 0.9,
-      weight: 1
-    });
+  const marker = L.circleMarker([ev.lat, ev.lon], {
+    radius: 8,
+    color,
+    fillColor: color,
+    fillOpacity: 0.9,
+    weight: 1
+  });
 
-    marker.bindPopup(createPopupHtml(ev));
+  marker._gwEventMeta = {
+    id: ev.id,
+    status: ev.status
+  };
 
-    return marker;
-  }
+  marker.bindPopup(createPopupHtml(ev));
+
+  return marker;
+}
 
   function highlightMarker(eventId) {
     if (selectedMarker) {
