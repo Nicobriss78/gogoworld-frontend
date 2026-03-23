@@ -94,15 +94,6 @@ export function createMappaMap({
   });
 }
 
-  function findEventByMarker(targetMarker) {
-    for (const [id, marker] of markersById.entries()) {
-      if (marker === targetMarker) {
-        return { id };
-      }
-    }
-    return null;
-  }
-
   function focusEvent(eventId) {
     const marker = markersById.get(eventId);
     if (!marker) return;
