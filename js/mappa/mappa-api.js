@@ -33,8 +33,7 @@ return rawEvents
 
       const ev = normalizeEventForMap(data);
 
-      return isValidMapEvent(ev) ? ev : null;
-
+return ev?.id ? ev : null;
     } catch {
       return null;
     }
