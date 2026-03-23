@@ -113,7 +113,9 @@ export function createMappaMap({
       selectedMarker = null;
     }
 
-    map.closePopup();
+    if (map) {
+  map.closePopup();
+}
   }
 
   function fitBounds() {
