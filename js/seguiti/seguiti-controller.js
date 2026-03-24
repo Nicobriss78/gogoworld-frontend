@@ -205,8 +205,7 @@ async function loadAndRender(refs) {
   try {
     const [rawEvents, banners] = await Promise.all([
       fetchFollowingEvents(),
-      fetchFollowingBanners(currentUserProfile),
-    ]);
+      fetchFollowingBanners(seguitiSession.currentUserProfile),    ]);
 
     const normalizedEvents = normalizeEvents(rawEvents, currentUserId);
     const organizerSections = groupByOrganizer(normalizedEvents);
