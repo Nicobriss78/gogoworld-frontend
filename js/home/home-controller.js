@@ -20,17 +20,6 @@ import {
 } from "../shared/user-identity.js";
 import { fetchHomePayload } from "./home-api.js";
 import { HOME_CONFIG } from "./home-state.js";
-/* =========================================================
-   CONFIG
-   ========================================================= */
-
-const HOME_CONFIG = {
-  generalPastPreviewLimit: 10,
-  joinedPastPreviewLimit: 15,
-  bannerRotationInterval: 8000,
-  detailsIcon: "info",
-  showCloseDetail: false,
-};
 
 /* =========================================================
    HELPERS DOM
