@@ -433,3 +433,43 @@ export function renderHomeView(dom, payload) {
 
   return { bannerEngine };
 }
+export function bindRailModeDelegation(dom) {
+  const shells = [dom.generalShell, dom.joinedShell];
+
+  shells.forEach((shell) => {
+    if (!shell) return;
+
+    shell.addEventListener("click", (event) => {
+      const btn = event.target.closest("[data-home-switch]");
+      if (!btn) return;
+
+      const direction = btn.dataset.homeSwitch;
+
+      if (direction === "to-past") {
+        setRailMode(shell, "past");
+        resetRailScrollForMode(shell, "past");
+      }
+
+      if (direction === "to-active") {
+        setRailMode(shell, "active");
+        resetRailScrollForMode(shell, "active");
+      }
+    });
+  });
+}
+
+export function bindCardActions(dom) {
+  const root = document;
+
+  root.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-home-action]");
+    if (!btn) return;
+
+    const action = btn.dataset.homeAction;
+    const eventId = btn.dataset.eventId;
+
+    if (action === "details" && eventId) {
+      window.location.href = `/pages/evento.html?id=${encodeURIComponent(eventId)}`;
+    }
+  });
+}
