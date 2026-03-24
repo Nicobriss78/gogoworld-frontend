@@ -38,18 +38,6 @@ function getRefs(root = document) {
     bottomnav: root.querySelector(".seguiti-bottomnav"),  };
 }
 
-const seguitiState = {
-  rawEvents: [],
-  normalizedEvents: [],
-  organizerSections: [],
-  loading: false,
-  error: null,
-  initialized: false,
-  activeSectionIndex: 0,
-  bannerEngine: null,
-};
-let currentUserId = null;
-let currentUserProfile = null;
 async function setTopbarIdentity(refs) {
   const identity = await resolveUserIdentity();
 
