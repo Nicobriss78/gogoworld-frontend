@@ -13,8 +13,6 @@ import {
   createStateBlock,
   renderRail,
 } from "./home-renderer.js";
-
-import { apiGet, getActiveBannersBatch } from "../api.js";
 import { createBannerEngine } from "./home-banners.js";
 import {
   resolveUserIdentity,
