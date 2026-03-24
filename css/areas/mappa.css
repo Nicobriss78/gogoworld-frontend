@@ -5,13 +5,18 @@
 /* ===== ROOT LOCALE ===== */
 
 .mappa-page {
-  --mappa-bg: var(--gw-bg, #f5f7fb);
-  --mappa-surface: var(--gw-surface, #ffffff);
-  --mappa-text: var(--gw-text, #1f2937);
-  --mappa-text-soft: var(--gw-text-secondary, #5c6b80);
-  --mappa-primary: var(--gw-primary, #3b82f6); /* azzurro */
-  --mappa-radius: 12px;
-  --mappa-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  --mappa-bg: var(--gw-bg);
+  --mappa-surface: var(--gw-surface);
+  --mappa-text: var(--gw-text);
+  --mappa-text-soft: var(--gw-text-secondary);
+  --mappa-primary: var(--gw-accent);
+  --mappa-danger: var(--gw-danger);
+  --mappa-radius: 18px;
+  --mappa-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  --mappa-topbar-h: 132px;
+  --mappa-bottomnav-h: 86px;
+  --mappa-page-pad-x: 16px;
+  --mappa-page-pad-y: 16px;
 }
 
 /* ===== SHELL ===== */
