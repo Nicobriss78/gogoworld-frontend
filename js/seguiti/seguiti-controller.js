@@ -2,7 +2,6 @@ import {
   resolveUserIdentity,
   applyUserIdentityToTopbar,
 } from "../shared/user-identity.js";
-import { getActiveBannersBatch } from "../api.js";
 import {
   createSeguitiBannerEngine,
   createSeguitiBannerSlot,
