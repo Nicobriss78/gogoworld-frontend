@@ -4,6 +4,7 @@
  * Solo logica Home: stato, split eventi, rendering, rail mode,
  * banner engine, autofocus, scrollbars, delegation.
  */
+import { renderHomeView } from "./home-view.js";
 import { splitEvents } from "./home-data.js";
 import {
   createEventCard,
