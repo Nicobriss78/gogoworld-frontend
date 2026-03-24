@@ -749,8 +749,7 @@ const generalActiveNodes = split.generalActive.length || split.generalPast.lengt
   const bannerEngine = setupBannerEngine(
     dom,
     payload.banners,
-    payload.tips?.length ? payload.tips : HOME_FALLBACK_TIPS
-  );
+payload.tips || []  );
 
   requestAnimationFrame(() => {
     if (hasDirectionalBridgeCard(dom.generalActiveRail)) {
