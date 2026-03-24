@@ -688,8 +688,7 @@ async function loadAndRender(refs) {
       syncRailScrollbar(sectionEl);
     });
 
-    setupSeguitiBannerEngine(refs, banners, SEGUITI_FALLBACK_TIPS);
-
+    setupSeguitiBannerEngine(refs, banners, []);
     showOnly(refs, "sections");
     bindVisibleSectionTracking(refs);
   } catch (error) {
