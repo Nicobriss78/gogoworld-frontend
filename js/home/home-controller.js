@@ -18,6 +18,7 @@ import {
   resolveUserIdentity,
   applyUserIdentityToTopbar,
 } from "../shared/user-identity.js";
+import { fetchHomePayload, HOME_FALLBACK_TIPS } from "./home-api.js";
 /* =========================================================
    CONFIG
    ========================================================= */
