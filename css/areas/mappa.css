@@ -35,8 +35,8 @@
   top: 0;
   z-index: 100;
   background: var(--mappa-surface);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  padding: 8px 12px 10px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+  padding: 10px 14px 12px;
 }
 
 .mappa-topbar__row {
@@ -46,32 +46,36 @@
 }
 
 .mappa-topbar__row--identity {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .mappa-topbar__identity {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .mappa-topbar__greeting {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
+  line-height: 1.1;
 }
 
 .mappa-topbar__role {
   font-size: 12px;
+  line-height: 1.1;
   color: var(--mappa-text-soft);
 }
 
 .mappa-topbar__brand {
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
 }
 
 .mappa-topbar__actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 /* ===== ICON BUTTONS ===== */
