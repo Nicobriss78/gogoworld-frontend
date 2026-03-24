@@ -611,8 +611,8 @@ function setupSeguitiBannerEngine(refs, banners = [], tips = []) {
   }
 
   const engine = createSeguitiBannerEngine({
-    rotationInterval: SEGUITI_CONFIG.bannerRotationInterval,
-  });
+  rotationInterval: 7000,
+});
 
   const allSlots = refs.sections.querySelectorAll(
     '.seguiti-rail[data-rail="active"] .seguiti-banner-slot'
