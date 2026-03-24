@@ -18,7 +18,6 @@ import {
   applyUserIdentityToTopbar,
 } from "../shared/user-identity.js";
 import { fetchHomePayload } from "./home-api.js";
-import { HOME_CONFIG } from "./home-state.js";
 
 /* =========================================================
    HELPERS DOM
