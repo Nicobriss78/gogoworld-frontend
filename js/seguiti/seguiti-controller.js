@@ -18,6 +18,7 @@ import {
   syncRailScrollbar,
   bindRailScrollbars,
 } from "./seguiti-renderer.js";
+import { seguitiState, seguitiSession } from "./seguiti-state.js";
 
 const NAV_KEY = "following-events";
 
