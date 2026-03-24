@@ -18,16 +18,6 @@ import {
   syncRailScrollbar,
   bindRailScrollbars,
 } from "./seguiti-renderer.js";
-const ACTIVE_STATUSES = new Set(["future", "imminent", "ongoing"]);
-const PAST_STATUSES = new Set(["concluded", "past"]);
-
-const STATUS_LABELS = {
-  future: "In arrivo",
-  imminent: "Imminente",
-  ongoing: "In corso",
-  concluded: "Concluso da poco",
-  past: "Passato",
-};
 
 const NAV_KEY = "following-events";
 
