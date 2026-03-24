@@ -524,82 +524,20 @@ function setupBannerEngine(dom, banners = [], tips = []) {
    MAIN RENDER
    ========================================================= */
 
-function renderHome(dom, payload) {
-  const split = splitEvents(payload.events, payload.currentUserId);
-  console.log("[HOME] currentUserId:", payload.currentUserId);
-  console.log("[HOME] total events:", Array.isArray(payload.events) ? payload.events.length : 0);
-  console.log("[HOME] generalActive:", split.generalActive.length);
-  console.log("[HOME] generalPast:", split.generalPast.length);
-  console.log("[HOME] generalHotPast:", split.generalHotPast.length);
-  console.log("[HOME] hasHotGeneralPast:", split.hasHotGeneralPast);
-  console.log("[HOME] joinedActive:", split.joinedActive.length);
-  console.log("[HOME] joinedPast:", split.joinedPast.length);
-  console.log("[HOME] joinedHotPast:", split.joinedHotPast.length);
-  console.log("[HOME] hasHotJoinedPast:", split.hasHotJoinedPast);
-const generalActiveNodes = split.generalActive.length || split.generalPast.length
-    ? buildGeneralActiveNodes(split.generalActive, split.generalPast.length, {
-        hasHotPast: split.hasHotGeneralPast,
-      })
-    : buildEmptyGeneralNodes();
-
-  const generalPastPreview = split.generalPast.slice(
-    0,
-    HOME_CONFIG.generalPastPreviewLimit
-  );
-
-  const generalPastNodes = generalPastPreview.length
-    ? buildGeneralPastNodes(generalPastPreview)
-    : buildEmptyGeneralNodes();
-
-  const joinedPastPreview = split.joinedPast.slice(
-    0,
-    HOME_CONFIG.joinedPastPreviewLimit
-  );
-
-  const joinedActiveNodes = split.joinedActive.length || joinedPastPreview.length
-    ? buildJoinedActiveNodes(split.joinedActive, split.joinedPast.length, {
-        hasHotPast: split.hasHotJoinedPast,
-      })
-    : buildEmptyJoinedNodes();
-
-  const joinedPastNodes = joinedPastPreview.length
-    ? buildJoinedPastNodes(joinedPastPreview)
-    : buildEmptyJoinedNodes();
-
-  renderRail(dom.generalActiveRail, generalActiveNodes);
-  renderRail(dom.generalPastRail, generalPastNodes);
-  renderRail(dom.joinedActiveRail, joinedActiveNodes);
-  renderRail(dom.joinedPastRail, joinedPastNodes);
-
-  setRailMode(dom.generalShell, "active");
-  setRailMode(dom.joinedShell, "active");
-
-  attachScrollbar(dom.generalActiveRail, dom.generalActiveScrollbar);
-  attachScrollbar(dom.generalPastRail, dom.generalPastScrollbar);
-  attachScrollbar(dom.joinedActiveRail, dom.joinedActiveScrollbar);
-  attachScrollbar(dom.joinedPastRail, dom.joinedPastScrollbar);
-
-  requestAnimationFrame(() => {
-    autoFocusFirstRealEvent(dom.generalActiveRail);
-    autoFocusFirstRealEvent(dom.joinedActiveRail);
+  function renderHome(dom, payload) {
+  return renderHomeView(dom, payload, {
+    buildGeneralActiveNodes,
+    buildGeneralPastNodes,
+    buildJoinedActiveNodes,
+    buildJoinedPastNodes,
+    buildEmptyGeneralNodes,
+    buildEmptyJoinedNodes,
+    setRailMode,
+    attachScrollbar,
+    autoFocusFirstRealEvent,
+    setupBannerEngine,
+    hasDirectionalBridgeCard,
   });
-
-  const bannerEngine = setupBannerEngine(
-    dom,
-    payload.banners,
-payload.tips || []  );
-
-  requestAnimationFrame(() => {
-    if (hasDirectionalBridgeCard(dom.generalActiveRail)) {
-      dom.generalActiveRail.scrollLeft = 0;
-    }
-
-    if (hasDirectionalBridgeCard(dom.joinedActiveRail)) {
-      dom.joinedActiveRail.scrollLeft = 0;
-    }
-  });
-
-  return { bannerEngine };
 }
 
 /* =========================================================
