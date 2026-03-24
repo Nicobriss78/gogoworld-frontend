@@ -64,7 +64,6 @@ async function setHomeTopbarIdentity(dom) {
    ========================================================= */
 
   function renderHome(dom, payload) {
-  function renderHome(dom, payload) {
   return renderHomeView(dom, payload);
 }
 
