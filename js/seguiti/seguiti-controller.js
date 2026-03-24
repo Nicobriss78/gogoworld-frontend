@@ -705,7 +705,7 @@ async function joinEvent(eventId, buttonEl, refs) {
   buttonEl.textContent = "Attendi...";
 
   try {
-    await apiPost(`/api/events/${encodeURIComponent(eventId)}/join`);
+    await joinSeguitiEvent(eventId);
     await loadAndRender(refs);
   } catch (error) {
     buttonEl.disabled = false;
