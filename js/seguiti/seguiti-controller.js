@@ -11,6 +11,10 @@ import {
   fetchFollowingBanners,
   joinSeguitiEvent,
 } from "./seguiti-api.js";
+import {
+  normalizeEvents,
+  groupByOrganizer,
+} from "./seguiti-renderer.js";
 const ACTIVE_STATUSES = new Set(["future", "imminent", "ongoing"]);
 const PAST_STATUSES = new Set(["concluded", "past"]);
 
