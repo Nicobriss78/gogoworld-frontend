@@ -14,6 +14,12 @@ import {
 import {
   normalizeEvents,
   groupByOrganizer,
+  renderSections,
+  setRailMode,
+  scrollRailTo,
+  scrollToFirstActiveEventCard,
+  syncRailScrollbar,
+  bindRailScrollbars,
 } from "./seguiti-renderer.js";
 const ACTIVE_STATUSES = new Set(["future", "imminent", "ongoing"]);
 const PAST_STATUSES = new Set(["concluded", "past"]);
