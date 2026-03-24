@@ -67,19 +67,8 @@ async function setHomeTopbarIdentity(dom) {
    ========================================================= */
 
   function renderHome(dom, payload) {
-  return renderHomeView(dom, payload, {
-    buildGeneralActiveNodes,
-    buildGeneralPastNodes,
-    buildJoinedActiveNodes,
-    buildJoinedPastNodes,
-    buildEmptyGeneralNodes,
-    buildEmptyJoinedNodes,
-    setRailMode,
-    attachScrollbar,
-    autoFocusFirstRealEvent,
-    setupBannerEngine,
-    hasDirectionalBridgeCard,
-  });
+  function renderHome(dom, payload) {
+  return renderHomeView(dom, payload);
 }
 
 /* =========================================================
