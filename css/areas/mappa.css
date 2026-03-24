@@ -113,23 +113,32 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 70px;
+  height: 74px;
   background: var(--mappa-surface);
   display: flex;
   justify-content: space-around;
   align-items: center;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -6px 16px rgba(15, 23, 42, 0.08);
   z-index: 100;
+  padding: 0 10px;
 }
 
 .mappa-bottomnav__item {
   display: flex;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
+}
+
+.mappa-bottomnav__item .gw-iconbtn {
+  box-shadow: none;
+  border: none;
+  background: transparent;
 }
 
 .mappa-bottomnav__item .gw-icon {
-  opacity: 0.6;
+  opacity: 0.58;
+  color: var(--mappa-text-soft);
 }
 
 .mappa-bottomnav__item.is-active .gw-icon,
