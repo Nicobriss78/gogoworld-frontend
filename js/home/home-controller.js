@@ -32,28 +32,6 @@ const HOME_CONFIG = {
 };
 
 /* =========================================================
-   FALLBACK TIPS
-   ========================================================= */
-
-const HOME_FALLBACK_TIPS = [
-  {
-    id: "geo",
-    title: "Esplora gli eventi vicini",
-    text: "Apri la mappa e scopri cosa succede intorno a te.",
-  },
-  {
-    id: "follow",
-    title: "Segui le persone e gli organizzatori",
-    text: "Costruisci il tuo flusso di eventi partendo da chi segui.",
-  },
-  {
-    id: "checkin",
-    title: "Partecipa e resta aggiornato",
-    text: "Controlla i tuoi eventi attivi e tieni d’occhio quelli passati.",
-  },
-];
-
-/* =========================================================
    API ADAPTER
    Sostituisci qui solo se i tuoi endpoint reali differiscono.
    ========================================================= */
