@@ -41,8 +41,7 @@ function getRefs(root = document) {
 async function setTopbarIdentity(refs) {
   const identity = await resolveUserIdentity();
 
-  currentUserProfile = identity?.raw || null;
-
+  seguitiSession.currentUserProfile = identity?.raw || null;
   currentUserId =
     identity?.raw?._id ||
     identity?.raw?.id ||
