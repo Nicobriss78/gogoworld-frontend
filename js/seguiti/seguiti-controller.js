@@ -108,48 +108,7 @@ function injectBannerSlots(events = []) {
 
   return result;
 }
-function groupByOrganizer(events) {
-  const map = new Map();
 
-  events.forEach((event) => {
-    const key = event.organizer._id;
-    if (!map.has(key)) {
-      map.set(key, {
-        organizerId: key,
-        organizerName: event.organizer.name,
-        events: [],
-      });
-    }
-    map.get(key).events.push(event);
-  });
-
-  const groups = Array.from(map.values())
-    .map((group) => {
-      const { activeEvents, hotPastEvents, coldPastEvents, pastEvents } =
-  splitEventsAdvanced(group.events);
-
-const initialMode = activeEvents.length
-  ? "active"
-  : pastEvents.length
-    ? "past"
-    : "active";
-
-return {
-  organizerId: group.organizerId,
-  organizerName: group.organizerName,
-  activeEvents,
-  hotPastEvents,
-  coldPastEvents,
-  pastEvents,
-  initialMode,
-};
-    })
-    .filter((group) => group.activeEvents.length || group.pastEvents.length);
-
-  return groups.sort((a, b) =>
-    a.organizerName.localeCompare(b.organizerName, "it", { sensitivity: "base" })
-  );
-}
 function prefersReducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
