@@ -419,7 +419,7 @@ function initActionsDelegation(token) {
     if (action === "details") {
       sessionStorage.setItem("selectedEventId", id);
       sessionStorage.setItem("fromView", "following-v2");
-      sessionStorage.setItem("returnTo", "partecipante-seguiti-eventi-v2.html");
+      sessionStorage.setItem("returnTo", "/pages/partecipante-seguiti-v2.html");
       sessionStorage.setItem("returnEventId", id);
 
       window.location.href = "evento.html";
