@@ -821,7 +821,7 @@ async function loadAndRender(refs) {
   try {
     const [rawEvents, banners] = await Promise.all([
       fetchFollowingEvents(),
-      fetchFollowingBanners(),
+      fetchFollowingBanners(currentUserProfile),
     ]);
 
     const normalizedEvents = normalizeEvents(rawEvents);
