@@ -34,7 +34,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--mappa-surface);
+  background: red !important;
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
   padding: 10px 14px 12px;
 }
