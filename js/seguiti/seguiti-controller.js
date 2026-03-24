@@ -660,7 +660,7 @@ async function loadAndRender(refs) {
       fetchFollowingBanners(currentUserProfile),
     ]);
 
-    const normalizedEvents = normalizeEvents(rawEvents);
+    const normalizedEvents = normalizeEvents(rawEvents, currentUserId);
     const organizerSections = groupByOrganizer(normalizedEvents);
 
     seguitiState.rawEvents = rawEvents;
