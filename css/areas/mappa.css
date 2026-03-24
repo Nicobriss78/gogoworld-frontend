@@ -25,9 +25,8 @@
 .mappa-main {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 12px;
-  padding-bottom: 90px;
+  gap: 16px;
+  padding: 14px 14px 96px;
 }
 /* ===== TOPBAR ===== */
 
