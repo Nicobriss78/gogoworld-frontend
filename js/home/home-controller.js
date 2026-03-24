@@ -8,10 +8,8 @@ import {
   renderHomeView,
   renderLoading,
   renderError,
-  setRailMode,
-  resetRailScrollForMode,
-  scrollRailTo,
-  scrollToFirstActiveEventCard,
+  bindRailModeDelegation,
+  bindCardActions,
 } from "./home-view.js";
 import {
   resolveUserIdentity,
