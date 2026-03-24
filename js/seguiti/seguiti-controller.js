@@ -42,12 +42,12 @@ async function setTopbarIdentity(refs) {
   const identity = await resolveUserIdentity();
 
   seguitiSession.currentUserProfile = identity?.raw || null;
-  currentUserId =
-    identity?.raw?._id ||
-    identity?.raw?.id ||
-    identity?._id ||
-    identity?.id ||
-    null;
+  seguitiSession.currentUserId =
+  identity?.raw?._id ||
+  identity?.raw?.id ||
+  identity?._id ||
+  identity?.id ||
+  null;
 
   applyUserIdentityToTopbar({
     greetingEl: refs.greeting,
