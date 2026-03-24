@@ -90,64 +90,6 @@ function showOnly(refs, key) {
   });
 }
 
-function compareEvents(a, b) {
-  const rank = {
-    ongoing: 0,
-    imminent: 1,
-    future: 2,
-    concluded: 3,
-    past: 4,
-  };
-
-  const ra = rank[a?.status] ?? 99;
-  const rb = rank[b?.status] ?? 99;
-  if (ra !== rb) return ra - rb;
-
-  const ta = a?.dateStart ? new Date(a.dateStart).getTime() : 0;
-  const tb = b?.dateStart ? new Date(b.dateStart).getTime() : 0;
-  return ta - tb;
-}
-
-function splitEvents(events) {
-  const activeEvents = [];
-  const pastEvents = [];
-
-  events.forEach((event) => {
-    if (ACTIVE_STATUSES.has(event.status)) activeEvents.push(event);
-    else if (PAST_STATUSES.has(event.status)) pastEvents.push(event);
-  });
-
-  activeEvents.sort(compareEvents);
-  pastEvents.sort(compareEvents);
-
-  return { activeEvents, pastEvents };
-}
-function splitEventsAdvanced(events) {
-  const { activeEvents, pastEvents } = splitEvents(events);
-  const now = Date.now();
-
-  const hotPastEvents = pastEvents.filter((event) => {
-    const rawDate = event.dateEnd || event.dateStart;
-    if (!rawDate) return false;
-
-    const time = new Date(rawDate).getTime();
-    if (Number.isNaN(time)) return false;
-
-    const diffDays = (now - time) / (1000 * 60 * 60 * 24);
-    return diffDays >= 0 && diffDays <= 7;
-  });
-
-  const coldPastEvents = pastEvents.filter(
-    (event) => !hotPastEvents.includes(event)
-  );
-
-  return {
-    activeEvents,
-    hotPastEvents,
-    coldPastEvents,
-    pastEvents: [...hotPastEvents, ...coldPastEvents],
-  };
-}
 function injectBannerSlots(events = []) {
   const result = [];
   let slotIndex = 0;
