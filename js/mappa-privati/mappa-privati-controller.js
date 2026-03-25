@@ -11,9 +11,9 @@ import {
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
-  const state = createMappaState();
-  const api = createMappaApi();
-  const renderer = createMappaRenderer();
+const state = createMappaPrivatiState();
+  const api = createMappaPrivatiApi();
+  const renderer = createMappaPrivatiRenderer();
   const elements = getDomElements();
 
   if (!elements.mapEl) {
