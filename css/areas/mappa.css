@@ -139,28 +139,33 @@
 .gw-iconbtn {
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  flex: 0 0 40px;
+  border: 1px solid var(--mappa-border);
+  border-radius: var(--mappa-radius-btn);
+  background: var(--mappa-surface);
+  color: var(--mappa-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  background: var(--mappa-surface);
-  box-shadow: none;
-  color: var(--mappa-text);
-  text-decoration: none;
   cursor: pointer;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gw-iconbtn:active {
+  transform: scale(0.98);
 }
 
 .gw-icon {
-  width: 22px;
-  height: 22px;
-  fill: none;
+  width: 24px;
+  height: 24px;
   stroke: currentColor;
+  fill: none;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
-  color: currentColor;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* ===== BOTTOM NAV ===== */
