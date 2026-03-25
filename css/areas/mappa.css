@@ -5,14 +5,33 @@
 /* ===== ROOT LOCALE ===== */
 
 .mappa-page {
-  --mappa-bg: var(--gw-bg);
-  --mappa-surface: var(--gw-surface);
-  --mappa-text: var(--gw-text);
-  --mappa-text-soft: var(--gw-text-secondary);
-  --mappa-primary: var(--gw-accent);
-  --mappa-danger: var(--gw-danger);
-  --mappa-radius: 18px;
-  --mappa-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  --mappa-accent: var(--gw-accent, #3F7C96);
+  --mappa-accent-hover: var(--gw-accent-hover, #35697F);
+  --mappa-accent-soft: var(--gw-accent-soft, #E6F0F4);
+  --mappa-accent-border: var(--gw-accent-border, #C2D6DF);
+  --mappa-danger: var(--gw-danger, #B52A32);
+
+  --mappa-bg: var(--gw-bg, #F4F6F8);
+  --mappa-surface: var(--gw-surface, #FFFFFF);
+  --mappa-border: var(--gw-border, #E6EAF0);
+
+  --mappa-text: var(--gw-text, #1C2430);
+  --mappa-text-secondary: var(--gw-text-soft, #5A6572);
+  --mappa-text-muted: var(--gw-text-muted, #8B95A1);
+
+  --mappa-radius-main: 12px;
+  --mappa-radius-btn: 10px;
+  --mappa-radius-pill: 999px;
+
+  --mappa-shadow-main: 0 6px 18px rgba(16, 24, 40, 0.06);
+  --mappa-shadow-strong: 0 10px 24px rgba(16, 24, 40, 0.10);
+
+  --mappa-space-xs: 6px;
+  --mappa-space-sm: 10px;
+  --mappa-space-md: 16px;
+  --mappa-space-lg: 24px;
+  --mappa-space-xl: 32px;
+
   --mappa-topbar-h: 132px;
   --mappa-bottomnav-h: 86px;
   --mappa-page-pad-x: 16px;
