@@ -212,6 +212,7 @@ function setCurrentUserId(userId) {
     setDrawerOpen,
     setChatState,
     resetChatState,
+    setCurrentUserId,
     setReturnContext,
     clearReturnContext
   };
