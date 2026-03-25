@@ -49,26 +49,27 @@ return events
      =============================== */
 
   async function openEventRoom(eventId) {
-    try {
-      const res = await fetcher(`/api/rooms/event/${eventId}/open-or-join`, {
-        method: "POST"
-      });
+  try {
+    const res = await apiPost(`/rooms/event/${eventId}/open-or-join`);
 
-      const data = await handleResponse(res);
-
-      return {
-        roomId: data.roomId,
-        title: data.title || "",
-        canSend: Boolean(data.canSend),
-        locked: Boolean(data.locked),
-        activeFrom: data.activeFrom || null,
-        activeUntil: data.activeUntil || null
-      };
-
-    } catch {
+    if (!res.ok) {
       throw new Error("MAPPA_API_OPEN_ROOM_ERROR");
     }
+
+    const room = res.data || {};
+
+    return {
+      roomId: room.roomId,
+      title: room.title || "",
+      canSend: Boolean(room.canSend),
+      locked: Boolean(room.locked),
+      activeFrom: room.activeFrom || null,
+      activeUntil: room.activeUntil || null
+    };
+  } catch {
+    throw new Error("MAPPA_API_OPEN_ROOM_ERROR");
   }
+}
 
   async function fetchRoomMessages(roomId) {
     try {
