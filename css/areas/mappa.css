@@ -74,15 +74,21 @@ body.mappa-page button {
 }
 
 .mappa-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: calc(100dvh - var(--mappa-topbar-h) - var(--mappa-bottomnav-h));
   width: min(100%, 760px);
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
   padding:
     var(--mappa-page-pad-y)
     var(--mappa-page-pad-x)
-    calc(var(--mappa-bottomnav-h) + 14px);
+    calc(var(--mappa-page-pad-y) + 6px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 /* ===== TOPBAR ===== */
 
