@@ -34,7 +34,7 @@ const state = createMappaPrivatiState();
     onSelectEvent: handleMapEventSelect
   });
 
-  const chat = createMappaChat({
+  const chat = createMappaPrivatiChat({
     api,
     renderer,
     state,
