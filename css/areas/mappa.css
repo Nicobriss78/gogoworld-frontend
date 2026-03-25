@@ -492,7 +492,7 @@ body.mappa-detail-open {
   justify-content: space-between;
   align-items: center;
   padding: 10px 12px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid var(--mappa-border);
 }
 
 .mappa-chat-heading {
