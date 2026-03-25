@@ -504,8 +504,10 @@ body.mappa-detail-open {
 }
 
 .mappa-chat-heading {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--mappa-text);
 }
 
 .mappa-chat-header {
