@@ -294,8 +294,8 @@ function getDomElements() {
   return {
     mapEl: document.getElementById("mappaMap"),
 
-    userName: document.getElementById("gwUserName"),
-    userStatus: document.getElementById("gwUserStatus"),
+    userName: document.getElementById("mappaGreeting"),
+userStatus: document.getElementById("mappaRole"),
 
     drawerOverlay: document.getElementById("mappaDetailOverlay"),
     drawer: document.getElementById("mappaDetailDrawer"),
