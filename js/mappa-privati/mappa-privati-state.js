@@ -1,4 +1,4 @@
-export function createMappaState() {
+export function createMappaPrivatiState() {
   let state = createInitialState();
 
   function createInitialState() {
