@@ -1,9 +1,9 @@
-import { createMappaState } from "/js/mappa/mappa-state.js";
-import { createMappaApi } from "/js/mappa/mappa-api.js";
-import { createMappaRenderer } from "/js/mappa/mappa-renderer.js";
-import { createMappaMap } from "/js/mappa/mappa-map.js";
-import { createMappaChat } from "/js/mappa/mappa-chat.js";
-import { createMappaDrawer } from "/js/mappa/mappa-drawer.js";
+import { createMappaPrivatiState } from "/js/mappa-privati/mappa-privati-state.js";
+import { createMappaPrivatiApi } from "/js/mappa-privati/mappa-privati-api.js";
+import { createMappaPrivatiRenderer } from "/js/mappa-privati/mappa-privati-renderer.js";
+import { createMappaPrivatiMap } from "/js/mappa-privati/mappa-privati-map.js";
+import { createMappaPrivatiChat } from "/js/mappa-privati/mappa-privati-chat.js";
+import { createMappaPrivatiDrawer } from "/js/mappa-privati/mappa-privati-drawer.js";
 import {
   resolveUserIdentity,
   applyUserIdentityToTopbar
