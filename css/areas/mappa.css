@@ -357,8 +357,10 @@ body.mappa-page button {
   right: 0;
   bottom: -100%;
   background: var(--mappa-surface);
-  border-radius: 16px 16px 0 0;
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--mappa-border);
+  border-bottom: 0;
+  border-radius: var(--mappa-radius-main) var(--mappa-radius-main) 0 0;
+  box-shadow: var(--mappa-shadow-strong);
   padding: 14px 14px calc(var(--mappa-bottomnav-h) + 18px);
   transition: bottom 0.25s ease;
   z-index: 120;
