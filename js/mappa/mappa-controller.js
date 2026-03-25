@@ -97,8 +97,15 @@ async function init() {
      TOPBAR
      =============================== */
 
-  async function hydrateTopbar() {
+async function hydrateTopbar() {
   const identity = await resolveUserIdentity();
+
+  state.setCurrentUserId(
+    identity?.id ??
+    identity?._id ??
+    identity?.userId ??
+    null
+  );
 
   applyUserIdentityToTopbar({
     greetingEl: elements.userName,
@@ -106,7 +113,6 @@ async function init() {
     identity
   });
 }
-
   /* ===============================
      LOAD EVENTI PUBBLICI
      =============================== */
