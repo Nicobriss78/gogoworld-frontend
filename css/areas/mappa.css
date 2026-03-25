@@ -492,7 +492,7 @@ body.mappa-detail-open {
   box-shadow: var(--mappa-shadow-main);
   display: flex;
   flex-direction: column;
-  height: 320px;
+  min-height: 320px;
 }
 
 .mappa-chat-headerbar {
