@@ -69,11 +69,11 @@
 }
 
 .mappa-topbar__row {
+  box-sizing: border-box;
   width: 100%;
   padding-left: var(--mappa-page-pad-x);
   padding-right: var(--mappa-page-pad-x);
 }
-
 .mappa-topbar__row--identity {
   min-height: 60px;
   padding-top: 12px;
