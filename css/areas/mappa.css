@@ -584,9 +584,48 @@ body.mappa-detail-open {
 
 /* ===== RESPONSIVE ===== */
 
+@media (max-width: 640px) {
+  .mappa-topbar__row--identity {
+    min-height: 58px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+  }
+
+  .mappa-topbar__greeting {
+    font-size: 15px;
+  }
+
+  .mappa-topbar__role {
+    font-size: 12px;
+  }
+
+  .mappa-topbar__brand {
+    font-size: 18px;
+  }
+
+  .mappa-topbar__row--actions {
+    min-height: 70px;
+    padding-top: 8px;
+    padding-bottom: 12px;
+    gap: 10px;
+  }
+
+  .gw-iconbtn {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+  }
+
+  .mappa-bottomnav__item {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+  }
+}
+
 @media (min-width: 768px) {
   .mappa-main {
     max-width: 600px;
     margin: 0 auto;
   }
-  }
+}
