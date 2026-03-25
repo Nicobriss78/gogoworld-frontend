@@ -530,7 +530,7 @@ body.mappa-detail-open {
 }
 
 #mappaChatSend {
-  background: var(--mappa-primary);
+  background: var(--mappa-accent);
   color: white;
   border: none;
   border-radius: 8px;
