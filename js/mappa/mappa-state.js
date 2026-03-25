@@ -167,7 +167,14 @@ returnDrawerOpen: false
 
     return state;
   }
+function setCurrentUserId(userId) {
+  state = {
+    ...state,
+    currentUserId: userId != null ? String(userId) : null
+  };
 
+  return state;
+}
   function setReturnContext(partial = {}) {
     state = {
       ...state,
