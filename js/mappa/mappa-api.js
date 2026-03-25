@@ -72,18 +72,17 @@ return events
 }
 
   async function fetchRoomMessages(roomId) {
-    try {
-      const res = await fetcher(`/api/rooms/${roomId}/messages`);
-      const data = await handleResponse(res);
+  try {
+    const res = await apiGet(`/rooms/${roomId}/messages`);
+    if (!res.ok) return [];
 
-      if (!Array.isArray(data)) return [];
+    const messages = Array.isArray(res.data) ? res.data : [];
 
-      return data.map(normalizeMessage);
-
-    } catch {
-      return [];
-    }
+    return messages.map(normalizeMessage).filter(Boolean);
+  } catch {
+    return [];
   }
+}
 
   async function sendRoomMessage(roomId, text) {
     const cleanText = String(text || "").trim();
