@@ -105,13 +105,12 @@ return events
 }
 
   async function markRoomRead(roomId) {
-    try {
-      await fetcher(`/api/rooms/${roomId}/read`, {
-        method: "POST"
-      });
-    } catch {
-      // silenzioso
-    }
+  try {
+    await apiPost(`/rooms/${roomId}/read`, {});
+  } catch {
+    // silenzioso
+  }
+}
   }
 
   /* ===============================
