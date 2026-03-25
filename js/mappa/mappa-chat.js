@@ -105,7 +105,10 @@ if (currentEventId !== requestEventId) return;
     if (currentRoomId !== requestRoomId) return;
 
     elements.chatMessages.innerHTML =
-      renderer.renderChatMessages(messages);
+    renderer.renderChatMessages(
+    messages,
+    state.getState().currentUserId
+  );
 
     elements.chatNotice.innerHTML = "";
 
