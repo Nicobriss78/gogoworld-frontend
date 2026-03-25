@@ -85,29 +85,24 @@ return events
 }
 
   async function sendRoomMessage(roomId, text) {
-    const cleanText = String(text || "").trim();
+  const cleanText = String(text || "").trim();
 
-    if (!cleanText) {
-      throw new Error("EMPTY_MESSAGE");
-    }
+  if (!cleanText) {
+    throw new Error("EMPTY_MESSAGE");
+  }
 
-    try {
-      const res = await fetcher(`/api/rooms/${roomId}/messages`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ text: cleanText })
-      });
+  try {
+    const res = await apiPost(`/rooms/${roomId}/messages`, { text: cleanText });
 
-      const data = await handleResponse(res);
-
-      return normalizeMessage(data);
-
-    } catch {
+    if (!res.ok) {
       throw new Error("SEND_MESSAGE_ERROR");
     }
+
+    return normalizeMessage(res.data);
+  } catch {
+    throw new Error("SEND_MESSAGE_ERROR");
   }
+}
 
   async function markRoomRead(roomId) {
     try {
