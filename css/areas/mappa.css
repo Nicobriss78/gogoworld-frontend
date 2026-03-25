@@ -479,8 +479,9 @@ body.mappa-detail-open {
 
 .mappa-chat-card {
   background: var(--mappa-surface);
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--mappa-border);
+  border-radius: var(--mappa-radius-main);
+  box-shadow: var(--mappa-shadow-main);
   display: flex;
   flex-direction: column;
   height: 320px;
