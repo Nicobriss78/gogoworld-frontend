@@ -297,7 +297,7 @@
 }
 
 .mappa-dot--future {
-  background: var(--mappa-primary);
+  background: var(--mappa-accent);
 }
 
 /* ===== DRAWER ===== */
