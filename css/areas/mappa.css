@@ -435,9 +435,11 @@ body.mappa-detail-open {
 }
 
 .mappa-event-tags span {
-  background: rgba(0,0,0,0.05);
+  background: var(--mappa-accent-soft);
+  border: 1px solid var(--mappa-accent-border);
+  color: var(--mappa-accent-hover);
   padding: 2px 6px;
-  border-radius: 6px;
+  border-radius: var(--mappa-radius-btn);
 }
 
 .mappa-event-price {
