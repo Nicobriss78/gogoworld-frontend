@@ -20,7 +20,7 @@ const state = createMappaPrivatiState();
     return;
   }
 
-  const drawer = createMappaDrawer({
+  const drawer = createMappaPrivatiDrawer({
     overlayEl: elements.drawerOverlay,
     drawerEl: elements.drawer,
     closeBtnEl: elements.drawerClose,
