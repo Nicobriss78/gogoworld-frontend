@@ -30,19 +30,19 @@ return events
      =============================== */
 
   async function fetchEventDetail(eventId) {
-    if (!eventId) return null;
+  if (!eventId) return null;
 
-    try {
-      const res = await fetcher(`/api/events/${eventId}`);
-      const data = await handleResponse(res);
+  try {
+    const res = await apiGet(`/events/${eventId}`);
+    if (!res.ok) return null;
 
-      const ev = normalizeEventForMap(data);
+    const ev = normalizeEventForMap(res.data);
 
-return ev?.id ? ev : null;
-    } catch {
-      return null;
-    }
+    return ev?.id ? ev : null;
+  } catch {
+    return null;
   }
+}
 
   /* ===============================
      CHAT
