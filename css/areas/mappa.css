@@ -85,7 +85,7 @@ body.mappa-page button {
   calc(var(--mappa-space-md) + 6px);
   display: flex;
   flex-direction: column;
-  gap: var(--mappa-space-md);
+  gap: 12px;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
