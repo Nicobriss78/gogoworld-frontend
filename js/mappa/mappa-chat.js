@@ -146,7 +146,10 @@ if (currentEventId !== requestEventId) return;
       const messages = await api.fetchRoomMessages(currentRoomId);
 
       elements.chatMessages.innerHTML =
-        renderer.renderChatMessages(messages);
+  renderer.renderChatMessages(
+    messages,
+    state.getState().currentUserId
+  );
 
     } catch {
       // silenzioso
