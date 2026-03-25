@@ -124,7 +124,7 @@ async function hydrateTopbar() {
         mapError: ""
       });
 
-      const events = await api.fetchPublicMapEvents();
+      const events = await api.fetchPrivateMapEvents();
 
       state.setEvents(events);
       map.setEvents(events);
