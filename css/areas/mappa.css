@@ -509,7 +509,7 @@ body.mappa-detail-open {
 
 .mappa-msg-time {
   font-size: 10px;
-  color: var(--mappa-text-soft);
+  color: var(--mappa-text-muted);
   margin-top: 2px;
 }
 
