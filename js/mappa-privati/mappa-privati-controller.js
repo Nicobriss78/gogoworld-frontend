@@ -209,7 +209,7 @@ window.location.href = `/evento.html?id=${encodeURIComponent(eventId)}`;  }
   async function handleReturnContext() {
     const stored = readReturnContext();
     if (!stored?.returnEventId) return;
-    if (stored.fromView !== "map-v2") return;
+    if (stored.fromView !== "map-private-v2") return;
 
     state.setReturnContext({
       returnEventId: stored.returnEventId,
