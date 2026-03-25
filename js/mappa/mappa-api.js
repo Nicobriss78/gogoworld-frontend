@@ -10,8 +10,15 @@ export function createMappaApi({ fetchImpl } = {}) {
 
   async function fetchPublicMapEvents() {
     try {
-      const res = await fetcher("/api/events?visibility=public");
-      const data = await handleResponse(res);
+      const res = await apiGet("/events/public");
+
+if (!res.ok) return [];
+
+const events = Array.isArray(res.data) ? res.data : [];
+
+return events
+  .map(normalizeEventForMap)
+  .filter(isValidMapEvent);
 const rawEvents = Array.isArray(data?.events) ? data.events : [];
 
 return rawEvents
