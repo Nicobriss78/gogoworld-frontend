@@ -19,11 +19,6 @@ const events = Array.isArray(res.data) ? res.data : [];
 return events
   .map(normalizeEventForMap)
   .filter(isValidMapEvent);
-const rawEvents = Array.isArray(data?.events) ? data.events : [];
-
-return rawEvents
-  .map(normalizeEventForMap)
-  .filter(isValidMapEvent);
 
     } catch (err) {
       throw new Error("MAPPA_API_FETCH_EVENTS_ERROR");
