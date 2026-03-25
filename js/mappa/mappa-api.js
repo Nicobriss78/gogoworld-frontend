@@ -190,17 +190,6 @@ return ev?.id ? ev : null;
     };
   }
 
-  /* ===============================
-     HELPER
-     =============================== */
-
-  async function handleResponse(res) {
-    if (!res.ok) {
-      throw new Error("API_ERROR");
-    }
-
-    return res.json();
-  }
 
   /* ===============================
      EXPORT
