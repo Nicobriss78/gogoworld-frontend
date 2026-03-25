@@ -1,3 +1,7 @@
+import {
+  apiGet,
+  apiPost
+} from "/js/api.js";
 export function createMappaApi({ fetchImpl } = {}) {
   const fetcher = fetchImpl || fetch;
 
