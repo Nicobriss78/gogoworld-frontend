@@ -473,7 +473,7 @@ body.mappa-detail-open {
   padding: 10px;
   text-align: center;
   font-size: 13px;
-  color: var(--mappa-text-soft);
+  color: var(--mappa-text-secondary);
 }
 
 .mappa-chat-messages {
