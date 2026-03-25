@@ -261,7 +261,7 @@ window.location.href = `/evento.html?id=${encodeURIComponent(eventId)}`;  }
 
   function readReturnContext() {
     try {
-      const raw = sessionStorage.getItem("gw:mappa-v2:return-context");
+      const raw = sessionStorage.getItem("gw:mappa-privati-v2:return-context");
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
