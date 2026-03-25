@@ -503,7 +503,7 @@ body.mappa-detail-open {
 }
 
 .mappa-msg--me .mappa-msg-text {
-  background: var(--mappa-primary);
+  background: var(--mappa-accent);
   color: #fff;
 }
 
