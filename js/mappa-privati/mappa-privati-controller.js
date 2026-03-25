@@ -29,7 +29,7 @@ const state = createMappaPrivatiState();
     }
   });
 
-  const map = createMappaMap({
+  const map = createMappaPrivatiMap({
     mapElementId: "mappaMap",
     onSelectEvent: handleMapEventSelect
   });
