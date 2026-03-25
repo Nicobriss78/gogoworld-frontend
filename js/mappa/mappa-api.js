@@ -111,7 +111,6 @@ return events
     // silenzioso
   }
 }
-  }
 
   /* ===============================
      NORMALIZZAZIONE EVENTI
