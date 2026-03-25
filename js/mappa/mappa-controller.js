@@ -200,8 +200,7 @@ async function hydrateTopbar() {
       returnDrawerOpen: drawerWasOpen
     });
 
-    window.location.href = `/pages/evento.html?id=${encodeURIComponent(eventId)}`;
-  }
+window.location.href = `/evento.html?id=${encodeURIComponent(eventId)}`;  }
 
   /* ===============================
      RETURN CONTEXT
