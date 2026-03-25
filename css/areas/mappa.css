@@ -386,7 +386,7 @@ body.mappa-detail-open {
 
 .mappa-event-meta {
   font-size: 13px;
-  color: var(--mappa-text-soft);
+  color: var(--mappa-text-secondary);
   display: flex;
   justify-content: space-between;
 }
