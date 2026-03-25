@@ -98,24 +98,14 @@ async function init() {
      =============================== */
 
   async function hydrateTopbar() {
-    try {
-      const res = await fetch("/api/users/me");
-      if (!res.ok) return;
+  const identity = await resolveUserIdentity();
 
-      const data = await res.json();
-      const user = data?.user || data || {};
-
-      if (elements.userName) {
-        elements.userName.textContent = user.name || user.username || "Utente";
-      }
-
-      if (elements.userStatus) {
-        elements.userStatus.textContent = user.role || "Partecipante";
-      }
-    } catch {
-      // silenzioso
-    }
-  }
+  applyUserIdentityToTopbar({
+    greetingEl: elements.userName,
+    roleEl: elements.userStatus,
+    identity
+  });
+}
 
   /* ===============================
      LOAD EVENTI PUBBLICI
