@@ -9,21 +9,20 @@ export function createMappaApi({ fetchImpl } = {}) {
      =============================== */
 
   async function fetchPublicMapEvents() {
-    try {
-      const res = await apiGet("/events/public");
+  try {
+    const res = await apiGet("/events?visibility=public");
 
-if (!res.ok) return [];
+    if (!res.ok) return [];
 
-const events = Array.isArray(res.data) ? res.data : [];
+    const rawEvents = Array.isArray(res.events) ? res.events : [];
 
-return events
-  .map(normalizeEventForMap)
-  .filter(isValidMapEvent);
-
-    } catch (err) {
-      throw new Error("MAPPA_API_FETCH_EVENTS_ERROR");
-    }
+    return rawEvents
+      .map(normalizeEventForMap)
+      .filter(isValidMapEvent);
+  } catch {
+    throw new Error("MAPPA_API_FETCH_EVENTS_ERROR");
   }
+}
 
   /* ===============================
      EVENTO SINGOLO
