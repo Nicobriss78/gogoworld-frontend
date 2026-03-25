@@ -114,7 +114,7 @@ async function hydrateTopbar() {
   });
 }
   /* ===============================
-     LOAD EVENTI PUBBLICI
+     LOAD EVENTI PRIVATI
      =============================== */
 
   async function loadEvents() {
