@@ -561,9 +561,11 @@ body.mappa-detail-open {
 
 #mappaChatInput {
   flex: 1;
-  border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: var(--mappa-radius-btn);
+  border: 1px solid var(--mappa-border);
   padding: 8px;
+  background: var(--mappa-surface);
+  color: var(--mappa-text);
 }
 
 #mappaChatSend {
