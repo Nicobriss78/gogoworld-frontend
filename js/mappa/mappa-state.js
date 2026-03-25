@@ -22,8 +22,10 @@ export function createMappaState() {
       chatLoading: false,
       chatError: "",
 
-      returnEventId: null,
-      returnDrawerOpen: false
+      currentUserId: null,
+
+returnEventId: null,
+returnDrawerOpen: false
     };
   }
 
