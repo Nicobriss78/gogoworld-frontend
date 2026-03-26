@@ -4,7 +4,7 @@ import {
 } from "/js/api.js";
 export function createMappaPrivatiApi({ fetchImpl } = {}) {
   /* ===============================
-     EVENTI PUBBLICI (MAPPA)
+     EVENTI PRIVATI (MAPPA)
      =============================== */
 
   async function fetchPublicMapEvents() {
