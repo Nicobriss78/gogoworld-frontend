@@ -9,7 +9,7 @@ export function createMappaPrivatiApi({ fetchImpl } = {}) {
 
   async function fetchPrivateMapEvents() {
   try {
-    const res = await apiGet("/events?visibility=public");
+    const res = await apiGet("/events/private");
 
     if (!res.ok) return [];
 
