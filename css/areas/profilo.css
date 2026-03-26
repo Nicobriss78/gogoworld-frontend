@@ -718,7 +718,46 @@ body.profilo-v2-page .gw-iconbtn {
 /* =========================================================
    DESKTOP LIGHT TUNING
    ========================================================= */
+@media (max-width: 640px) {
+  body.profilo-v2-page {
+    --profilo-page-pad-x: 14px;
+    --profilo-page-pad-y: 14px;
+    --profilo-topbar-h: 132px;
+    --profilo-bottomnav-h: 86px;
+  }
 
+  .profilo-topbar__row--identity {
+    min-height: 58px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+  }
+
+  .profilo-topbar__greeting {
+    font-size: 15px;
+  }
+
+  .profilo-topbar__role {
+    font-size: 12px;
+  }
+
+  .profilo-topbar__brand {
+    font-size: 18px;
+  }
+
+  .profilo-topbar__row--actions {
+    min-height: 70px;
+    padding-top: 8px;
+    padding-bottom: 12px;
+    gap: 10px;
+  }
+
+  .profilo-topbar__btn,
+  .profilo-bottomnav > button {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+  }
+}
 @media (min-width: 720px) {
   .profilo-main {
     width: min(100%, 720px);
