@@ -1,5 +1,6 @@
 import {
   getProfileState,
+  setProfileData,
   patchProfileData,
   patchAccountStatus,
   setConnections,
