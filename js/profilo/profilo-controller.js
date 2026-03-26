@@ -93,7 +93,7 @@ async function loadProfileData() {
       fetchProfileConnections(),
     ]);
 
-    patchProfileData(profileResult.profile);
+    setProfileData(profileResult.profile);
     patchAccountStatus(profileResult.accountStatus);
     setConnections(connectionsResult);
     patchUiState({ loading: false });
