@@ -7,7 +7,7 @@ export function createMappaPrivatiApi({ fetchImpl } = {}) {
      EVENTI PRIVATI (MAPPA)
      =============================== */
 
-  async function fetchPublicMapEvents() {
+  async function fetchPrivateMapEvents() {
   try {
     const res = await apiGet("/events?visibility=public");
 
