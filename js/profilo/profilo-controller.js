@@ -112,8 +112,8 @@ async function loadProfileData() {
     });
 
     setConnections({
-      followersCount: account.followersCount ?? connections.followers.length,
-      followingCount: account.followingCount ?? connections.following.length,
+      followersCount: connections.followers.length,
+      followingCount: connections.following.length,
       followers: connections.followers,
       following: connections.following,
     });
