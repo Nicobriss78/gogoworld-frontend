@@ -1,7 +1,6 @@
 import {
   getProfileState,
   setProfileData,
-  patchProfileData,
   patchAccountStatus,
   setConnections,
   patchUiState,
@@ -11,10 +10,13 @@ import {
 } from "./profilo-state.js";
 
 import {
-  fetchProfile,
-  fetchProfileConnections,
-  updateProfile,
-  resendVerificationEmail,
+  fetchMyProfile,
+  fetchMyAccountStatus,
+  saveMyProfile,
+  uploadMyAvatar,
+  resendEmailVerification,
+  fetchMyConnections,
+  buildMyPublicProfileUrl,
 } from "./profilo-api.js";
 
 import {
@@ -88,14 +90,34 @@ async function loadProfileData() {
   render();
 
   try {
-    const [profileResult, connectionsResult] = await Promise.all([
-      fetchProfile(),
-      fetchProfileConnections(),
+    const account = await fetchMyAccountStatus();
+
+    patchAccountStatus({
+      emailVerified: account.emailVerified,
+      emailStatusLabel: account.emailStatusLabel,
+      profileCompletionLabel: account.profileCompletionLabel,
+      canResendVerification: account.canResendVerification,
+    });
+
+    const [profile, connections] = await Promise.all([
+      fetchMyProfile(),
+      fetchMyConnections(account.id),
     ]);
 
-    setProfileData(profileResult.profile);
-    patchAccountStatus(profileResult.accountStatus);
-    setConnections(connectionsResult);
+    setProfileData({
+      ...profile,
+      id: profile.id || account.id,
+      nickname: profile.nickname || account.nickname || "",
+      roleLabel: profile.roleLabel || account.roleLabel || "Esploratore",
+    });
+
+    setConnections({
+      followersCount: account.followersCount ?? connections.followers.length,
+      followingCount: account.followingCount ?? connections.following.length,
+      followers: connections.followers,
+      following: connections.following,
+    });
+
     patchUiState({ loading: false });
     render();
   } catch (error) {
@@ -118,10 +140,13 @@ async function handleSaveProfile(event) {
 
   try {
     const formValues = readProfileFormValues();
-    const result = await updateProfile(formValues);
+    const result = await saveMyProfile(formValues);
 
-    patchProfileData(result.profile);
-    patchAccountStatus(result.accountStatus);
+    setProfileData({
+      ...getProfileState().profile,
+      ...result,
+    });
+
     patchUiState({ saving: false, editing: false });
     setProfileMessage("Profilo aggiornato con successo.");
     render();
@@ -132,18 +157,60 @@ async function handleSaveProfile(event) {
   }
 }
 
+async function handleAvatarChange(event) {
+  const file = event.target.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  patchUiState({ saving: true });
+  clearProfileFeedback();
+  render();
+
+  try {
+    const result = await uploadMyAvatar(file);
+
+    setProfileData({
+      ...getProfileState().profile,
+      ...result,
+    });
+
+    patchUiState({ saving: false });
+    setProfileMessage("Avatar aggiornato con successo.");
+    render();
+  } catch (error) {
+    patchUiState({ saving: false });
+    setProfileError(error.message || "Aggiornamento avatar non riuscito.");
+    render();
+  }
+}
+
 async function handleResendVerification() {
   clearProfileFeedback();
   render();
 
   try {
-    const result = await resendVerificationEmail();
+    const result = await resendEmailVerification();
     setProfileMessage(result.message || "Email di verifica inviata.");
     render();
   } catch (error) {
     setProfileError(error.message || "Invio email non riuscito.");
     render();
   }
+}
+
+function handleOpenPublicBoard() {
+  const userId = getProfileState().profile.id;
+  const url = buildMyPublicProfileUrl(userId);
+
+  if (!url) {
+    setProfileError("Impossibile aprire la bacheca pubblica.");
+    render();
+    return;
+  }
+
+  window.location.href = url;
 }
 
 /* =========================================================
@@ -154,11 +221,7 @@ function bindHeroActions() {
   const { editButton, publicBoardButton } = getHeroElements();
 
   editButton.addEventListener("click", openEditor);
-
-  publicBoardButton.addEventListener("click", () => {
-    // placeholder intenzionale: la navigazione reale verrà collegata
-    // quando fisseremo il flusso della bacheca pubblica V2
-  });
+  publicBoardButton.addEventListener("click", handleOpenPublicBoard);
 }
 
 function bindAccountStatusActions() {
@@ -167,10 +230,11 @@ function bindAccountStatusActions() {
 }
 
 function bindEditorActions() {
-  const { form, cancelButton } = getEditorElements();
+  const { form, cancelButton, avatarInput } = getEditorElements();
 
   form.addEventListener("submit", handleSaveProfile);
   cancelButton.addEventListener("click", closeEditor);
+  avatarInput.addEventListener("change", handleAvatarChange);
 }
 
 function bindTopbarActions() {
@@ -186,7 +250,6 @@ function bindTopbarActions() {
     const nextValue = !getProfileState().ui.menuOpen;
 
     patchUiState({ menuOpen: nextValue });
-
     menuButton.setAttribute("aria-expanded", String(nextValue));
   });
 }
