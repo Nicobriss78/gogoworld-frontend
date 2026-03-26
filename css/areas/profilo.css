@@ -174,7 +174,9 @@ body.profilo-v2-page select {
   justify-content: flex-start;
   gap: 12px;
 }
-
+.profilo-topbar__row--actions::-webkit-scrollbar {
+  display: none;
+}
 .profilo-topbar__btn {
   width: 40px;
   height: 40px;
