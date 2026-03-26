@@ -76,64 +76,49 @@
     </svg>
   </div>
   <div class="gw-shell profilo-shell">
-    <header class="profilo-topbar" aria-label="Barra superiore profilo">
+    <header class="profilo-topbar">
       <div class="profilo-topbar__row profilo-topbar__row--identity">
         <div class="profilo-topbar__identity">
           <div class="profilo-topbar__greeting" id="profiloGreeting">Ciao</div>
-          <div class="profilo-topbar__role">Esploratore</div>
+          <div class="profilo-topbar__role" id="profiloRoleLabel">Esploratore</div>
         </div>
 
         <div class="profilo-topbar__brand">GoGoWorld.life</div>
       </div>
 
       <div class="profilo-topbar__row profilo-topbar__row--actions">
-        <a
-          class="profilo-topbar__btn"
-          href="/pages/cerca-utenti.html"
-          aria-label="Cerca"
-          title="Cerca"
-        >
+        <button class="profilo-topbar__btn gw-iconbtn" type="button" aria-label="Cerca" title="Cerca">
           <svg class="gw-icon" aria-hidden="true">
-            <use href="/icons/icons-sprite-v2.svg#gw-icon-search"></use>
+            <use href="#gw-icon-search"></use>
           </svg>
-        </a>
+        </button>
 
-        <a
-          class="profilo-topbar__btn"
-          href="/pages/mappa-v2.html"
-          aria-label="Mappa"
-          title="Mappa"
-        >
+        <button class="profilo-topbar__btn gw-iconbtn" type="button" aria-label="Mappa" title="Mappa">
           <svg class="gw-icon" aria-hidden="true">
-            <use href="/icons/icons-sprite-v2.svg#gw-icon-pin"></use>
+            <use href="#gw-icon-pin"></use>
           </svg>
-        </a>
+        </button>
 
-        <a
-          class="profilo-topbar__btn"
-          href="/messages.html"
-          aria-label="Messaggi"
-          title="Messaggi"
-        >
+        <button class="profilo-topbar__btn gw-iconbtn" type="button" aria-label="Messaggi" title="Messaggi">
           <svg class="gw-icon" aria-hidden="true">
-            <use href="/icons/icons-sprite-v2.svg#gw-icon-chat"></use>
+            <use href="#gw-icon-chat"></use>
           </svg>
-        </a>
+        </button>
 
         <button
-          class="profilo-topbar__btn"
+          class="profilo-topbar__btn gw-iconbtn"
           type="button"
           id="profiloNotificationsBtn"
           aria-label="Notifiche"
           title="Notifiche"
         >
           <svg class="gw-icon" aria-hidden="true">
-            <use href="/icons/icons-sprite-v2.svg#gw-icon-bell"></use>
+            <use href="#gw-icon-bell"></use>
           </svg>
         </button>
 
         <button
-          class="profilo-topbar__btn"
+          class="profilo-topbar__btn gw-iconbtn"
           type="button"
           id="profiloMenuButton"
           aria-label="Menu"
@@ -142,7 +127,7 @@
           aria-controls="profiloMenuPanel"
         >
           <svg class="gw-icon" aria-hidden="true">
-            <use href="/icons/icons-sprite-v2.svg#gw-icon-menu"></use>
+            <use href="#gw-icon-menu"></use>
           </svg>
         </button>
       </div>
