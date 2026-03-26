@@ -754,7 +754,7 @@ body.profilo-v2-page .gw-iconbtn {
   }
 
   .profilo-topbar__btn,
-  .profilo-bottomnav > button {
+.profilo-bottomnav > .gw-iconbtn {
     width: 46px;
     height: 46px;
     flex: 0 0 46px;
