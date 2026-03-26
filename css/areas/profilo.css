@@ -91,22 +91,6 @@ body.profilo-v2-page select {
 }
 
 /* =========================================================
-   ICON SYSTEM BASE
-   ========================================================= */
-
-.gw-icon {
-  width: 24px;
-  height: 24px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* =========================================================
    TOPBAR — GEMELLA ALLE V2 GIÀ CHIUSE
    ========================================================= */
 
