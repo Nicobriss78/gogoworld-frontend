@@ -1,4 +1,4 @@
-export function createMappaChat({
+export function createMappaPrivatiChat({
   api,
   renderer,
   state,
