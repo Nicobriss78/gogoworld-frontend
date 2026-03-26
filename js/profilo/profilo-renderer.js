@@ -158,7 +158,7 @@ function renderConnections(state) {
       .map(
         (u) => `
         <div class="profilo-connection-item">
-          <img class="profilo-connection-item__avatar" src="${u.avatarUrl || ""}" />
+          ${u.avatarUrl ? `<img class="profilo-connection-item__avatar" src="${u.avatarUrl}" alt="" />` : `<div class="profilo-connection-item__avatar" aria-hidden="true"></div>`}
           <div class="profilo-connection-item__meta">
             <div class="profilo-connection-item__name">${u.nickname || ""}</div>
             <div class="profilo-connection-item__sub">${u.sub || ""}</div>
@@ -180,7 +180,7 @@ function renderConnections(state) {
       .map(
         (u) => `
         <div class="profilo-connection-item">
-          <img class="profilo-connection-item__avatar" src="${u.avatarUrl || ""}" />
+          ${u.avatarUrl ? `<img class="profilo-connection-item__avatar" src="${u.avatarUrl}" alt="" />` : `<div class="profilo-connection-item__avatar" aria-hidden="true"></div>`}
           <div class="profilo-connection-item__meta">
             <div class="profilo-connection-item__name">${u.nickname || ""}</div>
             <div class="profilo-connection-item__sub">${u.sub || ""}</div>
