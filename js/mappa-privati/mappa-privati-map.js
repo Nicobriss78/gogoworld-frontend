@@ -1,4 +1,4 @@
-export function createMappaMap({
+export function createMappaPrivatiMap({
   mapElementId,
   onSelectEvent
 }) {
