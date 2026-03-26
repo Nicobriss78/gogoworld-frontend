@@ -173,4 +173,4 @@ export async function resendVerificationEmail() {
     message:
       payload?.message || "Email di verifica inviata con successo.",
   };
-    }
+}
