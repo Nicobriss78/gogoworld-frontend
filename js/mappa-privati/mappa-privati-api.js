@@ -19,7 +19,7 @@ export function createMappaPrivatiApi({ fetchImpl } = {}) {
       .map(normalizeEventForMap)
       .filter(isValidMapEvent);
   } catch {
-    throw new Error("MAPPA_API_FETCH_EVENTS_ERROR");
+    throw new Error("MAPPA_PRIVATI_API_FETCH_EVENTS_ERROR");
   }
 }
 
