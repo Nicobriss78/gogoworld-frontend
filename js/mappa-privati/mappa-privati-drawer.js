@@ -1,4 +1,4 @@
-export function createMappaDrawer({
+export function createMappaPrivatiDrawer({
   overlayEl,
   drawerEl,
   closeBtnEl,
