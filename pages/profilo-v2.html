@@ -1,1 +1,377 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Profilo • GoGoWorld.life</title>
 
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="GoGoWorld" />
+
+  <link rel="stylesheet" href="/css/tokens.v2.css" />
+  <link rel="stylesheet" href="/css/icons-v2.css" />
+  <link rel="stylesheet" href="/css/areas/profilo.css" />
+</head>
+
+<body class="profilo-v2-page">
+  <div class="gw-shell profilo-shell">
+    <header class="profilo-topbar" aria-label="Barra superiore profilo">
+      <div class="profilo-topbar__row profilo-topbar__row--identity">
+        <div class="profilo-topbar__identity">
+          <div class="profilo-topbar__greeting" id="profiloGreeting">Ciao</div>
+          <div class="profilo-topbar__role">Esploratore</div>
+        </div>
+
+        <div class="profilo-topbar__brand">GoGoWorld.life</div>
+      </div>
+
+      <div class="profilo-topbar__row profilo-topbar__row--actions">
+        <a
+          class="profilo-topbar__btn"
+          href="/pages/cerca-utenti.html"
+          aria-label="Cerca"
+          title="Cerca"
+        >
+          <svg class="gw-icon" aria-hidden="true">
+            <use href="/icons/icons-sprite-v2.svg#search"></use>
+          </svg>
+        </a>
+
+        <a
+          class="profilo-topbar__btn"
+          href="/pages/mappa-v2.html"
+          aria-label="Mappa"
+          title="Mappa"
+        >
+          <svg class="gw-icon" aria-hidden="true">
+            <use href="/icons/icons-sprite-v2.svg#pin"></use>
+          </svg>
+        </a>
+
+        <a
+          class="profilo-topbar__btn"
+          href="/messages.html"
+          aria-label="Messaggi"
+          title="Messaggi"
+        >
+          <svg class="gw-icon" aria-hidden="true">
+            <use href="/icons/icons-sprite-v2.svg#messages"></use>
+          </svg>
+        </a>
+
+        <button
+          class="profilo-topbar__btn"
+          type="button"
+          id="profiloNotificationsBtn"
+          aria-label="Notifiche"
+          title="Notifiche"
+        >
+          <svg class="gw-icon" aria-hidden="true">
+            <use href="/icons/icons-sprite-v2.svg#bell"></use>
+          </svg>
+        </button>
+
+        <button
+          class="profilo-topbar__btn"
+          type="button"
+          id="profiloMenuButton"
+          aria-label="Menu"
+          title="Menu"
+          aria-expanded="false"
+          aria-controls="profiloMenuPanel"
+        >
+          <svg class="gw-icon" aria-hidden="true">
+            <use href="/icons/icons-sprite-v2.svg#menu"></use>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="profilo-main" aria-label="Scheda profilo utente">
+      <section class="profilo-card profilo-hero" aria-labelledby="profiloHeroTitle">
+        <div class="profilo-hero__media">
+          <img
+            id="profiloAvatar"
+            class="profilo-avatar"
+            src="/icons/avatar-placeholder.svg"
+            alt="Avatar profilo"
+          />
+        </div>
+
+        <div class="profilo-hero__content">
+          <h1 id="profiloHeroTitle" class="profilo-name">Profilo</h1>
+          <p id="profiloRole" class="profilo-role">Partecipante</p>
+          <p id="profiloLocation" class="profilo-location">Località non disponibile</p>
+          <p id="profiloBio" class="profilo-bio">Bio non disponibile</p>
+
+          <div class="profilo-actions">
+            <button type="button" id="profiloEditButton" class="gw-btn">
+              Modifica profilo
+            </button>
+
+            <button
+              type="button"
+              id="profiloPublicBoardButton"
+              class="gw-btn gw-btn--ghost"
+            >
+              Apri bacheca pubblica
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <div id="profiloMessageArea" class="profilo-message-area" aria-live="polite"></div>
+
+      <section class="profilo-card profilo-status" aria-labelledby="profiloStatusTitle">
+        <div class="profilo-section-head">
+          <h2 id="profiloStatusTitle" class="profilo-section-title">Stato account</h2>
+        </div>
+
+        <div class="profilo-status-grid">
+          <article class="profilo-status-box" aria-labelledby="profiloEmailStatusTitle">
+            <h3 id="profiloEmailStatusTitle" class="profilo-status-box__title">
+              Verifica email
+            </h3>
+
+            <div id="profiloEmailStatus" class="profilo-status-box__body"></div>
+
+            <div class="profilo-status-box__actions">
+              <button
+                type="button"
+                id="profiloResendVerifyButton"
+                class="gw-btn gw-btn--ghost"
+              >
+                Reinvia email di verifica
+              </button>
+            </div>
+          </article>
+
+          <article class="profilo-status-box" aria-labelledby="profiloL2StatusTitle">
+            <h3 id="profiloL2StatusTitle" class="profilo-status-box__title">
+              Completezza profilo
+            </h3>
+
+            <div id="profiloL2Status" class="profilo-status-box__body"></div>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="profilo-card profilo-connections"
+        aria-labelledby="profiloConnectionsTitle"
+      >
+        <div class="profilo-section-head">
+          <h2 id="profiloConnectionsTitle" class="profilo-section-title">Connessioni</h2>
+        </div>
+
+        <div class="profilo-connections__stats">
+          <article class="profilo-connection-stat">
+            <h3 class="profilo-connection-stat__label">Follower</h3>
+            <div id="profiloFollowersCount" class="profilo-connection-stat__value">0</div>
+          </article>
+
+          <article class="profilo-connection-stat">
+            <h3 class="profilo-connection-stat__label">Seguiti</h3>
+            <div id="profiloFollowingCount" class="profilo-connection-stat__value">0</div>
+          </article>
+        </div>
+
+        <div class="profilo-connections__lists">
+          <div class="profilo-connections__list-block">
+            <h3 class="profilo-connections__list-title">Chi ti segue</h3>
+            <div id="profiloFollowersList" class="profilo-connections__list"></div>
+          </div>
+
+          <div class="profilo-connections__list-block">
+            <h3 class="profilo-connections__list-title">Chi segui</h3>
+            <div id="profiloFollowingList" class="profilo-connections__list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="profilo-card profilo-editor"
+        id="profiloEditorSection"
+        aria-labelledby="profiloEditorTitle"
+        hidden
+      >
+        <div class="profilo-section-head">
+          <h2 id="profiloEditorTitle" class="profilo-section-title">Modifica profilo</h2>
+        </div>
+
+        <form id="profiloForm" class="profilo-form" novalidate>
+          <div class="profilo-form__group">
+            <label class="profilo-field">
+              <span class="profilo-field__label">Avatar</span>
+              <input
+                type="file"
+                id="profiloAvatarInput"
+                name="avatar"
+                accept="image/*"
+              />
+            </label>
+
+            <div class="profilo-avatar-preview-wrap">
+              <img
+                id="profiloAvatarPreview"
+                class="profilo-avatar-preview"
+                src="/icons/avatar-placeholder.svg"
+                alt="Anteprima avatar"
+              />
+            </div>
+          </div>
+
+          <div class="profilo-form__group">
+            <label class="profilo-field">
+              <span class="profilo-field__label">Nickname</span>
+              <input type="text" id="profiloNicknameInput" name="nickname" />
+            </label>
+
+            <label class="profilo-field">
+              <span class="profilo-field__label">Anno di nascita</span>
+              <input type="number" id="profiloBirthYearInput" name="birthYear" />
+            </label>
+
+            <label class="profilo-field">
+              <span class="profilo-field__label">Regione</span>
+              <input type="text" id="profiloRegionInput" name="region" />
+            </label>
+
+            <label class="profilo-field">
+              <span class="profilo-field__label">Città</span>
+              <input type="text" id="profiloCityInput" name="city" />
+            </label>
+          </div>
+
+          <div class="profilo-form__group">
+            <label class="profilo-field">
+              <span class="profilo-field__label">Bio</span>
+              <textarea id="profiloBioInput" name="bio" rows="4"></textarea>
+            </label>
+
+            <label class="profilo-field">
+              <span class="profilo-field__label">Lingue</span>
+              <textarea id="profiloLanguagesInput" name="languages" rows="3"></textarea>
+            </label>
+
+            <label class="profilo-field">
+              <span class="profilo-field__label">Interessi</span>
+              <textarea id="profiloInterestsInput" name="interests" rows="3"></textarea>
+            </label>
+
+            <label class="profilo-field">
+              <span class="profilo-field__label">Social</span>
+              <textarea id="profiloSocialsInput" name="socials" rows="3"></textarea>
+            </label>
+          </div>
+
+          <div class="profilo-form__group">
+            <fieldset class="profilo-fieldset">
+              <legend class="profilo-fieldset__legend">Messaggi diretti</legend>
+
+              <label class="profilo-checkbox">
+                <input
+                  type="checkbox"
+                  id="profiloDmEnabledInput"
+                  name="allowDirectMessages"
+                />
+                <span>Abilita messaggi diretti</span>
+              </label>
+
+              <label class="profilo-field">
+                <span class="profilo-field__label">Chi può scriverti</span>
+                <select id="profiloDmsFromInput" name="dmsFrom">
+                  <option value="everyone">Tutti</option>
+                  <option value="followers">Solo follower</option>
+                  <option value="nobody">Nessuno</option>
+                </select>
+              </label>
+            </fieldset>
+          </div>
+
+          <div class="profilo-form__actions">
+            <button type="submit" id="profiloSaveButton" class="gw-btn">
+              Salva modifiche
+            </button>
+
+            <button
+              type="button"
+              id="profiloCancelButton"
+              class="gw-btn gw-btn--ghost"
+            >
+              Annulla
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <nav class="profilo-bottomnav" aria-label="Navigazione principale">
+      <a
+        class="profilo-bottomnav__item"
+        href="/pages/mappa-v2.html"
+        aria-label="Mappa"
+        title="Mappa"
+        data-nav-key="map"
+      >
+        <svg class="gw-icon" aria-hidden="true">
+          <use href="/icons/icons-sprite-v2.svg#map"></use>
+        </svg>
+      </a>
+
+      <a
+        class="profilo-bottomnav__item"
+        href="/pages/partecipante-seguiti-v2.html"
+        aria-label="Eventi seguiti"
+        title="Eventi seguiti"
+        data-nav-key="following-events"
+      >
+        <svg class="gw-icon" aria-hidden="true">
+          <use href="/icons/icons-sprite-v2.svg#calendar"></use>
+        </svg>
+      </a>
+
+      <a
+        class="profilo-bottomnav__item"
+        href="/pages/home-v2.html"
+        aria-label="Home"
+        title="Home"
+        data-nav-key="home"
+      >
+        <svg class="gw-icon" aria-hidden="true">
+          <use href="/icons/icons-sprite-v2.svg#home"></use>
+        </svg>
+      </a>
+
+      <a
+        class="profilo-bottomnav__item"
+        href="/partecipante-seguiti-utenti.html"
+        aria-label="Utenti seguiti"
+        title="Utenti seguiti"
+        data-nav-key="following-users"
+      >
+        <svg class="gw-icon" aria-hidden="true">
+          <use href="/icons/icons-sprite-v2.svg#users"></use>
+        </svg>
+      </a>
+
+      <a
+        class="profilo-bottomnav__item is-active active"
+        href="/pages/profilo-v2.html"
+        aria-label="Profilo"
+        title="Profilo"
+        data-nav-key="profile"
+        aria-current="page"
+      >
+        <svg class="gw-icon" aria-hidden="true">
+          <use href="/icons/icons-sprite-v2.svg#profile"></use>
+        </svg>
+      </a>
+    </nav>
+  </div>
+
+  <script type="module" src="/js/profilo/profilo-controller.js"></script>
+</body>
+  </html>
