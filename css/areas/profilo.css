@@ -688,7 +688,7 @@ body.profilo-v2-page .gw-iconbtn {
   box-shadow: 0 -4px 14px rgba(16, 24, 40, 0.04);
 }
 
-.profilo-bottomnav__item {
+.profilo-bottomnav > button {
   width: 48px;
   height: 48px;
   flex: 0 0 48px;
@@ -700,21 +700,18 @@ body.profilo-v2-page .gw-iconbtn {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  text-decoration: none;
   box-shadow: 0 2px 8px rgba(16, 24, 40, 0.03);
   -webkit-tap-highlight-color: transparent;
 }
 
-.profilo-bottomnav__item.is-active,
-.profilo-bottomnav__item.active,
-.profilo-bottomnav__item[aria-current="page"],
-.profilo-bottomnav__item--active {
+.profilo-bottomnav > button.active,
+.profilo-bottomnav > button.is-active {
   color: var(--profilo-danger);
   border-color: var(--profilo-accent-border);
   background: var(--profilo-accent-soft);
 }
 
-.profilo-bottomnav__item:active {
+.profilo-bottomnav > button:active {
   transform: scale(0.98);
 }
 
