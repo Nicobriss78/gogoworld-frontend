@@ -171,11 +171,8 @@ body.profilo-v2-page select {
   padding-bottom: 14px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 12px;
-}
-.profilo-topbar__row--actions::-webkit-scrollbar {
-  display: none;
+  justify-content: space-between;
+  gap: 14px;
 }
 .profilo-topbar__btn {
   width: 40px;
