@@ -51,7 +51,7 @@ export function createMappaPrivatiApi({ fetchImpl } = {}) {
     const res = await apiPost(`/rooms/event/${eventId}/open-or-join`);
 
     if (!res.ok) {
-      throw new Error("MAPPA_API_OPEN_ROOM_ERROR");
+      throw new Error("MAPPA_PRIVATI_API_OPEN_ROOM_ERROR");
     }
 
     const room = res.data || {};
@@ -65,7 +65,7 @@ export function createMappaPrivatiApi({ fetchImpl } = {}) {
       activeUntil: room.activeUntil || null
     };
   } catch {
-    throw new Error("MAPPA_API_OPEN_ROOM_ERROR");
+    throw new Error("MAPPA_PRIVATI_API_OPEN_ROOM_ERROR");
   }
 }
 
