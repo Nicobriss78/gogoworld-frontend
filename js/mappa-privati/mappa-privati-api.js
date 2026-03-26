@@ -2,8 +2,7 @@ import {
   apiGet,
   apiPost
 } from "/js/api.js";
-export function createMappaApi({ fetchImpl } = {}) {
-
+export function createMappaPrivatiApi({ fetchImpl } = {}) {
   /* ===============================
      EVENTI PUBBLICI (MAPPA)
      =============================== */
