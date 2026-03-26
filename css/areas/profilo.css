@@ -171,8 +171,8 @@ body.profilo-v2-page select {
   padding-bottom: 14px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+  justify-content: flex-start;
+  gap: 12px;
 }
 
 .profilo-topbar__btn {
