@@ -1,4 +1,4 @@
-export function createMappaRenderer() {
+export function createMappaPrivatiRenderer() {
   function renderSelectedEventCard(event) {
     if (!event) return "";
 
