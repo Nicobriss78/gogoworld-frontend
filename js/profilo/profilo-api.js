@@ -1,6 +1,7 @@
-const PROFILE_ENDPOINT = "/api/users/me";
-const PROFILE_CONNECTIONS_ENDPOINT = "/api/users/me/connections";
-const PROFILE_VERIFY_RESEND_ENDPOINT = "/api/users/me/resend-verification";
+const MY_PROFILE_ENDPOINT = "/api/profile/me";
+const MY_ACCOUNT_ENDPOINT = "/api/users/me";
+const VERIFY_RESEND_ENDPOINT = "/api/users/verify/resend";
+const MY_AVATAR_ENDPOINT = "/api/profile/me/avatar";
 
 function getAuthToken() {
   return localStorage.getItem("token") || "";
@@ -10,22 +11,29 @@ function buildHeaders(extraHeaders = {}) {
   const token = getAuthToken();
 
   return {
-    "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...extraHeaders,
   };
 }
 
-async function parseJsonResponse(response) {
+function buildJsonHeaders(extraHeaders = {}) {
+  return buildHeaders({
+    "Content-Type": "application/json",
+    ...extraHeaders,
+  });
+}
+
+async function parseResponse(response) {
   const contentType = response.headers.get("content-type") || "";
   const isJson = contentType.includes("application/json");
-
   const payload = isJson ? await response.json() : null;
 
   if (!response.ok) {
     const message =
       payload?.message ||
       payload?.error ||
+      payload?.details ||
+      response.statusText ||
       "Operazione non riuscita";
     throw new Error(message);
   }
@@ -33,49 +41,66 @@ async function parseJsonResponse(response) {
   return payload;
 }
 
+function asCommaString(value) {
+  if (Array.isArray(value)) {
+    return value.join(", ");
+  }
+  return typeof value === "string" ? value : "";
+}
+
+function normalizeAvatarUrl(value) {
+  return typeof value === "string" ? value : "";
+}
+
 function normalizeProfilePayload(payload) {
-  const user = payload?.user || payload || {};
+  const source = payload?.profile || payload?.user || payload || {};
 
   return {
-    id: user._id || user.id || "",
-    nickname: user.nickname || user.username || user.name || "",
-    roleLabel: user.roleLabel || user.role || "Esploratore",
-    publicRole: user.publicRole || "Partecipante",
-    avatarUrl: user.avatarUrl || user.avatar || "",
+    id: source._id || source.id || source.userId || "",
+    nickname: source.nickname || source.username || source.name || "",
+    roleLabel: source.roleLabel || source.role || "Esploratore",
+    publicRole: source.publicRole || "Partecipante",
+    avatarUrl: normalizeAvatarUrl(source.avatarUrl || source.avatar || source.photoURL),
     locationLabel:
-      user.locationLabel ||
-      [user.city, user.region].filter(Boolean).join(", "),
-    bio: user.bio || "",
-    birthYear: user.birthYear || "",
-    region: user.region || "",
-    city: user.city || "",
-    languages: Array.isArray(user.languages)
-      ? user.languages.join(", ")
-      : user.languages || "",
-    interests: Array.isArray(user.interests)
-      ? user.interests.join(", ")
-      : user.interests || "",
-    socials: Array.isArray(user.socials)
-      ? user.socials.join(", ")
-      : user.socials || "",
-    allowDirectMessages: Boolean(user.allowDirectMessages),
-    dmsFrom: user.dmsFrom || "everyone",
+      source.locationLabel ||
+      [source.city, source.region].filter(Boolean).join(", "),
+    bio: source.bio || "",
+    birthYear: source.birthYear || "",
+    region: source.region || "",
+    city: source.city || "",
+    languages: asCommaString(source.languages),
+    interests: asCommaString(source.interests),
+    socials: asCommaString(source.socials),
+    allowDirectMessages: Boolean(
+      source.allowDirectMessages ??
+      source.dmEnabled ??
+      source.directMessagesEnabled
+    ),
+    dmsFrom: source.dmsFrom || source.dmPrivacy || "everyone",
   };
 }
 
-function normalizeAccountStatusPayload(payload) {
+function normalizeAccountPayload(payload) {
   const source = payload?.user || payload || {};
 
   return {
-    emailVerified: Boolean(source.emailVerified),
-    emailStatusLabel: source.emailVerified
-      ? "Email verificata"
-      : "Email non verificata",
+    id: source._id || source.id || "",
+    nickname: source.nickname || source.username || source.name || "",
+    roleLabel: source.role || "Esploratore",
+    emailVerified: Boolean(source.verified ?? source.emailVerified),
+    emailStatusLabel:
+      Boolean(source.verified ?? source.emailVerified)
+        ? "Email verificata"
+        : "Email non verificata",
     profileCompletionLabel:
       source.profileCompletionLabel ||
       source.profileCompletion ||
       "Profilo incompleto",
-    canResendVerification: !source.emailVerified,
+    canResendVerification: !Boolean(source.verified ?? source.emailVerified),
+    followersCount: Number(source.followersCount || 0),
+    followingCount: Array.isArray(source.following)
+      ? source.following.length
+      : Number(source.followingCount || 0),
   };
 }
 
@@ -83,31 +108,26 @@ function normalizeConnectionUser(user) {
   return {
     id: user?._id || user?.id || "",
     nickname: user?.nickname || user?.username || user?.name || "Utente",
-    avatarUrl: user?.avatarUrl || user?.avatar || "",
-    sub: user?.sub || user?.role || "",
+    avatarUrl: normalizeAvatarUrl(user?.avatarUrl || user?.avatar || user?.photoURL),
+    sub: user?.bio || user?.role || "",
   };
 }
 
-function normalizeConnectionsPayload(payload) {
-  const followers = Array.isArray(payload?.followers)
-    ? payload.followers.map(normalizeConnectionUser)
+function normalizeConnectionList(payload) {
+  const items = Array.isArray(payload)
+    ? payload
+    : Array.isArray(payload?.users)
+    ? payload.users
+    : Array.isArray(payload?.followers)
+    ? payload.followers
+    : Array.isArray(payload?.following)
+    ? payload.following
     : [];
 
-  const following = Array.isArray(payload?.following)
-    ? payload.following.map(normalizeConnectionUser)
-    : [];
-
-  return {
-    followersCount:
-      payload?.followersCount ?? followers.length ?? 0,
-    followingCount:
-      payload?.followingCount ?? following.length ?? 0,
-    followers,
-    following,
-  };
+  return items.map(normalizeConnectionUser);
 }
 
-function buildProfileUpdateBody(profileInput) {
+function normalizeProfileUpdateBody(profileInput) {
   return {
     nickname: profileInput.nickname || "",
     birthYear: profileInput.birthYear || "",
@@ -122,55 +142,111 @@ function buildProfileUpdateBody(profileInput) {
   };
 }
 
-export async function fetchProfile() {
-  const response = await fetch(PROFILE_ENDPOINT, {
+export async function fetchMyProfile() {
+  const response = await fetch(MY_PROFILE_ENDPOINT, {
     method: "GET",
     headers: buildHeaders(),
   });
 
-  const payload = await parseJsonResponse(response);
-
-  return {
-    profile: normalizeProfilePayload(payload),
-    accountStatus: normalizeAccountStatusPayload(payload),
-  };
+  const payload = await parseResponse(response);
+  return normalizeProfilePayload(payload);
 }
 
-export async function fetchProfileConnections() {
-  const response = await fetch(PROFILE_CONNECTIONS_ENDPOINT, {
+export async function fetchMyAccountStatus() {
+  const response = await fetch(MY_ACCOUNT_ENDPOINT, {
     method: "GET",
     headers: buildHeaders(),
   });
 
-  const payload = await parseJsonResponse(response);
-  return normalizeConnectionsPayload(payload);
+  const payload = await parseResponse(response);
+  return normalizeAccountPayload(payload);
 }
 
-export async function updateProfile(profileInput) {
-  const response = await fetch(PROFILE_ENDPOINT, {
-    method: "PATCH",
-    headers: buildHeaders(),
-    body: JSON.stringify(buildProfileUpdateBody(profileInput)),
+export async function saveMyProfile(profileInput) {
+  const response = await fetch(MY_PROFILE_ENDPOINT, {
+    method: "PUT",
+    headers: buildJsonHeaders(),
+    body: JSON.stringify(normalizeProfileUpdateBody(profileInput)),
   });
 
-  const payload = await parseJsonResponse(response);
-
-  return {
-    profile: normalizeProfilePayload(payload),
-    accountStatus: normalizeAccountStatusPayload(payload),
-  };
+  const payload = await parseResponse(response);
+  return normalizeProfilePayload(payload);
 }
 
-export async function resendVerificationEmail() {
-  const response = await fetch(PROFILE_VERIFY_RESEND_ENDPOINT, {
+export async function uploadMyAvatar(file) {
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  const response = await fetch(MY_AVATAR_ENDPOINT, {
+    method: "POST",
+    headers: buildHeaders(),
+    body: formData,
+  });
+
+  const payload = await parseResponse(response);
+  return normalizeProfilePayload(payload);
+}
+
+export async function resendEmailVerification() {
+  const response = await fetch(VERIFY_RESEND_ENDPOINT, {
     method: "POST",
     headers: buildHeaders(),
   });
 
-  const payload = await parseJsonResponse(response);
+  const payload = await parseResponse(response);
 
   return {
-    message:
-      payload?.message || "Email di verifica inviata con successo.",
+    message: payload?.message || "Email di verifica inviata con successo.",
   };
 }
+
+export async function fetchMyFollowers(userId) {
+  if (!userId) {
+    return [];
+  }
+
+  const response = await fetch(`/api/users/${encodeURIComponent(userId)}/followers`, {
+    method: "GET",
+    headers: buildHeaders(),
+  });
+
+  const payload = await parseResponse(response);
+  return normalizeConnectionList(payload);
+}
+
+export async function fetchMyFollowing(userId) {
+  if (!userId) {
+    return [];
+  }
+
+  const response = await fetch(`/api/users/${encodeURIComponent(userId)}/following`, {
+    method: "GET",
+    headers: buildHeaders(),
+  });
+
+  const payload = await parseResponse(response);
+  return normalizeConnectionList(payload);
+}
+
+export async function fetchMyConnections(userId) {
+  const [followers, following] = await Promise.all([
+    fetchMyFollowers(userId),
+    fetchMyFollowing(userId),
+  ]);
+
+  return {
+    followersCount: followers.length,
+    followingCount: following.length,
+    followers,
+    following,
+  };
+}
+
+export function buildMyPublicProfileUrl(userId) {
+  if (!userId) {
+    return "";
+  }
+
+  return `/pages/user-public.html?id=${encodeURIComponent(userId)}`;
+    }
+  
