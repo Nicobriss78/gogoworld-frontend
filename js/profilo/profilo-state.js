@@ -225,4 +225,4 @@ export function clearProfileFeedback() {
   };
 
   return getProfileState();
-      }
+}
