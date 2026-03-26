@@ -189,7 +189,7 @@ export function createMappaPrivatiApi({ fetchImpl } = {}) {
      =============================== */
 
   return {
-    fetchPublicMapEvents,
+    fetchPrivateMapEvents,
     fetchEventDetail,
     openEventRoom,
     fetchRoomMessages,
