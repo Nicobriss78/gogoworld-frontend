@@ -85,15 +85,14 @@ function renderUserCard(view, user, state) {
 
 export function renderSeguitiUtentiTopbar(view, identity) {
   const displayName =
-    identity?.displayName ||
-    identity?.name ||
-    "Ciao";
+    typeof identity?.displayName === "string" ? identity.displayName.trim() : "";
 
   const roleLabel =
-    identity?.roleLabel ||
-    "Community member";
+    typeof identity?.roleLabel === "string" && identity.roleLabel.trim()
+      ? identity.roleLabel.trim()
+      : "Esploratore";
 
-  setText(view.greeting, displayName);
+  setText(view.greeting, displayName ? `Ciao ${displayName}` : "Ciao");
   setText(view.roleLabel, roleLabel);
 }
 
