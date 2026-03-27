@@ -91,14 +91,23 @@ async function init() {
 
   try {
     const me = await fetchCurrentUserProfile();
+    const meUser = me?.data || me?.user || me || null;
 
-    seguitiUtentiSession.currentUserId = me?._id || me?.id || "";
+    seguitiUtentiSession.currentUserId =
+      meUser?._id ||
+      meUser?.id ||
+      meUser?.user?._id ||
+      meUser?.user?.id ||
+      "";
 
-    const identity = resolveUserIdentity(me);
+    const identity = await resolveUserIdentity();
     seguitiUtentiSession.identity = identity;
 
-    renderSeguitiUtentiTopbar(view, identity);
-
+    applyUserIdentityToTopbar({
+      greetingEl: view.greeting,
+      roleEl: view.roleLabel,
+      identity,
+    });
     setupEventListeners(view);
 
     await loadFollowing(view);
