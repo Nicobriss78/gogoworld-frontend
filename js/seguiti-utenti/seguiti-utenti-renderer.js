@@ -83,19 +83,6 @@ function renderUserCard(view, user, state) {
   return fragment;
 }
 
-export function renderSeguitiUtentiTopbar(view, identity) {
-  const displayName =
-    typeof identity?.displayName === "string" ? identity.displayName.trim() : "";
-
-  const roleLabel =
-    typeof identity?.roleLabel === "string" && identity.roleLabel.trim()
-      ? identity.roleLabel.trim()
-      : "Esploratore";
-
-  setText(view.greeting, displayName ? `Ciao ${displayName}` : "Ciao");
-  setText(view.roleLabel, roleLabel);
-}
-
 export function clearSeguitiUtentiMessage(view) {
   view.messageArea.textContent = "";
   view.messageArea.className = "seguiti-utenti-message-area";
