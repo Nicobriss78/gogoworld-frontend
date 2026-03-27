@@ -62,7 +62,37 @@ button { font: inherit; }
 .seguiti-utenti-header__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
 .seguiti-utenti-message-area { min-height: 0; }
+.seguiti-utenti-message-area {
+  display: none;
+}
 
+.seguiti-utenti-message-area:not(:empty) {
+  display: block;
+  padding: 14px 16px;
+  border-radius: var(--seguiti-utenti-radius-md);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  border: 1px solid transparent;
+  box-shadow: var(--seguiti-utenti-shadow-sm);
+}
+
+.seguiti-utenti-message-area.is-info {
+  background: rgba(61, 169, 252, 0.08);
+  color: var(--seguiti-utenti-text);
+  border-color: rgba(61, 169, 252, 0.16);
+}
+
+.seguiti-utenti-message-area.is-success {
+  background: rgba(18, 183, 106, 0.08);
+  color: var(--seguiti-utenti-text);
+  border-color: rgba(18, 183, 106, 0.16);
+}
+
+.seguiti-utenti-message-area.is-error {
+  background: rgba(217, 45, 32, 0.08);
+  color: var(--seguiti-utenti-danger);
+  border-color: rgba(217, 45, 32, 0.16);
+}
 .seguiti-utenti-states { display: grid; gap: 16px; }
 
 .seguiti-utenti-state { display: block; }
