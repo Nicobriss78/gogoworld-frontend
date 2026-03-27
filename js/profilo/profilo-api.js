@@ -52,61 +52,77 @@ function normalizeAvatarUrl(value) {
   return typeof value === "string" ? value : "";
 }
 
+function parseCsvToArray(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item || "").trim())
+      .filter(Boolean);
+  }
+
+  if (typeof value !== "string") {
+    return [];
+  }
+
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function parseLinesToArray(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item || "").trim())
+      .filter(Boolean);
+  }
+
+  if (typeof value !== "string") {
+    return [];
+  }
+
+  return value
+    .split("\n")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function normalizeProfilePayload(payload) {
-  const root =
+  const source =
     payload?.data ||
     payload?.profile ||
     payload?.user ||
     payload ||
     {};
 
-  const profile = root.profile || {};
-
   return {
-    id: root._id || root.id || root.userId || "",
-
-    nickname:
-      root.nickname ||
-      root.username ||
-      root.name ||
-      "",
-
-    roleLabel: root.roleLabel || root.role || "Esploratore",
-    publicRole: root.publicRole || "Partecipante",
-
+    id: source._id || source.id || source.userId || "",
+    nickname: source.nickname || source.username || source.name || "",
+    roleLabel: source.roleLabel || source.role || "Esploratore",
+    publicRole: source.publicRole || "Partecipante",
     avatarUrl: normalizeAvatarUrl(
-      profile.avatarUrl ||
-      root.avatarUrl ||
-      root.avatar ||
-      root.photoURL
+      source.avatarUrl || source.avatar || source.photoURL
     ),
-
     locationLabel:
-      profile.locationLabel ||
-      [profile.city, profile.region].filter(Boolean).join(", "),
-
-    bio: profile.bio || "",
-
-    birthYear: root.birthYear || "",
-
-    region: profile.region || "",
-    city: profile.city || "",
-
-    languages: asCommaString(profile.languages),
-    interests: asCommaString(profile.interests),
-    socials: asCommaString(profile.socials),
-
+      source.locationLabel ||
+      [source.city, source.region].filter(Boolean).join(", "),
+    bio: source.bio || "",
+    birthYear: source.birthYear || "",
+    region: source.region || "",
+    city: source.city || "",
+    languages: asCommaString(source.languages),
+    interests: asCommaString(source.interests),
+    socials: asCommaString(source.socials),
     allowDirectMessages: Boolean(
-  source.privacy?.optInDM ??
-  source.allowDirectMessages ??
-  source.dmEnabled ??
-  source.directMessagesEnabled
-),
-dmsFrom:
-  source.privacy?.dmsFrom ||
-  source.dmsFrom ||
-  source.dmPrivacy ||
-  "everyone",
+      source.privacy?.optInDM ??
+      source.allowDirectMessages ??
+      source.dmEnabled ??
+      source.directMessagesEnabled
+    ),
+    dmsFrom:
+      source.privacy?.dmsFrom ||
+      source.dmsFrom ||
+      source.dmPrivacy ||
+      "everyone",
   };
 }
 
@@ -136,34 +152,35 @@ function normalizeAccountPayload(payload) {
 
 function normalizeConnectionUser(user) {
   return {
-  id: user?._id || user?.id || "",
-  nickname: user?.nickname || user?.username || user?.name || "Utente",
-  avatarUrl: normalizeAvatarUrl(
-    user?.profile?.avatarUrl ||
-    user?.avatarUrl ||
-    user?.avatar ||
-    user?.photoURL
-  ),
-  sub:
-    [user?.profile?.city, user?.profile?.region]
-      .filter(Boolean)
-      .join(" • ") ||
-    user?.role ||
-    "",
-};
+    id: user?._id || user?.id || "",
+    nickname: user?.nickname || user?.username || user?.name || "Utente",
+    avatarUrl: normalizeAvatarUrl(
+      user?.profile?.avatarUrl ||
+      user?.avatarUrl ||
+      user?.avatar ||
+      user?.photoURL
+    ),
+    sub:
+      [user?.profile?.city, user?.profile?.region]
+        .filter(Boolean)
+        .join(" • ") ||
+      user?.role ||
+      "",
+  };
+}
 
 function normalizeConnectionList(payload) {
   const items = Array.isArray(payload)
-  ? payload
-  : Array.isArray(payload?.data)
-  ? payload.data
-  : Array.isArray(payload?.users)
-  ? payload.users
-  : Array.isArray(payload?.followers)
-  ? payload.followers
-  : Array.isArray(payload?.following)
-  ? payload.following
-  : [];
+    ? payload
+    : Array.isArray(payload?.data)
+    ? payload.data
+    : Array.isArray(payload?.users)
+    ? payload.users
+    : Array.isArray(payload?.followers)
+    ? payload.followers
+    : Array.isArray(payload?.following)
+    ? payload.following
+    : [];
 
   return items.map(normalizeConnectionUser);
 }
@@ -175,11 +192,13 @@ function normalizeProfileUpdateBody(profileInput) {
     region: profileInput.region || "",
     city: profileInput.city || "",
     bio: profileInput.bio || "",
-    languages: profileInput.languages || "",
-    interests: profileInput.interests || "",
-    socials: profileInput.socials || "",
-    allowDirectMessages: Boolean(profileInput.allowDirectMessages),
-    dmsFrom: profileInput.dmsFrom || "everyone",
+    languages: parseCsvToArray(profileInput.languages),
+    interests: parseCsvToArray(profileInput.interests),
+    socials: parseLinesToArray(profileInput.socials),
+    privacy: {
+      optInDM: Boolean(profileInput.allowDirectMessages),
+      dmsFrom: profileInput.dmsFrom || "everyone",
+    },
   };
 }
 
@@ -246,10 +265,13 @@ export async function fetchMyFollowers(userId) {
     return [];
   }
 
-  const response = await fetch(`/api/users/${encodeURIComponent(userId)}/followers`, {
-    method: "GET",
-    headers: buildHeaders(),
-  });
+  const response = await fetch(
+    `/api/users/${encodeURIComponent(userId)}/followers`,
+    {
+      method: "GET",
+      headers: buildHeaders(),
+    }
+  );
 
   const payload = await parseResponse(response);
   return normalizeConnectionList(payload);
@@ -260,10 +282,13 @@ export async function fetchMyFollowing(userId) {
     return [];
   }
 
-  const response = await fetch(`/api/users/${encodeURIComponent(userId)}/following`, {
-    method: "GET",
-    headers: buildHeaders(),
-  });
+  const response = await fetch(
+    `/api/users/${encodeURIComponent(userId)}/following`,
+    {
+      method: "GET",
+      headers: buildHeaders(),
+    }
+  );
 
   const payload = await parseResponse(response);
   return normalizeConnectionList(payload);
@@ -288,5 +313,5 @@ export function buildMyPublicProfileUrl(userId) {
     return "";
   }
 
-return `/pages/user-public.html?userId=${encodeURIComponent(userId)}`;    }
-  
+  return `/pages/user-public.html?userId=${encodeURIComponent(userId)}`;
+      }
