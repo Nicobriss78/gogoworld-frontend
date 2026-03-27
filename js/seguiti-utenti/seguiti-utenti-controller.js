@@ -101,7 +101,9 @@ async function init() {
 
     await loadFollowing(view);
   } catch (error) {
-    seguitiUtentiState.error = "Errore nel caricamento della sessione.";
+    seguitiUtentiState.loading = false;
+    seguitiUtentiState.error =
+      error?.message || "Errore nel caricamento della sessione.";
     renderSeguitiUtentiPage(view, seguitiUtentiState);
   }
 }
