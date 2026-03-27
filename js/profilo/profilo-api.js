@@ -53,7 +53,12 @@ function normalizeAvatarUrl(value) {
 }
 
 function normalizeProfilePayload(payload) {
-  const source = payload?.profile || payload?.user || payload || {};
+  const source =
+    payload?.data ||
+    payload?.profile ||
+    payload?.user ||
+    payload ||
+    {};
 
   return {
     id: source._id || source.id || source.userId || "",
