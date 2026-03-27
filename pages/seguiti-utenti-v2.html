@@ -213,31 +213,36 @@
 </section>
 
   </main>  <nav class="home-bottomnav" aria-label="Navigazione principale">
-    <a class="gw-iconbtn home-bottomnav__btn" href="/pages/mappa-v2.html" aria-label="Mappa" title="Mappa">
-      <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-map"></use></svg>
-    </a><a class="gw-iconbtn home-bottomnav__btn" href="/pages/partecipante-seguiti-v2.html" aria-label="Eventi seguiti" title="Eventi seguiti">
-  <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-calendar"></use></svg>
-</a>
+  <button class="gw-iconbtn" aria-label="Mappa" title="Mappa">
+    <svg class="gw-icon" aria-hidden="true">
+      <use href="#gw-icon-map"></use>
+    </svg>
+  </button>
 
-<a class="gw-iconbtn home-bottomnav__btn home-bottomnav__btn--home" href="/pages/home-v2.html" aria-label="Home" title="Home">
-  <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-home"></use></svg>
-</a>
+  <button class="gw-iconbtn" aria-label="Eventi seguiti" title="Eventi seguiti">
+    <svg class="gw-icon" aria-hidden="true">
+      <use href="#gw-icon-calendar"></use>
+    </svg>
+  </button>
 
-<a
-  class="gw-iconbtn home-bottomnav__btn is-active"
-  href="/pages/seguiti-utenti-v2.html"
-  aria-label="Utenti seguiti"
-  title="Utenti seguiti"
-  aria-current="page"
->
-  <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-users"></use></svg>
-</a>
+  <button class="gw-iconbtn" aria-label="Home" title="Home">
+    <svg class="gw-icon" aria-hidden="true">
+      <use href="#gw-icon-home"></use>
+    </svg>
+  </button>
 
-<a class="gw-iconbtn home-bottomnav__btn" href="/pages/profilo-v2.html" aria-label="Profilo" title="Profilo">
-  <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-profile"></use></svg>
-</a>
+  <button class="gw-iconbtn is-active active" aria-label="Utenti seguiti" title="Utenti seguiti">
+    <svg class="gw-icon" aria-hidden="true">
+      <use href="#gw-icon-users"></use>
+    </svg>
+  </button>
 
-  </nav>  <template id="seguitiUtentiCardTemplate">
+  <button class="gw-iconbtn" aria-label="Profilo" title="Profilo">
+    <svg class="gw-icon" aria-hidden="true">
+      <use href="#gw-icon-profile"></use>
+    </svg>
+  </button>
+</nav>  <template id="seguitiUtentiCardTemplate">
     <li class="seguiti-utenti-card">
       <article class="seguiti-utenti-user" data-user-id="">
         <div class="seguiti-utenti-user__avatar-wrap">
