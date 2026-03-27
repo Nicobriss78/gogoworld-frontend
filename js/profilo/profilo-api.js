@@ -53,35 +53,60 @@ function normalizeAvatarUrl(value) {
 }
 
 function normalizeProfilePayload(payload) {
-  const source =
+  const root =
     payload?.data ||
     payload?.profile ||
     payload?.user ||
     payload ||
     {};
 
+  const profile = root.profile || {};
+
   return {
-    id: source._id || source.id || source.userId || "",
-    nickname: source.nickname || source.username || source.name || "",
-    roleLabel: source.roleLabel || source.role || "Esploratore",
-    publicRole: source.publicRole || "Partecipante",
-    avatarUrl: normalizeAvatarUrl(source.avatarUrl || source.avatar || source.photoURL),
-    locationLabel:
-      source.locationLabel ||
-      [source.city, source.region].filter(Boolean).join(", "),
-    bio: source.bio || "",
-    birthYear: source.birthYear || "",
-    region: source.region || "",
-    city: source.city || "",
-    languages: asCommaString(source.languages),
-    interests: asCommaString(source.interests),
-    socials: asCommaString(source.socials),
-    allowDirectMessages: Boolean(
-      source.allowDirectMessages ??
-      source.dmEnabled ??
-      source.directMessagesEnabled
+    id: root._id || root.id || root.userId || "",
+
+    nickname:
+      root.nickname ||
+      root.username ||
+      root.name ||
+      "",
+
+    roleLabel: root.roleLabel || root.role || "Esploratore",
+    publicRole: root.publicRole || "Partecipante",
+
+    avatarUrl: normalizeAvatarUrl(
+      profile.avatarUrl ||
+      root.avatarUrl ||
+      root.avatar ||
+      root.photoURL
     ),
-    dmsFrom: source.dmsFrom || source.dmPrivacy || "everyone",
+
+    locationLabel:
+      profile.locationLabel ||
+      [profile.city, profile.region].filter(Boolean).join(", "),
+
+    bio: profile.bio || "",
+
+    birthYear: root.birthYear || "",
+
+    region: profile.region || "",
+    city: profile.city || "",
+
+    languages: asCommaString(profile.languages),
+    interests: asCommaString(profile.interests),
+    socials: asCommaString(profile.socials),
+
+    allowDirectMessages: Boolean(
+      profile?.privacy?.optInDM ??
+      root.allowDirectMessages ??
+      root.dmEnabled
+    ),
+
+    dmsFrom:
+      profile?.privacy?.dmsFrom ||
+      root.dmsFrom ||
+      root.dmPrivacy ||
+      "everyone",
   };
 }
 
