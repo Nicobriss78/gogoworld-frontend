@@ -81,6 +81,10 @@ function renderProfile(profile) {
   }
 
 if (profile.profile?.avatarUrl) {
+    avatarEl.onerror = () => {
+      avatarEl.onerror = null;
+      hideEl(avatarEl);
+    };
     avatarEl.src = profile.profile.avatarUrl;
     showEl(avatarEl);
   } else {
