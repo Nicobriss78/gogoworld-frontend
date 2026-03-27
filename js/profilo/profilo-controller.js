@@ -112,11 +112,11 @@ async function loadProfileData() {
     });
 
     setConnections({
-      followersCount: connections.followers.length,
-      followingCount: connections.following.length,
-      followers: connections.followers,
-      following: connections.following,
-    });
+  followersCount: connections.followers.length,
+  followingCount: connections.following.length,
+  followers: connections.followers,
+  following: connections.following,
+});
 
     patchUiState({ loading: false });
     render();
