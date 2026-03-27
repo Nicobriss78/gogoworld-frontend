@@ -1,1 +1,559 @@
+/* =========================================================
+   GoGoWorld.life — Seguiti Utenti V2
+   Shell HOME 1:1 + contenuto locale utenti
+   ========================================================= */
 
+/* =========================================================
+   1) RESET E TOKENS LOCALI
+   ========================================================= */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body.seguiti-utenti-page {
+  --home-accent: var(--gw-accent, #3F7C96);
+  --home-accent-hover: var(--gw-accent-hover, #35697F);
+  --home-accent-soft: var(--gw-accent-soft, #E6F0F4);
+  --home-accent-border: var(--gw-accent-border, #C2D6DF);
+  --home-danger: var(--gw-danger, #B52A32);
+
+  --home-bg: var(--gw-bg, #F4F6F8);
+  --home-surface: var(--gw-surface, #FFFFFF);
+  --home-border: var(--gw-border, #E6EAF0);
+
+  --home-text: var(--gw-text, #1C2430);
+  --home-text-secondary: var(--gw-text-soft, #5A6572);
+  --home-text-muted: var(--gw-text-muted, #8B95A1);
+
+  --home-radius-main: 12px;
+  --home-radius-btn: 10px;
+  --home-radius-pill: 999px;
+
+  --home-shadow-main: 0 6px 18px rgba(16, 24, 40, 0.06);
+  --home-shadow-strong: 0 10px 24px rgba(16, 24, 40, 0.10);
+
+  --home-space-xs: 6px;
+  --home-space-sm: 10px;
+  --home-space-md: 16px;
+  --home-space-lg: 24px;
+  --home-space-xl: 32px;
+
+  --home-topbar-h: 132px;
+  --home-bottomnav-h: 86px;
+  --home-footer-h: 0px;
+
+  --home-page-pad-x: 16px;
+  --home-page-pad-y: 16px;
+
+  min-height: 100dvh;
+  background: var(--home-bg);
+  color: var(--home-text);
+  font-family: Arial, sans-serif;
+  line-height: 1.35;
+  display: flex;
+  flex-direction: column;
+}
+
+body.seguiti-utenti-page *,
+body.seguiti-utenti-page *::before,
+body.seguiti-utenti-page *::after {
+  box-sizing: border-box;
+}
+
+body.seguiti-utenti-page h1,
+body.seguiti-utenti-page h2,
+body.seguiti-utenti-page h3,
+body.seguiti-utenti-page p {
+  margin: 0;
+}
+
+body.seguiti-utenti-page button {
+  font: inherit;
+}
+
+body.seguiti-utenti-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =========================================================
+   2) TOPBAR AUTONOMA — IDENTICA A HOME
+   ========================================================= */
+
+.home-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--home-surface);
+  border-bottom: 1px solid var(--home-border);
+  box-shadow: 0 1px 0 rgba(16, 24, 40, 0.02);
+}
+
+.home-topbar__row {
+  width: 100%;
+  padding-left: var(--home-page-pad-x);
+  padding-right: var(--home-page-pad-x);
+}
+
+.home-topbar__row--identity {
+  min-height: 60px;
+  padding-top: 12px;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--home-space-md);
+}
+
+.home-topbar__identity {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.home-topbar__greeting {
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--home-text-secondary);
+}
+
+.home-topbar__role {
+  font-size: 13px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--home-text-muted);
+}
+
+.home-topbar__brand {
+  flex: 0 0 auto;
+  font-size: 20px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: var(--home-accent-hover);
+  letter-spacing: 0.01em;
+}
+
+.home-topbar__row--actions {
+  min-height: 72px;
+  padding-top: 10px;
+  padding-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.home-topbar__btn {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 1px solid var(--home-border);
+  border-radius: 10px;
+  background: var(--home-surface);
+  color: var(--home-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-topbar__btn:active {
+  transform: scale(.98);
+}
+
+/* =========================================================
+   3) MAIN + ROOT PAGINA
+   ========================================================= */
+
+body.seguiti-utenti-page > main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.seguiti-utenti-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--home-bg);
+  padding: var(--home-page-pad-y) var(--home-page-pad-x) calc(var(--home-bottomnav-h) + 10px);
+}
+
+.seguiti-utenti-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =========================================================
+   4) HEADER INTERNO SCHEDA
+   ========================================================= */
+
+.seguiti-utenti-header {
+  padding: 18px;
+  border: 1px solid var(--home-border);
+  border-radius: var(--home-radius-main);
+  background: var(--home-surface);
+  box-shadow: var(--home-shadow-main);
+}
+
+.seguiti-utenti-header__text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.seguiti-utenti-header__eyebrow {
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--home-accent);
+}
+
+.seguiti-utenti-header__title {
+  font-size: 18px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--home-text);
+}
+
+.seguiti-utenti-header__subtitle {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--home-text-secondary);
+}
+
+.seguiti-utenti-header__actions {
+  margin-top: 14px;
+}
+
+.gw-btn {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--home-accent-border);
+  border-radius: var(--home-radius-btn);
+  background: var(--home-surface);
+  color: var(--home-accent-hover);
+  font-size: 13px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gw-btn:active {
+  transform: scale(.985);
+}
+
+.gw-btn--ghost {
+  border-color: var(--home-border);
+  color: var(--home-text);
+}
+
+/* =========================================================
+   5) MESSAGE AREA
+   ========================================================= */
+
+.seguiti-utenti-message-area {
+  display: none;
+}
+
+.seguiti-utenti-message-area:not(:empty) {
+  display: block;
+  padding: 12px 14px;
+  border-radius: var(--home-radius-main);
+  font-size: 13px;
+  line-height: 1.45;
+  border: 1px solid var(--home-border);
+  background: var(--home-surface);
+  box-shadow: var(--home-shadow-main);
+}
+
+.seguiti-utenti-message-area.is-info {
+  border-color: var(--home-accent-border);
+  background: var(--home-accent-soft);
+  color: var(--home-text);
+}
+
+.seguiti-utenti-message-area.is-success {
+  border-color: rgba(18, 183, 106, 0.18);
+  background: rgba(18, 183, 106, 0.08);
+  color: var(--home-text);
+}
+
+.seguiti-utenti-message-area.is-error {
+  border-color: rgba(181, 42, 50, 0.28);
+  background: rgba(181, 42, 50, 0.06);
+  color: var(--home-danger);
+}
+
+/* =========================================================
+   6) STATE BLOCK
+   ========================================================= */
+
+.seguiti-utenti-state[hidden],
+.seguiti-utenti-list-wrap[hidden] {
+  display: none !important;
+}
+
+.seguiti-utenti-state__panel {
+  width: 100%;
+  padding: 18px;
+  border: 1px solid var(--home-accent-border);
+  border-radius: var(--home-radius-main);
+  background: var(--home-accent-soft);
+  color: var(--home-text);
+  box-shadow: var(--home-shadow-main);
+}
+
+.seguiti-utenti-state--error .seguiti-utenti-state__panel {
+  border-color: rgba(181, 42, 50, 0.28);
+  background: rgba(181, 42, 50, 0.06);
+}
+
+.seguiti-utenti-state__title {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.seguiti-utenti-state__text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--home-text-secondary);
+}
+
+.seguiti-utenti-state__panel .gw-btn,
+.seguiti-utenti-state__panel a.gw-btn {
+  margin-top: 14px;
+}
+
+/* =========================================================
+   7) LISTA UTENTI
+   ========================================================= */
+
+.seguiti-utenti-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.seguiti-utenti-card {
+  margin: 0;
+}
+
+.seguiti-utenti-user {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--home-border);
+  border-radius: var(--home-radius-main);
+  background: var(--home-surface);
+  box-shadow: var(--home-shadow-main);
+}
+
+.seguiti-utenti-user__avatar-wrap {
+  position: relative;
+  width: 52px;
+  height: 52px;
+}
+
+.seguiti-utenti-user__avatar,
+.seguiti-utenti-user__avatar-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.seguiti-utenti-user__avatar {
+  object-fit: cover;
+  border: 1px solid var(--home-border);
+}
+
+.seguiti-utenti-user__avatar-fallback {
+  display: grid;
+  place-items: center;
+  background: var(--home-accent-soft);
+  color: var(--home-accent-hover);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.seguiti-utenti-user__content {
+  min-width: 0;
+}
+
+.seguiti-utenti-user__name {
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--home-text);
+  word-break: break-word;
+}
+
+.seguiti-utenti-user__meta {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--home-text-secondary);
+  word-break: break-word;
+}
+
+.seguiti-utenti-user__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.seguiti-utenti-user__action {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: var(--home-radius-btn);
+  font-size: 13px;
+  font-weight: 800;
+  border: 1px solid var(--home-border);
+}
+
+.seguiti-utenti-user__action[data-action="open-profile"] {
+  background: var(--home-surface);
+  color: var(--home-text);
+}
+
+.seguiti-utenti-user__action[data-action="unfollow"] {
+  color: var(--home-danger);
+  border-color: rgba(181, 42, 50, 0.22);
+  background: rgba(181, 42, 50, 0.06);
+}
+
+/* =========================================================
+   8) BOTTOM NAV AUTONOMA — IDENTICA A HOME
+   ========================================================= */
+
+.home-bottomnav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 110;
+  min-height: var(--home-bottomnav-h);
+  padding: 10px 18px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--home-border);
+  background: var(--home-surface);
+  box-shadow: 0 -4px 14px rgba(16, 24, 40, 0.04);
+}
+
+.home-bottomnav > button {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border: 1px solid var(--home-border);
+  border-radius: 16px;
+  background: var(--home-surface);
+  color: var(--home-text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.03);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-bottomnav > button.active,
+.home-bottomnav > button.is-active {
+  color: var(--home-danger);
+  border-color: var(--home-accent-border);
+  background: var(--home-accent-soft);
+}
+
+.home-bottomnav > button:active {
+  transform: scale(.98);
+}
+
+/* =========================================================
+   9) RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  body.seguiti-utenti-page {
+    --home-page-pad-x: 14px;
+    --home-page-pad-y: 14px;
+    --home-topbar-h: 132px;
+    --home-bottomnav-h: 86px;
+  }
+
+  .home-topbar__row--identity {
+    min-height: 58px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+  }
+
+  .home-topbar__greeting {
+    font-size: 15px;
+  }
+
+  .home-topbar__role {
+    font-size: 12px;
+  }
+
+  .home-topbar__brand {
+    font-size: 18px;
+  }
+
+  .home-topbar__row--actions {
+    min-height: 70px;
+    padding-top: 8px;
+    padding-bottom: 12px;
+    gap: 10px;
+  }
+
+  .home-topbar__btn,
+  .home-bottomnav > button {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+  }
+}
+
+@media (min-width: 640px) {
+  .seguiti-utenti-main {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .seguiti-utenti-user {
+    grid-template-columns: 52px minmax(0, 1fr) auto;
+  }
+
+  .seguiti-utenti-user__actions {
+    grid-column: auto;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+  }
+}
