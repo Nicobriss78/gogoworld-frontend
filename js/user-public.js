@@ -354,7 +354,11 @@ const qs = new URLSearchParams(location.search);
   loadAll(userId);
 
   const followBtn = $("#followBtn");
-  if (!isSelf && followBtn) {
-    followBtn.addEventListener("click", () => onFollowClick(userId));
+  if (followBtn) {
+    if (isSelf) {
+      hideEl(followBtn);
+    } else {
+      followBtn.addEventListener("click", () => onFollowClick(userId));
+    }
   }
 });
