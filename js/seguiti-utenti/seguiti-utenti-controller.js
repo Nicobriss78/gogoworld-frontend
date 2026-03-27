@@ -11,8 +11,10 @@ import {
   renderSeguitiUtentiTopbar,
   renderSeguitiUtentiMessage,
 } from "./seguiti-utenti-renderer.js";
-import { resolveUserIdentity } from "/js/shared/user-identity.js";
-
+import {
+  resolveUserIdentity,
+  applyUserIdentityToTopbar,
+} from "/js/shared/user-identity.js";
 async function loadFollowing(view) {
   seguitiUtentiState.loading = true;
   seguitiUtentiState.error = "";
