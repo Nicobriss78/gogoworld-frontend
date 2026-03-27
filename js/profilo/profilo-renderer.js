@@ -18,7 +18,22 @@ function setText(el, value, fallback = "") {
 
 function setImage(el, src, fallback = "") {
   if (!el) return;
-  el.src = src || fallback;
+
+  const finalSrc = src || fallback || "";
+  el.onerror = () => {
+    el.onerror = null;
+    el.src = "";
+    el.hidden = true;
+  };
+
+  if (!finalSrc) {
+    el.src = "";
+    el.hidden = true;
+    return;
+  }
+
+  el.hidden = false;
+  el.src = finalSrc;
 }
 
 function toggle(el, show) {
