@@ -1,1 +1,433 @@
+/* =====================================
+   GO GOWORLD — SEGUITI UTENTI V2
+   CSS COMPLETO SOSTITUTIVO
+   Shell HOME V2 1:1 + contenuto locale
+   ===================================== */
 
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body.seguiti-utenti-page {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: Inter, Arial, sans-serif;
+  background: #f6f9fc;
+  color: #122033;
+}
+
+/* ==========================
+   ICON SYSTEM
+   ========================== */
+
+.gw-icon {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.gw-iconbtn,
+.gw-btn {
+  font: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ==========================
+   HOME SHELL 1:1 — TOPBAR
+   ========================== */
+
+.home-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(16, 24, 40, 0.08);
+}
+
+.home-topbar__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+}
+
+.home-topbar__row--actions {
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.home-topbar__identity {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.home-topbar__greeting {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #122033;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-topbar__role {
+  margin-top: 2px;
+  font-size: 13px;
+  line-height: 1.2;
+  color: #5c6b80;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-topbar__brand {
+  flex-shrink: 0;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--gw-accent, #3da9fc);
+}
+
+.home-topbar__iconbtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  color: #1f2937;
+  cursor: pointer;
+}
+
+.home-topbar__iconbtn:hover,
+.home-topbar__iconbtn:focus-visible {
+  background: rgba(61, 169, 252, 0.08);
+  outline: none;
+}
+
+/* ==========================
+   HOME SHELL 1:1 — BOTTOMNAV
+   ========================== */
+
+.home-bottomnav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 25;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0 calc(10px + env(safe-area-inset-bottom, 0px));
+  background: #ffffff;
+  border-top: 1px solid rgba(16, 24, 40, 0.08);
+}
+
+.home-bottomnav__btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #8a94a6;
+}
+
+.home-bottomnav__btn:hover,
+.home-bottomnav__btn:focus-visible {
+  background: rgba(61, 169, 252, 0.08);
+  outline: none;
+}
+
+.home-bottomnav__btn.is-active,
+.home-bottomnav__btn[aria-current="page"] {
+  background: rgba(61, 169, 252, 0.12);
+  color: #b3262e;
+}
+
+/* ==========================
+   LOCAL PAGE CONTENT
+   ========================== */
+
+.seguiti-utenti-main {
+  padding: 20px 16px 96px;
+}
+
+.seguiti-utenti-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ==========================
+   INTERNAL HEADER
+   ========================== */
+
+.seguiti-utenti-header {
+  padding: 18px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.06);
+}
+
+.seguiti-utenti-header__text {
+  min-width: 0;
+}
+
+.seguiti-utenti-header__eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gw-accent, #3da9fc);
+}
+
+.seguiti-utenti-header__title {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.1;
+  color: #122033;
+}
+
+.seguiti-utenti-header__subtitle {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #5c6b80;
+}
+
+.seguiti-utenti-header__actions {
+  margin-top: 16px;
+}
+
+/* ==========================
+   GENERIC BUTTONS (LOCAL CONTENT)
+   ========================== */
+
+.gw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.gw-btn--ghost {
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  color: #122033;
+}
+
+/* ==========================
+   MESSAGE AREA
+   ========================== */
+
+.seguiti-utenti-message-area {
+  display: none;
+}
+
+.seguiti-utenti-message-area:not(:empty) {
+  display: block;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.seguiti-utenti-message-area.is-info {
+  background: rgba(61, 169, 252, 0.08);
+  color: #122033;
+}
+
+.seguiti-utenti-message-area.is-success {
+  background: rgba(18, 183, 106, 0.08);
+  color: #122033;
+}
+
+.seguiti-utenti-message-area.is-error {
+  background: rgba(217, 45, 32, 0.08);
+  color: #d92d20;
+}
+
+/* ==========================
+   STATES
+   ========================== */
+
+.seguiti-utenti-state[hidden],
+.seguiti-utenti-list-wrap[hidden] {
+  display: none;
+}
+
+.seguiti-utenti-state__panel {
+  padding: 18px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.06);
+}
+
+.seguiti-utenti-state__title {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #122033;
+}
+
+.seguiti-utenti-state__text {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #5c6b80;
+}
+
+.seguiti-utenti-state__panel .gw-btn,
+.seguiti-utenti-state__panel a.gw-btn {
+  margin-top: 14px;
+}
+
+/* ==========================
+   LIST
+   ========================== */
+
+.seguiti-utenti-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.seguiti-utenti-card {
+  margin: 0;
+}
+
+.seguiti-utenti-user {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid rgba(16, 24, 40, 0.05);
+}
+
+.seguiti-utenti-user__avatar-wrap {
+  position: relative;
+  width: 52px;
+  height: 52px;
+}
+
+.seguiti-utenti-user__avatar,
+.seguiti-utenti-user__avatar-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.seguiti-utenti-user__avatar {
+  object-fit: cover;
+  border: 1px solid rgba(16, 24, 40, 0.06);
+}
+
+.seguiti-utenti-user__avatar-fallback {
+  display: grid;
+  place-items: center;
+  background: rgba(61, 169, 252, 0.08);
+  color: #122033;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.seguiti-utenti-user__content {
+  min-width: 0;
+}
+
+.seguiti-utenti-user__name {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.25;
+  color: #122033;
+  word-break: break-word;
+}
+
+.seguiti-utenti-user__meta {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #5c6b80;
+  word-break: break-word;
+}
+
+.seguiti-utenti-user__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.seguiti-utenti-user__action {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  border: 1px solid rgba(16, 24, 40, 0.08);
+}
+
+.seguiti-utenti-user__action[data-action="open-profile"] {
+  background: #ffffff;
+  color: #122033;
+}
+
+.seguiti-utenti-user__action[data-action="unfollow"] {
+  background: rgba(217, 45, 32, 0.06);
+  color: #d92d20;
+  border-color: rgba(217, 45, 32, 0.12);
+}
+
+/* ==========================
+   RESPONSIVE
+   ========================== */
+
+@media (min-width: 640px) {
+  .seguiti-utenti-main {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .seguiti-utenti-user {
+    grid-template-columns: 52px minmax(0, 1fr) auto;
+  }
+
+  .seguiti-utenti-user__actions {
+    grid-column: auto;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+  }
+}
