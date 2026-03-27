@@ -136,12 +136,21 @@ function normalizeAccountPayload(payload) {
 
 function normalizeConnectionUser(user) {
   return {
-    id: user?._id || user?.id || "",
-    nickname: user?.nickname || user?.username || user?.name || "Utente",
-    avatarUrl: normalizeAvatarUrl(user?.avatarUrl || user?.avatar || user?.photoURL),
-    sub: user?.bio || user?.role || "",
-  };
-}
+  id: user?._id || user?.id || "",
+  nickname: user?.nickname || user?.username || user?.name || "Utente",
+  avatarUrl: normalizeAvatarUrl(
+    user?.profile?.avatarUrl ||
+    user?.avatarUrl ||
+    user?.avatar ||
+    user?.photoURL
+  ),
+  sub:
+    [user?.profile?.city, user?.profile?.region]
+      .filter(Boolean)
+      .join(" • ") ||
+    user?.role ||
+    "",
+};
 
 function normalizeConnectionList(payload) {
   const items = Array.isArray(payload)
