@@ -104,11 +104,14 @@ if (followersEl) followersEl.textContent = profile.followersCount ?? 0;
 
 
 
-  // Se sto guardando me stesso (self=1 nell'URL) → niente bottone Follow
   const qs = new URLSearchParams(location.search);
-  const isSelf = qs.get("self") === "1";
+  const isSelfFromUrl = qs.get("self") === "1";
+  const viewedUserId = qs.get("userId") || "";
+  const profileUserId = profile?._id || profile?.id || "";
+  const isSelf = isSelfFromUrl || (viewedUserId && profileUserId && viewedUserId === profileUserId);
+
   if (isSelf && followBtn) {
-     hideEl(followBtn);
+    hideEl(followBtn);
   }
 }
 
