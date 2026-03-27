@@ -120,14 +120,16 @@ function normalizeConnectionUser(user) {
 
 function normalizeConnectionList(payload) {
   const items = Array.isArray(payload)
-    ? payload
-    : Array.isArray(payload?.users)
-    ? payload.users
-    : Array.isArray(payload?.followers)
-    ? payload.followers
-    : Array.isArray(payload?.following)
-    ? payload.following
-    : [];
+  ? payload
+  : Array.isArray(payload?.data)
+  ? payload.data
+  : Array.isArray(payload?.users)
+  ? payload.users
+  : Array.isArray(payload?.followers)
+  ? payload.followers
+  : Array.isArray(payload?.following)
+  ? payload.following
+  : [];
 
   return items.map(normalizeConnectionUser);
 }
