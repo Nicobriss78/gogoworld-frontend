@@ -1,4 +1,4 @@
-import { apiGet, apiDelete } from "/js/api.js";
+import { apiGet, apiDelete, apiErrorMessage } from "/js/api.js";
 
 function normalizeText(value) {
   return typeof value === "string" ? value.trim() : "";
@@ -11,8 +11,7 @@ function buildLocationLabel(user) {
   const location = [city, region].filter(Boolean).join(" • ");
   if (location) return location;
 
-  const role = normalizeText(user?.role);
-  return role;
+  return normalizeText(user?.role);
 }
 
 function normalizeFollowedUser(user) {
@@ -30,7 +29,9 @@ function normalizeFollowedUser(user) {
     role,
     avatarUrl,
     locationLabel: buildLocationLabel(user),
-    publicProfileUrl: id ? `/pages/user-public.html?userId=${encodeURIComponent(id)}` : "#",
+    publicProfileUrl: id
+      ? `/pages/user-public.html?userId=${encodeURIComponent(id)}`
+      : "#",
   };
 }
 
@@ -41,7 +42,11 @@ export function getSeguitiUtentiAuthToken() {
 export async function fetchCurrentUserProfile() {
   const response = await apiGet("/users/me");
 
-  return response?.user || response?.data || response || null;
+  if (!response?.ok) {
+    throw new Error(apiErrorMessage(response, "Impossibile recuperare il profilo utente."));
+  }
+
+  return response;
 }
 
 export async function fetchFollowingUsers(userId) {
@@ -50,11 +55,12 @@ export async function fetchFollowingUsers(userId) {
   }
 
   const response = await apiGet(`/users/${encodeURIComponent(userId)}/following`);
-  const rawUsers = Array.isArray(response?.data)
-    ? response.data
-    : Array.isArray(response)
-      ? response
-      : [];
+
+  if (!response?.ok) {
+    throw new Error(apiErrorMessage(response, "Errore nel caricamento degli utenti seguiti."));
+  }
+
+  const rawUsers = Array.isArray(response?.data) ? response.data : [];
 
   return rawUsers
     .map(normalizeFollowedUser)
@@ -67,5 +73,10 @@ export async function unfollowUser(userId) {
   }
 
   const response = await apiDelete(`/users/${encodeURIComponent(userId)}/follow`);
-  return response || { ok: true };
+
+  if (!response?.ok) {
+    throw new Error(apiErrorMessage(response, "Operazione non riuscita."));
+  }
+
+  return response;
 }
