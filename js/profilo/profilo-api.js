@@ -49,7 +49,32 @@ function asCommaString(value) {
 }
 
 function normalizeAvatarUrl(value) {
-  return typeof value === "string" ? value : "";
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  const url = value.trim();
+  if (!url) {
+    return "";
+  }
+
+  if (/^https?:\/\//i.test(url) || url.startsWith("data:")) {
+    return url;
+  }
+
+  const API_ROOT =
+    (typeof window !== "undefined" && window.__API_BASE__?.replace(/\/api\/?$/, "")) ||
+    "https://gogoworld-api.onrender.com";
+
+  if (url.startsWith("/api/uploads/") || url.startsWith("/uploads/")) {
+    return `${API_ROOT}${url.startsWith("/") ? "" : "/"}${url}`;
+  }
+
+  if (url.startsWith("/")) {
+    return `${API_ROOT}${url}`;
+  }
+
+  return `${API_ROOT}/${url.replace(/^\/+/, "")}`;
 }
 
 function parseCsvToArray(value) {
