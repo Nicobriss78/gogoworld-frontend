@@ -329,27 +329,24 @@ const qs = new URLSearchParams(location.search);
 
   const backBtn = $("#btnBack");
   if (backBtn) {
-    if (isSelf) {
-      // Se sto guardando la mia bacheca, tornare al mio profilo
-      backBtn.textContent = "Torna al mio profilo";
+  if (isSelf) {
+    backBtn.textContent = "Torna al mio profilo";
 
-      // Di base torna al profilo
-      let href = "/profile.html";
+    let href = "/pages/profilo-v2.html";
 
-      // Se ho un contesto di ritorno, lo propago
-      if (ret) {
-        href += `?returnTo=${encodeURIComponent(ret)}`;
-      }
-
-      backBtn.href = href;
-      backBtn.onclick = null;
-    } else if (history.length > 1) {
-      backBtn.onclick = (e) => {
-        e.preventDefault();
-        history.back();
-      };
+    if (ret) {
+      href += `?returnTo=${encodeURIComponent(ret)}`;
     }
+
+    backBtn.href = href;
+    backBtn.onclick = null;
+  } else if (history.length > 1) {
+    backBtn.onclick = (e) => {
+      e.preventDefault();
+      history.back();
+    };
   }
+}
 
   loadAll(userId);
 
