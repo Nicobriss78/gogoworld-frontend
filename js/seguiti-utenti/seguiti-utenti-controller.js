@@ -24,7 +24,8 @@ async function loadFollowing(view) {
 
     seguitiUtentiState.users = users;
   } catch (error) {
-    seguitiUtentiState.error = "Errore nel caricamento degli utenti seguiti.";
+    seguitiUtentiState.error =
+      error?.message || "Errore nel caricamento degli utenti seguiti.";
   } finally {
     seguitiUtentiState.loading = false;
     seguitiUtentiState.initialized = true;
