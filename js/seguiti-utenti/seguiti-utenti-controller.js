@@ -8,7 +8,6 @@ import {
 } from "./seguiti-utenti-api.js";
 import {
   renderSeguitiUtentiPage,
-  renderSeguitiUtentiTopbar,
   renderSeguitiUtentiMessage,
 } from "./seguiti-utenti-renderer.js";
 import {
