@@ -254,6 +254,5 @@ export function buildMyPublicProfileUrl(userId) {
     return "";
   }
 
-  return `/pages/user-public.html?userId=${encodeURIComponent(userId)}`;
-    }
+return `/pages/user-public.html?userId=${encodeURIComponent(userId)}`;    }
   
