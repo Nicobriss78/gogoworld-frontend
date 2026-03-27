@@ -266,7 +266,13 @@ function bindEvents() {
    ========================================================= */
 
 async function initProfilePage() {
-  patchUiState({ editing: false, loading: false, saving: false });
+  patchUiState({
+    editing: false,
+    loading: false,
+    saving: false,
+    notificationsOpen: false,
+    menuOpen: false,
+  });
   bindEvents();
   render();
   await loadProfileData();
