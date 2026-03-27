@@ -97,16 +97,16 @@ function normalizeProfilePayload(payload) {
     socials: asCommaString(profile.socials),
 
     allowDirectMessages: Boolean(
-      profile?.privacy?.optInDM ??
-      root.allowDirectMessages ??
-      root.dmEnabled
-    ),
-
-    dmsFrom:
-      profile?.privacy?.dmsFrom ||
-      root.dmsFrom ||
-      root.dmPrivacy ||
-      "everyone",
+  source.privacy?.optInDM ??
+  source.allowDirectMessages ??
+  source.dmEnabled ??
+  source.directMessagesEnabled
+),
+dmsFrom:
+  source.privacy?.dmsFrom ||
+  source.dmsFrom ||
+  source.dmPrivacy ||
+  "everyone",
   };
 }
 
