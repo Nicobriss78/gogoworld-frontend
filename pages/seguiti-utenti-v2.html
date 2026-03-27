@@ -8,7 +8,8 @@
   <meta name="apple-mobile-web-app-title" content="GoGoWorld" />  <link rel="stylesheet" href="/css/tokens.v2.css" />
   <link rel="stylesheet" href="/css/icons-v2.css" />
   <link rel="stylesheet" href="/css/areas/seguiti-utenti.css" />
-</head><body class="seguiti-utenti-page">
+</head>
+<body class="seguiti-utenti-page">
   <div aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
       <symbol id="gw-icon-search" viewBox="0 0 24 24">
@@ -83,231 +84,186 @@
   </symbol>
 </svg>
 
-  </div>  <div class="gw-shell seguiti-utenti-shell">
-    <header class="seguiti-utenti-topbar">
-      <div class="seguiti-utenti-topbar__row seguiti-utenti-topbar__row--identity">
-        <div class="seguiti-utenti-topbar__identity">
-          <div class="seguiti-utenti-topbar__greeting" id="seguitiUtentiGreeting">Ciao</div>
-          <div class="seguiti-utenti-topbar__role" id="seguitiUtentiRoleLabel">Esploratore</div>
-        </div><div class="seguiti-utenti-topbar__brand">GoGoWorld.life</div>
-  </div>
-
-  <div class="seguiti-utenti-topbar__row seguiti-utenti-topbar__row--actions">
-    <a
-      class="seguiti-utenti-topbar__btn gw-iconbtn"
-      href="/pages/cerca-utenti.html"
-      aria-label="Cerca utenti"
-      title="Cerca utenti"
-    >
-      <svg class="gw-icon" aria-hidden="true">
-        <use href="#gw-icon-search"></use>
-      </svg>
-    </a>
-
-    <a
-      class="seguiti-utenti-topbar__btn gw-iconbtn"
-      href="/pages/mappa-v2.html"
-      aria-label="Mappa"
-      title="Mappa"
-    >
-      <svg class="gw-icon" aria-hidden="true">
-        <use href="#gw-icon-pin"></use>
-      </svg>
-    </a>
-
-    <a
-      class="seguiti-utenti-topbar__btn gw-iconbtn"
-      href="/messages.html"
-      aria-label="Messaggi"
-      title="Messaggi"
-    >
-      <svg class="gw-icon" aria-hidden="true">
-        <use href="#gw-icon-chat"></use>
-      </svg>
-    </a>
-
-    <button
-      class="seguiti-utenti-topbar__btn gw-iconbtn"
-      type="button"
-      id="seguitiUtentiNotificationsBtn"
-      aria-label="Notifiche"
-      title="Notifiche"
-    >
-      <svg class="gw-icon" aria-hidden="true">
-        <use href="#gw-icon-bell"></use>
-      </svg>
-    </button>
-
-    <button
-      class="seguiti-utenti-topbar__btn gw-iconbtn"
-      type="button"
-      id="seguitiUtentiMenuBtn"
-      aria-label="Menu"
-      title="Menu"
-      aria-expanded="false"
-      aria-controls="seguitiUtentiMenuPanel"
-    >
-      <svg class="gw-icon" aria-hidden="true">
-        <use href="#gw-icon-menu"></use>
-      </svg>
-    </button>
-  </div>
-</header>
-
-<main class="seguiti-utenti-main" aria-label="Utenti che segui">
-  <section class="seguiti-utenti-panel" id="seguitiUtentiRoot">
-    <header class="seguiti-utenti-header">
-      <div class="seguiti-utenti-header__text">
-        <p class="seguiti-utenti-header__eyebrow">Rete personale</p>
-        <h1 class="seguiti-utenti-header__title">Utenti seguiti</h1>
-        <p class="seguiti-utenti-header__subtitle">
-          Qui trovi le persone che hai scelto di seguire, con accesso rapido al loro profilo pubblico.
-        </p>
+  </div>  <header class="home-topbar seguiti-utenti-topbar-shell">
+    <div class="home-topbar__row home-topbar__row--identity">
+      <div class="home-topbar__identity">
+        <div class="home-topbar__greeting" id="seguitiUtentiGreeting">Ciao</div>
+        <div class="home-topbar__role" id="seguitiUtentiRoleLabel">Esploratore</div>
       </div>
-
-      <div class="seguiti-utenti-header__actions">
-        <a class="gw-btn gw-btn--ghost" href="/pages/cerca-utenti.html">
-          Scopri utenti
-        </a>
-      </div>
-    </header>
-
-    <div id="seguitiUtentiMessageArea" class="seguiti-utenti-message-area" aria-live="polite"></div>
-
-    <div class="seguiti-utenti-states">
-      <section
-        class="seguiti-utenti-state seguiti-utenti-state--loading"
-        id="seguitiUtentiLoadingState"
-        role="status"
-        aria-live="polite"
-      >
-        <div class="seguiti-utenti-state__panel">
-          <h2 class="seguiti-utenti-state__title">Caricamento utenti seguiti...</h2>
-          <p class="seguiti-utenti-state__text">
-            Stiamo preparando la tua rete di contatti.
-          </p>
-        </div>
-      </section>
-
-      <section
-        class="seguiti-utenti-state seguiti-utenti-state--error"
-        id="seguitiUtentiErrorState"
-        hidden
-        role="alert"
-        aria-live="assertive"
-      >
-        <div class="seguiti-utenti-state__panel">
-          <h2 class="seguiti-utenti-state__title">Non è stato possibile caricare gli utenti seguiti</h2>
-          <p class="seguiti-utenti-state__text" id="seguitiUtentiErrorText">
-            Riprova tra poco.
-          </p>
-          <button class="gw-btn" type="button" id="seguitiUtentiRetryBtn">
-            <svg class="gw-icon" aria-hidden="true">
-              <use href="#gw-icon-refresh"></use>
-            </svg>
-            <span>Riprova</span>
-          </button>
-        </div>
-      </section>
-
-      <section
-        class="seguiti-utenti-state seguiti-utenti-state--empty"
-        id="seguitiUtentiEmptyState"
-        hidden
-        role="status"
-        aria-live="polite"
-      >
-        <div class="seguiti-utenti-state__panel">
-          <h2 class="seguiti-utenti-state__title">Non segui ancora nessun utente</h2>
-          <p class="seguiti-utenti-state__text">
-            Cerca nuovi profili, esplora la community e costruisci la tua rete personale.
-          </p>
-          <a class="gw-btn" href="/pages/cerca-utenti.html">Cerca utenti</a>
-        </div>
-      </section>
-
-      <section
-        class="seguiti-utenti-list-wrap"
-        id="seguitiUtentiListWrap"
-        hidden
-        aria-label="Lista utenti seguiti"
-      >
-        <ul class="seguiti-utenti-list" id="seguitiUtentiList"></ul>
-      </section>
-    </div>
-  </section>
-</main>
-
-<nav class="seguiti-utenti-bottomnav" aria-label="Navigazione principale">
-  <a class="gw-iconbtn" href="/pages/mappa-v2.html" aria-label="Mappa" title="Mappa" data-nav-key="map">
-    <svg class="gw-icon" aria-hidden="true">
-      <use href="#gw-icon-map"></use>
-    </svg>
-  </a>
-
-  <a class="gw-iconbtn" href="/pages/partecipante-seguiti-v2.html" aria-label="Eventi seguiti" title="Eventi seguiti" data-nav-key="following-events">
-    <svg class="gw-icon" aria-hidden="true">
-      <use href="#gw-icon-calendar"></use>
-    </svg>
-  </a>
-
-  <a class="gw-iconbtn" href="/pages/home-v2.html" aria-label="Home" title="Home" data-nav-key="home">
-    <svg class="gw-icon" aria-hidden="true">
-      <use href="#gw-icon-home"></use>
-    </svg>
+      <div class="home-topbar__brand">GoGoWorld.life</div>
+    </div><div class="home-topbar__row home-topbar__row--actions">
+  <a
+    class="home-topbar__iconbtn gw-iconbtn"
+    href="/pages/cerca-utenti.html"
+    aria-label="Cerca utenti"
+    title="Cerca utenti"
+  >
+    <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-search"></use></svg>
   </a>
 
   <a
-    class="gw-iconbtn is-active active"
-    href="/pages/seguiti-utenti-v2.html"
-    aria-label="Utenti seguiti"
-    title="Utenti seguiti"
-    data-nav-key="following-users"
-    aria-current="page"
+    class="home-topbar__iconbtn gw-iconbtn"
+    href="/pages/mappa-v2.html"
+    aria-label="Mappa"
+    title="Mappa"
   >
-    <svg class="gw-icon" aria-hidden="true">
-      <use href="#gw-icon-users"></use>
-    </svg>
+    <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-pin"></use></svg>
   </a>
 
-  <a class="gw-iconbtn" href="/pages/profilo-v2.html" aria-label="Profilo" title="Profilo" data-nav-key="profile">
-    <svg class="gw-icon" aria-hidden="true">
-      <use href="#gw-icon-profile"></use>
-    </svg>
+  <a
+    class="home-topbar__iconbtn gw-iconbtn"
+    href="/messages.html"
+    aria-label="Messaggi"
+    title="Messaggi"
+  >
+    <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-chat"></use></svg>
   </a>
-</nav>
 
-<template id="seguitiUtentiCardTemplate">
-  <li class="seguiti-utenti-card">
-    <article class="seguiti-utenti-user" data-user-id="">
-      <div class="seguiti-utenti-user__avatar-wrap">
-        <img class="seguiti-utenti-user__avatar" src="" alt="" loading="lazy" hidden />
-        <div class="seguiti-utenti-user__avatar-fallback" aria-hidden="true"></div>
+  <button
+    class="home-topbar__iconbtn gw-iconbtn"
+    type="button"
+    id="seguitiUtentiNotificationsBtn"
+    aria-label="Notifiche"
+    title="Notifiche"
+  >
+    <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-bell"></use></svg>
+  </button>
+
+  <button
+    class="home-topbar__iconbtn gw-iconbtn"
+    type="button"
+    id="seguitiUtentiMenuBtn"
+    aria-label="Menu"
+    title="Menu"
+    aria-expanded="false"
+    aria-controls="seguitiUtentiMenuPanel"
+  >
+    <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-menu"></use></svg>
+  </button>
+</div>
+
+  </header>  <main class="seguiti-utenti-main" aria-label="Utenti che segui">
+    <section class="seguiti-utenti-panel" id="seguitiUtentiRoot">
+      <header class="seguiti-utenti-header">
+        <div class="seguiti-utenti-header__text">
+          <p class="seguiti-utenti-header__eyebrow">Rete personale</p>
+          <h1 class="seguiti-utenti-header__title">Utenti seguiti</h1>
+          <p class="seguiti-utenti-header__subtitle">
+            Qui trovi le persone che hai scelto di seguire, con accesso rapido al loro profilo pubblico.
+          </p>
+        </div><div class="seguiti-utenti-header__actions">
+      <a class="gw-btn gw-btn--ghost" href="/pages/cerca-utenti.html">Scopri utenti</a>
+    </div>
+  </header>
+
+  <div id="seguitiUtentiMessageArea" class="seguiti-utenti-message-area" aria-live="polite"></div>
+
+  <div class="seguiti-utenti-states">
+    <section
+      class="seguiti-utenti-state seguiti-utenti-state--loading"
+      id="seguitiUtentiLoadingState"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="seguiti-utenti-state__panel">
+        <h2 class="seguiti-utenti-state__title">Caricamento utenti seguiti...</h2>
+        <p class="seguiti-utenti-state__text">Stiamo preparando la tua rete di contatti.</p>
       </div>
+    </section>
 
-      <div class="seguiti-utenti-user__content">
-        <h2 class="seguiti-utenti-user__name"></h2>
-        <p class="seguiti-utenti-user__meta"></p>
-      </div>
-
-      <div class="seguiti-utenti-user__actions">
-        <a class="gw-btn gw-btn--ghost seguiti-utenti-user__action" href="#" data-action="open-profile">
-          <svg class="gw-icon" aria-hidden="true">
-            <use href="#gw-icon-external"></use>
-          </svg>
-          <span>Apri profilo</span>
-        </a>
-
-        <button class="gw-btn seguiti-utenti-user__action" type="button" data-action="unfollow">
-          <svg class="gw-icon" aria-hidden="true">
-            <use href="#gw-icon-user-minus"></use>
-          </svg>
-          <span>Smetti di seguire</span>
+    <section
+      class="seguiti-utenti-state seguiti-utenti-state--error"
+      id="seguitiUtentiErrorState"
+      hidden
+      role="alert"
+      aria-live="assertive"
+    >
+      <div class="seguiti-utenti-state__panel">
+        <h2 class="seguiti-utenti-state__title">Non è stato possibile caricare gli utenti seguiti</h2>
+        <p class="seguiti-utenti-state__text" id="seguitiUtentiErrorText">Riprova tra poco.</p>
+        <button class="gw-btn" type="button" id="seguitiUtentiRetryBtn">
+          <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-refresh"></use></svg>
+          <span>Riprova</span>
         </button>
       </div>
-    </article>
-  </li>
-</template>
+    </section>
 
-  </div>  <script type="module" src="/js/seguiti-utenti/seguiti-utenti-controller.js"></script></body>
-</html>
+    <section
+      class="seguiti-utenti-state seguiti-utenti-state--empty"
+      id="seguitiUtentiEmptyState"
+      hidden
+      role="status"
+      aria-live="polite"
+    >
+      <div class="seguiti-utenti-state__panel">
+        <h2 class="seguiti-utenti-state__title">Non segui ancora nessun utente</h2>
+        <p class="seguiti-utenti-state__text">
+          Cerca nuovi profili, esplora la community e costruisci la tua rete personale.
+        </p>
+        <a class="gw-btn" href="/pages/cerca-utenti.html">Cerca utenti</a>
+      </div>
+    </section>
+
+    <section
+      class="seguiti-utenti-list-wrap"
+      id="seguitiUtentiListWrap"
+      hidden
+      aria-label="Lista utenti seguiti"
+    >
+      <ul class="seguiti-utenti-list" id="seguitiUtentiList"></ul>
+    </section>
+  </div>
+</section>
+
+  </main>  <nav class="home-bottomnav seguiti-utenti-bottomnav-shell" aria-label="Navigazione principale">
+    <a class="gw-iconbtn home-bottomnav__btn" href="/pages/mappa-v2.html" aria-label="Mappa" title="Mappa">
+      <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-map"></use></svg>
+    </a><a class="gw-iconbtn home-bottomnav__btn" href="/pages/partecipante-seguiti-v2.html" aria-label="Eventi seguiti" title="Eventi seguiti">
+  <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-calendar"></use></svg>
+</a>
+
+<a class="gw-iconbtn home-bottomnav__btn home-bottomnav__btn--home" href="/pages/home-v2.html" aria-label="Home" title="Home">
+  <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-home"></use></svg>
+</a>
+
+<a
+  class="gw-iconbtn home-bottomnav__btn is-active"
+  href="/pages/seguiti-utenti-v2.html"
+  aria-label="Utenti seguiti"
+  title="Utenti seguiti"
+  aria-current="page"
+>
+  <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-users"></use></svg>
+</a>
+
+<a class="gw-iconbtn home-bottomnav__btn" href="/pages/profilo-v2.html" aria-label="Profilo" title="Profilo">
+  <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-profile"></use></svg>
+</a>
+
+  </nav>  <template id="seguitiUtentiCardTemplate">
+    <li class="seguiti-utenti-card">
+      <article class="seguiti-utenti-user" data-user-id="">
+        <div class="seguiti-utenti-user__avatar-wrap">
+          <img class="seguiti-utenti-user__avatar" src="" alt="" loading="lazy" hidden />
+          <div class="seguiti-utenti-user__avatar-fallback" aria-hidden="true"></div>
+        </div><div class="seguiti-utenti-user__content">
+      <h2 class="seguiti-utenti-user__name"></h2>
+      <p class="seguiti-utenti-user__meta"></p>
+    </div>
+
+    <div class="seguiti-utenti-user__actions">
+      <a class="gw-btn gw-btn--ghost seguiti-utenti-user__action" href="#" data-action="open-profile">
+        <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-external"></use></svg>
+        <span>Apri profilo</span>
+      </a>
+
+      <button class="gw-btn seguiti-utenti-user__action" type="button" data-action="unfollow">
+        <svg class="gw-icon" aria-hidden="true"><use href="#gw-icon-user-minus"></use></svg>
+        <span>Smetti di seguire</span>
+      </button>
+    </div>
+  </article>
+</li>
+
+  </template>  <script type="module" src="/js/seguiti-utenti/seguiti-utenti-controller.js"></script></body>
+  </html>
