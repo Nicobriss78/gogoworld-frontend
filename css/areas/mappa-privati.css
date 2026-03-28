@@ -242,25 +242,33 @@ body.mappa-page button {
 
 .mappa-menu-panel__link,
 .mappa-menu-panel__link:link,
-.mappa-menu-panel__link:visited {
-  width: 100%;
-  min-height: 46px;
-  padding: 12px 14px;
-  border: 0;
-  border-radius: 12px;
-  background: transparent;
-  color: var(--mappa-accent);
-  font: inherit;
-  font-size: 16px;
-  line-height: 1.3;
-  font-weight: 600;
-  text-align: left;
+.mappa-menu-panel__link:visited,
+.mappa-menu-panel__link--button {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  margin: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  outline: none;
   cursor: pointer;
   text-decoration: none;
+  text-align: left;
   -webkit-tap-highlight-color: transparent;
+
+  color: var(--mappa-accent);
+  font-family: inherit;
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .mappa-menu-panel__link:hover,
@@ -277,21 +285,9 @@ body.mappa-page button {
   transform: scale(0.99);
 }
 
-.mappa-menu-panel__link--button {
-  appearance: none;
-  -webkit-appearance: none;
-  border: 0;
-  outline: none;
-  box-shadow: none;
-  background: transparent;
-
-  /* IMPORTANTE: NON toccare più il font qui */
-  /* deve ereditare da .mappa-menu-panel__link */
-
-  opacity: 1;
-}
-
-.mappa-menu-panel__link--danger {
+.mappa-menu-panel__link--danger,
+.mappa-menu-panel__link--danger:link,
+.mappa-menu-panel__link--danger:visited {
   color: var(--mappa-danger);
 }
 
