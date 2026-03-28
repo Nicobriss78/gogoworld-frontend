@@ -222,6 +222,7 @@ export function createMappaPrivatiApi({ fetchImpl } = {}) {
     openEventRoom,
     fetchRoomMessages,
     sendRoomMessage,
-    markRoomRead
+    markRoomRead,
+    unlockPrivateEventByCode
   };
 }
