@@ -17,6 +17,10 @@ import {
 async function loadFollowing(view) {
   seguitiUtentiState.loading = true;
   seguitiUtentiState.error = "";
+  seguitiUtentiState.ui = {
+    ...(seguitiUtentiState.ui || {}),
+    menuOpen: false,
+  };
 
   renderSeguitiUtentiPage(view, seguitiUtentiState);
 
