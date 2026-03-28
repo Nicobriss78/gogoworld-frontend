@@ -10,6 +10,7 @@
   --mappa-accent-soft: var(--gw-accent-soft, #E6F0F4);
   --mappa-accent-border: var(--gw-accent-border, #C2D6DF);
   --mappa-danger: var(--gw-danger, #B52A32);
+  --mappa-private-accent: #7B1E3A;
 
   --mappa-bg: var(--gw-bg, #F4F6F8);
   --mappa-surface: var(--gw-surface, #FFFFFF);
