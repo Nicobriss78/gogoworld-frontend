@@ -151,6 +151,61 @@
   </div>
 </header>
 
+  <div
+    id="mappaPrivatiMenuOverlay"
+    class="mappa-menu-overlay"
+    hidden
+    aria-hidden="true"
+  ></div>
+
+  <div
+    id="mappaPrivatiMenuPanel"
+    class="mappa-menu-panel"
+    hidden
+    aria-hidden="true"
+    aria-label="Menu partecipante"
+  >
+    <a href="/pages/cerca-utenti.html" class="mappa-menu-panel__link">
+      Cerca utente
+    </a>
+
+    <a href="/pages/mappa-privati-v2.html" class="mappa-menu-panel__link">
+      Eventi privati
+    </a>
+
+    <button
+      type="button"
+      id="mappaPrivatiUnlockBtn"
+      class="mappa-menu-panel__link mappa-menu-panel__link--button"
+    >
+      Sblocca evento privato
+    </button>
+
+    <button
+      type="button"
+      id="mappaPrivatiGuideBtn"
+      class="mappa-menu-panel__link mappa-menu-panel__link--button"
+    >
+      Guida partecipante
+    </button>
+
+    <button
+      type="button"
+      id="mappaPrivatiSwitchRoleBtn"
+      class="mappa-menu-panel__link mappa-menu-panel__link--button"
+    >
+      Cambia ruolo
+    </button>
+
+    <button
+      type="button"
+      id="mappaPrivatiLogoutBtn"
+      class="mappa-menu-panel__link mappa-menu-panel__link--button mappa-menu-panel__link--danger"
+    >
+      Logout
+    </button>
+  </div>
+
   <main class="mappa-main" aria-label="Scheda mappa eventi privati">
     <!-- BLOCCO MAPPA -->
     <section id="mappaMapSection" class="mappa-section" aria-labelledby="mappaTitle">
