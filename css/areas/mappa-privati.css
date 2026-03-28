@@ -248,8 +248,8 @@ body.mappa-page button {
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  min-height: 50px;
-  padding: 13px 14px;
+  min-height: 54px;
+  padding: 14px 16px;
   margin: 0;
   border: 0;
   border-radius: 12px;
@@ -263,12 +263,12 @@ body.mappa-page button {
   text-align: left;
   -webkit-tap-highlight-color: transparent;
 
-  color: var(--mappa-accent);
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 18px;
-  line-height: 1.28;
+  color: var(--mappa-accent-hover);
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-size: 21px;
+  line-height: 1.22;
   font-weight: 800;
-  letter-spacing: 0;
+  letter-spacing: -0.01em;
 }
 
 .mappa-menu-panel__link:hover,
