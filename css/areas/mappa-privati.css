@@ -275,6 +275,7 @@ body.mappa-page button {
   letter-spacing: 0;
 }
 
+.mappa-menu-panel__link--danger,
 .mappa-menu-panel__link--danger .mappa-menu-panel__label {
   color: var(--mappa-danger);
 }
