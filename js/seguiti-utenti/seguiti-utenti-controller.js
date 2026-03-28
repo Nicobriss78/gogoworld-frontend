@@ -127,6 +127,11 @@ function setupEventListeners(view) {
 async function init() {
   const view = getSeguitiUtentiView();
 
+  seguitiUtentiState.ui = {
+    ...(seguitiUtentiState.ui || {}),
+    menuOpen: false,
+  };
+
   const token = getSeguitiUtentiAuthToken();
   if (!token) {
     window.location.href = "/login.html";
