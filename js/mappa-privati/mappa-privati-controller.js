@@ -137,6 +137,81 @@ async function hydrateTopbar() {
     identity
   });
 }
+
+  function setMenuOpen(isOpen) {
+    if (elements.menuOverlay) {
+      elements.menuOverlay.hidden = !isOpen;
+      elements.menuOverlay.setAttribute("aria-hidden", String(!isOpen));
+    }
+
+    if (elements.menuPanel) {
+      elements.menuPanel.hidden = !isOpen;
+      elements.menuPanel.setAttribute("aria-hidden", String(!isOpen));
+    }
+
+    if (elements.menuBtn) {
+      elements.menuBtn.setAttribute("aria-expanded", String(isOpen));
+    }
+  }
+
+  function isMenuOpen() {
+    return Boolean(elements.menuPanel && !elements.menuPanel.hidden);
+  }
+
+  function handleToggleMenu(event) {
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+
+    setMenuOpen(!isMenuOpen());
+  }
+
+  function handleCloseMenu() {
+    setMenuOpen(false);
+  }
+
+  function handleMenuEscape(event) {
+    if (event.key !== "Escape") return;
+    handleCloseMenu();
+  }
+
+  function handleMenuPanelClick(event) {
+    event.stopPropagation();
+
+    const link = event.target.closest("a");
+    if (link) {
+      handleCloseMenu();
+    }
+  }
+
+  async function handleMenuUnlockPrivate(event) {
+    event?.preventDefault?.();
+    handleCloseMenu();
+    await handleUnlockPrivateEventRequest();
+  }
+
+  function handleMenuGuide(event) {
+    event?.preventDefault?.();
+    handleCloseMenu();
+    window.alert("Guida partecipante: in arrivo 🙂");
+  }
+
+  function handleMenuSwitchRole(event) {
+    event?.preventDefault?.();
+    handleCloseMenu();
+
+    sessionStorage.setItem("desiredRole", "organizer");
+    window.location.href = "/organizzatore.html";
+  }
+
+  function handleMenuLogout(event) {
+    event?.preventDefault?.();
+    handleCloseMenu();
+
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("desiredRole");
+    window.location.href = "/login.html";
+  }
+
   /* ===============================
      SBLOCCO EVENTO PRIVATO VIA CODICE
      =============================== */
