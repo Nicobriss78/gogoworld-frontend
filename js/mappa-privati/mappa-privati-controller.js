@@ -182,6 +182,18 @@ async function hydrateTopbar() {
     event.stopPropagation();
   }
 
+  function handleMenuSearch(event) {
+    event?.preventDefault?.();
+    handleCloseMenu();
+    window.location.href = "/pages/cerca-utenti.html";
+  }
+
+  function handleMenuEvents(event) {
+    event?.preventDefault?.();
+    handleCloseMenu();
+    window.location.href = "/pages/mappa-privati-v2.html";
+  }
+
   async function handleMenuUnlockPrivate(event) {
     event?.preventDefault?.();
     handleCloseMenu();
