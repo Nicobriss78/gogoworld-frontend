@@ -238,19 +238,78 @@ function bindEditorActions() {
 }
 
 function bindTopbarActions() {
-  const { notificationsBtn, menuButton } = getTopbarElements();
+  if (topbarBound) return;
+  topbarBound = true;
+
+  const {
+    notificationsBtn,
+    menuButton,
+    menuOverlay,
+    menuPanel,
+    searchBtn,
+    eventsBtn,
+    guideBtn,
+    switchRoleBtn,
+    logoutBtn,
+  } = topbarEls;
+
+  const closeMenu = () => {
+    patchUiState({ menuOpen: false });
+    renderTopbar();
+  };
+
+  const toggleMenu = () => {
+    patchUiState({ menuOpen: !readProfileState().ui.menuOpen });
+    renderTopbar();
+  };
 
   notificationsBtn.addEventListener("click", () => {
-    patchUiState({
-      notificationsOpen: !getProfileState().ui.notificationsOpen,
-    });
+    window.alert("Centro notifiche disponibile a breve.");
   });
 
-  menuButton.addEventListener("click", () => {
-    const nextValue = !getProfileState().ui.menuOpen;
+  menuButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleMenu();
+  });
 
-    patchUiState({ menuOpen: nextValue });
-    menuButton.setAttribute("aria-expanded", String(nextValue));
+  menuOverlay.addEventListener("click", () => {
+    closeMenu();
+  });
+
+  menuPanel.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && readProfileState().ui.menuOpen) {
+      closeMenu();
+    }
+  });
+
+  searchBtn.addEventListener("click", () => {
+    closeMenu();
+    window.location.href = "/pages/cerca-utenti.html";
+  });
+
+  eventsBtn.addEventListener("click", () => {
+    closeMenu();
+    window.location.href = "/pages/home-v2.html";
+  });
+
+  guideBtn.addEventListener("click", () => {
+    closeMenu();
+    window.alert("Guida partecipante disponibile a breve.");
+  });
+
+  switchRoleBtn.addEventListener("click", () => {
+    closeMenu();
+    window.location.href = "/pages/seleziona-ruolo.html";
+  });
+
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login.html";
   });
 }
 
