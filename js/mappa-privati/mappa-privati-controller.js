@@ -116,6 +116,82 @@ async function hydrateTopbar() {
   });
 }
   /* ===============================
+     SBLOCCO EVENTO PRIVATO VIA CODICE
+     =============================== */
+
+  async function handleUnlockPrivateEventRequest() {
+    const COOLDOWN_KEY = "gw_priv_unlock_cooldown_until";
+
+    const until = Number(sessionStorage.getItem(COOLDOWN_KEY) || "0");
+    const now = Date.now();
+
+    if (until && now < until) {
+      const secLeft = Math.max(1, Math.ceil((until - now) / 1000));
+      window.alert(`⛔ Troppi tentativi. Attendi ${secLeft}s prima di riprovare.`);
+      return { ok: false, reason: "COOLDOWN_ACTIVE" };
+    }
+
+    const code = window.prompt("Inserisci il codice dell'evento privato:");
+    if (!code) {
+      return { ok: false, reason: "PROMPT_CANCELLED" };
+    }
+
+    const result = await api.unlockPrivateEventByCode(code);
+
+    if (!result?.ok) {
+      if (result?.status === 429) {
+        const waitSec = 600;
+        sessionStorage.setItem(COOLDOWN_KEY, String(Date.now() + waitSec * 1000));
+        window.alert(`⛔ Troppi tentativi consecutivi. Attendi ${waitSec}s e riprova.`);
+        return { ok: false, reason: "RATE_LIMIT" };
+      }
+
+      if (result?.status === 404) {
+        window.alert("❌ Codice non valido o evento non disponibile. Controlla il codice e riprova.");
+        return { ok: false, reason: "CODE_NOT_VALID" };
+      }
+
+      if (result?.status === 401 || result?.status === 403) {
+        window.alert("⚠️ Sessione non valida. Effettua di nuovo il login.");
+        setTimeout(() => {
+          window.location.href = "/login.html";
+        }, 800);
+        return { ok: false, reason: "AUTH_INVALID" };
+      }
+
+      window.alert(result?.message || "Operazione non riuscita.");
+      return { ok: false, reason: "UNKNOWN_ERROR" };
+    }
+
+    sessionStorage.removeItem(COOLDOWN_KEY);
+
+    window.alert("Evento privato sbloccato ✅");
+
+    await loadEvents();
+
+    const selectedEvent = state.getState().selectedEvent;
+    if (selectedEvent?.id) {
+      const refreshedSelected =
+        state.getState().eventsById.get(selectedEvent.id) || null;
+
+      if (refreshedSelected?.id) {
+        state.setSelectedEvent(refreshedSelected);
+
+        if (state.getState().drawerOpen) {
+          renderDetailCard(refreshedSelected);
+        }
+
+        map.focusEvent(refreshedSelected.id);
+        await chat.openForEvent(refreshedSelected);
+      } else {
+        chat.clear();
+      }
+    }
+
+    return { ok: true };
+  }
+
+  /* ===============================
      LOAD EVENTI PRIVATI
      =============================== */
 
