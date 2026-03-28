@@ -58,12 +58,60 @@ function toggleMenu(view) {
 }
 
 function setupEventListeners(view) {
-  // retry
+  view.notificationsBtn.addEventListener("click", () => {
+    window.alert("Centro notifiche disponibile a breve.");
+  });
+
+  view.menuBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleMenu(view);
+  });
+
+  view.menuOverlay.addEventListener("click", () => {
+    closeMenu(view);
+  });
+
+  view.menuPanel.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && seguitiUtentiState.ui?.menuOpen) {
+      closeMenu(view);
+    }
+  });
+
+  view.searchBtn.addEventListener("click", () => {
+    closeMenu(view);
+    window.location.href = "/pages/cerca-utenti.html";
+  });
+
+  view.eventsBtn.addEventListener("click", () => {
+    closeMenu(view);
+    window.location.href = "/pages/home-v2.html";
+  });
+
+  view.guideBtn.addEventListener("click", () => {
+    closeMenu(view);
+    window.alert("Guida partecipante disponibile a breve.");
+  });
+
+  view.switchRoleBtn.addEventListener("click", () => {
+    closeMenu(view);
+    window.alert("Cambio ruolo in riallineamento.");
+  });
+
+  view.logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login.html";
+  });
+
   view.retryBtn.addEventListener("click", () => {
+    closeMenu(view);
     loadFollowing(view);
   });
 
-  // delegation lista
   view.list.addEventListener("click", (event) => {
     const target = event.target.closest("[data-action]");
     if (!target) return;
@@ -76,7 +124,6 @@ function setupEventListeners(view) {
     }
   });
 }
-
 async function init() {
   const view = getSeguitiUtentiView();
 
