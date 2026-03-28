@@ -180,11 +180,6 @@ async function hydrateTopbar() {
 
   function handleMenuPanelClick(event) {
     event.stopPropagation();
-
-    const link = event.target.closest("a");
-    if (link) {
-      handleCloseMenu();
-    }
   }
 
   async function handleMenuUnlockPrivate(event) {
