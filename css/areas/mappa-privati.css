@@ -206,7 +206,7 @@ body.mappa-page button {
 .mappa-menu-overlay {
   position: fixed;
   inset: 0;
-  z-index: 130;
+  z-index: 980;
   background: rgba(15, 23, 42, 0.28);
   opacity: 0;
   pointer-events: none;
@@ -220,10 +220,12 @@ body.mappa-page button {
 
 .mappa-menu-panel {
   position: fixed;
-  top: calc(var(--mappa-topbar-h) - 6px);
+  top: calc(var(--mappa-topbar-h) + 18px);
   right: var(--mappa-page-pad-x);
-  z-index: 140;
+  z-index: 990;
   width: min(280px, calc(100vw - (var(--mappa-page-pad-x) * 2)));
+  max-height: calc(100dvh - var(--mappa-topbar-h) - var(--mappa-bottomnav-h) - 40px);
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -232,6 +234,7 @@ body.mappa-page button {
   border-radius: 16px;
   background: var(--mappa-surface);
   box-shadow: var(--mappa-shadow-strong);
+  -webkit-overflow-scrolling: touch;
 }
 
 .mappa-menu-panel[hidden] {
