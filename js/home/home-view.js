@@ -469,7 +469,7 @@ export function bindCardActions(dom) {
     const eventId = btn.dataset.eventId;
 
     if (action === "details" && eventId) {
-      window.location.href = `/pages/evento.html?id=${encodeURIComponent(eventId)}`;
+      window.location.href = `/evento.html?id=${encodeURIComponent(eventId)}`;
     }
   });
 }
