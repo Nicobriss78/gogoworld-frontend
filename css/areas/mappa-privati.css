@@ -279,6 +279,15 @@ body.mappa-page button {
 
 .mappa-menu-panel__link--button {
   appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  opacity: 1;
 }
 
 .mappa-menu-panel__link--danger {
