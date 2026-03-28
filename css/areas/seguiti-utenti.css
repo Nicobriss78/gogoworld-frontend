@@ -167,7 +167,112 @@ body.seguiti-utenti-page a {
 .home-topbar__btn:active {
   transform: scale(.98);
 }
+/* =========================================================
+   2B) MENU HAMBURGER
+   ========================================================= */
 
+.seguiti-utenti-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 980;
+  background: rgba(15, 23, 42, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.seguiti-utenti-menu-overlay:not([hidden]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.seguiti-utenti-menu-panel {
+  position: fixed;
+  top: calc(var(--home-topbar-h) + 18px);
+  right: var(--home-page-pad-x);
+  z-index: 990;
+  width: min(280px, calc(100vw - (var(--home-page-pad-x) * 2)));
+  max-height: calc(100dvh - var(--home-topbar-h) - var(--home-bottomnav-h) - 40px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--home-border);
+  border-radius: 16px;
+  background: var(--home-surface);
+  box-shadow: var(--home-shadow-strong);
+  -webkit-overflow-scrolling: touch;
+}
+
+.seguiti-utenti-menu-panel[hidden] {
+  display: none;
+}
+
+.seguiti-utenti-menu-panel__link,
+.seguiti-utenti-menu-panel__link:link,
+.seguiti-utenti-menu-panel__link:visited,
+.seguiti-utenti-menu-panel__link--button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 16px;
+  margin: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.seguiti-utenti-menu-panel__label {
+  display: block;
+  color: #1F4E5F;
+  font-family: Arial, sans-serif;
+  font-size: 19px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.seguiti-utenti-menu-panel__link--danger,
+.seguiti-utenti-menu-panel__link--danger .seguiti-utenti-menu-panel__label {
+  color: var(--home-danger);
+}
+
+.seguiti-utenti-menu-panel__link:hover,
+.seguiti-utenti-menu-panel__link:focus-visible,
+.seguiti-utenti-menu-panel__link--button:hover,
+.seguiti-utenti-menu-panel__link--button:focus-visible {
+  outline: none;
+  background: var(--home-accent-soft);
+  color: var(--home-accent-hover);
+}
+
+.seguiti-utenti-menu-panel__link:active,
+.seguiti-utenti-menu-panel__link--button:active {
+  transform: scale(.99);
+}
+
+.seguiti-utenti-menu-panel__link--danger,
+.seguiti-utenti-menu-panel__link--danger:link,
+.seguiti-utenti-menu-panel__link--danger:visited {
+  color: var(--home-danger);
+}
+
+.seguiti-utenti-menu-panel__link--danger:hover,
+.seguiti-utenti-menu-panel__link--danger:focus-visible {
+  background: rgba(181, 42, 50, 0.08);
+  color: var(--home-danger);
+}
 /* =========================================================
    3) MAIN + ROOT PAGINA
    ========================================================= */
