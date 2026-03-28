@@ -255,12 +255,12 @@ function bindTopbarActions() {
 
   const closeMenu = () => {
     patchUiState({ menuOpen: false });
-    renderTopbar();
+    render();
   };
 
   const toggleMenu = () => {
-    patchUiState({ menuOpen: !readProfileState().ui.menuOpen });
-    renderTopbar();
+    patchUiState({ menuOpen: !getProfileState().ui.menuOpen });
+    render();
   };
 
   notificationsBtn.addEventListener("click", () => {
@@ -282,7 +282,7 @@ function bindTopbarActions() {
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && readProfileState().ui.menuOpen) {
+    if (event.key === "Escape" && getProfileState().ui.menuOpen) {
       closeMenu();
     }
   });
