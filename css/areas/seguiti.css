@@ -185,9 +185,115 @@ body.seguiti-page button {
 }
 
 /* =========================================================
-   MAIN / VIEWPORT
+   MENU HAMBURGER
    ========================================================= */
 
+.seguiti-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 980;
+  background: rgba(15, 23, 42, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.seguiti-menu-overlay:not([hidden]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.seguiti-menu-panel {
+  position: fixed;
+  top: calc(var(--seguiti-topbar-h) + 18px);
+  right: var(--seguiti-page-pad-x);
+  z-index: 990;
+  width: min(280px, calc(100vw - (var(--seguiti-page-pad-x) * 2)));
+  max-height: calc(100dvh - var(--seguiti-topbar-h) - var(--seguiti-bottomnav-h) - 40px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--seguiti-border);
+  border-radius: 16px;
+  background: var(--seguiti-surface);
+  box-shadow: var(--seguiti-shadow-strong);
+  -webkit-overflow-scrolling: touch;
+}
+
+.seguiti-menu-panel[hidden] {
+  display: none;
+}
+
+.seguiti-menu-panel__link,
+.seguiti-menu-panel__link:link,
+.seguiti-menu-panel__link:visited,
+.seguiti-menu-panel__link--button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 16px;
+  margin: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.seguiti-menu-panel__label {
+  display: block;
+  color: #1F4E5F;
+  font-family: Arial, sans-serif;
+  font-size: 19px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.seguiti-menu-panel__link--danger,
+.seguiti-menu-panel__link--danger .seguiti-menu-panel__label {
+  color: var(--seguiti-danger);
+}
+
+.seguiti-menu-panel__link:hover,
+.seguiti-menu-panel__link:focus-visible,
+.seguiti-menu-panel__link--button:hover,
+.seguiti-menu-panel__link--button:focus-visible {
+  outline: none;
+  background: var(--seguiti-accent-soft);
+  color: var(--seguiti-accent-hover);
+}
+
+.seguiti-menu-panel__link:active,
+.seguiti-menu-panel__link--button:active {
+  transform: scale(0.99);
+}
+
+.seguiti-menu-panel__link--danger,
+.seguiti-menu-panel__link--danger:link,
+.seguiti-menu-panel__link--danger:visited {
+  color: var(--seguiti-danger);
+}
+
+.seguiti-menu-panel__link--danger:hover,
+.seguiti-menu-panel__link--danger:focus-visible {
+  background: rgba(181, 42, 50, 0.08);
+  color: var(--seguiti-danger);
+}
+
+/* =========================================================
+   MAIN / VIEWPORT
+   ========================================================= */
 .seguiti-main {
   flex: 1 1 auto;
   min-height: 0;
