@@ -111,6 +111,34 @@ export function createMappaPrivatiApi({ fetchImpl } = {}) {
 }
 
   /* ===============================
+     SBLOCCO EVENTO PRIVATO VIA CODICE
+     =============================== */
+
+  async function unlockPrivateEventByCode(code) {
+    const cleanCode = String(code || "").trim();
+
+    if (!cleanCode) {
+      return {
+        ok: false,
+        status: 400,
+        error: "EMPTY_CODE",
+        message: "Codice mancante"
+      };
+    }
+
+    try {
+      return await apiPost("/events/private/unlock", { code: cleanCode });
+    } catch {
+      return {
+        ok: false,
+        status: 0,
+        error: "NETWORK_ERROR",
+        message: "Errore di rete"
+      };
+    }
+  }
+
+  /* ===============================
      NORMALIZZAZIONE EVENTI
      =============================== */
 
