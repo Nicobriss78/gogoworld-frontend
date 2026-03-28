@@ -179,7 +179,112 @@ body.profilo-v2-page .gw-iconbtn {
 .profilo-topbar__btn:active {
   transform: scale(0.98);
 }
+/* =========================================================
+   MENU HAMBURGER
+   ========================================================= */
 
+.profilo-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 980;
+  background: rgba(15, 23, 42, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.profilo-menu-overlay:not([hidden]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.profilo-menu-panel {
+  position: fixed;
+  top: calc(var(--profilo-topbar-h) + 18px);
+  right: var(--profilo-page-pad-x);
+  z-index: 990;
+  width: min(280px, calc(100vw - (var(--profilo-page-pad-x) * 2)));
+  max-height: calc(100dvh - var(--profilo-topbar-h) - var(--profilo-bottomnav-h) - 40px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--profilo-border);
+  border-radius: 16px;
+  background: var(--profilo-surface);
+  box-shadow: var(--profilo-shadow-strong);
+  -webkit-overflow-scrolling: touch;
+}
+
+.profilo-menu-panel[hidden] {
+  display: none;
+}
+
+.profilo-menu-panel__link,
+.profilo-menu-panel__link:link,
+.profilo-menu-panel__link:visited,
+.profilo-menu-panel__link--button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 16px;
+  margin: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.profilo-menu-panel__label {
+  display: block;
+  color: #1F4E5F;
+  font-family: Arial, sans-serif;
+  font-size: 19px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.profilo-menu-panel__link--danger,
+.profilo-menu-panel__link--danger .profilo-menu-panel__label {
+  color: var(--profilo-danger);
+}
+
+.profilo-menu-panel__link:hover,
+.profilo-menu-panel__link:focus-visible,
+.profilo-menu-panel__link--button:hover,
+.profilo-menu-panel__link--button:focus-visible {
+  outline: none;
+  background: var(--profilo-accent-soft);
+  color: var(--profilo-accent-hover);
+}
+
+.profilo-menu-panel__link:active,
+.profilo-menu-panel__link--button:active {
+  transform: scale(0.99);
+}
+
+.profilo-menu-panel__link--danger,
+.profilo-menu-panel__link--danger:link,
+.profilo-menu-panel__link--danger:visited {
+  color: var(--profilo-danger);
+}
+
+.profilo-menu-panel__link--danger:hover,
+.profilo-menu-panel__link--danger:focus-visible {
+  background: rgba(181, 42, 50, 0.08);
+  color: var(--profilo-danger);
+}
 /* =========================================================
    MAIN
    ========================================================= */
