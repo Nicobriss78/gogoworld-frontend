@@ -94,6 +94,8 @@ const state = createMappaPrivatiState();
     elements.menuOverlay?.removeEventListener("click", handleCloseMenu);
     elements.menuPanel?.removeEventListener("click", handleMenuPanelClick);
 
+    elements.searchBtn?.removeEventListener("click", handleMenuSearch);
+    elements.eventsBtn?.removeEventListener("click", handleMenuEvents);
     elements.unlockBtn?.removeEventListener("click", handleMenuUnlockPrivate);
     elements.guideBtn?.removeEventListener("click", handleMenuGuide);
     elements.switchRoleBtn?.removeEventListener("click", handleMenuSwitchRole);
