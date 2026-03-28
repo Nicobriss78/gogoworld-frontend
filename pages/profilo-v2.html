@@ -132,7 +132,60 @@
         </button>
       </div>
     </header>
+    <div
+    id="profiloMenuOverlay"
+    class="profilo-menu-overlay"
+    hidden
+    aria-hidden="true"
+  ></div>
 
+  <div
+    id="profiloMenuPanel"
+    class="profilo-menu-panel"
+    hidden
+    aria-hidden="true"
+    aria-label="Menu partecipante"
+  >
+    <button
+      type="button"
+      id="profiloSearchBtn"
+      class="profilo-menu-panel__link profilo-menu-panel__link--button"
+    >
+      <span class="profilo-menu-panel__label">Cerca utente</span>
+    </button>
+
+    <button
+      type="button"
+      id="profiloEventsBtn"
+      class="profilo-menu-panel__link profilo-menu-panel__link--button"
+    >
+      <span class="profilo-menu-panel__label">Eventi</span>
+    </button>
+
+    <button
+      type="button"
+      id="profiloGuideBtn"
+      class="profilo-menu-panel__link profilo-menu-panel__link--button"
+    >
+      <span class="profilo-menu-panel__label">Guida partecipante</span>
+    </button>
+
+    <button
+      type="button"
+      id="profiloSwitchRoleBtn"
+      class="profilo-menu-panel__link profilo-menu-panel__link--button"
+    >
+      <span class="profilo-menu-panel__label">Cambia ruolo</span>
+    </button>
+
+    <button
+      type="button"
+      id="profiloLogoutBtn"
+      class="profilo-menu-panel__link profilo-menu-panel__link--button profilo-menu-panel__link--danger"
+    >
+      <span class="profilo-menu-panel__label">Logout</span>
+    </button>
+  </div>
     <main class="profilo-main" aria-label="Scheda profilo utente">
       <section class="profilo-card profilo-hero" aria-labelledby="profiloHeroTitle">
         <div class="profilo-hero__media">
