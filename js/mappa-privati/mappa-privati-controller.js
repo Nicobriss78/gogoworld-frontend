@@ -283,6 +283,12 @@ window.location.href = `/evento.html?id=${encodeURIComponent(eventId)}`;  }
      =============================== */
 
   window.addEventListener("beforeunload", () => {
+    try {
+      delete window.gwMappaPrivatiUnlockPrivateEvent;
+    } catch {
+      window.gwMappaPrivatiUnlockPrivateEvent = undefined;
+    }
+
     unbindUi();
     chat.destroy();
     drawer.destroy();
