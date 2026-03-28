@@ -201,6 +201,92 @@ body.mappa-page button {
   vertical-align: middle;
 }
 
+/* ===== MENU HAMBURGER ===== */
+
+.mappa-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  background: rgba(15, 23, 42, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.mappa-menu-overlay:not([hidden]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mappa-menu-panel {
+  position: fixed;
+  top: calc(var(--mappa-topbar-h) - 6px);
+  right: var(--mappa-page-pad-x);
+  z-index: 140;
+  width: min(280px, calc(100vw - (var(--mappa-page-pad-x) * 2)));
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--mappa-border);
+  border-radius: 16px;
+  background: var(--mappa-surface);
+  box-shadow: var(--mappa-shadow-strong);
+}
+
+.mappa-menu-panel[hidden] {
+  display: none;
+}
+
+.mappa-menu-panel__link {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--mappa-text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mappa-menu-panel__link:hover,
+.mappa-menu-panel__link:focus-visible,
+.mappa-menu-panel__link--button:hover,
+.mappa-menu-panel__link--button:focus-visible {
+  outline: none;
+  background: var(--mappa-accent-soft);
+  color: var(--mappa-accent-hover);
+}
+
+.mappa-menu-panel__link:active,
+.mappa-menu-panel__link--button:active {
+  transform: scale(0.99);
+}
+
+.mappa-menu-panel__link--button {
+  appearance: none;
+}
+
+.mappa-menu-panel__link--danger {
+  color: var(--mappa-danger);
+}
+
+.mappa-menu-panel__link--danger:hover,
+.mappa-menu-panel__link--danger:focus-visible {
+  background: rgba(181, 42, 50, 0.08);
+  color: var(--mappa-danger);
+}
+
 /* ===== BOTTOM NAV ===== */
 
 .mappa-bottomnav {
