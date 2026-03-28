@@ -491,6 +491,8 @@ function getDomElements() {
     notificationsBtn: document.getElementById("mappaPrivatiNotificationsBtn"),
     menuOverlay: document.getElementById("mappaPrivatiMenuOverlay"),
     menuPanel: document.getElementById("mappaPrivatiMenuPanel"),
+    searchBtn: document.getElementById("mappaPrivatiSearchBtn"),
+    eventsBtn: document.getElementById("mappaPrivatiEventsBtn"),
     unlockBtn: document.getElementById("mappaPrivatiUnlockBtn"),
     guideBtn: document.getElementById("mappaPrivatiGuideBtn"),
     switchRoleBtn: document.getElementById("mappaPrivatiSwitchRoleBtn"),
