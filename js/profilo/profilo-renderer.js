@@ -51,13 +51,32 @@ function clear(el) {
    ========================================================= */
 
 function renderTopbar(state) {
-  const { greeting, roleLabel } = getTopbarElements();
+  const {
+    greeting,
+    roleLabel,
+    menuButton,
+    menuOverlay,
+    menuPanel,
+  } = getTopbarElements();
 
   const name = state.profile.nickname || "utente";
   const role = state.profile.roleLabel || "Esploratore";
 
   setText(greeting, `Ciao ${name}`);
   setText(roleLabel, role);
+
+  const isOpen = !!state.ui.menuOpen;
+
+  // aria
+  menuButton.setAttribute("aria-expanded", String(isOpen));
+
+  // overlay
+  menuOverlay.hidden = !isOpen;
+  menuOverlay.setAttribute("aria-hidden", String(!isOpen));
+
+  // panel
+  menuPanel.hidden = !isOpen;
+  menuPanel.setAttribute("aria-hidden", String(!isOpen));
 }
 
 /* =========================================================
