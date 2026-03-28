@@ -305,7 +305,8 @@ function bindTopbarActions() {
 
   switchRoleBtn.addEventListener("click", () => {
     closeMenu();
-    window.location.href = "/pages/seleziona-ruolo.html";
+    sessionStorage.setItem("desiredRole", "organizer");
+    window.location.href = "/organizzatore.html";
   });
 
   logoutBtn.addEventListener("click", () => {
