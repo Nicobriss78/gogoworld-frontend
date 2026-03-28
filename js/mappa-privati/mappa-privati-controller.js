@@ -55,6 +55,8 @@ const state = createMappaPrivatiState();
   chat.mount();
   chat.showIdle();
 
+  window.gwMappaPrivatiUnlockPrivateEvent = handleUnlockPrivateEventRequest;
+
   await loadEvents();
   await handleReturnContext();
 
