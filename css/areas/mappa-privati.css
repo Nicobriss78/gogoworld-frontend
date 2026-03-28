@@ -306,6 +306,17 @@ body.mappa-page button {
   color: var(--mappa-danger);
 }
 
+.mappa-menu-panel__link--private,
+.mappa-menu-panel__link--private .mappa-menu-panel__label {
+  color: var(--mappa-private-accent);
+}
+
+.mappa-menu-panel__link--private:hover,
+.mappa-menu-panel__link--private:focus-visible {
+  background: rgba(123, 30, 58, 0.08);
+  color: var(--mappa-private-accent);
+}
+
 /* ===== BOTTOM NAV ===== */
 
 .mappa-bottomnav {
