@@ -344,12 +344,18 @@ async function loadAndRender(refs) {
 
 export async function initSeguitiController(root = document) {
   const refs = getRefs(root);
+  const uiState = { menuOpen: false };
 
   await setTopbarIdentity(refs);
+  renderTopbarMenu(refs, uiState.menuOpen);
+  bindTopbarActions(refs, uiState);
+
   syncBottomnavActive(refs);
   bindCardActions(refs);
 
   refs.retryBtn?.addEventListener("click", () => {
+    uiState.menuOpen = false;
+    renderTopbarMenu(refs, uiState.menuOpen);
     loadAndRender(refs);
   });
 
