@@ -35,6 +35,17 @@ function createDomRefs(root = document) {
     viewport: getRequiredElement("#homeViewport", root),
     greeting: getRequiredElement("#homeGreeting", root),
     role: getRequiredElement("#homeRole", root),
+
+    notificationsBtn: getRequiredElement("#homeNotificationsBtn", root),
+    menuBtn: getRequiredElement("#homeMenuBtn", root),
+    menuOverlay: getRequiredElement("#homeMenuOverlay", root),
+    menuPanel: getRequiredElement("#homeMenuPanel", root),
+    searchBtn: getRequiredElement("#homeSearchBtn", root),
+    eventsBtn: getRequiredElement("#homeEventsBtn", root),
+    guideBtn: getRequiredElement("#homeGuideBtn", root),
+    switchRoleBtn: getRequiredElement("#homeSwitchRoleBtn", root),
+    logoutBtn: getRequiredElement("#homeLogoutBtn", root),
+
     generalShell: getRequiredElement("#homeRailShellGeneral", root),
     generalActiveRail: getRequiredElement("#homeRailGeneralActive", root),
     generalPastRail: getRequiredElement("#homeRailGeneralPast", root),
