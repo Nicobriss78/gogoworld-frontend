@@ -114,6 +114,8 @@ export function renderSeguitiUtentiMessage(view, message = "", type = "info") {
 }
 
 export function renderSeguitiUtentiPage(view, state) {
+  renderTopbar(view, state);
+
   const hasError = Boolean(state.error);
   const hasUsers = Array.isArray(state.users) && state.users.length > 0;
   const showEmpty = !state.loading && !hasError && !hasUsers;
