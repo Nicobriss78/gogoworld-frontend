@@ -71,6 +71,17 @@ const state = createMappaPrivatiState();
   function bindUi() {
     elements.infoBtn?.addEventListener("click", handleOpenDetail);
     elements.drawerContent?.addEventListener("click", handleDrawerActions);
+
+    elements.menuBtn?.addEventListener("click", handleToggleMenu);
+    elements.menuOverlay?.addEventListener("click", handleCloseMenu);
+    elements.menuPanel?.addEventListener("click", handleMenuPanelClick);
+
+    elements.unlockBtn?.addEventListener("click", handleMenuUnlockPrivate);
+    elements.guideBtn?.addEventListener("click", handleMenuGuide);
+    elements.switchRoleBtn?.addEventListener("click", handleMenuSwitchRole);
+    elements.logoutBtn?.addEventListener("click", handleMenuLogout);
+
+    document.addEventListener("keydown", handleMenuEscape);
   }
 
   function unbindUi() {
