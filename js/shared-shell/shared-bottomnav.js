@@ -29,7 +29,7 @@ function renderNavItem(item, activeNavKey) {
       type="button"
     >
       <svg class="shared-bottomnav__icon" aria-hidden="true">
-        <use href="/icons/icons-sprite.v2.svg#gw-icon-${item.icon}"></use>
+        <use href="/icons/icons-sprite-v2.svg#gw-icon-${item.icon}"></use>
       </svg>
       <span class="shared-bottomnav__label">${item.label}</span>
     </button>
