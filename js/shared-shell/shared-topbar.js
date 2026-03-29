@@ -40,7 +40,7 @@ function renderActionButtons(shellContext) {
 function button(action, icon) {
   return `
     <button class="shared-topbar__btn" data-action="${action}">
-      <svg><use href="/icons/icons-sprite.v2.svg#gw-icon-${icon}"></use></svg>
+      <svg><use href="/icons/icons-sprite-v2.svg#gw-icon-${icon}"></use></svg>
     </button>
   `;
 }
