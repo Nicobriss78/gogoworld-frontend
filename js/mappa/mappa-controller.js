@@ -50,6 +50,7 @@ async function init() {
 
  bindUi();
   await hydrateTopbar();
+  setMenuOpen(false);
   drawer.mount();
   map.mount();
   chat.mount();
