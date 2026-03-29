@@ -1,3 +1,7 @@
+import {
+  resolveUserIdentity,
+  applyUserIdentityToTopbar,
+} from "../shared/user-identity.js";
 export function mountTopbar({ mountPoint, viewConfig, shellContext, onEvent }) {
   if (!mountPoint) return;
 
