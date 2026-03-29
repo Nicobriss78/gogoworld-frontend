@@ -11,10 +11,7 @@ import {
   bindRailModeDelegation,
   bindCardActions,
 } from "./home-view.js";
-import {
-  resolveUserIdentity,
-  applyUserIdentityToTopbar,
-} from "../shared/user-identity.js";
+
 import { fetchHomePayload } from "./home-api.js";
 
 /* =========================================================
