@@ -748,9 +748,7 @@ body.home-page > main {
     box-shadow: var(--home-shadow-strong);
   }
 
-  .home-topbar__btn:hover,
-  .home-bottomnav > button:hover,
-  .home-card-action-btn:hover,
+.home-card-action-btn:hover,
   .home-switch-card__btn:hover {
     border-color: var(--home-accent-border);
   }
