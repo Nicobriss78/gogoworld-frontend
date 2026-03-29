@@ -151,6 +151,61 @@
   </div>
 </header>
 
+  <div
+    id="mappaMenuOverlay"
+    class="mappa-menu-overlay"
+    hidden
+    aria-hidden="true"
+  ></div>
+
+  <div
+    id="mappaMenuPanel"
+    class="mappa-menu-panel"
+    hidden
+    aria-hidden="true"
+    aria-label="Menu partecipante"
+  >
+    <button
+      type="button"
+      id="mappaSearchBtn"
+      class="mappa-menu-panel__link mappa-menu-panel__link--button"
+    >
+      <span class="mappa-menu-panel__label">Cerca utente</span>
+    </button>
+
+    <button
+      type="button"
+      id="mappaEventsBtn"
+      class="mappa-menu-panel__link mappa-menu-panel__link--button"
+    >
+      <span class="mappa-menu-panel__label">Eventi</span>
+    </button>
+
+    <button
+      type="button"
+      id="mappaGuideBtn"
+      class="mappa-menu-panel__link mappa-menu-panel__link--button"
+    >
+      <span class="mappa-menu-panel__label">Guida partecipante</span>
+    </button>
+
+    <button
+      type="button"
+      id="mappaSwitchRoleBtn"
+      class="mappa-menu-panel__link mappa-menu-panel__link--button"
+    >
+      <span class="mappa-menu-panel__label">Cambia ruolo</span>
+    </button>
+
+    <button
+      type="button"
+      id="mappaLogoutBtn"
+      class="mappa-menu-panel__link mappa-menu-panel__link--button mappa-menu-panel__link--danger"
+    >
+      <span class="mappa-menu-panel__label">Logout</span>
+    </button>
+  </div>
+
   <main class="mappa-main" aria-label="Scheda mappa eventi">
     <!-- BLOCCO MAPPA -->
     <section id="mappaMapSection" class="mappa-section" aria-labelledby="mappaTitle">
