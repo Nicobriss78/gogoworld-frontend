@@ -153,7 +153,7 @@ export function initSharedShell() {
     // mapping minimale (lo raffiniamo dopo con il backup reale)
     const map = {
       home: "/pages/home-v2.html",
-      following: "/pages/seguiti-v2.html",
+      following: "/pages/partecipante-seguiti-v2.html",
       map: "/pages/mappa-v2.html",
       "private-map": "/pages/mappa-privati-v2.html",
       profile: "/pages/profilo-v2.html",
