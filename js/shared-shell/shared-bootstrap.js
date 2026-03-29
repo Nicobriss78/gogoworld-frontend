@@ -157,7 +157,7 @@ export function initSharedShell() {
       map: "/pages/mappa-v2.html",
       "private-map": "/pages/mappa-privati-v2.html",
       profile: "/pages/profilo-v2.html",
-      "following-users": "/pages/utenti-seguiti-v2.html",
+      "following-users": "/pages/seguiti-utenti-v2.html",
     };
 
     const url = map[viewId];
