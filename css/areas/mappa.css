@@ -411,6 +411,19 @@ body.mappa-page button {
   height: 100%;
 }
 
+/* ===== FIX LAYER LEAFLET VS MENU ===== */
+
+#mappaMap .leaflet-control,
+#mappaMap .leaflet-top,
+#mappaMap .leaflet-bottom,
+#mappaMap .leaflet-control-container {
+  z-index: 100;
+}
+
+#mappaMap .leaflet-control-attribution {
+  z-index: 100;
+}
+
 /* ===== LEGENDA ===== */
 
 .mappa-legend {
