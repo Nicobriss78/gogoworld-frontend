@@ -58,11 +58,6 @@ function createDomRefs(root = document) {
 
 export async function initHome(root = document) {
   const dom = createDomRefs(root);
-  const uiState = { menuOpen: false };
-
-  await setHomeTopbarIdentity(dom);
-  renderHomeMenu(dom, uiState.menuOpen);
-  bindTopbarActions(dom, uiState);
 
   renderLoading(dom);
   bindRailModeDelegation(dom);
