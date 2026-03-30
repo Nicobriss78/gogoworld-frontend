@@ -29,12 +29,9 @@ function renderActionButtons(shellContext) {
   const flags = shellContext?.flags || {};
 
   return `
-    ${flags.showSearchEntry ? button("search", "search") : ""}
-    ${flags.showMapShortcut ? button("map", "map") : ""}
-    ${flags.showMessagesEntry ? button("messages", "chat") : ""}
-    ${flags.supportsNotifications ? button("notifications", "bell") : ""}
-    ${button("menu", "menu")}
-  `;
+  ${flags.showMapShortcut ? button("map", "map") : ""}
+  ${button("menu", "menu")}
+`;
 }
 
 function button(action, icon) {
