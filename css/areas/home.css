@@ -113,6 +113,7 @@ body.home-page > main {
 .home-viewport {
   height: 100%;
   padding: var(--home-page-pad-y) var(--home-page-pad-x) calc(var(--home-page-pad-y) + 6px);
+  padding-top: 12px;
   display: flex;
   flex-direction: column;
   gap: 0;
