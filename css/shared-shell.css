@@ -1,5 +1,5 @@
 /* =========================
-   SHARED SHELL BASE
+   TOPBAR — VERSIONE V2 REALE
 ========================= */
 
 .shared-topbar {
@@ -11,43 +11,78 @@
   background: #ffffff;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   z-index: 1000;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--home-accent-border, #C2D6DF);
 }
 
-.shared-topbar__row {
+/* Riga identity */
+.shared-topbar__row:first-child {
+  min-height: 58px;
+  padding: 10px 16px 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
 }
 
+/* Riga actions */
+.shared-topbar__row:last-child {
+  min-height: 70px;
+  padding: 8px 16px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Identity */
 .shared-topbar__identity {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .shared-topbar__greeting {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--home-text, #1C2430);
 }
 
 .shared-topbar__role {
   font-size: 12px;
-  color: #666;
+  color: var(--home-text-muted, #8B95A1);
 }
 
+/* Brand */
 .shared-topbar__brand {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 800;
+  color: var(--home-text, #1C2430);
 }
 
+/* Bottoni V2 */
 .shared-topbar__btn {
-  background: none;
-  border: none;
-  padding: 8px;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--home-accent-border, #C2D6DF);
+  border-radius: 10px;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.15s ease;
+}
+
+.shared-topbar__btn:active {
+  transform: scale(0.96);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .shared-topbar__btn:hover {
+    border-color: var(--home-accent-border, #C2D6DF);
+    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.08);
+  }
 }
 
 /* =========================
