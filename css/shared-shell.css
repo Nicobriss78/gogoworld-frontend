@@ -73,7 +73,11 @@
   -webkit-tap-highlight-color: transparent;
   transition: all 0.15s ease;
 }
-
+.shared-topbar__btn svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
 .shared-topbar__btn:active {
   transform: scale(0.96);
 }
