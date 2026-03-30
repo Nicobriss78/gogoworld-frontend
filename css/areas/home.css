@@ -127,10 +127,7 @@ body.home-page > main {
    ========================================================= */
 
 .home-section {
-  min-height: calc(
-    100dvh - var(--home-topbar-h) - var(--home-bottomnav-h) - var(--home-footer-h)
-    - (var(--home-page-pad-y) * 2)
-  );
+  min-height: 100%;
   padding: 8px 0 14px;
   display: flex;
   flex-direction: column;
