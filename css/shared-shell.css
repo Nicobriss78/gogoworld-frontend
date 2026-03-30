@@ -190,40 +190,65 @@
 }
 
 /* =========================
-   BOTTOM NAV
+   BOTTOM NAV — FIX COERENTE
 ========================= */
 
 .shared-bottomnav {
   position: fixed;
-  bottom: 0;
   left: 0;
+  bottom: 0;
   width: 100%;
   height: 86px;
   background: #ffffff;
+  border-top: 1px solid var(--home-accent-border, #C2D6DF);
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-top: 1px solid #eee;
   z-index: 1000;
 }
 
+/* Item */
 .shared-bottomnav__item {
-  background: none;
-  border: none;
+  flex: 1;
+  max-width: 90px;
+  height: 100%;
+  border: 0;
+  background: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 11px;
+  justify-content: center;
+  gap: 4px;
   cursor: pointer;
-  color: #888;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.shared-bottomnav__item.is-active {
-  color: #000;
-}
-
+/* Icona */
 .shared-bottomnav__icon {
   width: 22px;
   height: 22px;
-  margin-bottom: 4px;
+  display: block;
+}
+
+/* Label */
+.shared-bottomnav__label {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--home-text-muted, #8B95A1);
+
+  /* evita rotture brutte */
+  white-space: normal;
+  word-break: keep-all;
+}
+
+/* Attivo */
+.shared-bottomnav__item.is-active .shared-bottomnav__label {
+  color: var(--home-text, #1C2430);
+  font-weight: 700;
+}
+
+.shared-bottomnav__item.is-active .shared-bottomnav__icon {
+  transform: scale(1.1);
 }
