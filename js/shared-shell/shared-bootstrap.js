@@ -74,6 +74,11 @@ const SHARED_ICON_SPRITE_MARKUP = `
         <circle cx="9" cy="9" r="3"></circle>
         <circle cx="17" cy="10" r="2.5"></circle>
         <path d="M4.5
+        function ensureSharedIconSprite() {
+  if (document.getElementById(SHARED_ICON_SPRITE_ID)) return;
+
+  document.body.insertAdjacentHTML("afterbegin", SHARED_ICON_SPRITE_MARKUP);
+}
 export function initSharedShell() {
   const viewId = document.body?.dataset?.viewId;
 
