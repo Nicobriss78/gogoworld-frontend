@@ -47,7 +47,7 @@ function button(action, icon) {
       title="${action}"
     >
       <svg class="gw-icon" aria-hidden="true">
-        <use href="/icons/icons-sprite-v2.svg#gw-icon-${icon}"></use>
+        <use href="#gw-icon-${icon}"></use>
       </svg>
     </button>
   `;
