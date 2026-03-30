@@ -30,7 +30,7 @@ function renderActionButtons(shellContext) {
 
   return `
     ${flags.showSearchEntry ? button("search", "search") : ""}
-    ${flags.showMapShortcut ? button("map", "map") : ""}
+    ${flags.showMapShortcut ? button("map", "pin") : ""}
     ${flags.showMessagesEntry ? button("messages", "chat") : ""}
     ${flags.supportsNotifications ? button("notifications", "bell") : ""}
     ${button("menu", "menu")}
