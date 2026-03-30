@@ -80,6 +80,8 @@ const SHARED_ICON_SPRITE_MARKUP = `
   document.body.insertAdjacentHTML("afterbegin", SHARED_ICON_SPRITE_MARKUP);
 }
 export function initSharedShell() {
+  ensureSharedIconSprite();
+
   const viewId = document.body?.dataset?.viewId;
 
   if (!viewId) {
