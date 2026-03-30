@@ -95,40 +95,98 @@
 }
 
 /* =========================
-   MENU
+   MENU — VERSIONE V2 REALE
 ========================= */
 
 .shared-menu-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 1100;
+  z-index: 980;
+  background: rgba(15, 23, 42, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.shared-menu-overlay:not([hidden]) {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .shared-menu-panel {
   position: fixed;
-  top: 0;
-  right: 0;
-  width: 260px;
-  height: 100%;
-  background: #ffffff;
-  z-index: 1101;
+  top: 150px;
+  right: 16px;
+  z-index: 990;
+  width: min(280px, calc(100vw - 32px));
+  max-height: calc(100dvh - 150px - 86px - 40px);
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--home-border, #E6EAF0);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.10);
+  -webkit-overflow-scrolling: touch;
+}
+
+.shared-menu-panel[hidden] {
+  display: none;
 }
 
 .shared-menu-item {
-  padding: 14px;
-  border: none;
-  background: none;
-  text-align: left;
-  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 16px;
+  margin: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  outline: none;
   cursor: pointer;
+  text-decoration: none;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.shared-menu-item--danger {
-  color: #c0392b;
+.shared-menu-item__label {
+  display: block;
+  color: #1F4E5F;
+  font-family: Arial, sans-serif;
+  font-size: 19px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.shared-menu-item--danger,
+.shared-menu-item--danger .shared-menu-item__label {
+  color: var(--home-danger, #B52A32);
+}
+
+.shared-menu-item:hover,
+.shared-menu-item:focus-visible {
+  outline: none;
+  background: var(--home-accent-soft, #E6F0F4);
+  color: var(--home-accent-hover, #35697F);
+}
+
+.shared-menu-item:active {
+  transform: scale(.99);
+}
+
+.shared-menu-item--danger:hover,
+.shared-menu-item--danger:focus-visible {
+  background: rgba(181, 42, 50, 0.08);
+  color: var(--home-danger, #B52A32);
 }
 
 /* =========================
