@@ -91,15 +91,18 @@ export function initSharedShell() {
       }
 
       if (event.action === "search") {
-        return handleResult(resolveViewRequest("user-search"));
+        console.log("placeholder action: search");
+        return;
       }
 
       if (event.action === "messages") {
-        return handleResult(resolveViewRequest("messages"));
+        console.log("placeholder action: messages");
+        return;
       }
 
       if (event.action === "notifications") {
-        return handleResult(resolveViewRequest("notifications"));
+        console.log("placeholder action: notifications");
+        return;
       }
     }
 
