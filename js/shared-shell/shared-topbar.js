@@ -39,8 +39,16 @@ function renderActionButtons(shellContext) {
 
 function button(action, icon) {
   return `
-    <button class="shared-topbar__btn" data-action="${action}">
-      <svg><use href="/icons/icons-sprite-v2.svg#gw-icon-${icon}"></use></svg>
+    <button
+      class="shared-topbar__btn gw-iconbtn"
+      data-action="${action}"
+      type="button"
+      aria-label="${action}"
+      title="${action}"
+    >
+      <svg class="gw-icon" aria-hidden="true">
+        <use href="/icons/icons-sprite-v2.svg#gw-icon-${icon}"></use>
+      </svg>
     </button>
   `;
 }
