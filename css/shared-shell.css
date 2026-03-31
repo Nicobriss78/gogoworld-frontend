@@ -1,97 +1,90 @@
 /* =========================
-   TOPBAR — VERSIONE V2 REALE
+   TOPBAR — CONTRATTO V2 REALE
 ========================= */
 
-.shared-topbar {
-  position: fixed;
+.home-topbar {
+  position: sticky;
   top: 0;
-  left: 0;
+  z-index: 100;
+  background: var(--home-surface);
+  border-bottom: 1px solid var(--home-border);
+  box-shadow: 0 1px 0 rgba(16, 24, 40, 0.02);
+}
+
+.home-topbar__row {
   width: 100%;
-  height: 132px;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  z-index: 1000;
-  border-bottom: 1px solid var(--home-accent-border, #C2D6DF);
+  padding-left: var(--home-page-pad-x);
+  padding-right: var(--home-page-pad-x);
 }
 
-/* Riga identity */
-.shared-topbar__row:first-child {
-  min-height: 58px;
-  padding: 10px 16px 8px;
+.home-topbar__row--identity {
+  min-height: 60px;
+  padding-top: 12px;
+  padding-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--home-space-md);
 }
 
-/* Riga actions */
-.shared-topbar__row:last-child {
-  min-height: 70px;
-  padding: 8px 16px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-/* Identity */
-.shared-topbar__identity {
+.home-topbar__identity {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.shared-topbar__greeting {
-  font-size: 15px;
+.home-topbar__greeting {
+  font-size: 16px;
+  line-height: 1.2;
   font-weight: 700;
-  color: var(--home-text, #1C2430);
+  color: var(--home-text-secondary);
 }
 
-.shared-topbar__role {
-  font-size: 12px;
-  color: var(--home-text-muted, #8B95A1);
+.home-topbar__role {
+  font-size: 13px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--home-text-muted);
 }
 
-/* Brand */
-.shared-topbar__brand {
-  font-size: 18px;
+.home-topbar__brand {
+  flex: 0 0 auto;
+  font-size: 20px;
+  line-height: 1.1;
   font-weight: 800;
-  color: var(--home-text, #1C2430);
+  color: var(--home-accent-hover);
+  letter-spacing: 0.01em;
 }
 
-/* Bottoni V2 */
-.shared-topbar__btn {
-  width: 46px;
-  height: 46px;
-  border: 1px solid var(--home-accent-border, #C2D6DF);
+.home-topbar__row--actions {
+  min-height: 72px;
+  padding-top: 10px;
+  padding-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.home-topbar__btn {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 1px solid var(--home-border);
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--home-surface);
+  color: var(--home-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: none;
   -webkit-tap-highlight-color: transparent;
-  transition: all 0.15s ease;
-}
-.shared-topbar__btn svg {
-  width: 22px;
-  height: 22px;
-  display: block;
-}
-.shared-topbar__btn svg {
-  width: 22px;
-  height: 22px;
-  display: block;
-}
-.shared-topbar__btn:active {
-  transform: scale(0.96);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .shared-topbar__btn:hover {
-    border-color: var(--home-accent-border, #C2D6DF);
-    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.08);
-  }
+.home-topbar__btn:active {
+  transform: scale(.98);
 }
 
 /* =========================
