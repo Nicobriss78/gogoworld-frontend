@@ -1,4 +1,4 @@
-export function mountBottomnav({ mountPoint, navItems, activeNavKey, onEvent, mode = "standard" }) {
+export function mountBottomnav({ mountPoint, activeNavKey, onEvent, mode = "standard" }) {
   if (!mountPoint) return;
 
   if (mode === "hidden") {
@@ -6,42 +6,46 @@ export function mountBottomnav({ mountPoint, navItems, activeNavKey, onEvent, mo
     return;
   }
 
-  const items = Array.isArray(navItems) ? navItems : [];
-
   mountPoint.innerHTML = `
-    <nav class="shared-bottomnav" aria-label="Navigazione principale partecipante">
-      ${items.map((item) => renderNavItem(item, activeNavKey)).join("")}
+    <nav class="home-bottomnav" aria-label="Navigazione principale">
+      ${renderItem("map", "/pages/mappa-v2.html", "Mappa", "map", activeNavKey)}
+      ${renderItem("following", "/pages/partecipante-seguiti-v2.html", "Eventi seguiti", "calendar", activeNavKey)}
+      ${renderItem("home", "/pages/home-v2.html", "Home", "home", activeNavKey)}
+      ${renderItem("following-users", "/pages/seguiti-utenti-v2.html", "Utenti seguiti", "users", activeNavKey)}
+      ${renderItem("profile", "/pages/profilo-v2.html", "Profilo", "profile", activeNavKey)}
     </nav>
   `;
 
   bindBottomnav(mountPoint, onEvent);
 }
 
-function renderNavItem(item, activeNavKey) {
-  const isActive = item.navKey === activeNavKey;
-  const activeClass = isActive ? " is-active" : "";
+function renderItem(navKey, href, label, iconId, activeNavKey) {
+  const isActive = navKey === activeNavKey;
+  const activeClass = isActive ? " is-active active" : "";
+  const ariaCurrent = isActive ? ' aria-current="page"' : "";
 
   return `
-    <button
-      class="shared-bottomnav__item${activeClass}"
-      data-nav-key="${item.navKey}"
-      aria-current="${isActive ? "page" : "false"}"
-      type="button"
+    <a
+      href="${href}"
+      class="gw-iconbtn${activeClass}"
+      aria-label="${label}"
+      title="${label}"
+      data-nav-key="${navKey}"${ariaCurrent}
     >
-      <svg class="shared-bottomnav__icon" aria-hidden="true">
-        <use href="/icons/icons-sprite-v2.svg#gw-icon-${item.icon}"></use>
+      <svg class="gw-icon" aria-hidden="true">
+        <use href="#gw-icon-${iconId}"></use>
       </svg>
-      <span class="shared-bottomnav__label">${item.label}</span>
-    </button>
+    </a>
   `;
 }
 
 function bindBottomnav(root, onEvent) {
-  root.querySelectorAll("[data-nav-key]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const navKey = btn.getAttribute("data-nav-key");
+  root.querySelectorAll("[data-nav-key]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const navKey = link.getAttribute("data-nav-key");
 
       if (typeof onEvent === "function") {
+        event.preventDefault();
         onEvent({
           type: "nav-item",
           navKey,
