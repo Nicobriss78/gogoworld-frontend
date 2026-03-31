@@ -222,8 +222,7 @@ export function initSharedShell() {
     }
   }
 
-  function navigateTo(viewId) {
-    // mapping minimale (lo raffiniamo dopo con il backup reale)
+function navigateTo(viewId) {
     const map = {
       home: "/pages/home-v2.html",
       following: "/pages/partecipante-seguiti-v2.html",
@@ -242,4 +241,4 @@ export function initSharedShell() {
 
     window.location.href = url;
   }
-    }
+}
