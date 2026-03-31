@@ -84,10 +84,13 @@ const SHARED_ICON_SPRITE_MARKUP = `
     </svg>
   </div>
 `;
+
+function ensureSharedIconSprite() {
   if (document.getElementById(SHARED_ICON_SPRITE_ID)) return;
 
   document.body.insertAdjacentHTML("afterbegin", SHARED_ICON_SPRITE_MARKUP);
 }
+
 export function initSharedShell() {
   ensureSharedIconSprite();
 
