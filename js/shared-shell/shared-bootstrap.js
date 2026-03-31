@@ -71,17 +71,19 @@ const SHARED_ICON_SPRITE_MARKUP = `
       </symbol>
 
       <symbol id="gw-icon-users" viewBox="0 0 24 24">
-  <circle cx="9" cy="9" r="3"></circle>
-  <circle cx="17" cy="10" r="2.5"></circle>
-  <path d="M4.5 19a4.5 4.5 0 0 1 9 0"></path>
-  <path d="M14.5 18a3.5 3.5 0 0 1 5 0"></path>
-</symbol>
+        <circle cx="9" cy="9" r="3"></circle>
+        <circle cx="17" cy="10" r="2.5"></circle>
+        <path d="M4.5 19a4.5 4.5 0 0 1 9 0"></path>
+        <path d="M14.5 18a3.5 3.5 0 0 1 5 0"></path>
+      </symbol>
 
-<symbol id="gw-icon-profile" viewBox="0 0 24 24">
-  <circle cx="12" cy="8" r="3.5"></circle>
-  <path d="M5 20a7 7 0 0 1 14 0"></path>
-</symbol>
-        function ensureSharedIconSprite() {
+      <symbol id="gw-icon-profile" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="3.5"></circle>
+        <path d="M5 20a7 7 0 0 1 14 0"></path>
+      </symbol>
+    </svg>
+  </div>
+`;
   if (document.getElementById(SHARED_ICON_SPRITE_ID)) return;
 
   document.body.insertAdjacentHTML("afterbegin", SHARED_ICON_SPRITE_MARKUP);
