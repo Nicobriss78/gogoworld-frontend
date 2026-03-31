@@ -181,67 +181,86 @@
   background: rgba(181, 42, 50, 0.08);
   color: var(--home-danger, #B52A32);
 }
-
 /* =========================
-   BOTTOM NAV — FIX COERENTE
+   BOTTOM NAV — CONTRATTO V2 REALE
 ========================= */
 
-.shared-bottomnav {
+.home-bottomnav {
   position: fixed;
   left: 0;
+  right: 0;
   bottom: 0;
-  width: 100%;
-  height: 86px;
-  background: #ffffff;
-  border-top: 1px solid var(--home-accent-border, #C2D6DF);
+  z-index: 110;
+  min-height: var(--home-bottomnav-h);
+  padding: 10px 18px 16px;
   display: flex;
-  justify-content: space-around;
   align-items: center;
-  z-index: 1000;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--home-border);
+  background: var(--home-surface);
+  box-shadow: 0 -4px 14px rgba(16, 24, 40, 0.04);
 }
 
-/* Item */
-.shared-bottomnav__item {
-  flex: 1;
-  max-width: 90px;
-  height: 100%;
-  border: 0;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
+.home-bottomnav > .gw-iconbtn {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border: 1px solid var(--home-border);
+  border-radius: 16px;
+  background: var(--home-surface);
+  color: var(--home-text-muted);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
   cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.03);
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Icona */
-.shared-bottomnav__icon {
-  width: 22px;
-  height: 22px;
-  display: block;
+.home-bottomnav > .gw-iconbtn.active,
+.home-bottomnav > .gw-iconbtn.is-active,
+.home-bottomnav > .gw-iconbtn[aria-current="page"] {
+  color: var(--home-danger);
+  border-color: var(--home-accent-border);
+  background: var(--home-accent-soft);
 }
 
-/* Label */
-.shared-bottomnav__label {
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.1;
-  text-align: center;
-  color: var(--home-text-muted, #8B95A1);
-
-  /* evita rotture brutte */
-  white-space: normal;
-  word-break: keep-all;
+.home-bottomnav > .gw-iconbtn:active {
+  transform: scale(0.98);
 }
 
-/* Attivo */
-.shared-bottomnav__item.is-active .shared-bottomnav__label {
-  color: var(--home-text, #1C2430);
-  font-weight: 700;
-}
+@media (max-width: 640px) {
+  .home-topbar__row--identity {
+    min-height: 58px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+  }
 
-.shared-bottomnav__item.is-active .shared-bottomnav__icon {
-  transform: scale(1.1);
+  .home-topbar__greeting {
+    font-size: 15px;
+  }
+
+  .home-topbar__role {
+    font-size: 12px;
+  }
+
+  .home-topbar__brand {
+    font-size: 18px;
+  }
+
+  .home-topbar__row--actions {
+    min-height: 70px;
+    padding-top: 8px;
+    padding-bottom: 12px;
+    gap: 10px;
+  }
+
+  .home-topbar__btn,
+  .home-bottomnav > .gw-iconbtn {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+  }
 }
