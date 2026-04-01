@@ -323,5 +323,14 @@
   </article>
 </li>
 
-  </template>  <script type="module" src="/js/seguiti-utenti/seguiti-utenti-controller.js"></script></body>
+  </template>  
+  <script type="module">
+  import { initSharedShell } from "/js/shared-shell/shared-bootstrap.js";
+
+  window.addEventListener("DOMContentLoaded", async () => {
+    initSharedShell();
+    await import("/js/seguiti-utenti/seguiti-utenti-controller.js");
+  });
+</script>
+</body>
   </html>
