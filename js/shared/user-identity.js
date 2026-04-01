@@ -1,33 +1,100 @@
 import { apiGet } from "../api.js";
 
-function normalizeUserIdentity(payload) {
-  const user = payload?.user || payload || {};
-
-  const displayName = String(
+function normalizeDisplayName(user) {
+  return String(
     user?.name ||
     user?.username ||
     user?.displayName ||
     user?.fullName ||
     ""
   ).trim();
+}
 
-  const rawRole = String(
-    user?.roleLabel ||
-    user?.role ||
+function normalizeRoleRaw(user) {
+  return String(user?.role || "").trim().toLowerCase();
+}
+
+function normalizeLevelRaw(user) {
+  return String(
+    user?.status ||
+    user?.level ||
     ""
-  ).trim();
+  ).trim().toLowerCase();
+}
 
-  const roleLabel = rawRole || "Esploratore";
+function mapRoleLabel(roleRaw) {
+  switch (roleRaw) {
+    case "participant":
+      return "Partecipante";
+    case "organizer":
+      return "Organizzatore";
+    case "admin":
+      return "Admin";
+    default:
+      return "";
+  }
+}
+
+function mapLevelLabel(levelRaw) {
+  switch (levelRaw) {
+    case "novizio":
+      return "Novizio";
+    case "esploratore":
+      return "Esploratore";
+    case "veterano":
+      return "Veterano";
+    case "ambassador":
+      return "Ambassador";
+    default:
+      return "";
+  }
+}
+
+function buildWelcomeSubtitle({ roleRaw, roleLabel, levelLabel }) {
+  // Nell’area partecipante vogliamo mostrare ruolo + livello.
+  if (roleRaw === "participant") {
+    if (roleLabel && levelLabel) return `${roleLabel} · ${levelLabel}`;
+    if (roleLabel) return roleLabel;
+    if (levelLabel) return levelLabel;
+    return "Partecipante";
+  }
+
+  // Per organizer/admin, in mancanza di una regola diversa consolidata,
+  // mostriamo solo il ruolo.
+  if (roleLabel) return roleLabel;
+
+  return "";
+}
+
+function normalizeUserIdentity(payload) {
+  const user = payload?.user || payload || {};
+
+  const displayName = normalizeDisplayName(user);
+  const roleRaw = normalizeRoleRaw(user);
+  const levelRaw = normalizeLevelRaw(user);
+
+  const roleLabel = mapRoleLabel(roleRaw);
+  const levelLabel = mapLevelLabel(levelRaw);
+  const welcomeSubtitle = buildWelcomeSubtitle({
+    roleRaw,
+    roleLabel,
+    levelLabel,
+  });
 
   return {
     displayName,
+    roleRaw,
     roleLabel,
+    levelRaw,
+    levelLabel,
+    welcomeSubtitle,
     raw: user,
   };
 }
 
 export async function fetchUserIdentity() {
   const res = await apiGet("/users/me");
+
   if (!res?.ok) {
     throw new Error(res?.message || "Impossibile recuperare il profilo utente.");
   }
@@ -45,11 +112,17 @@ export function getCachedUserIdentity() {
   try {
     const raw = sessionStorage.getItem("gw:userIdentity");
     if (!raw) return null;
+
     const parsed = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object") return null;
+
     return {
       displayName: String(parsed.displayName || "").trim(),
-      roleLabel: String(parsed.roleLabel || "Esploratore").trim() || "Esploratore",
+      roleRaw: String(parsed.roleRaw || "").trim().toLowerCase(),
+      roleLabel: String(parsed.roleLabel || "").trim(),
+      levelRaw: String(parsed.levelRaw || "").trim().toLowerCase(),
+      levelLabel: String(parsed.levelLabel || "").trim(),
+      welcomeSubtitle: String(parsed.welcomeSubtitle || "").trim(),
       raw: parsed.raw || null,
     };
   } catch {
@@ -58,19 +131,20 @@ export function getCachedUserIdentity() {
 }
 
 export async function resolveUserIdentity() {
-  // 1. prova cache immediata (UX veloce)
-  const cached = getCachedUserIdentity();
-  if (cached) return cached;
-
-  // 2. prova fetch reale
   try {
     return await fetchUserIdentity();
   } catch {
-    return {
-      displayName: "",
-      roleLabel: "Esploratore",
-      raw: null,
-    };
+    return (
+      getCachedUserIdentity() || {
+        displayName: "",
+        roleRaw: "",
+        roleLabel: "",
+        levelRaw: "",
+        levelLabel: "",
+        welcomeSubtitle: "",
+        raw: null,
+      }
+    );
   }
 }
 
@@ -86,6 +160,6 @@ export function applyUserIdentityToTopbar({
   }
 
   if (roleEl) {
-    roleEl.textContent = identity?.roleLabel || "Esploratore";
+    roleEl.textContent = identity?.welcomeSubtitle || "";
   }
-}
+      }
