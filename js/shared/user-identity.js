@@ -58,10 +58,15 @@ export function getCachedUserIdentity() {
 }
 
 export async function resolveUserIdentity() {
+  // 1. prova cache immediata (UX veloce)
+  const cached = getCachedUserIdentity();
+  if (cached) return cached;
+
+  // 2. prova fetch reale
   try {
     return await fetchUserIdentity();
   } catch {
-    return getCachedUserIdentity() || {
+    return {
       displayName: "",
       roleLabel: "Esploratore",
       raw: null,
