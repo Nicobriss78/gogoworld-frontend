@@ -51,7 +51,24 @@ body.seguiti-page {
   --seguiti-scrollbar-h: 10px;
   --seguiti-scrollbar-track: rgba(28, 36, 48, 0.08);
   --seguiti-scrollbar-thumb: rgba(63, 124, 150, 0.42);
+/* bridge per shared shell */
+  --home-accent: var(--seguiti-accent);
+  --home-accent-hover: var(--seguiti-accent-hover);
+  --home-accent-soft: var(--seguiti-accent-soft);
+  --home-accent-border: var(--seguiti-accent-border);
+  --home-danger: var(--seguiti-danger);
 
+  --home-bg: var(--seguiti-bg);
+  --home-surface: var(--seguiti-surface);
+  --home-border: var(--seguiti-border);
+
+  --home-text: var(--seguiti-text);
+  --home-text-secondary: var(--seguiti-text-secondary);
+  --home-text-muted: var(--seguiti-text-muted);
+
+  --home-space-md: var(--seguiti-space-md);
+  --home-page-pad-x: var(--seguiti-page-pad-x);
+  --home-bottomnav-h: var(--seguiti-bottomnav-h);
   min-height: 100dvh;
   background: var(--seguiti-bg);
   color: var(--seguiti-text);
