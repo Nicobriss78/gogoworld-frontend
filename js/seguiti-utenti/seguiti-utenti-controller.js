@@ -79,14 +79,6 @@ async function init() {
       meUser?.user?.id ||
       "";
 
-    const identity = await resolveUserIdentity();
-    seguitiUtentiSession.identity = identity;
-
-    applyUserIdentityToTopbar({
-      greetingEl: view.greeting,
-      roleEl: view.roleLabel,
-      identity,
-    });
     setupEventListeners(view);
 
     await loadFollowing(view);
