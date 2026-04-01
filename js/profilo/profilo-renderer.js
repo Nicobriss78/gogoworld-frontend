@@ -63,11 +63,15 @@ function renderTopbar(state) {
     menuPanel,
   } = getTopbarElements();
 
-  const name = state.profile.nickname || "utente";
-  const role = state.profile.roleLabel || "Esploratore";
+  (async () => {
+  const identity = await resolveUserIdentity();
 
-  setText(greeting, `Ciao ${name}`);
-  setText(roleLabel, role);
+  applyUserIdentityToTopbar({
+    greetingEl: greeting,
+    roleEl: roleLabel,
+    identity,
+  });
+})();
 
   const isOpen = !!state.ui.menuOpen;
 
