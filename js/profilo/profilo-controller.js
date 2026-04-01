@@ -20,7 +20,6 @@ import {
 } from "./profilo-api.js";
 
 import {
-  getTopbarElements,
   getHeroElements,
   getAccountStatusElements,
   getEditorElements,
