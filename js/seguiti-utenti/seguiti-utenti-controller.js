@@ -10,10 +10,7 @@ import {
   renderSeguitiUtentiPage,
   renderSeguitiUtentiMessage,
 } from "./seguiti-utenti-renderer.js";
-import {
-  resolveUserIdentity,
-  applyUserIdentityToTopbar,
-} from "/js/shared/user-identity.js";
+/* identity topbar ora gestita dalla shared shell */
 async function loadFollowing(view) {
   seguitiUtentiState.loading = true;
   seguitiUtentiState.error = "";
