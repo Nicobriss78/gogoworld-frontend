@@ -2,16 +2,7 @@ function setHidden(element, hidden) {
   if (!element) return;
   element.hidden = hidden;
 }
-function renderTopbar(view, state) {
-  const isMenuOpen = !!state.ui?.menuOpen;
-
-  view.menuBtn.setAttribute("aria-expanded", String(isMenuOpen));
-  view.menuOverlay.hidden = !isMenuOpen;
-  view.menuOverlay.setAttribute("aria-hidden", String(!isMenuOpen));
-
-  view.menuPanel.hidden = !isMenuOpen;
-  view.menuPanel.setAttribute("aria-hidden", String(!isMenuOpen));
-}
+/* topbar/menu ora gestiti dalla shared shell */
 function getInitialLetter(name = "") {
   const clean = typeof name === "string" ? name.trim() : "";
   return clean ? clean.charAt(0).toUpperCase() : "?";
