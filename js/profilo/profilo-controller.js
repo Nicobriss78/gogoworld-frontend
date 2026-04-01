@@ -237,7 +237,6 @@ function bindEditorActions() {
 /* topbar/menu ora gestiti dalla shared shell */
 
 function bindEvents() {
-  bindTopbarActions();
   bindHeroActions();
   bindAccountStatusActions();
   bindEditorActions();
