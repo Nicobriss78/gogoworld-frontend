@@ -245,7 +245,6 @@ function renderEditor(state) {
    ========================================================= */
 
 export function renderProfile(state) {
-  renderTopbar(state);
   renderHero(state);
   renderMessageArea(state);
   renderAccountStatus(state);
