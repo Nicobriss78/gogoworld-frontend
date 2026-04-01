@@ -3,15 +3,9 @@ function setHidden(element, hidden) {
   element.hidden = hidden;
 }
 function renderTopbar(view, state) {
-  const userName = state.currentUser?.name || "utente";
-  const roleLabel = state.currentUser?.roleLabel || "Partecipante";
   const isMenuOpen = !!state.ui?.menuOpen;
 
-  setText(view.greeting, `Ciao ${userName}`);
-  setText(view.roleLabel, roleLabel);
-
   view.menuBtn.setAttribute("aria-expanded", String(isMenuOpen));
-
   view.menuOverlay.hidden = !isMenuOpen;
   view.menuOverlay.setAttribute("aria-hidden", String(!isMenuOpen));
 
