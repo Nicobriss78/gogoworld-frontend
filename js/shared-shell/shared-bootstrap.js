@@ -166,19 +166,19 @@ export function initSharedShell() {
       }
 
       if (event.action === "search") {
-        console.log("placeholder action: search");
-        return;
-      }
+  window.location.href = "/pages/cerca-utenti.html";
+  return;
+}
 
-      if (event.action === "messages") {
-        console.log("placeholder action: messages");
-        return;
-      }
+if (event.action === "messages") {
+  window.location.href = "/messages.html";
+  return;
+}
 
-      if (event.action === "notifications") {
-        console.log("placeholder action: notifications");
-        return;
-      }
+if (event.action === "notifications") {
+  window.location.href = "/pages/notifiche.html";
+  return;
+}
     }
 
     // MENU
