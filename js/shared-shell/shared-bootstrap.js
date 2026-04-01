@@ -176,7 +176,7 @@ if (event.action === "messages") {
 }
 
 if (event.action === "notifications") {
-  window.location.href = "/pages/notifiche.html";
+  window.alert("Centro notifiche disponibile a breve.");
   return;
 }
     }
