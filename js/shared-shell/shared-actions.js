@@ -31,6 +31,22 @@ async function executeLogout() {
 async function executePlaceholder(actionId) {
   closeMenuIfOpen();
 
+  if (actionId === "participant-guide") {
+    alert("Guida partecipante");
+    return {
+      status: "executed",
+      actionId,
+    };
+  }
+
+  if (actionId === "change-role") {
+    alert("Cambio ruolo");
+    return {
+      status: "executed",
+      actionId,
+    };
+  }
+
   return {
     status: "not-implemented",
     actionId,
