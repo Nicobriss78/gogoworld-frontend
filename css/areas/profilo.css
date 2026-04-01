@@ -48,7 +48,24 @@ body.profilo-v2-page {
   --profilo-page-pad-x: 16px;
   --profilo-page-pad-y: 16px;
   --profilo-section-gap: 16px;
+/* bridge per shared shell */
+  --home-accent: var(--profilo-accent);
+  --home-accent-hover: var(--profilo-accent-hover);
+  --home-accent-soft: var(--profilo-accent-soft);
+  --home-accent-border: var(--profilo-accent-border);
+  --home-danger: var(--profilo-danger);
 
+  --home-bg: var(--profilo-bg);
+  --home-surface: var(--profilo-surface);
+  --home-border: var(--profilo-border);
+
+  --home-text: var(--profilo-text);
+  --home-text-secondary: var(--profilo-text-secondary);
+  --home-text-muted: var(--profilo-text-muted);
+
+  --home-space-md: var(--profilo-space-md);
+  --home-page-pad-x: var(--profilo-page-pad-x);
+  --home-bottomnav-h: var(--profilo-bottomnav-h);
   min-height: 100dvh;
   background: var(--profilo-bg);
   color: var(--profilo-text);
