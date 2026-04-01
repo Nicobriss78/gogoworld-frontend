@@ -254,7 +254,6 @@ async function initProfilePage() {
     notificationsOpen: false,
     menuOpen: false,
   });
-  topbarEls = getTopbarElements();
   bindEvents();
   render();
   await loadProfileData();
