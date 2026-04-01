@@ -47,7 +47,24 @@ body.seguiti-utenti-page {
 
   --home-page-pad-x: 16px;
   --home-page-pad-y: 16px;
+/* bridge shared shell */
+--home-accent: var(--seguiti-accent);
+--home-accent-hover: var(--seguiti-accent-hover);
+--home-accent-soft: var(--seguiti-accent-soft);
+--home-accent-border: var(--seguiti-accent-border);
+--home-danger: var(--seguiti-danger);
 
+--home-bg: var(--seguiti-bg);
+--home-surface: var(--seguiti-surface);
+--home-border: var(--seguiti-border);
+
+--home-text: var(--seguiti-text);
+--home-text-secondary: var(--seguiti-text-secondary);
+--home-text-muted: var(--seguiti-text-muted);
+
+--home-space-md: var(--seguiti-space-md);
+--home-page-pad-x: var(--seguiti-page-pad-x);
+--home-bottomnav-h: var(--seguiti-bottomnav-h);
   min-height: 100dvh;
   background: var(--home-bg);
   color: var(--home-text);
