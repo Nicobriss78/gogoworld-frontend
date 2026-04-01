@@ -73,9 +73,17 @@ async function fetchWithRetry(url, options = {}) {
   return fetch(url, options);
 }
 
-// Recupero token sicuro da localStorage
-function getToken(){
-  try { return localStorage.getItem("token"); } catch { return null; }
+// Recupero token sicuro da localStorage/sessionStorage
+function getToken() {
+  try {
+    return localStorage.getItem("token") || sessionStorage.getItem("token");
+  } catch {
+    try {
+      return sessionStorage.getItem("token");
+    } catch {
+      return null;
+    }
+  }
 }
 
 // --- Fetch uniforme con auth, body JSON e gestione errori ---
