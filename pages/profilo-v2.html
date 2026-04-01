@@ -299,6 +299,13 @@
 <div id="sharedBottomnavMount"></div>
   </div>
 
-  <script type="module" src="/js/profilo/profilo-controller.js"></script>
+  <script type="module">
+    import { initSharedShell } from "/js/shared-shell/shared-bootstrap.js";
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      initSharedShell();
+      await import("/js/profilo/profilo-controller.js");
+    });
+  </script>
 </body>
   </html>
