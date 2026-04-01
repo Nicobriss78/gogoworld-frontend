@@ -26,8 +26,6 @@ import {
 } from "./profilo-view.js";
 
 import { renderProfile } from "./profilo-renderer.js";
-let topbarEls = null;
-let topbarBound = false;
 /* =========================================================
    RENDER PIPELINE
    ========================================================= */
