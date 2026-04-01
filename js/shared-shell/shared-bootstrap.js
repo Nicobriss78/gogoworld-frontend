@@ -205,9 +205,10 @@ if (event.action === "notifications") {
     if (!result) return;
 
     if (result.type === "navigate") {
-      navigateTo(result.targetViewId);
-      return;
-    }
+  setState({ menuOpen: false });
+  navigateTo(result.targetViewId);
+  return;
+}
 
     if (result.type === "action") {
       await executeAction(result.actionId, {
