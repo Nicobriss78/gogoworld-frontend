@@ -115,8 +115,8 @@ function bindTopbar(root, onEvent) {
   });
 }
 
-function applyIdentity(root) {
-  const identity = resolveUserIdentity();
+async function applyIdentity(root) {
+  const identity = await resolveUserIdentity();
 
   applyUserIdentityToTopbar({
     greetingEl: root.querySelector('[data-el="greeting"]'),
