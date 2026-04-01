@@ -109,8 +109,7 @@ async function loadProfileData() {
       ...profile,
       id: profile.id || account.id,
       nickname: profile.nickname || account.nickname || "",
-      roleLabel: profile.roleLabel || account.roleLabel || "Esploratore",
-    });
+// RIMOSSO roleLabel: identity ora gestita da shared    });
 
     setConnections({
   followersCount: connections.followers.length,
