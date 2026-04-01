@@ -83,7 +83,7 @@ export function mountTopbar({ mountPoint, onEvent }) {
   `;
 
   bindTopbar(mountPoint, onEvent);
-  applyIdentity(mountPoint);
+  void applyIdentity(mountPoint);
 }
 
 function bindTopbar(root, onEvent) {
