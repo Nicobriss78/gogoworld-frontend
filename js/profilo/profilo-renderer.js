@@ -63,15 +63,10 @@ function renderTopbar(state) {
     menuPanel,
   } = getTopbarElements();
 
-  (async () => {
-  const identity = await resolveUserIdentity();
-
-  applyUserIdentityToTopbar({
+  void applyProfileTopbarIdentity({
     greetingEl: greeting,
     roleEl: roleLabel,
-    identity,
   });
-})();
 
   const isOpen = !!state.ui.menuOpen;
 
