@@ -36,7 +36,11 @@ function normalizeFollowedUser(user) {
 }
 
 export function getSeguitiUtentiAuthToken() {
-  return localStorage.getItem("token") || "";
+  return (
+    localStorage.getItem("token") ||
+    sessionStorage.getItem("token") ||
+    ""
+  );
 }
 
 export async function fetchCurrentUserProfile() {
