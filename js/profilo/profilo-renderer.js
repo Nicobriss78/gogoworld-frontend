@@ -1,4 +1,8 @@
 import {
+  resolveUserIdentity,
+  applyUserIdentityToTopbar,
+} from "../shared/user-identity.js";
+import {
   getTopbarElements,
   getHeroElements,
   getMessageAreaElement,
