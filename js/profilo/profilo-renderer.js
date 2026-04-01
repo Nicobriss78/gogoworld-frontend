@@ -51,44 +51,8 @@ function clear(el) {
 
 /* =========================================================
    TOPBAR
+   Gestita ora dalla shared shell
    ========================================================= */
-
-function renderTopbar(state) {
-  const {
-    greeting,
-    roleLabel,
-    menuButton,
-    menuOverlay,
-    menuPanel,
-  } = getTopbarElements();
-
-  void applyProfileTopbarIdentity({
-    greetingEl: greeting,
-    roleEl: roleLabel,
-  });
-
-  const isOpen = !!state.ui.menuOpen;
-
-  // aria
-  menuButton.setAttribute("aria-expanded", String(isOpen));
-
-  // overlay
-  menuOverlay.hidden = !isOpen;
-  menuOverlay.setAttribute("aria-hidden", String(!isOpen));
-
-  // panel
-  menuPanel.hidden = !isOpen;
-  menuPanel.setAttribute("aria-hidden", String(!isOpen));
-}
-async function applyProfileTopbarIdentity({ greetingEl, roleEl }) {
-  const identity = await resolveUserIdentity();
-
-  applyUserIdentityToTopbar({
-    greetingEl,
-    roleEl,
-    identity,
-  });
-}
 /* =========================================================
    HERO
    ========================================================= */
