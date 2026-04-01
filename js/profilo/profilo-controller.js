@@ -109,7 +109,7 @@ async function loadProfileData() {
       ...profile,
       id: profile.id || account.id,
       nickname: profile.nickname || account.nickname || "",
-// RIMOSSO roleLabel: identity ora gestita da shared    });
+    });
 
     setConnections({
   followersCount: connections.followers.length,
