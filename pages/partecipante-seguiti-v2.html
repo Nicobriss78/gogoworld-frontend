@@ -205,9 +205,11 @@
   </template>
 
   <script type="module">
+    import { initSharedShell } from "/js/shared-shell/shared-bootstrap.js";
     import { initSeguitiController } from "/js/seguiti/seguiti-controller.js";
 
     window.addEventListener("DOMContentLoaded", () => {
+      initSharedShell();
       initSeguitiController(document);
     });
   </script>
