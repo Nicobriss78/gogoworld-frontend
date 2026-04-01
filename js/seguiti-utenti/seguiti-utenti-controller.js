@@ -35,24 +35,7 @@ async function loadFollowing(view) {
   }
 }
 
-function closeMenu(view) {
-  seguitiUtentiState.ui = {
-    ...(seguitiUtentiState.ui || {}),
-    menuOpen: false,
-  };
-  renderSeguitiUtentiPage(view, seguitiUtentiState);
-}
-
-function toggleMenu(view) {
-  const isOpen = Boolean(seguitiUtentiState.ui?.menuOpen);
-
-  seguitiUtentiState.ui = {
-    ...(seguitiUtentiState.ui || {}),
-    menuOpen: !isOpen,
-  };
-
-  renderSeguitiUtentiPage(view, seguitiUtentiState);
-}
+/* menu ora gestito dalla shared shell */
 
 function setupEventListeners(view) {
   view.notificationsBtn.addEventListener("click", () => {
