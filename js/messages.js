@@ -14,8 +14,14 @@ let threads = [];
 let currentMsgs = [];
 async function init() {
   try {
-    const token = localStorage.getItem("token");
-    if (!token) return (window.location.href = "../index.html");
+    const token =
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("token");
+
+    if (!token) {
+      window.location.href = "/login.html";
+      return;
+    }
 
     // carica lista threads
     await loadThreads();
