@@ -81,7 +81,15 @@ function renderTopbar(state) {
   menuPanel.hidden = !isOpen;
   menuPanel.setAttribute("aria-hidden", String(!isOpen));
 }
+async function applyProfileTopbarIdentity({ greetingEl, roleEl }) {
+  const identity = await resolveUserIdentity();
 
+  applyUserIdentityToTopbar({
+    greetingEl,
+    roleEl,
+    identity,
+  });
+}
 /* =========================================================
    HERO
    ========================================================= */
