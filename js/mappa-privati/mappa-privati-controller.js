@@ -72,19 +72,6 @@ bindUi();
   function unbindUi() {
     elements.infoBtn?.removeEventListener("click", handleOpenDetail);
     elements.drawerContent?.removeEventListener("click", handleDrawerActions);
-
-    elements.menuBtn?.removeEventListener("click", handleToggleMenu);
-    elements.menuOverlay?.removeEventListener("click", handleCloseMenu);
-    elements.menuPanel?.removeEventListener("click", handleMenuPanelClick);
-
-    elements.searchBtn?.removeEventListener("click", handleMenuSearch);
-    elements.eventsBtn?.removeEventListener("click", handleMenuEvents);
-    elements.unlockBtn?.removeEventListener("click", handleMenuUnlockPrivate);
-    elements.guideBtn?.removeEventListener("click", handleMenuGuide);
-    elements.switchRoleBtn?.removeEventListener("click", handleMenuSwitchRole);
-    elements.logoutBtn?.removeEventListener("click", handleMenuLogout);
-
-    document.removeEventListener("keydown", handleMenuEscape);
   }
 
   function handleDrawerActions(event) {
