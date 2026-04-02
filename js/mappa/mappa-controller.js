@@ -272,19 +272,6 @@ function getDomElements() {
   return {
     mapEl: document.getElementById("mappaMap"),
 
-    userName: document.getElementById("mappaGreeting"),
-    userStatus: document.getElementById("mappaRole"),
-
-    menuBtn: document.getElementById("mappaMenuBtn"),
-    notificationsBtn: document.getElementById("mappaNotificationsBtn"),
-    menuOverlay: document.getElementById("mappaMenuOverlay"),
-    menuPanel: document.getElementById("mappaMenuPanel"),
-    searchBtn: document.getElementById("mappaSearchBtn"),
-    eventsBtn: document.getElementById("mappaEventsBtn"),
-    guideBtn: document.getElementById("mappaGuideBtn"),
-    switchRoleBtn: document.getElementById("mappaSwitchRoleBtn"),
-    logoutBtn: document.getElementById("mappaLogoutBtn"),
-
     drawerOverlay: document.getElementById("mappaDetailOverlay"),
     drawer: document.getElementById("mappaDetailDrawer"),
     drawerClose: document.getElementById("mappaDetailClose"),
