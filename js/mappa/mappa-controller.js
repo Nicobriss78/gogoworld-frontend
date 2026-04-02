@@ -64,20 +64,6 @@ async function init() {
   function bindUi() {
     elements.infoBtn?.addEventListener("click", handleOpenDetail);
     elements.drawerContent?.addEventListener("click", handleDrawerActions);
-
-    elements.menuBtn?.addEventListener("click", handleToggleMenu);
-    elements.menuOverlay?.addEventListener("click", handleCloseMenu);
-    elements.menuPanel?.addEventListener("click", handleMenuPanelClick);
-
-    elements.searchBtn?.addEventListener("click", handleMenuSearch);
-    elements.eventsBtn?.addEventListener("click", handleMenuEvents);
-    elements.guideBtn?.addEventListener("click", handleMenuGuide);
-    elements.switchRoleBtn?.addEventListener("click", handleMenuSwitchRole);
-    elements.logoutBtn?.addEventListener("click", handleMenuLogout);
-
-    elements.notificationsBtn?.addEventListener("click", handleMenuNotifications);
-
-    document.addEventListener("keydown", handleMenuEscape);
   }
 
   function unbindUi() {
