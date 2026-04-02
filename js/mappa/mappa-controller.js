@@ -4,10 +4,6 @@ import { createMappaRenderer } from "/js/mappa/mappa-renderer.js";
 import { createMappaMap } from "/js/mappa/mappa-map.js";
 import { createMappaChat } from "/js/mappa/mappa-chat.js";
 import { createMappaDrawer } from "/js/mappa/mappa-drawer.js";
-import {
-  resolveUserIdentity,
-  applyUserIdentityToTopbar
-} from "/js/shared/user-identity.js";
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
