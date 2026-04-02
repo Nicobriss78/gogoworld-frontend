@@ -112,71 +112,10 @@ body.mappa-page button {
 /* ===== SHELL SHARED =====
    Topbar / menu / icon buttons shell delegati a /css/shared-shell.css
 */
+/* ===== BOTTOM NAV SHARED =====
+   Bottomnav delegata a /css/shared-shell.css
+*/
 
-/* ===== BOTTOM NAV ===== */
-
-.mappa-bottomnav {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 110;
-  min-height: var(--mappa-bottomnav-h);
-  padding: 10px 18px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-top: 1px solid var(--mappa-border);
-  background: var(--mappa-surface);
-  box-shadow: 0 -4px 14px rgba(16, 24, 40, 0.04);
-}
-
-.mappa-bottomnav__item {
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
-  border: 1px solid var(--mappa-border);
-  border-radius: 16px;
-  background: var(--mappa-surface);
-  color: var(--mappa-text-muted);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.03);
-  -webkit-tap-highlight-color: transparent;
-  text-decoration: none;
-}
-
-.mappa-bottomnav__item.is-active,
-.mappa-bottomnav__item.active,
-.mappa-bottomnav__item[aria-current="page"],
-.mappa-bottomnav__item--active {
-  color: var(--mappa-danger);
-  border-color: var(--mappa-accent-border);
-  background: var(--mappa-accent-soft);
-}
-
-.mappa-bottomnav__item:active {
-  transform: scale(0.98);
-}
-
-.mappa-bottomnav__item .gw-iconbtn {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  border-radius: inherit;
-  background: transparent;
-  box-shadow: none;
-  pointer-events: none;
-}
-
-.mappa-bottomnav__item .gw-icon {
-  width: 24px;
-  height: 24px;
-  color: currentColor;
-}
 /* ===== MAPPA ===== */
 
 .mappa-header {
