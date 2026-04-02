@@ -385,37 +385,8 @@ body.seguiti-utenti-page > main {
     --home-bottomnav-h: 86px;
   }
 
-  .home-topbar__row--identity {
-    min-height: 58px;
-    padding-top: 10px;
-    padding-bottom: 8px;
-  }
+/* shell responsive delegata a /css/shared-shell.css */
 
-  .home-topbar__greeting {
-    font-size: 15px;
-  }
-
-  .home-topbar__role {
-    font-size: 12px;
-  }
-
-  .home-topbar__brand {
-    font-size: 18px;
-  }
-
-  .home-topbar__row--actions {
-    min-height: 70px;
-    padding-top: 8px;
-    padding-bottom: 12px;
-    gap: 10px;
-  }
-
-  .home-topbar__btn,
-  .home-bottomnav > button {
-    width: 46px;
-    height: 46px;
-    flex: 0 0 46px;
-  }
 }
 
 @media (min-width: 640px) {
