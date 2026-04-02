@@ -64,7 +64,7 @@ bindUi();
   }
 
   function bindUi() {
-  function bindUi() {
+  
     elements.infoBtn?.addEventListener("click", handleOpenDetail);
     elements.drawerContent?.addEventListener("click", handleDrawerActions);
   }
