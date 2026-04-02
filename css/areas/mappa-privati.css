@@ -33,10 +33,29 @@
   --mappa-space-lg: 24px;
   --mappa-space-xl: 32px;
 
-  --mappa-topbar-h: 132px;
+--mappa-topbar-h: 132px;
   --mappa-bottomnav-h: 86px;
   --mappa-page-pad-x: 16px;
   --mappa-page-pad-y: 16px;
+
+  /* bridge shared shell */
+  --home-accent: var(--mappa-accent);
+  --home-accent-hover: var(--mappa-accent-hover);
+  --home-accent-soft: var(--mappa-accent-soft);
+  --home-accent-border: var(--mappa-accent-border);
+  --home-danger: var(--mappa-danger);
+
+  --home-bg: var(--mappa-bg);
+  --home-surface: var(--mappa-surface);
+  --home-border: var(--mappa-border);
+
+  --home-text: var(--mappa-text);
+  --home-text-secondary: var(--mappa-text-secondary);
+  --home-text-muted: var(--mappa-text-muted);
+
+  --home-space-md: var(--mappa-space-md);
+  --home-page-pad-x: var(--mappa-page-pad-x);
+  --home-bottomnav-h: var(--mappa-bottomnav-h);
 }
 
 /* ===== SHELL ===== */
