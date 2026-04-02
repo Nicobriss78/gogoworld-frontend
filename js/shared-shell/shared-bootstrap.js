@@ -10,12 +10,14 @@ import {
   resolveMenuRequest,
   resolveViewRequest,
   resolveActionRequest,
-} from "./shared-router.js";
-
-import { executeAction } from "./shared-actions.js";
-
-import { mountTopbar } from "./shared-topbar.js";
-import { mountMenu, setMenuOpen } from "./shared-menu.js";
+if (result.type === "action") {
+      await executeAction(result.actionId, {
+        capabilities: getState().capabilities,
+        currentViewId: getState().currentViewId,
+        onAction: handleContextAction,
+      });
+      return;
+    }
 import { mountBottomnav } from "./shared-bottomnav.js";
 const SHARED_ICON_SPRITE_ID = "shared-v2-icon-sprite";
 
