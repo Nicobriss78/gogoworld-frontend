@@ -18,13 +18,6 @@ const MENU_REGISTRY = [
     targetViewId: "private-map",
   },
   {
-    menuItemId: "private-unlock",
-    label: "Sblocca evento privato",
-    type: "special",
-    actionId: "private-unlock",
-    requiredCapability: "privateUnlock",
-  },
-  {
     menuItemId: "participant-guide",
     label: "Guida partecipante",
     type: "action",
