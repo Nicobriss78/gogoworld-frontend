@@ -2,23 +2,17 @@ import { getViewConfig } from "./shared-view-registry.js";
 import { getNavItems } from "./shared-nav-registry.js";
 import { getMenuItems } from "./shared-menu-registry.js";
 import { resolveShellContext } from "./shared-capability-resolver.js";
-
 import { setState, getState, subscribe } from "./shared-state.js";
-
 import {
   resolveNavRequest,
   resolveMenuRequest,
   resolveViewRequest,
-  resolveActionRequest,
-if (result.type === "action") {
-      await executeAction(result.actionId, {
-        capabilities: getState().capabilities,
-        currentViewId: getState().currentViewId,
-        onAction: handleContextAction,
-      });
-      return;
-    }
+} from "./shared-router.js";
+import { executeAction } from "./shared-actions.js";
+import { mountTopbar } from "./shared-topbar.js";
+import { mountMenu, setMenuOpen } from "./shared-menu.js";
 import { mountBottomnav } from "./shared-bottomnav.js";
+
 const SHARED_ICON_SPRITE_ID = "shared-v2-icon-sprite";
 
 const SHARED_ICON_SPRITE_MARKUP = `
@@ -89,7 +83,6 @@ const SHARED_ICON_SPRITE_MARKUP = `
 
 function ensureSharedIconSprite() {
   if (document.getElementById(SHARED_ICON_SPRITE_ID)) return;
-
   document.body.insertAdjacentHTML("afterbegin", SHARED_ICON_SPRITE_MARKUP);
 }
 
@@ -112,10 +105,8 @@ export function initSharedShell() {
 
   const menuItems = getMenuItems();
   const navItems = getNavItems();
-
   const shellContext = resolveShellContext(viewConfig, menuItems);
 
-  // init state
   setState({
     currentViewId: viewId,
     activeNavKey: viewConfig.activeNavKey,
@@ -123,7 +114,6 @@ export function initSharedShell() {
     menuOpen: false,
   });
 
-  // mount UI
   mountTopbar({
     mountPoint: document.getElementById("sharedTopbarMount"),
     viewConfig,
@@ -146,7 +136,6 @@ export function initSharedShell() {
     mode: viewConfig.bottomnavMode,
   });
 
-  // subscribe state updates
   subscribe((state) => {
     setMenuOpen(document.getElementById("sharedMenuMount"), state.menuOpen);
   });
@@ -156,7 +145,6 @@ export function initSharedShell() {
 
     const state = getState();
 
-    // TOPBAR
     if (event.type === "topbar-action") {
       if (event.action === "menu") {
         setState({ menuOpen: !state.menuOpen });
@@ -168,22 +156,21 @@ export function initSharedShell() {
       }
 
       if (event.action === "search") {
-  window.location.href = "/pages/cerca-utenti.html";
-  return;
-}
+        window.location.href = "/pages/cerca-utenti.html";
+        return;
+      }
 
-if (event.action === "messages") {
-  window.location.href = "/messages.html";
-  return;
-}
+      if (event.action === "messages") {
+        window.location.href = "/messages.html";
+        return;
+      }
 
-if (event.action === "notifications") {
-  window.alert("Centro notifiche disponibile a breve.");
-  return;
-}
+      if (event.action === "notifications") {
+        window.alert("Centro notifiche disponibile a breve.");
+        return;
+      }
     }
 
-    // MENU
     if (event.type === "menu-item") {
       return handleResult(
         resolveMenuRequest(event.menuItemId, {
@@ -197,7 +184,6 @@ if (event.action === "notifications") {
       return;
     }
 
-    // NAV
     if (event.type === "nav-item") {
       return handleResult(resolveNavRequest(event.navKey));
     }
@@ -207,14 +193,16 @@ if (event.action === "notifications") {
     if (!result) return;
 
     if (result.type === "navigate") {
-  setState({ menuOpen: false });
-  navigateTo(result.targetViewId);
-  return;
-}
+      setState({ menuOpen: false });
+      navigateTo(result.targetViewId);
+      return;
+    }
 
     if (result.type === "action") {
       await executeAction(result.actionId, {
         capabilities: getState().capabilities,
+        currentViewId: getState().currentViewId,
+        onAction: handleContextAction,
       });
       return;
     }
@@ -224,7 +212,7 @@ if (event.action === "notifications") {
       return;
     }
 
-if (result.type === "not-found") {
+    if (result.type === "not-found") {
       console.warn("not found:", result);
       return;
     }
@@ -251,7 +239,7 @@ if (result.type === "not-found") {
     };
   }
 
-function navigateTo(viewId) {
+  function navigateTo(viewId) {
     const map = {
       home: "/pages/home-v2.html",
       following: "/pages/partecipante-seguiti-v2.html",
