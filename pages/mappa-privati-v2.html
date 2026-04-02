@@ -235,38 +235,7 @@
     </section>
   </main>
 
-  <!-- BOTTOM NAV V2 -->
-<nav class="mappa-bottomnav" aria-label="Navigazione principale">
-  <a href="/pages/mappa-v2.html" class="gw-iconbtn is-active mappa-bottomnav__item" aria-label="Mappa" title="Mappa">
-    <svg class="gw-icon" aria-hidden="true">
-      <use href="#gw-icon-map"></use>
-    </svg>
-  </a>
-
-  <a href="/pages/partecipante-seguiti-v2.html" class="gw-iconbtn mappa-bottomnav__item" aria-label="Eventi seguiti" title="Eventi seguiti">
-    <svg class="gw-icon" aria-hidden="true">
-      <use href="#gw-icon-calendar"></use>
-    </svg>
-  </a>
-
-  <a href="/pages/home-v2.html" class="gw-iconbtn mappa-bottomnav__item" aria-label="Home" title="Home">
-    <svg class="gw-icon" aria-hidden="true">
-      <use href="#gw-icon-home"></use>
-    </svg>
-  </a>
-
-  <a href="/pages/seguiti-utenti-v2.html" class="gw-iconbtn mappa-bottomnav__item" aria-label="Utenti seguiti" title="Utenti seguiti">
-    <svg class="gw-icon" aria-hidden="true">
-      <use href="#gw-icon-users"></use>
-    </svg>
-  </a>
-
-  <a href="/pages/profilo-v2.html" class="gw-iconbtn mappa-bottomnav__item" aria-label="Profilo" title="Profilo">
-    <svg class="gw-icon" aria-hidden="true">
-      <use href="#gw-icon-profile"></use>
-    </svg>
-  </a>
-</nav>
+<div id="sharedBottomnavMount"></div>
 
   <!-- Leaflet -->
   <script
@@ -276,7 +245,15 @@
   ></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
+  <script type="module">
+    import { initSharedShell } from "/js/shared-shell/shared-bootstrap.js";
+
+    window.addEventListener("DOMContentLoaded", () => {
+      initSharedShell();
+    });
+  </script>
+
   <!-- Controller -->
   <script type="module" src="/js/mappa-privati/mappa-privati-controller.js"></script>
 </body>
-  </html>
+</html>
