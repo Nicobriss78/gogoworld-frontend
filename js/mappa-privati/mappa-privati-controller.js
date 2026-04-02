@@ -4,10 +4,6 @@ import { createMappaPrivatiRenderer } from "/js/mappa-privati/mappa-privati-rend
 import { createMappaPrivatiMap } from "/js/mappa-privati/mappa-privati-map.js";
 import { createMappaPrivatiChat } from "/js/mappa-privati/mappa-privati-chat.js";
 import { createMappaPrivatiDrawer } from "/js/mappa-privati/mappa-privati-drawer.js";
-import {
-  resolveUserIdentity,
-  applyUserIdentityToTopbar
-} from "/js/shared/user-identity.js";
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
