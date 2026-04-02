@@ -369,52 +369,9 @@ body.seguiti-utenti-page > main {
 }
 
 /* =========================================================
-   8) BOTTOM NAV AUTONOMA — IDENTICA A HOME
+   8) BOTTOM NAV SHARED
+   Bottomnav gestita da /css/shared-shell.css
    ========================================================= */
-
-.home-bottomnav {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 110;
-  min-height: var(--home-bottomnav-h);
-  padding: 10px 18px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-top: 1px solid var(--home-border);
-  background: var(--home-surface);
-  box-shadow: 0 -4px 14px rgba(16, 24, 40, 0.04);
-}
-
-.home-bottomnav > button {
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
-  border: 1px solid var(--home-border);
-  border-radius: 16px;
-  background: var(--home-surface);
-  color: var(--home-text-muted);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.03);
-  -webkit-tap-highlight-color: transparent;
-}
-
-.home-bottomnav > button.active,
-.home-bottomnav > button.is-active {
-  color: var(--home-danger);
-  border-color: var(--home-accent-border);
-  background: var(--home-accent-soft);
-}
-
-.home-bottomnav > button:active {
-  transform: scale(.98);
-}
 
 /* =========================================================
    9) RESPONSIVE
