@@ -224,10 +224,31 @@ if (event.action === "notifications") {
       return;
     }
 
-    if (result.type === "not-found") {
+if (result.type === "not-found") {
       console.warn("not found:", result);
       return;
     }
+  }
+
+  async function handleContextAction(actionId, context = {}) {
+    if (actionId === "private-unlock" && context.currentViewId === "private-map") {
+      const handler = window.gwMappaPrivatiUnlockPrivateEvent;
+
+      if (typeof handler === "function") {
+        return handler();
+      }
+
+      console.warn("private-unlock handler missing on private-map");
+      return {
+        status: "missing-handler",
+        actionId,
+      };
+    }
+
+    return {
+      status: "not-handled",
+      actionId,
+    };
   }
 
 function navigateTo(viewId) {
