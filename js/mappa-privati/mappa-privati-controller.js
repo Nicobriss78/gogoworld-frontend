@@ -44,8 +44,7 @@ const state = createMappaPrivatiState();
     }
   });
 
- bindUi();
-  await hydrateTopbar();
+bindUi();
   drawer.mount();
   map.mount();
   chat.mount();
