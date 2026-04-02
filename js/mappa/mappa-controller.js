@@ -88,104 +88,11 @@ async function init() {
     }
   }
 
-  /* ===============================
-     TOPBAR
+/* ===============================
+     SHELL SHARED
+     Topbar / menu / notifications delegati alla shared shell
      =============================== */
 
-async function hydrateTopbar() {
-  const identity = await resolveUserIdentity();
-
-  state.setCurrentUserId(
-    identity?.id ??
-    identity?._id ??
-    identity?.userId ??
-    null
-  );
-
-  applyUserIdentityToTopbar({
-    greetingEl: elements.userName,
-    roleEl: elements.userStatus,
-    identity
-  });
-}
-  function setMenuOpen(isOpen) {
-    if (elements.menuOverlay) {
-      elements.menuOverlay.hidden = !isOpen;
-      elements.menuOverlay.setAttribute("aria-hidden", String(!isOpen));
-    }
-
-    if (elements.menuPanel) {
-      elements.menuPanel.hidden = !isOpen;
-      elements.menuPanel.setAttribute("aria-hidden", String(!isOpen));
-    }
-
-    if (elements.menuBtn) {
-      elements.menuBtn.setAttribute("aria-expanded", String(isOpen));
-    }
-  }
-
-  function isMenuOpen() {
-    return Boolean(elements.menuPanel && !elements.menuPanel.hidden);
-  }
-
-  function handleToggleMenu(event) {
-    event?.preventDefault?.();
-    event?.stopPropagation?.();
-
-    setMenuOpen(!isMenuOpen());
-  }
-
-  function handleCloseMenu() {
-    setMenuOpen(false);
-  }
-
-  function handleMenuEscape(event) {
-    if (event.key !== "Escape") return;
-    handleCloseMenu();
-  }
-
-  function handleMenuPanelClick(event) {
-    event.stopPropagation();
-  }
-
-  function handleMenuNotifications(event) {
-    event?.preventDefault?.();
-    handleCloseMenu();
-    window.alert("Centro notifiche disponibile a breve.");
-  }
-
-  function handleMenuSearch(event) {
-    event?.preventDefault?.();
-    handleCloseMenu();
-    window.location.href = "/pages/cerca-utenti.html";
-  }
-
-  function handleMenuEvents(event) {
-    event?.preventDefault?.();
-    handleCloseMenu();
-    window.location.href = "/pages/mappa-v2.html";
-  }
-
-  function handleMenuGuide(event) {
-    event?.preventDefault?.();
-    handleCloseMenu();
-    window.alert("Guida partecipante: in arrivo 🙂");
-  }
-
-  function handleMenuSwitchRole(event) {
-    event?.preventDefault?.();
-    handleCloseMenu();
-    window.alert("Cambio ruolo in riallineamento.");
-  }
-
-  function handleMenuLogout(event) {
-    event?.preventDefault?.();
-    handleCloseMenu();
-
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("desiredRole");
-    window.location.href = "/login.html";
-  }
   /* ===============================
      LOAD EVENTI PUBBLICI
      =============================== */
