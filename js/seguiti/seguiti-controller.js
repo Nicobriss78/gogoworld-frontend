@@ -33,23 +33,6 @@ function getRefs(root = document) {
   };
 }
 
-async function setTopbarIdentity(refs) {
-  const identity = await resolveUserIdentity();
-
-  seguitiSession.currentUserProfile = identity?.raw || null;
-  seguitiSession.currentUserId =
-  identity?.raw?._id ||
-  identity?.raw?.id ||
-  identity?._id ||
-  identity?.id ||
-  null;
-
-  applyUserIdentityToTopbar({
-    greetingEl: refs.greeting,
-    roleEl: refs.role,
-    identity,
-  });
-}
 function renderTopbarMenu(refs, isOpen) {
   const open = Boolean(isOpen);
 
