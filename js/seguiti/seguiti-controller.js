@@ -1,7 +1,3 @@
-import {
-  resolveUserIdentity,
-  applyUserIdentityToTopbar,
-} from "../shared/user-identity.js";
 import { createSeguitiBannerEngine } from "./seguiti-banners.js";
 import {
   fetchFollowingEvents,
