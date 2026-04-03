@@ -864,55 +864,6 @@ body.seguiti-page button {
   color: var(--seguiti-accent);
 }
 /* =========================================================
-   BOTTOMNAV — DEVE ESSERE IDENTICA A HOME
-   ========================================================= */
-
-.seguiti-bottomnav {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 110;
-  min-height: var(--seguiti-bottomnav-h);
-  padding: 10px 18px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-top: 1px solid var(--seguiti-border);
-  background: var(--seguiti-surface);
-  box-shadow: 0 -4px 14px rgba(16, 24, 40, 0.04);
-}
-
-.seguiti-bottomnav__item {
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
-  border: 1px solid var(--seguiti-border);
-  border-radius: 16px;
-  background: var(--seguiti-surface);
-  color: var(--seguiti-text-muted);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.03);
-  -webkit-tap-highlight-color: transparent;
-}
-
-.seguiti-bottomnav__item.is-active,
-.seguiti-bottomnav__item.active,
-.seguiti-bottomnav__item[aria-current="page"] {
-  color: var(--seguiti-danger);
-  border-color: var(--seguiti-accent-border);
-  background: var(--seguiti-accent-soft);
-}
-
-.seguiti-bottomnav__item:active {
-  transform: scale(0.98);
-}
-
-/* =========================================================
    INTERAZIONI
    ========================================================= */
 
