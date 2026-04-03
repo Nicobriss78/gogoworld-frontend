@@ -120,16 +120,6 @@ if (switchBtn) {
   });
 }
 
-function syncBottomnavActive(refs) {
-  const items = refs.bottomnav?.querySelectorAll(".seguiti-bottomnav__item") || [];
-  items.forEach((item) => {
-    const isActive = item.dataset.navKey === NAV_KEY;
-    item.classList.toggle("is-active", isActive);
-    item.classList.toggle("active", isActive);
-    if (isActive) item.setAttribute("aria-current", "page");
-    else item.removeAttribute("aria-current");
-  });
-}
 function setupSeguitiBannerEngine(refs, banners = [], tips = []) {
   if (seguitiState.bannerEngine) {
     seguitiState.bannerEngine.stop();
