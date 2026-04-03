@@ -875,9 +875,6 @@ body.seguiti-page button {
     border-color: var(--seguiti-accent-border);
     box-shadow: var(--seguiti-shadow-strong);
   }
-
-  .seguiti-topbar__btn:hover,
-  .seguiti-bottomnav__item:hover,
   .seguiti-state__action:hover,
   .seguiti-switch-card__btn:hover {
     border-color: var(--seguiti-accent-border);
