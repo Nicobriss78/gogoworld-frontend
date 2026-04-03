@@ -597,56 +597,6 @@ body.profilo-v2-page .gw-iconbtn {
 }
 
 /* =========================================================
-   BOTTOM NAV — GEMELLA ALLE V2 GIÀ CHIUSE
-   ========================================================= */
-
-.profilo-bottomnav {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 110;
-  min-height: var(--profilo-bottomnav-h);
-  padding: 10px 18px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-top: 1px solid var(--profilo-border);
-  background: var(--profilo-surface);
-  box-shadow: 0 -4px 14px rgba(16, 24, 40, 0.04);
-}
-
-.profilo-bottomnav > .gw-iconbtn {
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
-  border: 1px solid var(--profilo-border);
-  border-radius: 16px;
-  background: var(--profilo-surface);
-  color: var(--profilo-text-muted);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  text-decoration: none;
-  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.03);
-  -webkit-tap-highlight-color: transparent;
-}
-
-.profilo-bottomnav > .gw-iconbtn.active,
-.profilo-bottomnav > .gw-iconbtn.is-active,
-.profilo-bottomnav > .gw-iconbtn[aria-current="page"] {
-  color: var(--profilo-danger);
-  border-color: var(--profilo-accent-border);
-  background: var(--profilo-accent-soft);
-}
-
-.profilo-bottomnav > .gw-iconbtn:active {
-  transform: scale(0.98);
-}
-
-/* =========================================================
    DESKTOP LIGHT TUNING
    ========================================================= */
 @media (max-width: 640px) {
