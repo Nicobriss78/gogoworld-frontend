@@ -4,8 +4,8 @@ export function mountBottomnav({
   activeNavKey,
   onEvent,
   mode = "standard",
-}) {  if (!mountPoint) return;
-
+}) {
+  if (!mountPoint) return;
   if (mode === "hidden") {
     mountPoint.innerHTML = "";
     return;
