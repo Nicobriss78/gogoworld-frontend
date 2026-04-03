@@ -927,39 +927,7 @@ body.seguiti-page button {
   .seguiti-banner-card__content {
     padding: 13px;
     gap: 7px;
-  }
-
-  .seguiti-topbar__row--identity {
-    min-height: 58px;
-    padding-top: 10px;
-    padding-bottom: 8px;
-  }
-
-  .seguiti-topbar__greeting {
-    font-size: 15px;
-  }
-
-  .seguiti-topbar__role {
-    font-size: 12px;
-  }
-
-  .seguiti-topbar__brand {
-    font-size: 18px;
-  }
-
-  .seguiti-topbar__row--actions {
-    min-height: 70px;
-    padding-top: 8px;
-    padding-bottom: 12px;
-    gap: 10px;
-  }
-
-  .seguiti-topbar__btn,
-  .seguiti-bottomnav__item {
-    width: 46px;
-    height: 46px;
-    flex: 0 0 46px;
-  }
+  } 
 }
 
 @media (max-width: 420px) {
