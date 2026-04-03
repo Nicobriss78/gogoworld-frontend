@@ -11,26 +11,6 @@ function getRequiredElement(id) {
 }
 
 /* =========================================================
-   TOPBAR
-   ========================================================= */
-
-export function getTopbarElements() {
-  return {
-    greeting: getRequiredElement("profiloGreeting"),
-    roleLabel: getRequiredElement("profiloRoleLabel"),
-    notificationsBtn: getRequiredElement("profiloNotificationsBtn"),
-    menuButton: getRequiredElement("profiloMenuButton"),
-    menuOverlay: getRequiredElement("profiloMenuOverlay"),
-    menuPanel: getRequiredElement("profiloMenuPanel"),
-    searchBtn: getRequiredElement("profiloSearchBtn"),
-    eventsBtn: getRequiredElement("profiloEventsBtn"),
-    guideBtn: getRequiredElement("profiloGuideBtn"),
-    switchRoleBtn: getRequiredElement("profiloSwitchRoleBtn"),
-    logoutBtn: getRequiredElement("profiloLogoutBtn"),
-  };
-}
-
-/* =========================================================
    HERO / SUMMARY
    ========================================================= */
 
