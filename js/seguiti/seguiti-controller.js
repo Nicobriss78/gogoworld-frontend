@@ -33,66 +33,7 @@ function getRefs(root = document) {
   };
 }
 
-function bindTopbarActions(refs, uiState) {
-  const closeMenu = () => {
-    uiState.menuOpen = false;
-    renderTopbarMenu(refs, uiState.menuOpen);
-  };
 
-  const toggleMenu = () => {
-    uiState.menuOpen = !uiState.menuOpen;
-    renderTopbarMenu(refs, uiState.menuOpen);
-  };
-
-  refs.notificationsBtn?.addEventListener("click", () => {
-    window.alert("Centro notifiche disponibile a breve.");
-  });
-
-  refs.menuBtn?.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    toggleMenu();
-  });
-
-  refs.menuOverlay?.addEventListener("click", () => {
-    closeMenu();
-  });
-
-  refs.menuPanel?.addEventListener("click", (event) => {
-    event.stopPropagation();
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && uiState.menuOpen) {
-      closeMenu();
-    }
-  });
-
-  refs.searchBtn?.addEventListener("click", () => {
-    closeMenu();
-    window.location.href = "/pages/cerca-utenti.html";
-  });
-
-  refs.eventsBtn?.addEventListener("click", () => {
-    closeMenu();
-    window.location.href = "/pages/home-v2.html";
-  });
-
-  refs.guideBtn?.addEventListener("click", () => {
-    closeMenu();
-    window.alert("Guida partecipante disponibile a breve.");
-  });
-
-  refs.switchRoleBtn?.addEventListener("click", () => {
-    closeMenu();
-    window.alert("Cambio ruolo in riallineamento.");
-  });
-
-  refs.logoutBtn?.addEventListener("click", () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login.html";
-  });
-}
 function showOnly(refs, key) {
   const map = {
     loading: refs.loading,
