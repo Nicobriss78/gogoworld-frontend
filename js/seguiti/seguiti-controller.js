@@ -33,22 +33,6 @@ function getRefs(root = document) {
   };
 }
 
-function renderTopbarMenu(refs, isOpen) {
-  const open = Boolean(isOpen);
-
-  refs.menuBtn?.setAttribute("aria-expanded", String(open));
-
-  if (refs.menuOverlay) {
-    refs.menuOverlay.hidden = !open;
-    refs.menuOverlay.setAttribute("aria-hidden", String(!open));
-  }
-
-  if (refs.menuPanel) {
-    refs.menuPanel.hidden = !open;
-    refs.menuPanel.setAttribute("aria-hidden", String(!open));
-  }
-}
-
 function bindTopbarActions(refs, uiState) {
   const closeMenu = () => {
     uiState.menuOpen = false;
