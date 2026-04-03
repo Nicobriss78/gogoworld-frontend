@@ -21,17 +21,7 @@ const NAV_KEY = "following-events";
 function getRefs(root = document) {
   return {
     root,
-    greeting: root.getElementById("seguitiGreeting"),
-    role: root.getElementById("seguitiRole"),
-    notificationsBtn: root.getElementById("seguitiNotificationsBtn"),
-    menuBtn: root.getElementById("seguitiMenuBtn"),
-    menuOverlay: root.getElementById("seguitiMenuOverlay"),
-    menuPanel: root.getElementById("seguitiMenuPanel"),
-    searchBtn: root.getElementById("seguitiSearchBtn"),
-    eventsBtn: root.getElementById("seguitiEventsBtn"),
-    guideBtn: root.getElementById("seguitiGuideBtn"),
-    switchRoleBtn: root.getElementById("seguitiSwitchRoleBtn"),
-    logoutBtn: root.getElementById("seguitiLogoutBtn"),
+    
     loading: root.getElementById("seguitiLoadingState"),
     sections: root.getElementById("seguitiSections"),
     empty: root.getElementById("seguitiEmptyState"),
@@ -40,7 +30,6 @@ function getRefs(root = document) {
     retryBtn: root.getElementById("seguitiRetryBtn"),
     organizerTpl: root.getElementById("seguitiOrganizerSectionTemplate"),
     cardTpl: root.getElementById("seguitiCardTemplate"),
-    bottomnav: root.querySelector(".seguiti-bottomnav"),
   };
 }
 
