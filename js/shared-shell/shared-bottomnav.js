@@ -1,5 +1,10 @@
-export function mountBottomnav({ mountPoint, activeNavKey, onEvent, mode = "standard" }) {
-  if (!mountPoint) return;
+export function mountBottomnav({
+  mountPoint,
+  navItems = [],
+  activeNavKey,
+  onEvent,
+  mode = "standard",
+}) {  if (!mountPoint) return;
 
   if (mode === "hidden") {
     mountPoint.innerHTML = "";
