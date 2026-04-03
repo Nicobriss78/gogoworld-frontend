@@ -13,11 +13,7 @@ export function mountBottomnav({
 
   mountPoint.innerHTML = `
     <nav class="home-bottomnav" aria-label="Navigazione principale">
-      ${renderItem("map", "/pages/mappa-v2.html", "Mappa", "map", activeNavKey)}
-      ${renderItem("following", "/pages/partecipante-seguiti-v2.html", "Eventi seguiti", "calendar", activeNavKey)}
-      ${renderItem("home", "/pages/home-v2.html", "Home", "home", activeNavKey)}
-      ${renderItem("users", "/pages/seguiti-utenti-v2.html", "Utenti seguiti", "users", activeNavKey)}
-      ${renderItem("profile", "/pages/profilo-v2.html", "Profilo", "profile", activeNavKey)}
+      ${navItems.map((item) => renderItem(item, activeNavKey)).join("")}
     </nav>
   `;
 
