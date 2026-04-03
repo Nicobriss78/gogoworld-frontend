@@ -20,21 +20,21 @@ export function mountBottomnav({
   bindBottomnav(mountPoint, onEvent);
 }
 
-function renderItem(navKey, href, label, iconId, activeNavKey) {
-  const isActive = navKey === activeNavKey;
+function renderItem(item, activeNavKey) {
+  const isActive = item.navKey === activeNavKey;
   const activeClass = isActive ? " is-active active" : "";
   const ariaCurrent = isActive ? ' aria-current="page"' : "";
 
   return `
     <a
-      href="${href}"
+      href="#"
       class="gw-iconbtn${activeClass}"
-      aria-label="${label}"
-      title="${label}"
-      data-nav-key="${navKey}"${ariaCurrent}
+      aria-label="${item.label}"
+      title="${item.label}"
+      data-nav-key="${item.navKey}"${ariaCurrent}
     >
       <svg class="gw-icon" aria-hidden="true">
-        <use href="#gw-icon-${iconId}"></use>
+        <use href="#gw-icon-${item.icon}"></use>
       </svg>
     </a>
   `;
