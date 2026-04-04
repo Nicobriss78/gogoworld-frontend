@@ -93,7 +93,7 @@ function buildEventThreadAction(meta, activeEventId) {
 
   return {
     label: "Apri evento",
-    href: `/pages/evento-v2.html?eventId=${encodeURIComponent(activeEventId)}`,
+    href: `/pages/evento-v2.html?id=${encodeURIComponent(activeEventId)}`,
   };
 }
 
