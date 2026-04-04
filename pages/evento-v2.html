@@ -1,1 +1,265 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+  <title>Evento • GoGoWorld.life</title>
 
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="GoGoWorld" />
+  <meta name="robots" content="noindex" />
+
+  <!-- Stack V2 reale -->
+  <link rel="stylesheet" href="/css/tokens.v2.css" />
+  <link rel="stylesheet" href="/css/icons-v2.css" />
+
+  <!-- CSS dedicato evento -->
+  <link rel="stylesheet" href="/css/areas/evento.css" />
+</head>
+
+<body class="evento-v2-page" data-view-id="event-detail">
+  <div class="evento-page" id="eventoPageRoot">
+    <!-- TOPBAR IMMERSIVA -->
+    <header class="evento-topbar" aria-label="Navigazione dettaglio evento">
+      <div class="evento-topbar__inner">
+        <button
+          type="button"
+          id="eventoBackButton"
+          class="evento-topbar__back"
+          aria-label="Torna alla schermata precedente"
+          title="Torna indietro"
+        >
+          <span class="gw-icon gw-icon-arrow-left" aria-hidden="true"></span>
+        </button>
+
+        <div class="evento-topbar__brand" id="eventoTopbarBrand">
+          <span class="evento-topbar__brand-text">GoGoWorld.life</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="evento-main" aria-label="Dettaglio evento">
+      <!-- STATI PAGINA -->
+      <section
+        id="eventoStatusSection"
+        class="evento-status-section"
+        aria-live="polite"
+      >
+        <div
+          id="eventoLoadingState"
+          class="evento-state evento-state--loading"
+          hidden
+        >
+          Caricamento evento…
+        </div>
+
+        <div
+          id="eventoErrorState"
+          class="evento-state evento-state--error"
+          hidden
+        >
+          Si è verificato un problema nel caricamento dell’evento.
+        </div>
+
+        <div
+          id="eventoNotFoundState"
+          class="evento-state evento-state--empty"
+          hidden
+        >
+          Evento non trovato.
+        </div>
+      </section>
+
+      <!-- HERO IMMERSIVA -->
+      <section class="evento-hero" aria-labelledby="eventoTitle">
+        <div class="evento-hero__media">
+          <img
+            id="eventoCover"
+            class="evento-hero__image"
+            src=""
+            alt="Immagine evento"
+          />
+          <div class="evento-hero__overlay"></div>
+        </div>
+
+        <div class="evento-hero__content">
+          <div class="evento-hero__badges" id="eventoBadges">
+            <span
+              id="eventoPrivacyBadge"
+              class="evento-badge evento-badge--privacy"
+              hidden
+            >
+              Privato
+            </span>
+
+            <span
+              id="eventoStatusBadge"
+              class="evento-badge evento-badge--status"
+              hidden
+            >
+              In arrivo
+            </span>
+          </div>
+
+          <div class="evento-hero__meta">
+            <p id="eventoKicker" class="evento-kicker">Evento</p>
+            <h1 id="eventoTitle" class="evento-title">Titolo evento</h1>
+
+            <div class="evento-hero__summary">
+              <p id="eventoDateSummary" class="evento-summary-item">
+                Data non disponibile
+              </p>
+              <p id="eventoLocationSummary" class="evento-summary-item">
+                Luogo non disponibile
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA PRIMARIE -->
+      <section
+        class="evento-actions-bar"
+        aria-label="Azioni principali evento"
+      >
+        <div class="evento-actions-bar__inner">
+          <button
+            type="button"
+            id="eventoToggleParticipationButton"
+            class="gw-btn evento-btn evento-btn--primary"
+          >
+            Partecipa
+          </button>
+
+          <button
+            type="button"
+            id="eventoOpenChatButton"
+            class="gw-btn gw-btn--ghost evento-btn evento-btn--ghost"
+          >
+            Apri chat evento
+          </button>
+        </div>
+      </section>
+
+      <!-- CONTENUTO EDITORIALE -->
+      <div class="evento-content">
+        <section
+          class="evento-section evento-section--description"
+          aria-labelledby="eventoDescriptionTitle"
+        >
+          <div class="evento-section__head">
+            <h2 id="eventoDescriptionTitle" class="evento-section__title">
+              Descrizione
+            </h2>
+          </div>
+
+          <div
+            id="eventoDescription"
+            class="evento-section__body evento-prose"
+          >
+            Descrizione non disponibile.
+          </div>
+        </section>
+
+        <section
+          class="evento-section evento-section--info"
+          aria-labelledby="eventoInfoTitle"
+        >
+          <div class="evento-section__head">
+            <h2 id="eventoInfoTitle" class="evento-section__title">
+              Informazioni
+            </h2>
+          </div>
+
+          <div class="evento-info-grid">
+            <article class="evento-info-card" aria-labelledby="eventoWhenTitle">
+              <h3 id="eventoWhenTitle" class="evento-info-card__title">
+                Quando
+              </h3>
+              <div id="eventoSchedule" class="evento-info-card__body">
+                Non disponibile
+              </div>
+            </article>
+
+            <article class="evento-info-card" aria-labelledby="eventoWhereTitle">
+              <h3 id="eventoWhereTitle" class="evento-info-card__title">
+                Dove
+              </h3>
+              <div id="eventoLocation" class="evento-info-card__body">
+                Non disponibile
+              </div>
+            </article>
+
+            <article class="evento-info-card" aria-labelledby="eventoPriceTitle">
+              <h3 id="eventoPriceTitle" class="evento-info-card__title">
+                Prezzo
+              </h3>
+              <div id="eventoPricing" class="evento-info-card__body">
+                Non disponibile
+              </div>
+            </article>
+
+            <article
+              class="evento-info-card"
+              aria-labelledby="eventoCategoryTitle"
+            >
+              <h3 id="eventoCategoryTitle" class="evento-info-card__title">
+                Categoria
+              </h3>
+              <div id="eventoTaxonomy" class="evento-info-card__body">
+                Non disponibile
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section
+          class="evento-section evento-section--details"
+          aria-labelledby="eventoDetailsTitle"
+        >
+          <div class="evento-section__head">
+            <h2 id="eventoDetailsTitle" class="evento-section__title">
+              Dettagli
+            </h2>
+          </div>
+
+          <div id="eventoMeta" class="evento-section__body"></div>
+        </section>
+
+        <section
+          class="evento-section evento-section--media"
+          id="eventoMediaSection"
+          aria-labelledby="eventoMediaTitle"
+          hidden
+        >
+          <div class="evento-section__head">
+            <h2 id="eventoMediaTitle" class="evento-section__title">
+              Media
+            </h2>
+          </div>
+
+          <div id="eventoMedia" class="evento-media"></div>
+        </section>
+      </div>
+
+      <!-- FOOTER LOCALE -->
+      <footer class="evento-footer-actions" aria-label="Azioni finali evento">
+        <button
+          type="button"
+          id="eventoBackFooterButton"
+          class="gw-btn gw-btn--ghost evento-footer-actions__back"
+        >
+          Torna alla schermata precedente
+        </button>
+      </footer>
+    </main>
+  </div>
+
+  <script type="module" src="/js/evento/evento-controller.js"></script>
+</body>
+</html>
