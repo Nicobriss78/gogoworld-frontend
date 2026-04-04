@@ -193,7 +193,10 @@
   border-color: var(--gw-accent-border, rgba(47, 128, 237, 0.25));
   box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
 }
-
+.messages-list-item:focus-visible {
+  outline: 2px solid var(--gw-accent, #2f80ed);
+  outline-offset: 2px;
+}
 .messages-list-item__media {
   flex: 0 0 auto;
 }
