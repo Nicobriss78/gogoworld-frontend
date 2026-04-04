@@ -83,13 +83,6 @@
   pointer-events: auto;
 }
 
-.evento-topbar__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--evento-space-sm);
-}
-
 .evento-topbar__back {
   display: inline-flex;
   align-items: center;
