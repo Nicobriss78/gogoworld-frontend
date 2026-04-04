@@ -73,12 +73,19 @@ function fallbackReturnUrl(state) {
   switch (String(state.fromView || "").trim()) {
     case "home":
       return "/pages/home-v2.html";
+
     case "following":
+    case "following-v2":
       return "/pages/partecipante-seguiti-v2.html";
+
     case "map":
+    case "map-v2":
       return "/pages/mappa-v2.html";
+
     case "private-map":
+    case "map-private-v2":
       return "/pages/mappa-privati-v2.html";
+
     default:
       return "";
   }
