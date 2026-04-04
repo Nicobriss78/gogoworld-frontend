@@ -217,6 +217,7 @@ function createCardActions(options = {}) {
   const {
     detailsIcon = "info",
     showClose = false,
+    eventId = "",
   } = options;
 
   const actions = document.createElement("div");
@@ -232,6 +233,7 @@ function createCardActions(options = {}) {
       label: detailsLabel,
       text: detailsText,
       title: detailsLabel,
+      eventId,
     })
   );
 
@@ -242,6 +244,7 @@ function createCardActions(options = {}) {
         label: "Chiudi dettaglio",
         text: "×",
         title: "Chiudi dettaglio",
+        eventId,
         variant: "danger",
       })
     );
