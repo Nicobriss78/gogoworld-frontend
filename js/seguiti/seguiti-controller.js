@@ -50,10 +50,17 @@ function showOnly(refs, key) {
 
 function openEventDetail(eventId) {
   if (!eventId) return;
+
   try {
     sessionStorage.setItem("selectedEventId", eventId);
-  } catch {}
-  window.location.href = `/evento.html?id=${encodeURIComponent(eventId)}`;
+  } catch {
+    // silenzioso
+  }
+
+  window.location.href =
+    `/pages/evento-v2.html?id=${encodeURIComponent(eventId)}` +
+    `&fromView=following` +
+    `&returnTo=${encodeURIComponent("/pages/partecipante-seguiti-v2.html")}`;
 }
 
 async function joinEvent(eventId, buttonEl, refs) {
