@@ -1,28 +1,28 @@
 .evento-v2-page {
-  --evento-bg: var(--gw-bg-page, #f4f6f8);
+  --evento-bg: var(--gw-bg, #f4f6f8);
   --evento-surface: var(--gw-surface, #ffffff);
-  --evento-text: var(--gw-text-primary, #1c2430);
+  --evento-text: var(--gw-text, #1c2430);
   --evento-text-soft: var(--gw-text-secondary, #5a6572);
   --evento-text-muted: var(--gw-text-muted, #8b95a1);
 
-  --evento-accent: var(--gw-accent, #2f80c3);
-  --evento-accent-hover: var(--gw-accent-strong, #276ea8);
-  --evento-accent-soft: rgba(47, 128, 195, 0.1);
-  --evento-accent-border: rgba(47, 128, 195, 0.22);
+  --evento-accent: var(--gw-accent, #3f7c96);
+  --evento-accent-hover: var(--gw-accent-hover, #35697f);
+  --evento-accent-soft: var(--gw-accent-soft, #e6f0f4);
+  --evento-accent-border: var(--gw-accent-border, #c2d6df);
 
   --evento-danger: var(--gw-danger, #b52a32);
 
-  --evento-border: var(--gw-border-soft, #e6eaf0);
-  --evento-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+  --evento-border: var(--gw-border, #e6eaf0);
+  --evento-shadow: var(--gw-shadow, 0 6px 18px rgba(16, 24, 40, 0.06));
 
-  --evento-radius-main: 12px;
-  --evento-radius-btn: 10px;
+  --evento-radius-main: var(--gw-radius, 12px);
+  --evento-radius-btn: var(--gw-radius-btn, 10px);
 
-  --evento-space-xs: 6px;
-  --evento-space-sm: 10px;
-  --evento-space-md: 16px;
-  --evento-space-lg: 24px;
-  --evento-space-xl: 32px;
+  --evento-space-xs: var(--gw-space-xs, 6px);
+  --evento-space-sm: var(--gw-space-sm, 10px);
+  --evento-space-md: var(--gw-space-md, 16px);
+  --evento-space-lg: var(--gw-space-lg, 24px);
+  --evento-space-xl: var(--gw-space-xl, 32px);
 
   --evento-hero-min-height: 78svh;
   --evento-topbar-height: 64px;
