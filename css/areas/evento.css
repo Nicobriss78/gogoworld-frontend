@@ -67,16 +67,20 @@
   inset: 0 0 auto 0;
   z-index: 40;
   pointer-events: none;
-.evento-topbar__inner {
-  pointer-events: auto;
-  }
-}
   padding:
     calc(env(safe-area-inset-top, 0px) + var(--evento-space-sm))
     var(--evento-space-md)
     var(--evento-space-sm);
   background:
     linear-gradient(to bottom, rgba(12, 18, 28, 0.42), rgba(12, 18, 28, 0));
+}
+
+.evento-topbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--evento-space-sm);
+  pointer-events: auto;
 }
 
 .evento-topbar__inner {
