@@ -189,6 +189,7 @@ function createActionButton({
   label,
   text,
   title,
+  eventId = "",
   variant = "default",
 }) {
   const button = document.createElement("button");
@@ -199,6 +200,12 @@ function createActionButton({
       : "home-card-action-btn";
 
   button.dataset.homeAction = action;
+
+  const safeEventId = String(eventId || "").trim();
+  if (safeEventId) {
+    button.dataset.eventId = safeEventId;
+  }
+
   button.setAttribute("aria-label", label);
   button.title = title || label;
   button.textContent = text;
