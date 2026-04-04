@@ -103,7 +103,9 @@
 .messages-view {
   min-height: 0;
 }
-
+.messages-view[hidden] {
+  display: none !important;
+}
 .messages-view--list {
   display: flex;
   flex-direction: column;
