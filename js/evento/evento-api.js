@@ -27,10 +27,17 @@ function unwrapEventResponse(result) {
 
 function unwrapCurrentUserResponse(result) {
   if (!result?.ok) {
-    throw new Error(apiErrorMessage(result, "Impossibile recuperare l'utente corrente"));
+    throw new Error(
+      apiErrorMessage(result, "Impossibile recuperare l'utente corrente")
+    );
   }
 
-  const user = result.user ?? result.data?.user ?? result.data ?? null;
+  const user =
+    result.user ??
+    result.data?.user ??
+    result.data ??
+    (result._id || result.id ? result : null);
+
   if (!user || typeof user !== "object") {
     throw new Error("CURRENT_USER_PAYLOAD_INVALID");
   }
