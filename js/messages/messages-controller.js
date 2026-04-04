@@ -1,1 +1,468 @@
+import {
+  getMessagesState,
+  resetMessagesError,
+  resetMessagesThreadState,
+  resetMessagesViewState,
+  setMessagesActiveTab,
+  setMessagesViewMode,
+  setMessagesActiveEventThread,
+  setMessagesActiveDmThread,
+  setMessagesThreadMeta,
+  setMessagesCurrentMessages,
+  setMessagesEventThreads,
+  setMessagesDmThreads,
+  setMessagesLoading,
+  setMessagesError,
+  setMessagesComposerEnabled,
+  setMessagesReturnTo,
+} from "/js/messages/messages-state.js";
 
+import { createMessagesApi } from "/js/messages/messages-api.js";
+
+import {
+  getMessagesDom,
+  renderMessagesTabState,
+  renderMessagesViewMode,
+  renderMessagesListHeader,
+  renderMessagesListState,
+  clearMessagesListState,
+  clearMessagesList,
+  renderEventThreadsList,
+  renderDmThreadsList,
+  renderEventThread,
+  renderDmThread,
+  renderMessagesThreadNotice,
+  clearMessagesThreadNotice,
+  clearMessagesThreadMessages,
+  setMessagesComposerState,
+  renderMessagesEmptyState,
+  renderMessagesErrorState,
+} from "/js/messages/messages-renderer.js";
+
+const api = createMessagesApi();
+const dom = getMessagesDom();
+
+function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+
+  return {
+    tab: params.get("tab") === "messages" ? "messages" : "events",
+    eventId: params.get("eventId") || "",
+    roomId: params.get("roomId") || "",
+    userId: params.get("userId") || "",
+    returnTo: params.get("returnTo") || "",
+  };
+}
+
+function syncBaseUi() {
+  const state = getMessagesState();
+  renderMessagesTabState(state.activeTab);
+  renderMessagesViewMode(state.viewMode);
+}
+
+function renderCurrentListView() {
+  const state = getMessagesState();
+
+  renderMessagesListHeader({ activeTab: state.activeTab });
+  clearMessagesList();
+  clearMessagesThreadNotice();
+  clearMessagesThreadMessages();
+
+  if (state.activeTab === "messages") {
+    if (!state.dmThreads.length) {
+      renderMessagesEmptyState("Non hai ancora conversazioni private.");
+      return;
+    }
+
+    clearMessagesListState();
+    renderDmThreadsList(state.dmThreads);
+    return;
+  }
+
+  if (!state.eventThreads.length) {
+    renderMessagesEmptyState("Non hai ancora chat evento disponibili.");
+    return;
+  }
+
+  clearMessagesListState();
+  renderEventThreadsList(state.eventThreads);
+}
+
+function buildEventThreadAction(meta, activeEventId) {
+  if (!activeEventId) return null;
+
+  return {
+    label: "Apri evento",
+    href: `/pages/evento-v2.html?eventId=${encodeURIComponent(activeEventId)}`,
+  };
+}
+
+function buildDmThreadAction(activeUserId) {
+  if (!activeUserId) return null;
+
+  return {
+    label: "Apri profilo",
+    href: `/pages/profilo-v2.html?userId=${encodeURIComponent(activeUserId)}`,
+  };
+}
+
+function applyEventThreadNotice(meta) {
+  clearMessagesThreadNotice();
+
+  if (!meta) return;
+
+  if (meta.status === "closed") {
+    renderMessagesThreadNotice(
+      "La chat è chiusa. Se hai partecipato all’evento puoi lasciare una recensione."
+    );
+    return;
+  }
+
+  if (meta.status === "closing") {
+    renderMessagesThreadNotice(
+      "La chat è ancora attiva ma si chiuderà presto."
+    );
+  }
+}
+
+function renderCurrentThreadView() {
+  const state = getMessagesState();
+  const meta = state.currentThreadMeta || {};
+  const messages = state.currentMessages || [];
+
+  if (state.activeThreadType === "dm") {
+    renderDmThread(meta, messages, {
+      action: buildDmThreadAction(state.activeUserId),
+    });
+
+    clearMessagesThreadNotice();
+    setMessagesComposerState({
+      enabled: state.composerEnabled,
+      placeholder: state.composerEnabled
+        ? "Scrivi un messaggio..."
+        : "Non puoi inviare messaggi a questo utente",
+    });
+    return;
+  }
+
+  renderEventThread(meta, messages, {
+    action: buildEventThreadAction(meta, state.activeEventId),
+  });
+
+  applyEventThreadNotice(meta);
+
+  setMessagesComposerState({
+    enabled: state.composerEnabled,
+    placeholder: state.composerEnabled
+      ? "Scrivi un messaggio..."
+      : "Questa chat è chiusa",
+  });
+}
+
+async function loadEventThreads() {
+  setMessagesLoading(true);
+  renderMessagesListState("Caricamento chat evento...", "info");
+
+  try {
+    const threads = await api.events.listThreads();
+    setMessagesEventThreads(threads);
+    resetMessagesError();
+    renderCurrentListView();
+  } catch (error) {
+    console.error(error);
+    setMessagesError("Impossibile caricare le chat evento.");
+    renderMessagesErrorState("Impossibile caricare le chat evento.");
+  } finally {
+    setMessagesLoading(false);
+  }
+}
+
+async function loadDmThreads() {
+  setMessagesLoading(true);
+  renderMessagesListState("Caricamento messaggi privati...", "info");
+
+  try {
+    const threads = await api.dm.listThreads();
+    setMessagesDmThreads(threads);
+    resetMessagesError();
+    renderCurrentListView();
+  } catch (error) {
+    console.error(error);
+    setMessagesError("Impossibile caricare i messaggi privati.");
+    renderMessagesErrorState("Impossibile caricare i messaggi privati.");
+  } finally {
+    setMessagesLoading(false);
+  }
+}
+
+async function openEventThreadByEventId(eventId) {
+  if (!eventId) return;
+
+  setMessagesLoading(true);
+  setMessagesViewMode("thread");
+  syncBaseUi();
+  clearMessagesThreadMessages();
+  clearMessagesThreadNotice();
+  renderMessagesThreadNotice("Caricamento conversazione...");
+
+  try {
+    const meta = await api.events.openThreadByEvent(eventId);
+    setMessagesActiveEventThread({
+      eventId,
+      roomId: meta.roomId,
+    });
+    setMessagesThreadMeta(meta);
+    setMessagesComposerEnabled(Boolean(meta.canSend) && !meta.locked);
+
+    const messages = await api.events.getMessages(meta.roomId);
+    setMessagesCurrentMessages(messages);
+
+    renderCurrentThreadView();
+    await api.events.markRead(meta.roomId);
+    resetMessagesError();
+  } catch (error) {
+    console.error(error);
+    setMessagesError("Impossibile aprire la chat evento.");
+    renderMessagesThreadNotice("Impossibile aprire la chat evento.");
+    setMessagesComposerEnabled(false);
+    renderCurrentThreadView();
+  } finally {
+    setMessagesLoading(false);
+  }
+}
+
+async function openEventThreadByRoomId(roomId) {
+  const state = getMessagesState();
+  const thread = state.eventThreads.find((item) => item.roomId === roomId);
+
+  if (!thread?.eventId) {
+    renderMessagesErrorState("Chat evento non disponibile.");
+    return;
+  }
+
+  await openEventThreadByEventId(thread.eventId);
+}
+
+async function openDmThreadByUserId(userId) {
+  if (!userId) return;
+
+  setMessagesLoading(true);
+  setMessagesViewMode("thread");
+  syncBaseUi();
+  clearMessagesThreadMessages();
+  clearMessagesThreadNotice();
+  renderMessagesThreadNotice("Caricamento conversazione...");
+
+  try {
+    const state = getMessagesState();
+    let threadMeta = state.dmThreads.find((item) => item.userId === userId) || null;
+
+    if (!threadMeta) {
+      const threads = await api.dm.listThreads();
+      setMessagesDmThreads(threads);
+      threadMeta = threads.find((item) => item.userId === userId) || null;
+    }
+
+    setMessagesActiveDmThread({ userId });
+    setMessagesThreadMeta({
+      title: threadMeta?.title || "Conversazione",
+      subtitle: "",
+    });
+    setMessagesComposerEnabled(true);
+
+    const messages = await api.dm.getMessages(userId);
+    setMessagesCurrentMessages(messages);
+
+    renderCurrentThreadView();
+    await api.dm.markRead(userId);
+    resetMessagesError();
+  } catch (error) {
+    console.error(error);
+    setMessagesError("Impossibile aprire il messaggio privato.");
+    renderMessagesThreadNotice("Impossibile aprire il messaggio privato.");
+    setMessagesComposerEnabled(false);
+    renderCurrentThreadView();
+  } finally {
+    setMessagesLoading(false);
+  }
+}
+
+async function refreshCurrentThread() {
+  const state = getMessagesState();
+
+  if (state.activeThreadType === "dm" && state.activeUserId) {
+    const messages = await api.dm.getMessages(state.activeUserId);
+    setMessagesCurrentMessages(messages);
+    renderCurrentThreadView();
+    return;
+  }
+
+  if (state.activeThreadType === "event" && state.activeRoomId) {
+    const messages = await api.events.getMessages(state.activeRoomId);
+    setMessagesCurrentMessages(messages);
+    renderCurrentThreadView();
+  }
+}
+
+async function handleTabChange(tab) {
+  resetMessagesViewState();
+  setMessagesActiveTab(tab);
+  syncBaseUi();
+  renderCurrentListView();
+
+  if (tab === "messages") {
+    await loadDmThreads();
+    return;
+  }
+
+  await loadEventThreads();
+}
+
+function handleThreadBack() {
+  resetMessagesViewState();
+  syncBaseUi();
+  renderCurrentListView();
+}
+
+async function handleComposerSubmit(event) {
+  event.preventDefault();
+
+  const state = getMessagesState();
+  const text = dom.composerInput?.value?.trim() || "";
+
+  if (!text) return;
+
+  try {
+    setMessagesComposerState({
+      enabled: false,
+      placeholder: "Invio in corso...",
+    });
+
+    if (state.activeThreadType === "dm" && state.activeUserId) {
+      await api.dm.sendMessage(state.activeUserId, text);
+      if (dom.composerInput) dom.composerInput.value = "";
+      await refreshCurrentThread();
+      await loadDmThreads();
+      return;
+    }
+
+    if (state.activeThreadType === "event" && state.activeRoomId) {
+      await api.events.sendMessage(state.activeRoomId, text);
+      if (dom.composerInput) dom.composerInput.value = "";
+      await refreshCurrentThread();
+      await loadEventThreads();
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+    renderMessagesThreadNotice("Invio non riuscito. Riprova.");
+  } finally {
+    const latestState = getMessagesState();
+    setMessagesComposerState({
+      enabled: latestState.composerEnabled,
+      placeholder: latestState.composerEnabled
+        ? "Scrivi un messaggio..."
+        : "Questa chat è chiusa",
+    });
+  }
+}
+
+async function handleListClick(event) {
+  const trigger = event.target.closest(".messages-list-item");
+  if (!trigger) return;
+
+  const threadType = trigger.dataset.threadType;
+
+  if (threadType === "dm") {
+    const userId = trigger.dataset.userId || "";
+    await openDmThreadByUserId(userId);
+    return;
+  }
+
+  const eventId = trigger.dataset.eventId || "";
+  const roomId = trigger.dataset.roomId || "";
+
+  if (eventId) {
+    await openEventThreadByEventId(eventId);
+    return;
+  }
+
+  if (roomId) {
+    await openEventThreadByRoomId(roomId);
+  }
+}
+
+function bindEvents() {
+  dom.tabEvents?.addEventListener("click", () => {
+    handleTabChange("events");
+  });
+
+  dom.tabDm?.addEventListener("click", () => {
+    handleTabChange("messages");
+  });
+
+  dom.list?.addEventListener("click", (event) => {
+    handleListClick(event);
+  });
+
+  document.getElementById("messagesThreadBack")?.addEventListener("click", () => {
+    handleThreadBack();
+  });
+
+  dom.composer?.addEventListener("submit", (event) => {
+    handleComposerSubmit(event);
+  });
+}
+
+async function bootstrapFromQuery() {
+  const query = getQueryParams();
+
+  setMessagesReturnTo(query.returnTo);
+  setMessagesActiveTab(query.tab);
+  syncBaseUi();
+
+  if (query.tab === "messages") {
+    await loadDmThreads();
+
+    if (query.userId) {
+      await openDmThreadByUserId(query.userId);
+      return;
+    }
+
+    setMessagesViewMode("list");
+    syncBaseUi();
+    renderCurrentListView();
+    return;
+  }
+
+  await loadEventThreads();
+
+  if (query.eventId) {
+    await openEventThreadByEventId(query.eventId);
+    return;
+  }
+
+  if (query.roomId) {
+    await openEventThreadByRoomId(query.roomId);
+    return;
+  }
+
+  setMessagesViewMode("list");
+  syncBaseUi();
+  renderCurrentListView();
+}
+
+async function initMessagesPage() {
+  syncBaseUi();
+  renderMessagesListHeader({ activeTab: "events" });
+  renderMessagesListState("Caricamento conversazioni...", "info");
+  bindEvents();
+  await bootstrapFromQuery();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  initMessagesPage().catch((error) => {
+    console.error(error);
+    renderMessagesErrorState("Impossibile inizializzare la pagina messaggi.");
+  });
+});
