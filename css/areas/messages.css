@@ -199,6 +199,10 @@
   outline: 2px solid var(--gw-accent, #2f80ed);
   outline-offset: 2px;
 }
+.messages-list-item:focus-visible {
+  outline: 2px solid var(--gw-accent, #2f80ed);
+  outline-offset: 2px;
+}
 .messages-list-item__media {
   flex: 0 0 auto;
 }
