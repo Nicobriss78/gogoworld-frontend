@@ -186,9 +186,17 @@
   height: 48px;
   border-radius: var(--gw-radius-main, 12px);
   object-fit: cover;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--gw-surface-soft, #eef3f9);
   border: 1px solid var(--gw-border-soft, #e6eaf0);
+  color: var(--gw-text-secondary, #5a6572);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  overflow: hidden;
 }
 
 .messages-list-item__body {
