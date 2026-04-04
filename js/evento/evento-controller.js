@@ -48,7 +48,7 @@ function resolveSourceContext(params) {
   return {
     fromView: readQueryValue(params, "fromView"),
     returnTo: readQueryValue(params, "returnTo"),
-    returnEventId: readQueryValue(params, "returnEventId"),
+    returnEventId: readQueryValue(params, "returnEventId") || readQueryValue(params, "eventId"),
   };
 }
 
