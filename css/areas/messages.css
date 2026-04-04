@@ -148,7 +148,21 @@
   line-height: 1.45;
   color: var(--gw-text-secondary, #5a6572);
 }
+.messages-state--info {
+  background: var(--gw-surface-soft, #eef3f9);
+  color: var(--gw-text-secondary, #5a6572);
+}
 
+.messages-state--empty {
+  background: var(--gw-surface-soft, #eef3f9);
+  color: var(--gw-text-secondary, #5a6572);
+}
+
+.messages-state--error {
+  background: rgba(181, 42, 50, 0.08);
+  border-color: rgba(181, 42, 50, 0.22);
+  color: var(--gw-brand-red, #b52a32);
+}
 .messages-list {
   display: flex;
   flex-direction: column;
