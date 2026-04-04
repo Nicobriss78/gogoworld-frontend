@@ -65,7 +65,12 @@
 .evento-topbar {
   position: fixed;
   inset: 0 0 auto 0;
-  z-index: 30;
+  z-index: 40;
+  pointer-events: none;
+.evento-topbar__inner {
+  pointer-events: auto;
+  }
+}
   padding:
     calc(env(safe-area-inset-top, 0px) + var(--evento-space-sm))
     var(--evento-space-md)
