@@ -288,6 +288,6 @@ async function bootstrapEventoPage() {
   await loadEventoData(state, renderer);
 }
 
-bootstrapEventoPage().catch((error) => {
-  console.error("[evento-v2] bootstrap failed:", error);
+bootstrapEventoPage().catch(() => {
+  /* bootstrap error already reflected in UI state where possible */
 });
