@@ -247,19 +247,24 @@ bindUi();
      =============================== */
 
   function handleOpenFullDetail(eventId) {
-    const drawerWasOpen = state.getState().drawerOpen;
+  const drawerWasOpen = state.getState().drawerOpen;
 
-    saveReturnContext({
-      returnEventId: eventId,
-      returnDrawerOpen: drawerWasOpen
-    });
+  saveReturnContext({
+    returnEventId: eventId,
+    returnDrawerOpen: drawerWasOpen
+  });
 
-    state.setReturnContext({
-      returnEventId: eventId,
-      returnDrawerOpen: drawerWasOpen
-    });
+  state.setReturnContext({
+    returnEventId: eventId,
+    returnDrawerOpen: drawerWasOpen
+  });
 
-window.location.href = `/evento.html?id=${encodeURIComponent(eventId)}`;  }
+  window.location.href =
+    `/pages/evento-v2.html?id=${encodeURIComponent(eventId)}` +
+    `&fromView=map-private-v2` +
+    `&returnTo=${encodeURIComponent("/pages/mappa-privati-v2.html")}` +
+    `&returnEventId=${encodeURIComponent(eventId)}`;
+}
 
   /* ===============================
      RETURN CONTEXT
