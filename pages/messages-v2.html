@@ -1,1 +1,166 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Messaggi • GoGoWorld.life</title>
 
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="GoGoWorld" />
+
+  <link rel="stylesheet" href="/css/tokens.v2.css" />
+  <link rel="stylesheet" href="/css/icons-v2.css" />
+  <link rel="stylesheet" href="/css/shared-shell.css" />
+  <link rel="stylesheet" href="/css/areas/messages.css" />
+</head>
+<body class="messages-v2-page" data-view-id="messages">
+  <div id="sharedTopbarMount"></div>
+  <div id="sharedMenuMount"></div>
+
+  <main class="messages-main" aria-label="Centro messaggi">
+    <section class="messages-shell" id="messagesRoot" aria-labelledby="messagesPageTitle">
+      <header class="messages-header">
+        <div class="messages-header__text">
+          <p class="messages-kicker">Comunicazione</p>
+          <h1 id="messagesPageTitle" class="messages-title">Messaggi</h1>
+        </div>
+      </header>
+
+      <section class="messages-tabs" aria-label="Sezioni messaggi">
+        <div class="messages-tabs__row" role="tablist" aria-label="Seleziona una sezione">
+          <button
+            type="button"
+            id="messagesTabEvents"
+            class="messages-tab is-active"
+            role="tab"
+            aria-selected="true"
+            aria-controls="messagesPanel"
+            data-tab="events"
+          >
+            Chat Eventi
+          </button>
+
+          <button
+            type="button"
+            id="messagesTabDm"
+            class="messages-tab"
+            role="tab"
+            aria-selected="false"
+            aria-controls="messagesPanel"
+            data-tab="messages"
+          >
+            Messaggi
+          </button>
+        </div>
+      </section>
+
+      <section id="messagesPanel" class="messages-content" aria-live="polite">
+        <div
+          id="messagesListView"
+          class="messages-view messages-view--list"
+          data-view="list"
+        >
+          <div class="messages-list-head">
+            <h2 id="messagesListTitle" class="messages-section-title">Chat Eventi</h2>
+            <p id="messagesListSubtitle" class="messages-section-subtitle">
+              Le conversazioni evento attive, in chiusura o archiviate.
+            </p>
+          </div>
+
+          <div
+            id="messagesListState"
+            class="messages-state messages-state--info"
+            aria-live="polite"
+          >
+            Caricamento conversazioni...
+          </div>
+
+          <div
+            id="messagesList"
+            class="messages-list"
+            aria-label="Elenco conversazioni"
+          ></div>
+        </div>
+
+        <div
+          id="messagesThreadView"
+          class="messages-view messages-view--thread"
+          data-view="thread"
+          hidden
+        >
+          <header class="messages-thread-header">
+            <button
+              type="button"
+              id="messagesThreadBack"
+              class="messages-thread-back"
+              aria-label="Torna all'elenco conversazioni"
+            >
+              Indietro
+            </button>
+
+            <div class="messages-thread-heading">
+              <p id="messagesThreadKicker" class="messages-thread-kicker">Chat</p>
+              <h2 id="messagesThreadTitle" class="messages-thread-title">Conversazione</h2>
+              <p id="messagesThreadMeta" class="messages-thread-meta"></p>
+            </div>
+
+            <div id="messagesThreadActionSlot" class="messages-thread-action-slot"></div>
+          </header>
+
+          <div
+            id="messagesThreadNotice"
+            class="messages-thread-notice"
+            aria-live="polite"
+            hidden
+          ></div>
+
+          <div
+            id="messagesThreadMessages"
+            class="messages-thread-messages"
+            aria-label="Messaggi della conversazione"
+          ></div>
+
+          <form
+            id="messagesComposer"
+            class="messages-composer"
+            novalidate
+          >
+            <label for="messagesComposerInput" class="sr-only">Scrivi un messaggio</label>
+
+            <input
+              id="messagesComposerInput"
+              class="messages-composer__input"
+              type="text"
+              maxlength="1000"
+              autocomplete="off"
+              placeholder="Scrivi un messaggio..."
+            />
+
+            <button
+              type="submit"
+              id="messagesComposerSend"
+              class="messages-composer__send"
+            >
+              Invia
+            </button>
+          </form>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="sharedBottomnavMount"></div>
+
+  <script type="module">
+    import { initSharedShell } from "/js/shared-shell/shared-bootstrap.js";
+
+    window.addEventListener("DOMContentLoaded", () => {
+      initSharedShell();
+    });
+  </script>
+
+  <script type="module" src="/js/messages/messages-controller.js"></script>
+</body>
+</html>
