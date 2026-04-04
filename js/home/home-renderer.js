@@ -335,7 +335,13 @@ export function createEventCard(event, options = {}) {
   }
 
   article.appendChild(thumb);
-  article.appendChild(createCardActions({ detailsIcon, showClose }));
+  article.appendChild(
+    createCardActions({
+      detailsIcon,
+      showClose,
+      eventId: article.dataset.eventId,
+    })
+  );
   article.appendChild(content);
 
   return article;
