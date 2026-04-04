@@ -229,9 +229,10 @@
 }
 
 .messages-list-item__top {
-  display: flex;
-  align-items: center;
-  gap: var(--gw-space-sm, 10px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--gw-space-xs, 6px);
   min-width: 0;
 }
 
