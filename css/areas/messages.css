@@ -398,9 +398,18 @@
   height: 36px;
   border-radius: var(--gw-radius-btn, 10px);
   object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--gw-surface-soft, #eef3f9);
   border: 1px solid var(--gw-border-soft, #e6eaf0);
+  color: var(--gw-text-secondary, #5a6572);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
   flex: 0 0 auto;
+  overflow: hidden;
 }
 
 .messages-bubble__content {
