@@ -297,9 +297,10 @@
   border-radius: 999px;
   background: var(--gw-accent-soft, rgba(47, 128, 237, 0.08));
   color: var(--gw-accent, #2f80ed);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   line-height: 1.2;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .messages-thread-header {
