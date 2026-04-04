@@ -249,7 +249,7 @@
 }
 
 .messages-list-item__meta {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   line-height: 1.2;
   color: var(--gw-text-muted, #8b95a1);
   white-space: nowrap;
