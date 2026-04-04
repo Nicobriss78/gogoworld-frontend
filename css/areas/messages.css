@@ -309,7 +309,7 @@
 
 .messages-thread-header {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--gw-space-sm, 10px);
   padding: var(--gw-space-md, 16px);
