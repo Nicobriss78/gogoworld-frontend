@@ -70,7 +70,7 @@ function renderCurrentListView() {
   clearMessagesThreadNotice();
   clearMessagesThreadMessages();
 
-  if (state.activeTab === "messages") {
+  if (state.activeTab === "dm") {
     if (!state.dmThreads.length) {
       renderMessagesEmptyState("Non hai ancora conversazioni private.");
       return;
