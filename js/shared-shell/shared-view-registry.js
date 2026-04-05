@@ -105,23 +105,6 @@ const VIEW_REGISTRY = {
       "socialContext",
     ],
   },
-  messages: {
-    viewId: "messages",
-    viewType: "secondary",
-    section: "participant-social",
-    topbarMode: "standard",
-    menuEnabled: true,
-    bottomnavMode: "standard",
-    activeNavKey: null,
-    capabilities: [
-      "supportsNotifications",
-      "showMessagesEntry",
-      "showSearchEntry",
-      "showMapShortcut",
-      "standardParticipantMenu",
-      "socialContext",
-    ],
-  },
 };
 
 export function hasViewConfig(viewId) {
