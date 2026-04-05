@@ -42,7 +42,7 @@ export function mountTopbar({ mountPoint, onEvent }) {
         </a>
 
         <a
-          href="/pages/messages-v2.html"
+          href="/messages.html"
           class="home-topbar__btn gw-iconbtn"
           aria-label="Messaggi"
           title="Messaggi"
