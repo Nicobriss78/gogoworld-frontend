@@ -44,9 +44,11 @@ const dom = getMessagesDom();
 
 function getQueryParams() {
   const params = new URLSearchParams(window.location.search);
+  const rawTab = String(params.get("tab") || "").trim().toLowerCase();
+  const normalizedTab = rawTab === "dm" || rawTab === "messages" ? "dm" : "events";
 
   return {
-    tab: params.get("tab") === "messages" ? "messages" : "events",
+    tab: normalizedTab,
     eventId: params.get("eventId") || "",
     roomId: params.get("roomId") || "",
     userId: params.get("userId") || "",
