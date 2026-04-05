@@ -130,10 +130,17 @@ function render(list = []) {
             );
             return;
           }
-          const res = await openOrJoinDM(targetUserId);
-          if (res?.ok && res.data?.roomId) {
-            location.href = `rooms.html?roomId=${res.data.roomId}`;
+
+          const params = new URLSearchParams();
+          params.set("tab", "dm");
+          params.set("userId", targetUserId);
+
+          const returnTo = getSafeReturnUrl();
+          if (returnTo) {
+            params.set("returnTo", returnTo);
           }
+
+          location.href = `/pages/messages-v2.html?${params.toString()}`;
           return;
         }
 
