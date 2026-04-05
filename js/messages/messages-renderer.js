@@ -98,7 +98,7 @@ export function renderMessagesViewMode(viewMode) {
 
 export function renderMessagesListHeader({ activeTab }) {
   const dom = getMessagesDom();
-  const isDm = activeTab === "messages";
+  const isDm = activeTab === "dm";
 
   if (dom.listTitle) {
     dom.listTitle.textContent = isDm ? "Messaggi" : "Chat Eventi";
