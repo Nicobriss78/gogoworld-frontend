@@ -367,6 +367,7 @@ const qs = new URLSearchParams(location.search);
   loadAll(userId);
 
   const followBtn = $("#followBtn");
+  const messageBtn = $("#messageBtn");
   if (followBtn) {
     if (isSelf) {
       hideEl(followBtn);
