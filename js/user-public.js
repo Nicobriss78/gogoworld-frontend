@@ -374,4 +374,22 @@ const qs = new URLSearchParams(location.search);
       followBtn.addEventListener("click", () => onFollowClick(userId));
     }
   }
+  if (messageBtn) {
+    if (isSelf) {
+      hideEl(messageBtn);
+    } else {
+      messageBtn.addEventListener("click", () => {
+        const params = new URLSearchParams();
+        params.set("tab", "dm");
+        params.set("userId", userId);
+
+        const ret = qs.get("returnTo");
+        if (ret) {
+          params.set("returnTo", ret);
+        }
+
+        window.location.href = `/pages/messages-v2.html?${params.toString()}`;
+      });
+    }
+  }
 });
