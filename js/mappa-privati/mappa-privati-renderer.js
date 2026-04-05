@@ -26,6 +26,16 @@ export function createMappaPrivatiRenderer() {
           <button
             type="button"
             class="gw-icon-btn"
+            data-action="open-full-chat"
+            aria-label="Apri chat completa evento"
+            title="Chat completa"
+          >
+            <span aria-hidden="true">💬</span>
+          </button>
+
+          <button
+            type="button"
+            class="gw-icon-btn"
             data-action="open-full-detail"
             aria-label="Apri dettaglio completo evento"
             title="Dettaglio completo"
