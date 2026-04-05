@@ -91,11 +91,12 @@ export function resetMessagesState() {
 }
 
 export function setMessagesActiveTab(tab) {
-  const nextTab = tab === "messages" ? "messages" : "events";
+  const normalizedTab =
+    tab === "dm" || tab === "messages" ? "dm" : "events";
 
   messagesState = {
     ...messagesState,
-    activeTab: nextTab,
+    activeTab: normalizedTab,
   };
 
   return cloneMessagesState();
