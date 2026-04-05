@@ -83,6 +83,14 @@ bindUi();
       return;
     }
 
+    if (action === "open-full-chat") {
+      const selectedEvent = getSelectedEvent();
+      if (!selectedEvent?.id) return;
+
+      handleOpenFullChat(selectedEvent.id);
+      return;
+    }
+
     if (action === "open-full-detail") {
       const selectedEvent = getSelectedEvent();
       if (!selectedEvent?.id) return;
