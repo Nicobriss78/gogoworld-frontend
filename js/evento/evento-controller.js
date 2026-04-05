@@ -111,19 +111,24 @@ function goBack(state) {
   window.location.assign("/pages/home-v2.html");
 }
 
-function buildRoomNavigationUrl(roomData, state) {
-  const roomId = String(roomData?.roomId || "").trim();
-  if (!roomId) return "";
+function buildMessagesNavigationUrl(state) {
+  const eventId = String(state.eventId || "").trim();
+  if (!eventId) return "";
 
   const params = new URLSearchParams();
-  params.set("room", roomId);
+  params.set("tab", "events");
+  params.set("eventId", eventId);
 
-  const returnTo = buildReturnUrl(state) || fallbackReturnUrl(state) || window.location.pathname + window.location.search;
+  const returnTo =
+    buildReturnUrl(state) ||
+    fallbackReturnUrl(state) ||
+    window.location.pathname + window.location.search;
+
   if (returnTo) {
     params.set("returnTo", returnTo);
   }
 
-  return `/messages.html?${params.toString()}`;
+  return `/pages/messages-v2.html?${params.toString()}`;
 }
 
 function isNotFoundError(error) {
