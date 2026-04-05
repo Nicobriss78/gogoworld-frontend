@@ -425,7 +425,7 @@ async function bootstrapFromQuery() {
   setMessagesActiveTab(query.tab);
   syncBaseUi();
 
-  if (query.tab === "messages") {
+  if (query.tab === "dm") {
     await loadDmThreads();
 
     if (query.userId) {
