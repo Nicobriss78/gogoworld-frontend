@@ -161,7 +161,7 @@ export function initSharedShell() {
       }
 
       if (event.action === "messages") {
-        window.location.href = "/pages/messages-v2.html";
+        window.location.href = "/messages.html";
         return;
       }
 
