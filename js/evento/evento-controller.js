@@ -228,14 +228,13 @@ async function handleOpenChatClick(state, renderer) {
     state.error = "";
     renderer.render(state);
 
-    const roomData = await openOrJoinEventRoom(state.eventId);
-    const roomUrl = buildRoomNavigationUrl(roomData, state);
+    const messagesUrl = buildMessagesNavigationUrl(state);
 
-    if (!roomUrl) {
+    if (!messagesUrl) {
       throw new Error("Impossibile aprire la chat evento.");
     }
 
-    navigateTo(roomUrl);
+    navigateTo(messagesUrl);
   } catch (error) {
     state.error = String(
       error?.message || "Impossibile aprire la chat evento."
