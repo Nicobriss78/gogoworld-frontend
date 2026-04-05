@@ -247,9 +247,9 @@ export function initSharedShell() {
       "private-map": "/pages/mappa-privati-v2.html",
       profile: "/pages/profilo-v2.html",
       "following-users": "/pages/seguiti-utenti-v2.html",
+      messages: "/pages/messages-v2.html",
       "user-search": "/pages/cerca-utenti.html",
     };
-
     const url = map[viewId];
 
     if (!url) {
