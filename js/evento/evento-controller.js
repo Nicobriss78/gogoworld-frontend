@@ -4,7 +4,6 @@ import {
   getCurrentUser,
   joinEvent,
   leaveEvent,
-  openOrJoinEventRoom,
 } from "./evento-api.js";
 import { createEventoRenderer } from "./evento-renderer.js";
 
