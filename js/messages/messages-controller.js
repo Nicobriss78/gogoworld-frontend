@@ -309,10 +309,12 @@ async function refreshCurrentThread() {
 async function handleTabChange(tab) {
   resetMessagesViewState();
   setMessagesActiveTab(tab);
+
+  const state = getMessagesState();
   syncBaseUi();
   renderCurrentListView();
 
-  if (tab === "messages") {
+  if (state.activeTab === "dm") {
     await loadDmThreads();
     return;
   }
