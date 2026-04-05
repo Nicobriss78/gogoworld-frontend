@@ -118,6 +118,14 @@ if (followersEl) followersEl.textContent = profile.followersCount ?? 0;
   if (isSelf && followBtn) {
     hideEl(followBtn);
   }
+
+  if (messageBtn) {
+    if (isSelf || !profile.canReceiveMessages) {
+      hideEl(messageBtn);
+    } else {
+      showEl(messageBtn);
+    }
+  }
 }
 
 // --- UI helper follow/unfollow ---
