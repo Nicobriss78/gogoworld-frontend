@@ -70,7 +70,7 @@ export function getMessagesDom() {
 
 export function renderMessagesTabState(activeTab) {
   const dom = getMessagesDom();
-  const isEvents = activeTab !== "messages";
+  const isEvents = activeTab !== "dm";
 
   if (dom.tabEvents) {
     dom.tabEvents.classList.toggle("is-active", isEvents);
