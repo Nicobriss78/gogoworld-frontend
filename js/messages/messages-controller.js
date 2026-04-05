@@ -402,7 +402,7 @@ function bindEvents() {
   });
 
   dom.tabDm?.addEventListener("click", () => {
-    handleTabChange("messages");
+    handleTabChange("dm");
   });
 
   dom.list?.addEventListener("click", (event) => {
