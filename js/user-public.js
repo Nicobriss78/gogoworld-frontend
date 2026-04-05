@@ -55,6 +55,7 @@ function renderProfile(profile) {
   const followersEl = $("#followersCount");
   const followingEl = $("#followingCount");
   const followBtn = $("#followBtn");
+  const messageBtn = $("#messageBtn");
 // hardening: se il backend non manda data corretta evito crash
   if (!profile || typeof profile !== "object") {
     showAlert("Profilo non valido o non disponibile.");
