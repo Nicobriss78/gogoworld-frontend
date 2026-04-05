@@ -1,5 +1,4 @@
-import { searchUsers, openOrJoinDM, blockUser, unblockUser } from "./api.js";
-
+import { searchUsers, blockUser, unblockUser } from "./api.js";
 const $ = (id) => document.getElementById(id);
 
 function debounce(fn, wait = 500) {
