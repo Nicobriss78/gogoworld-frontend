@@ -110,10 +110,7 @@ if (followersEl) followersEl.textContent = profile.followersCount ?? 0;
 
 
   const qs = new URLSearchParams(location.search);
-  const isSelfFromUrl = qs.get("self") === "1";
-  const viewedUserId = qs.get("userId") || "";
-  const profileUserId = profile?._id || profile?.id || "";
-  const isSelf = isSelfFromUrl || (viewedUserId && profileUserId && viewedUserId === profileUserId);
+  const isSelf = qs.get("self") === "1";
 
   if (isSelf && followBtn) {
     hideEl(followBtn);
