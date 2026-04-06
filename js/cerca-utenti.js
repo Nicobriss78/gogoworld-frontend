@@ -47,10 +47,14 @@ function liTemplate(u) {
       </div>
     `;
   } else if (isAdmin) {
-    // admin: solo Messaggia, niente Blocca/Sblocca
+    // admin: solo Messaggia se consentito, niente Blocca/Sblocca
     actionsHtml = `
       <div class="user-actions">
-        <button class="btn btn-primary" data-action="msg" data-user="${u._id}">Messaggia</button>
+        ${
+          u.canReceiveMessages
+            ? `<button class="btn btn-primary" data-action="msg" data-user="${u._id}">Messaggia</button>`
+            : ""
+        }
       </div>
       <div class="user-status user-status--admin">
         Amministratore
