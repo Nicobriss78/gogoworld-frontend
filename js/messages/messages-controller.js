@@ -104,7 +104,7 @@ function buildDmThreadAction(activeUserId) {
 
   return {
     label: "Apri profilo",
-    href: `/pages/profilo-v2.html?userId=${encodeURIComponent(activeUserId)}`,
+    href: `/pages/user-public.html?userId=${encodeURIComponent(activeUserId)}`,
   };
 }
 
