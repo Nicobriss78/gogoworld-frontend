@@ -72,7 +72,11 @@ function liTemplate(u) {
   } else {
     actionsHtml = `
       <div class="user-actions">
-        <button class="btn btn-primary" data-action="msg" data-user="${u._id}">Messaggia</button>
+        ${
+          u.canReceiveMessages
+            ? `<button class="btn btn-primary" data-action="msg" data-user="${u._id}">Messaggia</button>`
+            : ""
+        }
         <button class="btn btn-secondary" data-action="block" data-user="${u._id}">Blocca</button>
       </div>
     `;
