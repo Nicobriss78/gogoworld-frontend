@@ -485,7 +485,7 @@ body.profilo-v2-page .gw-iconbtn {
    EDITOR
    ========================================================= */
 
-.profilo-editor {
+.profilo-editor:not([hidden]) {
   display: flex;
   flex-direction: column;
   gap: var(--profilo-space-md);
