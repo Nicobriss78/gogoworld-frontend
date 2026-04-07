@@ -295,6 +295,15 @@ function handleOpenFullChat(eventId) {
     });
   });
 
+  window.addEventListener("pageshow", () => {
+    window.requestAnimationFrame(() => {
+      map.refreshLayout();
+      window.setTimeout(() => {
+        map.refreshLayout();
+      }, 120);
+    });
+  });
+
   window.addEventListener("beforeunload", () => {
     unbindUi();
     chat.destroy();
