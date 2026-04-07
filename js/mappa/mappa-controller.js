@@ -300,7 +300,9 @@ document.addEventListener("visibilitychange", () => {
     }, 120);
   });
 });
-  window.addEventListener("beforeunload", () => {
+  window.addEventListener("pagehide", (event) => {
+    if (event.persisted) return;
+
     unbindUi();
     chat.destroy();
     drawer.destroy();
