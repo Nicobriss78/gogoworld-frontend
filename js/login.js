@@ -141,7 +141,7 @@ if (redirectRole === "organizer" && me?.canOrganize !== true) {
       if (redirectRole === "organizer") {
         window.location.href = "organizzatore.html";
       } else {
-        window.location.href = "partecipante.html";
+        window.location.href = "/pages/home-v2.html";
       }
     } catch (err) {
       showAlert("Errore di rete o server non raggiungibile", "error", { autoHideMs: 4000 });
