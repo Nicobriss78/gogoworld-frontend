@@ -282,6 +282,10 @@ function handleOpenFullChat(eventId) {
      CLEANUP FUTURO (SE SERVE)
      =============================== */
 
+  window.addEventListener("pageshow", () => {
+    map.refreshLayout();
+  });
+
   window.addEventListener("beforeunload", () => {
     unbindUi();
     chat.destroy();
