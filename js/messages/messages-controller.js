@@ -427,7 +427,9 @@ function bindEvents() {
   document.getElementById("messagesThreadBack")?.addEventListener("click", () => {
     handleThreadBack();
   });
-
+  document.getElementById("messagesPageBack")?.addEventListener("click", () => {
+    handlePageBack();
+  });
   dom.composer?.addEventListener("submit", (event) => {
     handleComposerSubmit(event);
   });
