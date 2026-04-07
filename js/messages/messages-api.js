@@ -90,9 +90,12 @@ function normalizeEventMessage(message) {
     text: String(message.text || ""),
     createdAt: normalizeDate(message.createdAt),
     sender: message.sender === "me" ? "me" : "them",
-    userId: null,
-    userName: null,
-    avatarUrl: null,
+    userId: String(message.author?._id || message.author?.id || ""),
+    userName:
+      message.author?.name ||
+      message.author?.nickname ||
+      null,
+    avatarUrl: message.author?.avatarUrl || null,
     readAt: null,
     raw: message,
   };
