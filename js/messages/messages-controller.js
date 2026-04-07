@@ -327,7 +327,22 @@ function handleThreadBack() {
   syncBaseUi();
   renderCurrentListView();
 }
+function handlePageBack() {
+  const state = getMessagesState();
+  const returnTo = String(state.returnTo || "").trim();
 
+  if (returnTo) {
+    window.location.href = returnTo;
+    return;
+  }
+
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+
+  window.location.href = "/pages/home-v2.html";
+}
 async function handleComposerSubmit(event) {
   event.preventDefault();
 
