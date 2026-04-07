@@ -379,7 +379,9 @@ document.addEventListener("visibilitychange", () => {
     }, 120);
   });
 });
-  window.addEventListener("beforeunload", () => {
+  window.addEventListener("pagehide", (event) => {
+    if (event.persisted) return;
+
     try {
       delete window.gwMappaPrivatiUnlockPrivateEvent;
     } catch {
