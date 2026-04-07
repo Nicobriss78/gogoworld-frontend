@@ -200,6 +200,7 @@ export function createMappaPrivatiMap({
     setEvents,
     focusEvent,
     clearSelection,
+    refreshLayout,
     destroy
   };
 }
