@@ -292,9 +292,11 @@ function renderThreadAction(action) {
   `;
 }
 
-function renderBubbleAvatar(name, avatarUrl) {
+function renderBubbleAvatar(name, avatarUrl, userId = "") {
+  const safeUserId = String(userId || "").trim();
+
   if (avatarUrl) {
-    return `
+    const imageMarkup = `
       <img
         class="messages-bubble__avatar"
         src="${escapeHtml(avatarUrl)}"
@@ -302,12 +304,40 @@ function renderBubbleAvatar(name, avatarUrl) {
         loading="lazy"
       />
     `;
+
+    if (!safeUserId) {
+      return imageMarkup;
+    }
+
+    return `
+      <a
+        class="messages-bubble__avatar-link"
+        href="/pages/user-public.html?userId=${encodeURIComponent(safeUserId)}"
+        aria-label="Apri il profilo di ${escapeHtml(name || "questo utente")}"
+      >
+        ${imageMarkup}
+      </a>
+    `;
   }
 
-  return `
+  const placeholderMarkup = `
     <div class="messages-bubble__avatar" aria-hidden="true">
       ${escapeHtml(createInitialsPlaceholder(name))}
     </div>
+  `;
+
+  if (!safeUserId) {
+    return placeholderMarkup;
+  }
+
+  return `
+    <a
+      class="messages-bubble__avatar-link"
+      href="/pages/user-public.html?userId=${encodeURIComponent(safeUserId)}"
+      aria-label="Apri il profilo di ${escapeHtml(name || "questo utente")}"
+    >
+      ${placeholderMarkup}
+    </a>
   `;
 }
 
