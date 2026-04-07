@@ -55,10 +55,15 @@ bindUi();
   await loadEvents();
   await handleReturnContext();
 
+  window.requestAnimationFrame(() => {
+    window.setTimeout(() => {
+      map.refreshLayout();
+    }, 200);
+  });
+
   /* ===============================
      DOM
      =============================== */
-
   function getSelectedEvent() {
     return state.getState().selectedEvent;
   }
