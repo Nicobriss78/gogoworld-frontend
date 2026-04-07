@@ -362,26 +362,13 @@ bindUi();
      =============================== */
 
   window.addEventListener("pageshow", () => {
+  window.requestAnimationFrame(() => {
     map.refreshLayout();
-  });
-
-  window.addEventListener("pageshow", () => {
-    window.requestAnimationFrame(() => {
+    window.setTimeout(() => {
       map.refreshLayout();
-      window.setTimeout(() => {
-        map.refreshLayout();
-      }, 120);
-    });
+    }, 120);
   });
-
-  window.addEventListener("pageshow", () => {
-    window.requestAnimationFrame(() => {
-      map.refreshLayout();
-      window.setTimeout(() => {
-        map.refreshLayout();
-      }, 120);
-    });
-  });
+});
 
   window.addEventListener("beforeunload", () => {
     try {
