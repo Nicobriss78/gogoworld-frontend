@@ -361,6 +361,10 @@ bindUi();
      CLEANUP FUTURO (SE SERVE)
      =============================== */
 
+  window.addEventListener("pageshow", () => {
+    map.refreshLayout();
+  });
+
   window.addEventListener("beforeunload", () => {
     try {
       delete window.gwMappaPrivatiUnlockPrivateEvent;
