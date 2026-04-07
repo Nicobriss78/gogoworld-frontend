@@ -53,6 +53,12 @@ async function init() {
   await loadEvents();
   await handleReturnContext();
 
+  window.requestAnimationFrame(() => {
+    window.setTimeout(() => {
+      map.refreshLayout();
+    }, 200);
+  });
+
   /* ===============================
      DOM
      =============================== */
