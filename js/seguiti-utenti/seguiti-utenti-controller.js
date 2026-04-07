@@ -34,7 +34,38 @@ async function loadFollowing(view) {
     renderSeguitiUtentiPage(view, seguitiUtentiState);
   }
 }
+async function handleUnfollow(view, userId) {
+  if (!userId || seguitiUtentiState.unfollowingUserId) return;
 
+  seguitiUtentiState.unfollowingUserId = userId;
+  seguitiUtentiState.error = "";
+  renderSeguitiUtentiMessage(view, "");
+  renderSeguitiUtentiPage(view, seguitiUtentiState);
+
+  try {
+    await unfollowUser(userId);
+
+    seguitiUtentiState.users = (seguitiUtentiState.users || []).filter(
+      (user) => user.id !== userId
+    );
+
+    renderSeguitiUtentiMessage(
+      view,
+      "Utente rimosso dai seguiti.",
+      "success"
+    );
+  } catch (error) {
+    seguitiUtentiState.error = "";
+    renderSeguitiUtentiMessage(
+      view,
+      error?.message || "Impossibile smettere di seguire questo utente.",
+      "error"
+    );
+  } finally {
+    seguitiUtentiState.unfollowingUserId = "";
+    renderSeguitiUtentiPage(view, seguitiUtentiState);
+  }
+}
 /* menu ora gestito dalla shared shell */
 
 function setupEventListeners(view) {
