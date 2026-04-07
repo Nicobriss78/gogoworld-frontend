@@ -126,7 +126,15 @@ export function createMappaPrivatiMap({
     const bounds = clusterGroup.getBounds();
     map.fitBounds(bounds, { padding: [30, 30] });
   }
+  function refreshLayout() {
+    if (!map) return;
 
+    map.invalidateSize();
+
+    if (clusterGroup && clusterGroup.getLayers().length > 0) {
+      fitBounds();
+    }
+  }
   function destroy() {
     if (!map) return;
 
