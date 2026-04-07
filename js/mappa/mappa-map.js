@@ -200,6 +200,7 @@ export function createMappaMap({
     setEvents,
     focusEvent,
     clearSelection,
+    refreshLayout,
     destroy
   };
 }
