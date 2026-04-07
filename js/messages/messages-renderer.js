@@ -349,12 +349,22 @@ function renderEventMessageBubble(message) {
 
   const userName = isOwn ? "Tu" : message.userName || "Partecipante";
   const createdAt = formatRelativeMeta(message.createdAt);
+  const profileHref =
+    !isOwn && message.userId
+      ? `/pages/user-public.html?userId=${encodeURIComponent(message.userId)}`
+      : "";
 
   return `
     <article class="${bubbleClass}">
-      ${!isOwn ? renderBubbleAvatar(userName, message.avatarUrl) : ""}
+      ${!isOwn ? renderBubbleAvatar(userName, message.avatarUrl, message.userId) : ""}
       <div class="messages-bubble__content">
-        ${!isOwn ? `<div class="messages-bubble__name">${escapeHtml(userName)}</div>` : ""}
+        ${
+          !isOwn
+            ? profileHref
+              ? `<a class="messages-bubble__name-link" href="${profileHref}"><div class="messages-bubble__name">${escapeHtml(userName)}</div></a>`
+              : `<div class="messages-bubble__name">${escapeHtml(userName)}</div>`
+            : ""
+        }
         <div class="messages-bubble__card">
           <p class="messages-bubble__text">${escapeHtml(message.text || "")}</p>
         </div>
