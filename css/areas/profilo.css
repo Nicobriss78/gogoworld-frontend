@@ -117,9 +117,9 @@ body.profilo-v2-page .gw-iconbtn {
   flex: 1 1 auto;
   min-height: calc(100dvh - var(--profilo-topbar-h) - var(--profilo-bottomnav-h));
   padding:
-    var(--profilo-page-pad-y)
-    var(--profilo-page-pad-x)
-    calc(var(--profilo-page-pad-y) + 6px);
+  var(--profilo-page-pad-y)
+  var(--profilo-page-pad-x)
+  calc(var(--profilo-bottomnav-h) + 10px);
   display: flex;
   flex-direction: column;
   gap: var(--profilo-section-gap);
