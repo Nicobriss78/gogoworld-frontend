@@ -1,1 +1,79 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+  <title>Cerca utenti • GoGoWorld.life</title>
 
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#1F4E5F" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="GoGoWorld" />
+  <meta name="robots" content="noindex" />
+
+  <link rel="stylesheet" href="/css/tokens.v2.css" />
+  <link rel="stylesheet" href="/css/icons-v2.css" />
+  <link rel="stylesheet" href="/css/areas/cerca-utenti.css" />
+</head>
+
+<body class="cerca-utenti-v2-page">
+  <main class="cerca-utenti-main" aria-label="Ricerca utenti">
+    <section
+      class="cerca-utenti-shell"
+      id="cercaUtentiRoot"
+      aria-labelledby="cercaUtentiTitle"
+    >
+      <header class="cerca-utenti-header">
+        <button
+          type="button"
+          id="cercaUtentiBack"
+          class="cerca-utenti-back"
+          aria-label="Torna alla pagina precedente"
+        >
+          Torna
+        </button>
+
+        <div class="cerca-utenti-header__text">
+          <p class="cerca-utenti-kicker">Connessioni</p>
+          <h1 id="cercaUtentiTitle" class="cerca-utenti-title">Cerca utenti</h1>
+        </div>
+      </header>
+
+      <section class="cerca-utenti-search" aria-label="Campo di ricerca utenti">
+        <label for="cercaUtentiInput" class="sr-only">
+          Cerca per nome o nickname
+        </label>
+
+        <input
+          id="cercaUtentiInput"
+          class="cerca-utenti-input"
+          type="text"
+          placeholder="Digita un nome o nickname..."
+          autocomplete="off"
+        />
+      </section>
+
+      <section class="cerca-utenti-content" aria-live="polite">
+        <div
+          id="cercaUtentiState"
+          class="cerca-utenti-state cerca-utenti-state--info"
+        >
+          Inizia a digitare per cercare un utente.
+        </div>
+
+        <ul
+          id="cercaUtentiResults"
+          class="cerca-utenti-results"
+          aria-label="Risultati ricerca utenti"
+        ></ul>
+      </section>
+    </section>
+  </main>
+
+  <script type="module" src="/js/cerca-utenti/cerca-utenti-controller.js"></script>
+</body>
+</html>
