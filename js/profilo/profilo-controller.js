@@ -70,6 +70,15 @@ function openEditor() {
   clearProfileFeedback();
   patchUiState({ editing: true });
   render();
+
+  const { section, nicknameInput } = getEditorElements();
+
+  section?.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+
+  nicknameInput?.focus({ preventScroll: true });
 }
 
 function closeEditor() {
