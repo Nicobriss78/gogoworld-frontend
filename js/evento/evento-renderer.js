@@ -203,6 +203,7 @@ function resolveEventStatus(event) {
   const startRaw =
     event?.startAt ||
     event?.startDate ||
+    event?.dateStart ||
     event?.date ||
     event?.startsAt ||
     "";
@@ -210,6 +211,7 @@ function resolveEventStatus(event) {
   const endRaw =
     event?.endAt ||
     event?.endDate ||
+    event?.dateEnd ||
     event?.endsAt ||
     "";
 
