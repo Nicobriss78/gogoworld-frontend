@@ -82,6 +82,11 @@
 
 .cerca-utenti-search {
   display: block;
+  padding: var(--gw-space-sm, 10px);
+  border: 1px solid var(--gw-border, #E6EAF0);
+  border-radius: var(--gw-radius, 12px);
+  background: var(--gw-surface, #FFFFFF);
+  box-shadow: var(--gw-shadow, 0 6px 18px rgba(16, 24, 40, 0.06));
 }
 
 .cerca-utenti-input {
