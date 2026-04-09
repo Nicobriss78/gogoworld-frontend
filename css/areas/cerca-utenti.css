@@ -260,8 +260,9 @@
 
 .cerca-utenti-btn--primary {
   border-color: transparent;
-  background: var(--gw-accent, #2f80ed);
-  color: #ffffff;
+  background: var(--gw-accent, #3F7C96);
+  color: #FFFFFF;
+  box-shadow: var(--gw-shadow-sm, 0 4px 12px rgba(16, 24, 40, 0.04));
 }
 
 .cerca-utenti-status {
