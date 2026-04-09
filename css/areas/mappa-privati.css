@@ -281,7 +281,8 @@ body.mappa-detail-open {
 
 .mappa-detail-title {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--mappa-accent-hover);
 }
 
 .mappa-detail-close {
