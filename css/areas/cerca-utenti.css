@@ -14,9 +14,9 @@
 .cerca-utenti-shell {
   display: flex;
   flex-direction: column;
-  gap: var(--gw-space-md, 16px);
+  gap: var(--gw-space-lg, 24px);
   min-height: 100%;
-  padding: var(--gw-space-md, 16px);
+  padding: var(--gw-space-lg, 24px) var(--gw-page-pad-x, 16px);
 }
 
 .cerca-utenti-header {
