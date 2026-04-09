@@ -123,6 +123,7 @@
   flex-direction: column;
   gap: var(--gw-space-md, 16px);
   min-height: 0;
+  padding-bottom: var(--gw-space-xl, 32px);
 }
 
 .cerca-utenti-state {
