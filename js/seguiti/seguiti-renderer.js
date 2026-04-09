@@ -294,9 +294,9 @@ function getFallbackImage() {
         </linearGradient>
       </defs>
       <rect width="640" height="360" fill="url(#g)"/>
-      <circle cx="180" cy="120" r="46" fill="#3F7C96" fill-opacity="0.15"/>
-      <rect x="120" y="210" width="400" height="18" rx="9" fill="#3F7C96" fill-opacity="0.16"/>
-      <rect x="160" y="240" width="320" height="14" rx="7" fill="#3F7C96" fill-opacity="0.12"/>
+      <circle cx="180" cy="120" r="46" fill="var(--gw-accent, #3F7C96)" fill-opacity="0.15"/>
+      <rect x="120" y="210" width="400" height="18" rx="9" fill="var(--gw-accent, #3F7C96)" fill-opacity="0.16"/>
+      <rect x="160" y="240" width="320" height="14" rx="7" fill="var(--gw-accent, #3F7C96)" fill-opacity="0.12"/>
     </svg>
   `);
 }
