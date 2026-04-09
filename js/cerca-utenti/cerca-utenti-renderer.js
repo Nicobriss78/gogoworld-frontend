@@ -14,7 +14,7 @@ function buildUserCard(user) {
 
   const meta = [user.city, user.region].filter(Boolean).join(" • ");
   const role = user.role || null;
-  const isAdmin = role === "admin";
+  const isAdmin = String(user.role || "").toLowerCase() === "admin";
 
   let blockedByMe = !!user.blockedByMe;
   const hasBlockedMe = !!user.hasBlockedMe;
