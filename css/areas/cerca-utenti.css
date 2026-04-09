@@ -163,13 +163,17 @@
 .cerca-utenti-card {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: var(--gw-space-sm, 10px);
+  gap: var(--gw-space-md, 16px);
   align-items: start;
   padding: var(--gw-space-md, 16px);
-  border: 1px solid var(--gw-border-soft, #e6eaf0);
-  border-radius: var(--gw-radius-main, 12px);
-  background: var(--gw-bg-card, var(--gw-surface, #ffffff));
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  border: 1px solid var(--gw-border, #E6EAF0);
+  border-radius: var(--gw-radius, 12px);
+  background: var(--gw-card, #FFFFFF);
+  box-shadow: var(--gw-shadow-main, var(--gw-shadow, 0 6px 18px rgba(16, 24, 40, 0.06)));
+  transition:
+    border-color var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease),
+    box-shadow var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease),
+    transform var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease);
 }
 
 .cerca-utenti-avatar,
