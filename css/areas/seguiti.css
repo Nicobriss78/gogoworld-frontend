@@ -50,7 +50,7 @@ body.seguiti-page {
 
   --seguiti-scrollbar-h: 10px;
   --seguiti-scrollbar-track: rgba(28, 36, 48, 0.08);
-  --seguiti-scrollbar-thumb: rgba(63, 124, 150, 0.42);
+  --seguiti-scrollbar-thumb: color-mix(in srgb, var(--gw-accent, #3F7C96) 42%, transparent);
 /* bridge per shared shell */
   --home-accent: var(--seguiti-accent);
   --home-accent-hover: var(--seguiti-accent-hover);
