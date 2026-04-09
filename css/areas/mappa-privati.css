@@ -369,8 +369,9 @@ body.mappa-detail-open {
 }
 
 .mappa-status-badge--future {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: var(--mappa-accent-soft);
+  color: var(--mappa-accent-hover);
+  border: 1px solid var(--mappa-accent-border);
 }
 
 /* ===== CHAT ===== */
