@@ -391,7 +391,8 @@ body.mappa-detail-open {
   justify-content: space-between;
   align-items: center;
   padding: 10px 12px;
-  border-bottom: 1px solid var(--mappa-border);
+  border-bottom: 1px solid var(--mappa-accent-border);
+  background: var(--mappa-private-surface-soft, var(--mappa-surface));
 }
 
 .mappa-chat-heading {
