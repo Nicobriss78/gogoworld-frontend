@@ -23,7 +23,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--gw-space-sm, 10px);
+  gap: var(--gw-space-md, 16px);
 }
 
 .cerca-utenti-header__text {
