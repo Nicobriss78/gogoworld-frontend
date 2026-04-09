@@ -152,7 +152,7 @@
 
 .shared-menu-item__label {
   display: block;
-  color: #1F4E5F;
+  color: var(--gw-accent, #3F7C96);
   font-family: Arial, sans-serif;
   font-size: 19px;
   line-height: 1.2;
