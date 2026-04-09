@@ -106,9 +106,16 @@
     box-shadow var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease);
 }
 
+.cerca-utenti-input:hover {
+  border-color: var(--gw-accent-border, #C2D6DF);
+  background: var(--gw-surface, #FFFFFF);
+}
+
 .cerca-utenti-input:focus-visible {
-  outline: 2px solid var(--gw-accent, #2f80ed);
+  outline: 2px solid var(--gw-accent, #3F7C96);
   outline-offset: 2px;
+  border-color: var(--gw-accent-border, #C2D6DF);
+  background: var(--gw-surface, #FFFFFF);
 }
 
 .cerca-utenti-content {
