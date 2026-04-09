@@ -93,13 +93,17 @@
   width: 100%;
   min-height: 48px;
   padding: 0 14px;
-  border: 1px solid var(--gw-border-soft, #e6eaf0);
-  border-radius: var(--gw-radius-main, 12px);
-  background: var(--gw-bg-card, var(--gw-surface, #ffffff));
-  color: var(--gw-text-primary, var(--gw-text, #1c2430));
+  border: 1px solid transparent;
+  border-radius: var(--gw-radius, 12px);
+  background: var(--gw-bg, #F4F6F8);
+  color: var(--gw-text, #1C2430);
   font: inherit;
   font-size: 1rem;
   box-sizing: border-box;
+  transition:
+    border-color var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease),
+    background-color var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease),
+    box-shadow var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease);
 }
 
 .cerca-utenti-input:focus-visible {
