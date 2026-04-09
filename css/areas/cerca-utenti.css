@@ -264,7 +264,22 @@
   color: #FFFFFF;
   box-shadow: var(--gw-shadow-sm, 0 4px 12px rgba(16, 24, 40, 0.04));
 }
+.cerca-utenti-btn:hover,
+.cerca-utenti-btn:focus-visible {
+  border-color: var(--gw-accent-border, #C2D6DF);
+  background: var(--gw-accent-soft, #E6F0F4);
+}
 
+.cerca-utenti-btn--primary:hover,
+.cerca-utenti-btn--primary:focus-visible {
+  background: var(--gw-accent-hover, #35697F);
+  box-shadow: var(--gw-shadow, 0 6px 18px rgba(16, 24, 40, 0.06));
+}
+
+.cerca-utenti-btn:focus-visible {
+  outline: 2px solid var(--gw-accent, #3F7C96);
+  outline-offset: 2px;
+}
 .cerca-utenti-status {
   font-size: 0.9rem;
   line-height: 1.4;
