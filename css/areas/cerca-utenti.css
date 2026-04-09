@@ -243,14 +243,19 @@
 .cerca-utenti-btn {
   min-height: 40px;
   padding: 0 12px;
-  border: 1px solid var(--gw-border-soft, #e6eaf0);
+  border: 1px solid var(--gw-border, #E6EAF0);
   border-radius: var(--gw-radius-btn, 10px);
-  background: var(--gw-bg-card, var(--gw-surface, #ffffff));
+  background: transparent;
   font: inherit;
   font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--gw-text-primary, var(--gw-text, #1c2430));
+  font-weight: var(--gw-font-weight-medium, 600);
+  color: var(--gw-text, #1C2430);
   cursor: pointer;
+  transition:
+    border-color var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease),
+    background-color var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease),
+    color var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease),
+    box-shadow var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease);
 }
 
 .cerca-utenti-btn--primary {
