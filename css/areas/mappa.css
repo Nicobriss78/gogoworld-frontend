@@ -99,9 +99,9 @@ body.mappa-page button {
   width: 100%;
   margin: 0;
   padding:
-  var(--mappa-space-md)
-  var(--mappa-space-md)
-  calc(var(--mappa-space-md) + 6px);
+    var(--mappa-space-md)
+    var(--mappa-space-md)
+    calc(var(--mappa-bottomnav-h) + var(--mappa-space-lg));
   display: flex;
   flex-direction: column;
   gap: 12px;
