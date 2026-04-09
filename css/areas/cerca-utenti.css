@@ -175,7 +175,12 @@
     box-shadow var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease),
     transform var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease);
 }
-
+.cerca-utenti-card:hover,
+.cerca-utenti-card:focus-within {
+  border-color: var(--gw-accent-border, #C2D6DF);
+  box-shadow: var(--gw-shadow-md, 0 10px 24px rgba(16, 24, 40, 0.10));
+  transform: translateY(-1px);
+}
 .cerca-utenti-avatar,
 .cerca-utenti-avatar-placeholder {
   width: 48px;
