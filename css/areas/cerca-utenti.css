@@ -6,6 +6,9 @@
 
 .cerca-utenti-main {
   min-height: 100%;
+  width: 100%;
+  max-width: var(--gw-page-max, 640px);
+  margin: 0 auto;
 }
 
 .cerca-utenti-shell {
