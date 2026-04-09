@@ -275,6 +275,8 @@ body.mappa-detail-open {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--mappa-accent-border);
 }
 
 .mappa-detail-title {
