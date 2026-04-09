@@ -10,11 +10,11 @@
      ===================================================== */
 
   /* Accent principale (nuova scelta) */
-  --gw-accent: #3F7C96;
-  --gw-accent-hover: #35697F;
-  --gw-accent-soft: #E6F0F4;
-  --gw-accent-border: #C2D6DF;
-  --gw-accent-focus: #2E5C6F;
+  --gw-accent: #1877F2;
+  --gw-accent-hover: #166FE5;
+  --gw-accent-soft: #EAF3FF;
+  --gw-accent-border: #B7D3FB;
+  --gw-accent-focus: #0F5FCC;
 
   /* Colore danger / identitario rosso */
   --gw-danger: #B52A32;
