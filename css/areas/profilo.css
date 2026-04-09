@@ -544,7 +544,7 @@ body.profilo-v2-page .gw-iconbtn {
 .profilo-field textarea:focus,
 .profilo-field select:focus {
   border-color: var(--profilo-accent);
-  box-shadow: 0 0 0 3px rgba(63, 124, 150, 0.14);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gw-accent, #3F7C96) 14%, transparent);
 }
 
 .profilo-avatar-preview-wrap {
