@@ -128,12 +128,13 @@
 
 .cerca-utenti-state {
   padding: var(--gw-space-md, 16px);
-  border: 1px solid var(--gw-border-soft, #e6eaf0);
-  border-radius: var(--gw-radius-main, 12px);
-  background: var(--gw-surface-soft, #eef3f9);
+  border: 1px solid var(--gw-border, #E6EAF0);
+  border-radius: var(--gw-radius, 12px);
+  background: var(--gw-surface, #FFFFFF);
+  box-shadow: var(--gw-shadow-sm, 0 4px 12px rgba(16, 24, 40, 0.04));
   font-size: 0.95rem;
   line-height: 1.45;
-  color: var(--gw-text-secondary, #5a6572);
+  color: var(--gw-text-secondary, #5A6572);
 }
 
 .cerca-utenti-state[hidden] {
