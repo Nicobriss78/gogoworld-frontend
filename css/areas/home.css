@@ -59,8 +59,8 @@ body.home-page {
 
   --home-scrollbar-h: 10px;
   --home-scrollbar-track: rgba(28, 36, 48, 0.08);
-  --home-scrollbar-thumb: rgba(63, 124, 150, 0.42);
-  --home-scrollbar-thumb-active: rgba(63, 124, 150, 0.60);
+  --home-scrollbar-thumb: color-mix(in srgb, var(--gw-accent, #3F7C96) 42%, transparent);
+  --home-scrollbar-thumb-active: color-mix(in srgb, var(--gw-accent, #3F7C96) 60%, transparent);
 
   min-height: 100dvh;
   background: var(--home-bg);
