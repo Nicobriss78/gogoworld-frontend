@@ -69,8 +69,14 @@
     transform var(--gw-motion-base, 180ms) var(--gw-ease-standard, ease);
 }
 
+.cerca-utenti-back:hover,
 .cerca-utenti-back:focus-visible {
-  outline: 2px solid var(--gw-accent, #2f80ed);
+  border-color: var(--gw-accent-border, #C2D6DF);
+  box-shadow: var(--gw-shadow, 0 6px 18px rgba(16, 24, 40, 0.06));
+}
+
+.cerca-utenti-back:focus-visible {
+  outline: 2px solid var(--gw-accent, #3F7C96);
   outline-offset: 2px;
 }
 
