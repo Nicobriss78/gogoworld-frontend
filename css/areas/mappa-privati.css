@@ -5,12 +5,11 @@
 /* ===== ROOT LOCALE ===== */
 
 .mappa-page {
-  --mappa-accent: var(--gw-accent, #3F7C96);
-  --mappa-accent-hover: var(--gw-accent-hover, #35697F);
-  --mappa-accent-soft: var(--gw-accent-soft, #E6F0F4);
-  --mappa-accent-border: var(--gw-accent-border, #C2D6DF);
+  --mappa-accent: var(--gw-accent, #1877F2);
+  --mappa-accent-hover: var(--gw-accent-hover, #166FE5);
+  --mappa-accent-soft: var(--gw-accent-soft, #EAF3FF);
+  --mappa-accent-border: var(--gw-accent-border, #B7D3FB);
   --mappa-danger: var(--gw-danger, #B52A32);
-  --mappa-private-accent: #7B1E3A;
 
   --mappa-bg: var(--gw-bg, #F4F6F8);
   --mappa-surface: var(--gw-surface, #FFFFFF);
@@ -33,7 +32,7 @@
   --mappa-space-lg: 24px;
   --mappa-space-xl: 32px;
 
---mappa-topbar-h: 132px;
+  --mappa-topbar-h: 132px;
   --mappa-bottomnav-h: 86px;
   --mappa-page-pad-x: 16px;
   --mappa-page-pad-y: 16px;
@@ -56,6 +55,24 @@
   --home-space-md: var(--mappa-space-md);
   --home-page-pad-x: var(--mappa-page-pad-x);
   --home-bottomnav-h: var(--mappa-bottomnav-h);
+}
+
+.mappa-page--private {
+  --mappa-private-accent: #8E3B5D;
+  --mappa-private-accent-hover: #742F4C;
+  --mappa-private-accent-soft: #F7EAF0;
+  --mappa-private-accent-border: #E6C7D3;
+  --mappa-private-surface-soft: #FCF7F9;
+
+  --mappa-accent: var(--mappa-private-accent);
+  --mappa-accent-hover: var(--mappa-private-accent-hover);
+  --mappa-accent-soft: var(--mappa-private-accent-soft);
+  --mappa-accent-border: var(--mappa-private-accent-border);
+
+  --home-accent: var(--mappa-accent);
+  --home-accent-hover: var(--mappa-accent-hover);
+  --home-accent-soft: var(--mappa-accent-soft);
+  --home-accent-border: var(--mappa-accent-border);
 }
 
 /* ===== SHELL ===== */
