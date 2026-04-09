@@ -42,6 +42,7 @@ function formatDateTimeRange(event) {
   const start =
     event?.startAt ||
     event?.startDate ||
+    event?.dateStart ||
     event?.date ||
     event?.startsAt ||
     "";
@@ -49,6 +50,7 @@ function formatDateTimeRange(event) {
   const end =
     event?.endAt ||
     event?.endDate ||
+    event?.dateEnd ||
     event?.endsAt ||
     "";
 
