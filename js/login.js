@@ -118,24 +118,26 @@ btnRegister?.addEventListener("click", (e) => {
       return;
       }
       // Admin: vai direttamente al pannello admin
+      // Admin: vai direttamente al pannello admin
       const role = (me?.role || "").toLowerCase();
       if (role === "admin") { window.location.href = "admin.html"; return; }
-      // Se non c'è un desiredRole già scelto prima (homepage 0),
-      // imposta automaticamente il default in base a canOrganize
-      let redirectRole = roleRequested;
-      if (!hadDesired) {
-        const defaultRole = me?.canOrganize ? "organizer" : "participant";
-        sessionStorage.setItem("desiredRole", defaultRole);
-        // (RIMOSSO) Allinea il BE al default dedotto
-        // await apiPost("/users/session-role", { role: defaultRole }, res.token);
-        redirectRole = defaultRole;
-      }
 
-    // Se vogliamo entrare in organizer ma l'utente non è ancora abilitato, abilitalo adesso (Opzione B)
-if (redirectRole === "organizer" && me?.canOrganize !== true) {
-  showAlert("Non sei abilitato come organizzatore. Accedi come partecipante.", "info", { autoHideMs: 4000 });
-  redirectRole = "participant";
-}
+      // Il ruolo di ingresso dipende dalla scelta di sessione fatta in index.
+      // Se manca, il default è sempre Partecipante.
+      let redirectRole = hadDesired ? roleRequested : "participant";
+      try { sessionStorage.setItem("desiredRole", redirectRole); } catch {}
+
+      // Se l'utente prova a entrare come organizzatore ma non è abilitato,
+      // mostriamo un messaggio chiaro e lo riportiamo nell'area Partecipante.
+      if (redirectRole === "organizer" && me?.canOrganize !== true) {
+        showAlert(
+          "Al momento non sei abilitato come organizzatore. Puoi accedere come partecipante. Se vuoi organizzare un evento pubblico o privato, contatta un amministratore per richiedere l'abilitazione.",
+          "info",
+          { autoHideMs: 6500 }
+        );
+        redirectRole = "participant";
+        try { sessionStorage.setItem("desiredRole", "participant"); } catch {}
+      }
 
       // Redirect finale
       if (redirectRole === "organizer") {
