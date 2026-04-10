@@ -59,6 +59,14 @@ function createDomRefs(root = document) {
 export async function initHome(root = document) {
   const dom = createDomRefs(root);
 
+  try {
+    const postLoginNotice = sessionStorage.getItem("postLoginNotice");
+    if (postLoginNotice) {
+      sessionStorage.removeItem("postLoginNotice");
+      gwNotify(postLoginNotice, "info", { autoHideMs: 7000 });
+    }
+  } catch {}
+
   renderLoading(dom);
   bindRailModeDelegation(dom);
   bindCardActions(dom);
