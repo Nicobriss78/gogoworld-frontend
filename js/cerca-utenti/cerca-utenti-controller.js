@@ -35,7 +35,7 @@ function getSafeReturnUrl() {
     }
   } catch (_) {}
 
-  return "/pages/seguiti-utenti-v2.html";
+  return "/pages/home-v2.html";
 }
 
 async function runSearch(query) {
