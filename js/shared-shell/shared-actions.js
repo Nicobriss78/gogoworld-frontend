@@ -1,5 +1,7 @@
 import { getActionConfig } from "./shared-action-registry.js";
 import { setState } from "./shared-state.js";
+import { apiGet } from "../api.js";
+import { gwNotify } from "../utils.js";
 
 function hasCapability(capabilities = [], requiredCapability) {
   if (!requiredCapability) return true;
