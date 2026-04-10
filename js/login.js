@@ -118,7 +118,6 @@ btnRegister?.addEventListener("click", (e) => {
       return;
       }
       // Admin: vai direttamente al pannello admin
-      // Admin: vai direttamente al pannello admin
       const role = (me?.role || "").toLowerCase();
       if (role === "admin") { window.location.href = "admin.html"; return; }
 
