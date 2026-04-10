@@ -42,11 +42,47 @@ async function executePlaceholder(actionId) {
   }
 
   if (actionId === "change-role") {
-    alert("Cambio ruolo");
-    return {
-      status: "executed",
-      actionId,
-    };
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      gwNotify("Sessione non valida. Effettua di nuovo il login.", "error", { autoHideMs: 4000 });
+      window.location.href = "/login.html";
+      return {
+        status: "executed",
+        actionId,
+      };
+    }
+
+    try {
+      const me = await apiGet("/users/me", token);
+
+      if (me?.canOrganize === true) {
+        try { sessionStorage.setItem("desiredRole", "organizer"); } catch {}
+        window.location.href = "/organizzatore.html";
+        return {
+          status: "executed",
+          actionId,
+        };
+      }
+
+      try { sessionStorage.setItem("desiredRole", "participant"); } catch {}
+      gwNotify(
+        "Al momento non sei abilitato come organizzatore. Se vuoi organizzare un evento pubblico o privato, contatta un amministratore per richiedere l'abilitazione.",
+        "info",
+        { autoHideMs: 6500 }
+      );
+
+      return {
+        status: "executed",
+        actionId,
+      };
+    } catch (err) {
+      gwNotify("Impossibile verificare i permessi. Riprova tra poco.", "error", { autoHideMs: 4000 });
+      return {
+        status: "executed",
+        actionId,
+      };
+    }
   }
 
   return {
