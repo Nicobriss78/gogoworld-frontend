@@ -202,7 +202,7 @@ async function init() {
       return;
     }
     // fallback in base al ruolo memorizzato (se disponibile)
-    let roleHref = "../partecipante.html";
+    let roleHref = "/pages/home-v2.html";
     try {
       const role = (localStorage.getItem("role") || "").toLowerCase();
       if (role.includes("organ")) roleHref = "../organizzatore.html";
