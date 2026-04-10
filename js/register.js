@@ -51,10 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("password")?.value?.trim();
     const role = document.getElementById("role")?.value?.trim() || "participant"; // participant|organizer
 
-    // PATCH: memorizza anche la scelta ruolo per il login successivo
-    if (role === "organizer" || role === "participant") {
-      try { sessionStorage.setItem("desiredRole", role); } catch {}
-    }
+    // Il ruolo scelto in registrazione è solo statistico:
+    // non deve impostare il ruolo di sessione per il login successivo.
 
     if (!email || !password) {
       showAlert("Inserisci email e password.", "error", { autoHideMs: 3500 });
