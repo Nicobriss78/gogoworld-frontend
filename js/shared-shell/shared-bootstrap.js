@@ -248,7 +248,7 @@ export function initSharedShell() {
       profile: "/pages/profilo-v2.html",
       "following-users": "/pages/seguiti-utenti-v2.html",
       messages: "/pages/messages-v2.html",
-      "user-search": "/pages/cerca-utenti.html",
+      "user-search": "/pages/cerca-utenti-v2.html",
     };
     const url = map[viewId];
 
