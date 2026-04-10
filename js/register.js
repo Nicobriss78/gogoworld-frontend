@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showAlert("Registrazione avvenuta! Accedi per completare il profilo...", "success", { autoHideMs: 2000 });
       try { form.reset(); } catch {}
       if (submitBtn) submitBtn.disabled = true;
-      try { sessionStorage.setItem("postLoginRedirect", "/profile.html"); } catch {}
+      try { sessionStorage.setItem("postLoginRedirect", "/pages/home-v2.html"); } catch {}
 
       setTimeout(() => {
         window.location.href = "../login.html";
