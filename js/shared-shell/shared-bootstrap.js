@@ -156,7 +156,7 @@ export function initSharedShell() {
       }
 
       if (event.action === "search") {
-        window.location.href = "/pages/cerca-utenti.html";
+        window.location.href = "/pages/cerca-utenti-v2.html";
         return;
       }
 
