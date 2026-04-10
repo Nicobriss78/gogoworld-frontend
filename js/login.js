@@ -130,11 +130,13 @@ btnRegister?.addEventListener("click", (e) => {
       // Se l'utente prova a entrare come organizzatore ma non è abilitato,
       // mostriamo un messaggio chiaro e lo riportiamo nell'area Partecipante.
       if (redirectRole === "organizer" && me?.canOrganize !== true) {
-        showAlert(
-          "Al momento non sei abilitato come organizzatore. Puoi accedere come partecipante. Se vuoi organizzare un evento pubblico o privato, contatta un amministratore per richiedere l'abilitazione.",
-          "info",
-          { autoHideMs: 6500 }
-        );
+        try {
+          sessionStorage.setItem(
+            "postLoginNotice",
+            "Al momento non sei abilitato come organizzatore. Puoi accedere come partecipante. Se vuoi organizzare un evento pubblico o privato, contatta un amministratore per richiedere l'abilitazione."
+          );
+        } catch {}
+
         redirectRole = "participant";
         try { sessionStorage.setItem("desiredRole", "participant"); } catch {}
       }
