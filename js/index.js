@@ -27,10 +27,8 @@ try {
     ? "organizzatore.html"
     : "/pages/home-v2.html";
 } catch (e) {
-  const role = (sessionStorage.getItem("desiredRole") || "participant");
-  window.location.href = role === "organizer"
-    ? "organizzatore.html"
-    : "/pages/home-v2.html";
+  try { sessionStorage.setItem("desiredRole", "participant"); } catch {}
+  window.location.href = "/pages/home-v2.html";
 }
 return;
 
