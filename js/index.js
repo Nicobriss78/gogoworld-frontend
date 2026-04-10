@@ -16,8 +16,14 @@ try {
     return;
   }
 
-  const role = (sessionStorage.getItem("desiredRole") || "participant");
-  window.location.href = role === "organizer"
+  const requestedRole = sessionStorage.getItem("desiredRole") || "participant";
+  const safeRole = requestedRole === "organizer" && me?.canOrganize === true
+    ? "organizer"
+    : "participant";
+
+  try { sessionStorage.setItem("desiredRole", safeRole); } catch {}
+
+  window.location.href = safeRole === "organizer"
     ? "organizzatore.html"
     : "/pages/home-v2.html";
 } catch (e) {
