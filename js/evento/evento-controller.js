@@ -318,8 +318,11 @@ async function bootstrapEventoPage() {
   renderer.render(state);
 
   await loadEventoData(state, renderer);
-}
 
+  if (state.event && !state.notFound && !state.error) {
+    await loadEventoReviews(state, renderer);
+  }
+}
 bootstrapEventoPage().catch(() => {
   /* bootstrap error already reflected in UI state where possible */
 });
