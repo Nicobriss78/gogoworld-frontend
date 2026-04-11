@@ -104,7 +104,17 @@ function activityMeta(activity) {
 
   return "";
 }
+function getActivityEventId(activity) {
+  const raw = activity?.event;
+  if (!raw) return "";
 
+  if (typeof raw === "string") return raw.trim();
+  if (typeof raw === "object") {
+    return String(raw._id || raw.id || "").trim();
+  }
+
+  return "";
+}
 export function renderGlobalState(message, variant = "info") {
   const stateEl = $("userPublicState");
   if (!stateEl) return;
