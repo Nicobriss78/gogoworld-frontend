@@ -1,242 +1,378 @@
 /**
  * user-public-renderer.js
- * Gestisce esclusivamente il rendering della UI per la pagina user-public.
+ * Rendering puro della pagina user-public.
  */
 
-// ----------------------
-// Helper DOM
-// ----------------------
 const $ = (id) => document.getElementById(id);
 
-// ----------------------
-// Utility
-// ----------------------
-
 function formatDate(dateString) {
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('it-IT', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
-  } catch {
-    return '';
-  }
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleString("it-IT", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
-function getInitials(name = '') {
-  return name
-    .split(' ')
-    .map((n) => n.charAt(0))
-    .join('')
-    .substring(0, 2)
-    .toUpperCase();
+function getInitials(name = "") {
+  return String(name)
+    .trim()
+    .split(/\s+/)
+    .map((part) => part.charAt(0))
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "U";
 }
 
 function getRoleLabel(role) {
-  if (role === 'organizer') return 'Organizzatore';
-  if (role === 'admin') return 'Admin';
-  return '';
+  if (role === "organizer") return "Organizzatore";
+  if (role === "admin") return "Amministratore";
+  return "";
 }
 
-function getActivityLabel(type) {
-  const labels = {
-    created_event: 'Evento creato',
-    joined_event: 'Partecipa a un evento',
-    attended_event: 'Ha partecipato a un evento',
-    will_join_event: 'Parteciperà a un evento',
-    review_event: 'Ha recensito un evento',
-    level_up: 'Avanzamento di livello'
-  };
-  return labels[type] || 'Attività';
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
-// ----------------------
-// Stato globale pagina
-// ----------------------
+function activityTypeLabel(type) {
+  switch (type) {
+    case "created_event":
+      return "Evento creato";
+    case "joined_event":
+      return "Partecipa";
+    case "will_join_event":
+      return "Parteciperà";
+    case "attended_event":
+      return "Ha partecipato";
+    case "review_event":
+      return "Recensione";
+    case "level_up":
+      return "Livello";
+    default:
+      return "Attività";
+  }
+}
 
-export function renderGlobalState(message, type = 'info') {
-  const stateEl = $('userPublicState');
+function activityTitle(activity) {
+  const payload = activity?.payload || {};
+  const title = payload?.title || "evento";
+
+  switch (activity?.type) {
+    case "created_event":
+      return `Ha creato un nuovo evento: ${title}`;
+    case "joined_event":
+      return `Partecipa a: ${title}`;
+    case "will_join_event":
+      return `Parteciperà a: ${title}`;
+    case "attended_event":
+      return `Ha partecipato a: ${title}`;
+    case "review_event":
+      return `Ha scritto una recensione${payload?.rating ? ` (${payload.rating}★)` : ""}`;
+    case "level_up":
+      return `Ha raggiunto il livello ${payload?.to ?? ""}`.trim();
+    default:
+      return "Attività";
+  }
+}
+
+function activityMeta(activity) {
+  const payload = activity?.payload || {};
+
+  if (activity?.type === "review_event" && payload?.title) {
+    return `Evento: ${payload.title}`;
+  }
+
+  if (
+    (activity?.type === "created_event" ||
+      activity?.type === "joined_event" ||
+      activity?.type === "will_join_event" ||
+      activity?.type === "attended_event") &&
+    payload?.title
+  ) {
+    return `Evento: ${payload.title}`;
+  }
+
+  return "";
+}
+
+export function renderGlobalState(message, variant = "info") {
+  const stateEl = $("userPublicState");
   if (!stateEl) return;
 
-  stateEl.textContent = message;
-  stateEl.className = `user-public-state user-public-state--${type}`;
+  stateEl.textContent = String(message || "");
+  stateEl.className = `user-public-state user-public-state--${variant}`;
   stateEl.hidden = false;
 }
 
-// ----------------------
-// Rendering Profilo
-// ----------------------
+export function hideGlobalState() {
+  const stateEl = $("userPublicState");
+  if (!stateEl) return;
 
-export function renderProfile(profileData, isSelf) {
-  const {
-    name,
-    role,
-    profile = {},
-    followersCount = 0,
-    followingCount = 0,
-    isFollowing = false,
-    canReceiveMessages = true
-  } = profileData;
+  stateEl.hidden = true;
+  stateEl.textContent = "";
+}
 
-  const avatar = $('userPublicAvatar');
-  const avatarFallback = $('userPublicAvatarFallback');
-  const nameEl = $('userPublicName');
-  const roleEl = $('userPublicRole');
-  const metaEl = $('userPublicMeta');
-  const bioEl = $('userPublicBio');
-  const followersEl = $('userPublicFollowersCount');
-  const followingEl = $('userPublicFollowingCount');
-  const followBtn = $('userPublicFollowBtn');
-  const messageBtn = $('userPublicMessageBtn');
-  const followHint = $('userPublicFollowHint');
-  const hero = $('userPublicHero');
-  const bioCard = $('userPublicBioCard');
-  const globalState = $('userPublicState');
+export function renderProfile(profile, { isSelf = false } = {}) {
+  const heroEl = $("userPublicHero");
+  const bioCardEl = $("userPublicBioCard");
 
-  if (globalState) globalState.hidden = true;
-  if (hero) hero.hidden = false;
-  if (bioCard) bioCard.hidden = false;
+  const titleEl = $("userPublicTitle");
+  const headerMetaEl = $("userPublicHeaderMeta");
 
-  // Nome
-  nameEl.textContent = name || 'Utente';
+  const avatarEl = $("userPublicAvatar");
+  const avatarFallbackEl = $("userPublicAvatarFallback");
 
-  // Avatar
-  if (profile.avatarUrl) {
-    avatar.src = profile.avatarUrl;
-    avatar.hidden = false;
-    avatarFallback.hidden = true;
-  } else {
-    avatar.hidden = true;
-    avatarFallback.textContent = getInitials(name);
-    avatarFallback.hidden = false;
+  const nameEl = $("userPublicName");
+  const roleEl = $("userPublicRole");
+  const metaEl = $("userPublicMeta");
+  const bioEl = $("userPublicBio");
+
+  const followersEl = $("userPublicFollowersCount");
+  const followingEl = $("userPublicFollowingCount");
+
+  const followBtn = $("userPublicFollowBtn");
+  const messageBtn = $("userPublicMessageBtn");
+  const followHint = $("userPublicFollowHint");
+
+  if (!profile || typeof profile !== "object") {
+    renderGlobalState("Profilo non disponibile.", "error");
+    return;
   }
 
-  // Ruolo
-  const roleLabel = getRoleLabel(role);
-  if (roleLabel) {
-    roleEl.textContent = roleLabel;
-    roleEl.hidden = false;
-  } else {
-    roleEl.hidden = true;
-  }
+  hideGlobalState();
 
-  // Località
-  const location = [profile.city, profile.region]
+  if (heroEl) heroEl.hidden = false;
+  if (bioCardEl) bioCardEl.hidden = false;
+
+  const name = profile.name || "Utente";
+  const roleLabel = getRoleLabel(profile.role);
+
+  if (titleEl) titleEl.textContent = name;
+  document.title = `${name} • GoGoWorld.life`;
+
+  if (nameEl) nameEl.textContent = name;
+
+  const location = [profile.profile?.city, profile.profile?.region]
     .filter(Boolean)
-    .join(', ');
-  if (location) {
+    .join(", ");
+
+  if (metaEl) {
     metaEl.textContent = location;
-    metaEl.hidden = false;
-  } else {
-    metaEl.hidden = true;
+    metaEl.hidden = !location;
   }
 
-  // Bio
-  bioEl.textContent = profile.bio || 'Nessuna bio disponibile.';
-
-  // Statistiche
-  followersEl.textContent = followersCount;
-  followingEl.textContent = followingCount;
-
-  // Follow button
-  if (!isSelf) {
-    followBtn.hidden = false;
-    followBtn.textContent = isFollowing ? 'Smetti di seguire' : 'Segui';
-
-    followHint.textContent = isFollowing
-      ? 'Stai seguendo questo utente.'
-      : 'Segui questo utente per restare aggiornato sulle sue attività.';
-    followHint.hidden = false;
-  } else {
-    followBtn.hidden = true;
-    followHint.hidden = true;
+  if (headerMetaEl) {
+    const headerBits = [location, roleLabel].filter(Boolean).join(" • ");
+    headerMetaEl.textContent = headerBits;
+    headerMetaEl.hidden = !headerBits;
   }
 
-  // Messaggia
-  if (!isSelf && canReceiveMessages) {
-    messageBtn.hidden = false;
-  } else {
-    messageBtn.hidden = true;
+  if (roleEl) {
+    roleEl.textContent = roleLabel;
+    roleEl.hidden = !roleLabel;
+  }
+
+  if (bioEl) {
+    bioEl.textContent = profile.profile?.bio || "Nessuna bio disponibile.";
+  }
+
+  if (followersEl) followersEl.textContent = String(profile.followersCount ?? 0);
+  if (followingEl) followingEl.textContent = String(profile.followingCount ?? 0);
+
+  if (avatarEl && avatarFallbackEl) {
+    const avatarUrl = profile.profile?.avatarUrl || "";
+
+    if (avatarUrl) {
+      avatarEl.src = avatarUrl;
+      avatarEl.alt = `Avatar di ${name}`;
+      avatarEl.hidden = false;
+      avatarFallbackEl.hidden = true;
+
+      avatarEl.onerror = () => {
+        avatarEl.hidden = true;
+        avatarFallbackEl.textContent = getInitials(name);
+        avatarFallbackEl.hidden = false;
+      };
+    } else {
+      avatarEl.hidden = true;
+      avatarFallbackEl.textContent = getInitials(name);
+      avatarFallbackEl.hidden = false;
+    }
+  }
+
+  const isFollowing = !!profile.isFollowing;
+  const canReceiveMessages = !!profile.canReceiveMessages;
+
+  if (followBtn) {
+    if (isSelf) {
+      followBtn.hidden = true;
+    } else {
+      followBtn.hidden = false;
+      followBtn.dataset.following = isFollowing ? "1" : "0";
+      followBtn.textContent = isFollowing ? "Smetti di seguire" : "Segui";
+    }
+  }
+
+  if (followHint) {
+    if (isSelf) {
+      followHint.hidden = true;
+      followHint.textContent = "";
+    } else {
+      followHint.hidden = false;
+      followHint.textContent = isFollowing
+        ? "Stai seguendo questo utente."
+        : "Segui questo utente per restare aggiornato sulle sue attività.";
+    }
+  }
+
+  if (messageBtn) {
+    messageBtn.hidden = isSelf || !canReceiveMessages;
   }
 }
 
-// ----------------------
-// Rendering Attività
-// ----------------------
+export function setFollowUi({
+  isFollowing,
+  followersCount,
+}) {
+  const followBtn = $("userPublicFollowBtn");
+  const followersEl = $("userPublicFollowersCount");
+  const followHint = $("userPublicFollowHint");
 
-export function renderActivityList(activities = []) {
-  const listEl = $('userPublicActivityList');
-  const emptyEl = $('userPublicActivityEmpty');
-  const privacyEl = $('userPublicActivityPrivacy');
-  const stateEl = $('userPublicActivityState');
-  const cardEl = $('userPublicActivityCard');
+  if (followBtn) {
+    followBtn.dataset.following = isFollowing ? "1" : "0";
+    followBtn.textContent = isFollowing ? "Smetti di seguire" : "Segui";
+  }
 
+  if (followersEl && Number.isFinite(followersCount)) {
+    followersEl.textContent = String(followersCount);
+  }
+
+  if (followHint) {
+    followHint.hidden = false;
+    followHint.textContent = isFollowing
+      ? "Stai seguendo questo utente."
+      : "Segui questo utente per restare aggiornato sulle sue attività.";
+  }
+}
+
+export function renderActivityLoading() {
+  const cardEl = $("userPublicActivityCard");
+  const stateEl = $("userPublicActivityState");
+  const privacyEl = $("userPublicActivityPrivacy");
+  const emptyEl = $("userPublicActivityEmpty");
+  const listEl = $("userPublicActivityList");
+
+  if (cardEl) cardEl.hidden = false;
+  if (stateEl) {
+    stateEl.hidden = false;
+    stateEl.textContent = "Caricamento attività...";
+  }
+  if (privacyEl) privacyEl.hidden = true;
+  if (emptyEl) emptyEl.hidden = true;
+  if (listEl) {
+    listEl.hidden = true;
+    listEl.innerHTML = "";
+  }
+}
+
+export function renderActivityPrivate({ isSelf = false } = {}) {
+  const cardEl = $("userPublicActivityCard");
+  const stateEl = $("userPublicActivityState");
+  const privacyEl = $("userPublicActivityPrivacy");
+  const emptyEl = $("userPublicActivityEmpty");
+  const listEl = $("userPublicActivityList");
+
+  if (cardEl) cardEl.hidden = false;
+  if (stateEl) stateEl.hidden = true;
+  if (emptyEl) emptyEl.hidden = true;
+  if (listEl) {
+    listEl.hidden = true;
+    listEl.innerHTML = "";
+  }
+
+  if (privacyEl) {
+    privacyEl.hidden = false;
+    privacyEl.textContent = isSelf
+      ? "La tua bacheca attività non è disponibile in questo momento."
+      : "Questa bacheca è visibile solo ai follower.";
+  }
+}
+
+export function renderActivityEmpty({ isSelf = false } = {}) {
+  const cardEl = $("userPublicActivityCard");
+  const stateEl = $("userPublicActivityState");
+  const privacyEl = $("userPublicActivityPrivacy");
+  const emptyEl = $("userPublicActivityEmpty");
+  const listEl = $("userPublicActivityList");
+
+  if (cardEl) cardEl.hidden = false;
   if (stateEl) stateEl.hidden = true;
   if (privacyEl) privacyEl.hidden = true;
-  if (cardEl) cardEl.hidden = false;
 
-  listEl.innerHTML = '';
+  if (listEl) {
+    listEl.hidden = true;
+    listEl.innerHTML = "";
+  }
 
-  if (!activities.length) {
+  if (emptyEl) {
     emptyEl.hidden = false;
+    emptyEl.textContent = isSelf
+      ? "Ancora nessuna attività registrata sulla tua bacheca."
+      : "Nessuna attività da mostrare.";
+  }
+}
+
+export function renderActivityList(items = []) {
+  const cardEl = $("userPublicActivityCard");
+  const stateEl = $("userPublicActivityState");
+  const privacyEl = $("userPublicActivityPrivacy");
+  const emptyEl = $("userPublicActivityEmpty");
+  const listEl = $("userPublicActivityList");
+
+  if (cardEl) cardEl.hidden = false;
+  if (stateEl) stateEl.hidden = true;
+  if (privacyEl) privacyEl.hidden = true;
+  if (emptyEl) emptyEl.hidden = true;
+
+  if (!listEl) return;
+
+  listEl.innerHTML = "";
+
+  if (!Array.isArray(items) || items.length === 0) {
     listEl.hidden = true;
     return;
   }
 
-  emptyEl.hidden = true;
   listEl.hidden = false;
 
-  activities.forEach((activity) => {
-    const li = document.createElement('li');
-    li.className = 'user-public-activity-item';
+  for (const activity of items) {
+    const li = document.createElement("li");
+    li.className = "user-public-activity-item";
+
+    const title = activityTitle(activity);
+    const meta = activityMeta(activity);
+    const typeLabel = activityTypeLabel(activity?.type);
+    const dateLabel = formatDate(activity?.createdAt);
 
     li.innerHTML = `
       <div class="user-public-activity-top">
-        <span class="user-public-activity-type">
-          ${getActivityLabel(activity.type)}
-        </span>
-        <span class="user-public-activity-date">
-          ${formatDate(activity.createdAt)}
-        </span>
+        <span class="user-public-activity-type">${escapeHtml(typeLabel)}</span>
+        ${dateLabel ? `<span class="user-public-activity-date">${escapeHtml(dateLabel)}</span>` : ""}
       </div>
-      <p class="user-public-activity-title">
-        ${activity.payload?.title || ''}
-      </p>
+      <p class="user-public-activity-title">${escapeHtml(title)}</p>
+      ${meta ? `<p class="user-public-activity-meta">${escapeHtml(meta)}</p>` : ""}
     `;
 
     listEl.appendChild(li);
-  });
-}
-
-// ----------------------
-// Stato bacheca privata
-// ----------------------
-
-export function renderActivityPrivate() {
-  const privacyEl = $('userPublicActivityPrivacy');
-  const stateEl = $('userPublicActivityState');
-  const listEl = $('userPublicActivityList');
-  const emptyEl = $('userPublicActivityEmpty');
-  const cardEl = $('userPublicActivityCard');
-
-  if (stateEl) stateEl.hidden = true;
-  if (listEl) listEl.hidden = true;
-  if (emptyEl) emptyEl.hidden = true;
-  if (cardEl) cardEl.hidden = false;
-
-  privacyEl.hidden = false;
-}
-
-// ----------------------
-// Stato di caricamento attività
-// ----------------------
-
-export function renderActivityLoading() {
-  const stateEl = $('userPublicActivityState');
-  if (stateEl) {
-    stateEl.textContent = 'Caricamento attività...';
-    stateEl.hidden = false;
   }
-  }
+    }
