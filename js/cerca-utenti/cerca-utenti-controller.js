@@ -45,7 +45,8 @@ function getUpstreamReturnTo() {
     return returnTo;
   }
 
-  return getSafeReturnUrl();
+  // Fallback deterministico: evita l'uso del referrer per prevenire loop
+  return "/pages/home-v2.html";
 }
 function getCurrentSearchPageReturnTo() {
   const currentUrl = new URL(window.location.href);
