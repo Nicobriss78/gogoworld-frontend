@@ -231,6 +231,50 @@
         </section>
 
         <section
+          class="evento-section evento-section--reviews"
+          id="eventoReviewsSection"
+          aria-labelledby="eventoReviewsTitle"
+        >
+          <div class="evento-section__head">
+            <h2 id="eventoReviewsTitle" class="evento-section__title">
+              Recensioni
+            </h2>
+          </div>
+
+          <div class="evento-section__body evento-reviews">
+            <div
+              id="eventoReviewsLoading"
+              class="evento-review-loading"
+              aria-live="polite"
+              hidden
+            >
+              Caricamento recensioni…
+            </div>
+
+            <div
+              id="eventoReviewsSummary"
+              class="evento-reviews-summary"
+              hidden
+            ></div>
+
+            <div
+              id="eventoReviewsEmpty"
+              class="evento-review-empty"
+              hidden
+            >
+              Non ci sono ancora recensioni pubblicate per questo evento.
+            </div>
+
+            <ul
+              id="eventoReviewsList"
+              class="evento-reviews-list"
+              aria-label="Recensioni dell'evento"
+              hidden
+            ></ul>
+          </div>
+        </section>
+
+        <section
           class="evento-section evento-section--media"
           id="eventoMediaSection"
           aria-labelledby="eventoMediaTitle"
