@@ -460,7 +460,7 @@ function buildReviewAuthorUrl(authorId) {
 
   const params = new URLSearchParams();
   params.set("userId", safeAuthorId);
-  params.set("returnTo", window.location.pathname + window.location.search);
+  params.set("returnTo", resolveReviewAuthorReturnTo(safeAuthorId));
 
   return `/pages/user-public.html?${params.toString()}`;
 }
