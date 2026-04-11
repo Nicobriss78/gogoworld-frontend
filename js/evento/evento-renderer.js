@@ -690,6 +690,24 @@ function renderEmptyContent(refs) {
   if (refs.mediaSection) refs.mediaSection.hidden = true;
   if (refs.media) refs.media.innerHTML = "";
 
+  if (refs.reviewsSection) refs.reviewsSection.hidden = false;
+  if (refs.reviewsLoading) {
+    refs.reviewsLoading.hidden = true;
+    refs.reviewsLoading.textContent = "Caricamento recensioni…";
+  }
+  if (refs.reviewsSummary) {
+    refs.reviewsSummary.hidden = true;
+    refs.reviewsSummary.innerHTML = "";
+  }
+  if (refs.reviewsList) {
+    refs.reviewsList.hidden = true;
+    refs.reviewsList.innerHTML = "";
+  }
+  if (refs.reviewsEmpty) {
+    refs.reviewsEmpty.hidden = false;
+    refs.reviewsEmpty.textContent = "Non ci sono ancora recensioni pubblicate per questo evento.";
+  }
+
   if (refs.participationButton) {
     refs.participationButton.textContent = "Partecipa";
     refs.participationButton.disabled = true;
