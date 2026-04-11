@@ -37,7 +37,9 @@ function getSafeReturnUrl() {
 
   return "/pages/home-v2.html";
 }
-
+function getCurrentSearchPageReturnTo() {
+  return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+}
 async function runSearch(query) {
   const trimmedQuery = String(query || "").trim();
 
