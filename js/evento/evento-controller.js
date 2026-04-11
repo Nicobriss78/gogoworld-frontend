@@ -2,6 +2,7 @@ import { createEventoState, setEventoError, setEventoLoading, setEventoNotFound 
 import {
   getEventById,
   getCurrentUser,
+  getEventReviews,
   joinEvent,
   leaveEvent,
 } from "./evento-api.js";
