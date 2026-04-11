@@ -373,6 +373,16 @@ export function renderActivityList(items = []) {
     const meta = activityMeta(activity);
     const typeLabel = activityTypeLabel(activity?.type);
     const dateLabel = formatDate(activity?.createdAt);
+    const eventId = getActivityEventId(activity);
+    const canOpenEvent = !!eventId;
+
+    if (canOpenEvent) {
+      li.dataset.eventId = eventId;
+      li.classList.add("is-clickable");
+      li.setAttribute("tabindex", "0");
+      li.setAttribute("role", "link");
+      li.setAttribute("aria-label", `${title}. Apri evento`);
+    }
 
     li.innerHTML = `
       <div class="user-public-activity-top">
@@ -385,4 +395,4 @@ export function renderActivityList(items = []) {
 
     listEl.appendChild(li);
   }
-    }
+}
