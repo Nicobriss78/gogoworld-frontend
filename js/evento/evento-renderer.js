@@ -626,7 +626,40 @@ function renderContent(refs, state) {
     refs.media.innerHTML = mediaHtml;
   }
 }
+function renderReviews(refs, state) {
+  const reviews = Array.isArray(state?.reviews) ? state.reviews : [];
+  const hasReviews = reviews.length > 0;
+  const reviewsError = String(state?.reviewsError || "").trim();
 
+  if (refs.reviewsSection) {
+    refs.reviewsSection.hidden = false;
+  }
+
+  if (refs.reviewsLoading) {
+    refs.reviewsLoading.hidden = !state.isReviewsLoading;
+    refs.reviewsLoading.textContent = "Caricamento recensioni…";
+  }
+
+  if (refs.reviewsSummary) {
+    const summaryHtml = buildReviewsSummaryHtml(state);
+    refs.reviewsSummary.innerHTML = summaryHtml;
+    refs.reviewsSummary.hidden = state.isReviewsLoading || !summaryHtml;
+  }
+
+  if (refs.reviewsList) {
+    refs.reviewsList.hidden = state.isReviewsLoading || !hasReviews;
+    refs.reviewsList.innerHTML = hasReviews
+      ? reviews.map((review) => `<li>${buildReviewCardHtml(review)}</li>`).join("")
+      : "";
+  }
+
+  if (refs.reviewsEmpty) {
+    refs.reviewsEmpty.hidden = state.isReviewsLoading || hasReviews;
+    refs.reviewsEmpty.textContent = reviewsError
+      ? "Le recensioni non sono disponibili in questo momento."
+      : "Non ci sono ancora recensioni pubblicate per questo evento.";
+  }
+}
 function renderEmptyContent(refs) {
   setText(refs.kicker, "Evento");
   setText(refs.title, "Evento");
