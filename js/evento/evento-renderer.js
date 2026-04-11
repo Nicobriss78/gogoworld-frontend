@@ -729,6 +729,7 @@ export function createEventoRenderer(root = document) {
     renderHero(refs, state);
     renderActions(refs, state);
     renderContent(refs, state);
+    renderReviews(refs, state);
   }
 
   return {
