@@ -106,9 +106,10 @@ async function handleResultAction(event) {
   const params = new URLSearchParams();
   params.set("userId", userId);
 
-  const upstreamReturnTo = getUpstreamReturnTo();
-  if (upstreamReturnTo) {
-    params.set("returnTo", upstreamReturnTo);
+  // La pagina corrente (cerca-utenti) diventa il primo livello di ritorno
+  const currentSearchPage = getCurrentSearchPageReturnTo();
+  if (currentSearchPage) {
+    params.set("returnTo", currentSearchPage);
   }
 
   window.location.href = `/pages/user-public.html?${params.toString()}`;
