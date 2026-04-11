@@ -425,7 +425,18 @@ body.user-public-page {
   border-color: rgba(63, 124, 150, 0.18);
   box-shadow: var(--user-public-shadow-soft);
 }
+.user-public-activity-item.is-clickable {
+  cursor: pointer;
+}
 
+.user-public-activity-item.is-clickable:hover,
+.user-public-activity-item.is-clickable:focus-visible {
+  border-color: rgba(63, 124, 150, 0.28);
+  box-shadow:
+    0 10px 22px rgba(16, 24, 40, 0.08),
+    0 0 0 3px rgba(63, 124, 150, 0.08);
+  outline: none;
+}
 .user-public-activity-top {
   display: flex;
   align-items: center;
