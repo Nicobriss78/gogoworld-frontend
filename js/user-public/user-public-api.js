@@ -1,104 +1,100 @@
 /**
  * user-public-api.js
- * Gestisce tutte le chiamate API per la pagina user-public.
- * Nessuna logica di rendering o orchestrazione.
+ * API reali della pagina user-public.
+ * Nessun rendering, nessuna orchestrazione.
  */
 
-const API_BASE = '/api';
-
-/**
- * Recupera il token JWT dal localStorage.
- * Se non presente, restituisce null.
- */
 function getAuthToken() {
-  return localStorage.getItem('token');
+  try {
+    return (
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("token") ||
+      sessionStorage.getItem("authToken") ||
+      localStorage.getItem("authToken") ||
+      sessionStorage.getItem("jwt") ||
+      localStorage.getItem("jwt") ||
+      sessionStorage.getItem("accessToken") ||
+      localStorage.getItem("accessToken") ||
+      null
+    );
+  } catch {
+    return null;
+  }
 }
 
-/**
- * Helper per effettuare richieste fetch con gestione standardizzata.
- */
-async function apiRequest(url, options = {}) {
+async function parseJsonSafe(response) {
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+async function apiRequest(path, options = {}) {
   const token = getAuthToken();
 
-  const response = await fetch(url, {
-    credentials: 'include',
+  const response = await fetch(`/api${path}`, {
+    method: options.method || "GET",
+    credentials: "include",
     headers: {
-      'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {})
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
+      ...(options.headers || {}),
     },
-    ...options
+    ...(options.body ? { body: JSON.stringify(options.body) } : {}),
   });
 
-  let data;
-  try {
-    data = await response.json();
-  } catch (e) {
-    throw new Error('Risposta non valida dal server');
-  }
+  const payload = await parseJsonSafe(response);
 
-  if (!response.ok || data.ok === false) {
-    const error = new Error(data?.error || 'Errore nella richiesta API');
+  if (!response.ok || payload?.ok === false) {
+    const error = new Error(
+      payload?.message || payload?.error || `HTTP ${response.status}`
+    );
     error.status = response.status;
-    error.data = data;
+    error.payload = payload;
     throw error;
   }
 
-  return data.data;
+  return payload;
 }
 
-/**
- * Recupera il profilo pubblico di un utente.
- * @param {string} userId
- * @returns {Promise<Object>}
- */
 export async function fetchPublicProfile(userId) {
-  return apiRequest(`${API_BASE}/users/${userId}/public`);
+  const payload = await apiRequest(`/users/${encodeURIComponent(String(userId))}/public`);
+  return payload?.data || null;
 }
 
-/**
- * Recupera le attività pubbliche dell’utente.
- * @param {string} userId
- * @returns {Promise<Array>}
- */
 export async function fetchUserActivity(userId) {
   try {
-    return await apiRequest(`${API_BASE}/users/${userId}/activity`);
+    const payload = await apiRequest(`/users/${encodeURIComponent(String(userId))}/activity`);
+    return {
+      items: Array.isArray(payload?.data) ? payload.data : [],
+      activityPrivate: false,
+    };
   } catch (error) {
-    // Gestione specifica per bacheca privata
-    if (error.status === 403 && error.data?.error === 'activity_private') {
-      return { activityPrivate: true };
+    if (error.status === 403 && error.payload?.error === "activity_private") {
+      return {
+        items: [],
+        activityPrivate: true,
+      };
     }
     throw error;
   }
 }
 
-/**
- * Segue un utente.
- * @param {string} userId
- * @returns {Promise<boolean>} Stato following
- */
 export async function followUser(userId) {
-  const result = await apiRequest(
-    `${API_BASE}/users/${userId}/follow`,
-    {
-      method: 'POST'
-    }
+  const payload = await apiRequest(
+    `/users/${encodeURIComponent(String(userId))}/follow`,
+    { method: "POST" }
   );
-  return result.following;
+
+  return !!payload?.following;
 }
 
-/**
- * Smette di seguire un utente.
- * @param {string} userId
- * @returns {Promise<boolean>} Stato following
- */
 export async function unfollowUser(userId) {
-  const result = await apiRequest(
-    `${API_BASE}/users/${userId}/follow`,
-    {
-      method: 'DELETE'
-    }
+  const payload = await apiRequest(
+    `/users/${encodeURIComponent(String(userId))}/follow`,
+    { method: "DELETE" }
   );
-  return result.following;
+
+  return !!payload?.following;
 }
