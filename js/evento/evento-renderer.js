@@ -517,6 +517,12 @@ function createDomRefs(root = document) {
     mediaSection: root.getElementById("eventoMediaSection"),
     media: root.getElementById("eventoMedia"),
 
+    reviewsSection: root.getElementById("eventoReviewsSection"),
+    reviewsLoading: root.getElementById("eventoReviewsLoading"),
+    reviewsSummary: root.getElementById("eventoReviewsSummary"),
+    reviewsEmpty: root.getElementById("eventoReviewsEmpty"),
+    reviewsList: root.getElementById("eventoReviewsList"),
+
     backButton: root.getElementById("eventoBackButton"),
     backFooterButton: root.getElementById("eventoBackFooterButton"),
   };
