@@ -48,7 +48,16 @@ function getUpstreamReturnTo() {
   return getSafeReturnUrl();
 }
 function getCurrentSearchPageReturnTo() {
-  return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  const currentUrl = new URL(window.location.href);
+  const params = new URLSearchParams(currentUrl.search);
+  const upstreamReturnTo = getUpstreamReturnTo();
+
+  if (upstreamReturnTo && !params.get("returnTo")) {
+    params.set("returnTo", upstreamReturnTo);
+  }
+
+  const query = params.toString();
+  return `${currentUrl.pathname}${query ? `?${query}` : ""}${currentUrl.hash}`;
 }
 async function runSearch(query) {
   const trimmedQuery = String(query || "").trim();
