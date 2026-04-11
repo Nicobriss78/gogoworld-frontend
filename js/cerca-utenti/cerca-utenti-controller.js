@@ -168,13 +168,9 @@ async function handleResultAction(event) {
 }
 
 function bindBackButton() {
-  const fallback = getSafeReturnUrl();
+  const fallback = getUpstreamReturnTo();
 
   backNode.addEventListener("click", () => {
-    if (window.history.length > 1) {
-      window.history.back();
-      return;
-    }
     window.location.href = fallback;
   });
 }
