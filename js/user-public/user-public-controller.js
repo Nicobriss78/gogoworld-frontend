@@ -82,7 +82,16 @@ function buildMessageUrl({ userId, returnTo }) {
 
   return `/pages/messages-v2.html?${params.toString()}`;
 }
+function buildEventDetailUrl(eventId) {
+  const safeEventId = String(eventId || "").trim();
+  if (!safeEventId) return "";
 
+  const params = new URLSearchParams();
+  params.set("id", safeEventId);
+  params.set("returnTo", window.location.pathname + window.location.search);
+
+  return `/pages/evento-v2.html?${params.toString()}`;
+}
 async function loadProfile(context) {
   const profile = await fetchPublicProfile(context.userId);
   renderProfile(profile, { isSelf: context.isSelf });
