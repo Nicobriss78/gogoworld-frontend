@@ -188,7 +188,34 @@ function wireFollowButton(context, getProfileSnapshot, setProfileSnapshot) {
     }
   });
 }
+function wireActivityList() {
+  const listEl = document.getElementById("userPublicActivityList");
+  if (!listEl) return;
 
+  listEl.addEventListener("click", (event) => {
+    const item = event.target.closest(".user-public-activity-item.is-clickable");
+    if (!item) return;
+
+    const eventId = String(item.dataset.eventId || "").trim();
+    if (!eventId) return;
+
+    window.location.href = buildEventDetailUrl(eventId);
+  });
+
+  listEl.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+
+    const item = event.target.closest(".user-public-activity-item.is-clickable");
+    if (!item) return;
+
+    event.preventDefault();
+
+    const eventId = String(item.dataset.eventId || "").trim();
+    if (!eventId) return;
+
+    window.location.href = buildEventDetailUrl(eventId);
+  });
+}
 async function bootstrap() {
   const context = getQueryParams();
 
