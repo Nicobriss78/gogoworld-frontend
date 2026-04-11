@@ -23,18 +23,7 @@ function debounce(fn, wait = 500) {
 }
 
 function getSafeReturnUrl() {
-  const ref = document.referrer || "";
-
-  try {
-    const refUrl = new URL(ref);
-    if (refUrl.origin === window.location.origin) {
-      if (!refUrl.pathname.endsWith("/pages/cerca-utenti.html") &&
-          !refUrl.pathname.endsWith("/pages/cerca-utenti-v2.html")) {
-        return ref;
-      }
-    }
-  } catch (_) {}
-
+  // Fallback deterministico per evitare loop di navigazione
   return "/pages/home-v2.html";
 }
 function getUpstreamReturnTo() {
