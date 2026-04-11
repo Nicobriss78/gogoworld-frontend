@@ -103,17 +103,17 @@ async function handleResultAction(event) {
   const hasBlockedMe = cardNode?.getAttribute("data-has-blocked-me") === "1";
 
   if (action === "profile") {
-    const params = new URLSearchParams();
-    params.set("userId", userId);
+  const params = new URLSearchParams();
+  params.set("userId", userId);
 
-    const returnTo = getCurrentSearchPageReturnTo();
-    if (returnTo) {
-      params.set("returnTo", returnTo);
-    }
-
-    window.location.href = `/pages/user-public.html?${params.toString()}`;
-    return;
+  const upstreamReturnTo = getUpstreamReturnTo();
+  if (upstreamReturnTo) {
+    params.set("returnTo", upstreamReturnTo);
   }
+
+  window.location.href = `/pages/user-public.html?${params.toString()}`;
+  return;
+}
 
   if (action === "msg") {
     if (blockedByMe) {
