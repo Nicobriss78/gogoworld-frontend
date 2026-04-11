@@ -14,6 +14,13 @@ const INITIAL_EVENTO_STATE = Object.freeze({
   isJoining: false,
   isLeaving: false,
   isOpeningChat: false,
+
+  reviews: [],
+  reviewsTotal: 0,
+  reviewsPage: 1,
+  reviewsLimit: 20,
+  isReviewsLoading: false,
+  reviewsError: "",
 });
 
 function cloneInitialState() {
