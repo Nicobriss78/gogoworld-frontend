@@ -386,7 +386,109 @@ function resolveBackLabel(state) {
       return "Torna alla schermata precedente";
   }
 }
+function formatReviewDate(dateString) {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "";
 
+  return date.toLocaleDateString("it-IT", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function normalizeReviewAuthorId(review) {
+  const raw = review?.participant;
+  if (!raw) return "";
+
+  if (typeof raw === "string") return raw.trim();
+  if (typeof raw === "object") {
+    return firstNonEmpty(raw._id, raw.id);
+  }
+
+  return "";
+}
+
+function buildReviewAuthorUrl(authorId) {
+  const safeAuthorId = String(authorId || "").trim();
+  if (!safeAuthorId) return "";
+
+  const params = new URLSearchParams();
+  params.set("userId", safeAuthorId);
+  params.set("returnTo", window.location.pathname + window.location.search);
+
+  return `/pages/user-public.html?${params.toString()}`;
+}
+
+function buildReviewsSummaryHtml(state) {
+  const reviews = Array.isArray(state?.reviews) ? state.reviews : [];
+  const total = Number(state?.reviewsTotal || reviews.length || 0);
+
+  if (!reviews.length || total <= 0) {
+    return "";
+  }
+
+  const ratings = reviews
+    .map((review) => Number(review?.rating))
+    .filter((value) => Number.isFinite(value) && value > 0);
+
+  const average = ratings.length
+    ? (ratings.reduce((sum, value) => sum + value, 0) / ratings.length).toFixed(1)
+    : "—";
+
+  const label =
+    total === 1 ? "1 recensione pubblicata" : `${total} recensioni pubblicate`;
+
+  return `
+    <div class="evento-reviews-summary__score">${escapeHtml(average)}</div>
+    <div class="evento-reviews-summary__meta">
+      <p class="evento-reviews-summary__rating-label">Valutazione media</p>
+      <p class="evento-reviews-summary__count">${escapeHtml(label)}</p>
+    </div>
+  `;
+}
+
+function buildReviewCardHtml(review) {
+  const authorName = firstNonEmpty(review?.authorName, "Utente");
+  const authorStatus = firstNonEmpty(review?.authorStatus);
+  const authorId = normalizeReviewAuthorId(review);
+  const authorUrl = authorId ? buildReviewAuthorUrl(authorId) : "";
+  const rating = Number(review?.rating);
+  const ratingLabel = Number.isFinite(rating) ? `${rating}/5` : "—";
+  const comment = firstNonEmpty(review?.comment, "Nessun commento disponibile.");
+  const dateLabel = formatReviewDate(review?.createdAt);
+
+  return `
+    <article class="evento-review-card">
+      <div class="evento-review-card__head">
+        <div class="evento-review-card__author-block">
+          ${
+            authorUrl
+              ? `<a class="evento-review-card__author-link" href="${escapeHtml(authorUrl)}">${escapeHtml(authorName)}</a>`
+              : `<span class="evento-review-card__author">${escapeHtml(authorName)}</span>`
+          }
+          ${
+            authorStatus
+              ? `<span class="evento-review-card__status">${escapeHtml(authorStatus)}</span>`
+              : ""
+          }
+        </div>
+        <div class="evento-review-card__rating" aria-label="Valutazione ${escapeHtml(ratingLabel)}">
+          ${escapeHtml(ratingLabel)}
+        </div>
+      </div>
+
+      <p class="evento-review-card__comment">${escapeHtml(comment)}</p>
+
+      ${
+        dateLabel
+          ? `<p class="evento-review-card__date">${escapeHtml(dateLabel)}</p>`
+          : ""
+      }
+    </article>
+  `;
+}
 function createDomRefs(root = document) {
   return {
     loadingState: root.getElementById("eventoLoadingState"),
