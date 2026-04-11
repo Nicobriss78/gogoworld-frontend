@@ -90,3 +90,30 @@ export async function openOrJoinEventRoom(eventId) {
 
   return unwrapRoomResponse(result);
 }
+export async function getEventReviews(
+  eventId,
+  { page = 1, limit = 20 } = {}
+) {
+  const safeEventId = ensureEventId(eventId);
+
+  const params = new URLSearchParams({
+    event: safeEventId,
+    page: String(page),
+    limit: String(limit),
+  });
+
+  const result = await apiGet(`/reviews?${params.toString()}`);
+
+  if (!result?.ok) {
+    throw new Error(
+      apiErrorMessage(result, "Impossibile caricare le recensioni dell'evento")
+    );
+  }
+
+  return {
+    reviews: Array.isArray(result.reviews) ? result.reviews : [],
+    total: Number(result.total || 0),
+    page: Number(result.page || page),
+    limit: Number(result.limit || limit),
+  };
+}
