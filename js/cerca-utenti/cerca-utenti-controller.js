@@ -93,7 +93,15 @@ async function handleResultAction(event) {
   const hasBlockedMe = cardNode?.getAttribute("data-has-blocked-me") === "1";
 
   if (action === "profile") {
-    window.location.href = `/pages/user-public.html?userId=${encodeURIComponent(userId)}`;
+    const params = new URLSearchParams();
+    params.set("userId", userId);
+
+    const returnTo = getCurrentSearchPageReturnTo();
+    if (returnTo) {
+      params.set("returnTo", returnTo);
+    }
+
+    window.location.href = `/pages/user-public.html?${params.toString()}`;
     return;
   }
 
