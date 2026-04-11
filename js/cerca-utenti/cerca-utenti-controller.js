@@ -37,6 +37,16 @@ function getSafeReturnUrl() {
 
   return "/pages/home-v2.html";
 }
+function getUpstreamReturnTo() {
+  const params = new URLSearchParams(window.location.search);
+  const returnTo = params.get("returnTo");
+
+  if (returnTo && returnTo.startsWith("/")) {
+    return returnTo;
+  }
+
+  return getSafeReturnUrl();
+}
 function getCurrentSearchPageReturnTo() {
   return `${window.location.pathname}${window.location.search}${window.location.hash}`;
 }
