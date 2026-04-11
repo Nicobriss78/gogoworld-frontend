@@ -185,7 +185,35 @@ async function loadEventoData(state, renderer) {
     renderer.render(state);
   }
 }
+async function loadEventoReviews(state, renderer) {
+  if (!state.eventId) return;
 
+  try {
+    state.isReviewsLoading = true;
+    state.reviewsError = "";
+    renderer.render(state);
+
+    const result = await getEventReviews(state.eventId, {
+      page: state.reviewsPage || 1,
+      limit: state.reviewsLimit || 20,
+    });
+
+    state.reviews = Array.isArray(result.reviews) ? result.reviews : [];
+    state.reviewsTotal = Number(result.total || 0);
+    state.reviewsPage = Number(result.page || 1);
+    state.reviewsLimit = Number(result.limit || 20);
+    state.reviewsError = "";
+  } catch (error) {
+    state.reviews = [];
+    state.reviewsTotal = 0;
+    state.reviewsError = String(
+      error?.message || "Impossibile caricare le recensioni dell'evento."
+    );
+  } finally {
+    state.isReviewsLoading = false;
+    renderer.render(state);
+  }
+}
 async function handleParticipationClick(state, renderer, refs) {
   if (!state.eventId || !state.event) return;
 
