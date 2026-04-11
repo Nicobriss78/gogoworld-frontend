@@ -410,6 +410,50 @@ function normalizeReviewAuthorId(review) {
   return "";
 }
 
+function isSafeInternalReturn(value) {
+  const normalized = String(value || "").trim();
+  if (!normalized) return false;
+  if (!normalized.startsWith("/")) return false;
+  if (normalized.startsWith("//")) return false;
+  return true;
+}
+
+function resolveReviewAuthorReturnTo(authorId) {
+  const currentPath = window.location.pathname + window.location.search;
+
+  try {
+    const currentUrl = new URL(window.location.href);
+    const rawReturnTo = String(currentUrl.searchParams.get("returnTo") || "").trim();
+
+    if (!isSafeInternalReturn(rawReturnTo)) {
+      return currentPath;
+    }
+
+    const upstreamUrl = new URL(rawReturnTo, window.location.origin);
+    const upstreamPath = `${upstreamUrl.pathname}${upstreamUrl.search}${upstreamUrl.hash}`;
+
+    const upstreamUserId = String(upstreamUrl.searchParams.get("userId") || "").trim();
+    const nestedReturnTo = String(upstreamUrl.searchParams.get("returnTo") || "").trim();
+
+    const isSameAuthorProfile =
+      upstreamUrl.pathname === "/pages/user-public.html" &&
+      upstreamUserId &&
+      upstreamUserId === String(authorId || "").trim();
+
+    if (isSameAuthorProfile && isSafeInternalReturn(nestedReturnTo)) {
+      return nestedReturnTo;
+    }
+
+    if (isSameAuthorProfile) {
+      return "/pages/seguiti-utenti-v2.html";
+    }
+
+    return currentPath;
+  } catch {
+    return currentPath;
+  }
+}
+
 function buildReviewAuthorUrl(authorId) {
   const safeAuthorId = String(authorId || "").trim();
   if (!safeAuthorId) return "";
