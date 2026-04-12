@@ -35,10 +35,28 @@ export function renderMessages(state) {
   const container = document.getElementById("roomsMessages");
   container.innerHTML = "";
 
+  if (!state.messages.length) {
+    container.innerHTML = `<div class="rooms-empty">Nessun messaggio</div>`;
+    return;
+  }
+
   state.messages.forEach(msg => {
     const div = document.createElement("div");
     div.className = "rooms-message";
-    div.textContent = `${msg.senderName}: ${msg.text}`;
+
+    const author =
+      msg.senderName ||
+      msg.sender?.username ||
+      msg.user?.username ||
+      "Utente";
+
+    const text = msg.text || msg.message || "";
+
+    div.innerHTML = `
+      <span class="rooms-message-author">${author}</span>
+      <p class="rooms-message-text">${text}</p>
+    `;
+
     container.appendChild(div);
   });
 
