@@ -132,10 +132,6 @@ function buildRoomsNavigationUrl(state) {
   const eventId = String(state.eventId || "").trim();
   if (!eventId) return "";
 
-  if (!isRoomsAllowedSource(state)) {
-    return "";
-  }
-
   const params = new URLSearchParams();
   params.set("eventId", eventId);
   params.set(
