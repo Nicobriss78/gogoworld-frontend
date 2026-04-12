@@ -14,8 +14,8 @@
 }
 
 .rooms-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr;
+  display: flex;
+  flex-direction: column;
   flex: 1;
   overflow: hidden;
 }
