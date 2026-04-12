@@ -271,13 +271,13 @@ async function handleOpenChatClick(state, renderer) {
     state.error = "";
     renderer.render(state);
 
-    const messagesUrl = buildMessagesNavigationUrl(state);
+    const roomsUrl = buildRoomsNavigationUrl(state);
 
-    if (!messagesUrl) {
-      throw new Error("Impossibile aprire la chat evento.");
+    if (!roomsUrl) {
+      throw new Error("La chat evento è disponibile solo da Mappa, Mappa Privati, Eventi seguiti e Utenti seguiti.");
     }
 
-    navigateTo(messagesUrl);
+    navigateTo(roomsUrl);
   } catch (error) {
     state.error = String(
       error?.message || "Impossibile aprire la chat evento."
