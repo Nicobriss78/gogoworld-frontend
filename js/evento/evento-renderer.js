@@ -650,10 +650,17 @@ function renderActions(refs, state) {
   }
 
   if (refs.openChatButton) {
+    const canOpenRooms = isRoomsAllowedSource(state);
+
+    refs.openChatButton.hidden = !canOpenRooms;
     refs.openChatButton.textContent = state.isOpeningChat
       ? "Apertura chat…"
       : resolveChatButtonLabel(event);
-    refs.openChatButton.disabled = state.isOpeningChat || state.isJoining || state.isLeaving;
+    refs.openChatButton.disabled =
+      !canOpenRooms ||
+      state.isOpeningChat ||
+      state.isJoining ||
+      state.isLeaving;
   }
 
   const backLabel = resolveBackLabel(state);
