@@ -42,18 +42,7 @@ function bindBackButton() {
     }
   });
 }
-function bindSidebarClick() {
-  const list = document.getElementById("roomsList");
-  list.addEventListener("click", async (e) => {
-    const item = e.target.closest("[data-room-id]");
-    if (!item) return;
 
-    state.roomId = item.dataset.roomId;
-    await loadRoomMeta();
-    await loadMessages(state.roomId);
-    renderRoomsList(state);
-  });
-}
 async function loadRooms() {
   state.rooms = await getMyRooms({ onlyActive: 1 });
   state.unreadSummary = await getUnreadSummary();
