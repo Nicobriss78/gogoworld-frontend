@@ -42,7 +42,24 @@ function bindBackButton() {
     }
   });
 }
+function bindAuthorProfileNavigation() {
+  const container = document.getElementById("roomsMessages");
 
+  container.addEventListener("click", (event) => {
+    const author = event.target.closest("[data-user-id]");
+    if (!author) return;
+
+    const userId = author.dataset.userId;
+    if (!userId) return;
+
+    const returnTo = encodeURIComponent(
+      window.location.pathname + window.location.search
+    );
+
+    window.location.href =
+      `/pages/user-public.html?userId=${encodeURIComponent(userId)}&returnTo=${returnTo}`;
+  });
+}
 async function loadRooms() {
   state.rooms = await getMyRooms({ onlyActive: 1 });
   state.unreadSummary = await getUnreadSummary();
