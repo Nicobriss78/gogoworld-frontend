@@ -103,6 +103,7 @@ async function init() {
   state.returnTo = params.returnTo;
 
   bindBackButton();
+bindAuthorProfileNavigation();
 await loadRooms();
 
   if (state.eventId && !state.roomId) {
