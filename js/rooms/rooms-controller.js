@@ -88,7 +88,8 @@ async function init() {
   state.returnTo = params.returnTo;
 
   bindBackButton();
-  await loadRooms();
+bindSidebarClick();
+await loadRooms();
 
   if (state.eventId && !state.roomId) {
     const res = await openOrJoinEvent(state.eventId);
