@@ -127,6 +127,7 @@ async function init() {
       "";
 
     setupEventListeners(view);
+    bindOpenUserSearchLinks();
 
     await loadFollowing(view);
   } catch (error) {
