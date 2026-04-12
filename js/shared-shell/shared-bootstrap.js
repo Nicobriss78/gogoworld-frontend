@@ -156,7 +156,10 @@ export function initSharedShell() {
       }
 
       if (event.action === "search") {
-        window.location.href = "/pages/cerca-utenti-v2.html";
+        const returnTo = encodeURIComponent(
+  window.location.pathname + window.location.search
+);
+window.location.href = `/pages/cerca-utenti-v2.html?returnTo=${returnTo}`;
         return;
       }
 
