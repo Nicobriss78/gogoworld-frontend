@@ -1,76 +1,71 @@
-export function renderRoomsList(state) {
-  const list = document.getElementById("roomsList");
-  list.innerHTML = "";
+function escapeHtml(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
 
-  if (!state.rooms.length) {
-    list.innerHTML = `<li class="rooms-empty">Nessuna stanza disponibile</li>`;
-    return;
-  }
+function resolveAuthorName(msg) {
+  return (
+    msg?.senderName ||
+    msg?.sender?.username ||
+    msg?.sender?.name ||
+    msg?.user?.username ||
+    msg?.user?.name ||
+    "Utente"
+  );
+}
 
-  state.rooms.forEach(room => {
-    const li = document.createElement("li");
-    li.className = "rooms-list-item";
-    li.dataset.roomId = room._id;
+function resolveAuthorId(msg) {
+  return (
+    msg?.senderId ||
+    msg?.sender?._id ||
+    msg?.sender?.id ||
+    msg?.user?._id ||
+    msg?.user?.id ||
+    ""
+  );
+}
 
-    const unread = state.unreadSummary.find(
-      u => u._id === room._id
-    )?.unread || 0;
+function resolveMessageText(msg) {
+  return msg?.text || msg?.message || "";
+}
 
-    li.innerHTML = `
-      <span class="rooms-room-title">
-        ${room.title || "Stanza evento"}
-      </span>
-      ${unread > 0 ? `<span class="rooms-unread">${unread}</span>` : ""}
-    `;
-
-    if (room._id === state.roomId) {
-      li.classList.add("active");
-    }
-
-    list.appendChild(li);
-  });
+function buildCurrentRoomReturnTo() {
+  return `${window.location.pathname}${window.location.search}${window.location.hash}`;
 }
 
 export function renderMessages(state) {
   const container = document.getElementById("roomsMessages");
+  if (!container) return;
+
   container.innerHTML = "";
 
-  if (!state.messages.length) {
+  if (!Array.isArray(state.messages) || !state.messages.length) {
     container.innerHTML = `<div class="rooms-empty">Nessun messaggio</div>`;
     return;
   }
 
-  state.messages.forEach(msg => {
+  state.messages.forEach((msg) => {
     const div = document.createElement("div");
     div.className = "rooms-message";
 
-    const author =
-      msg.senderName ||
-      msg.sender?.username ||
-      msg.user?.username ||
-      "Utente";
+    const authorName = resolveAuthorName(msg);
+    const authorId = resolveAuthorId(msg);
+    const text = resolveMessageText(msg);
 
-    const text = msg.text || msg.message || "";
-
-    const authorId =
-  msg.senderId ||
-  msg.sender?._id ||
-  msg.user?._id ||
-  "";
-
-const currentRoomUrl =
-  window.location.pathname + window.location.search;
-
-div.innerHTML = `
-  <span class="rooms-message-author"
-        data-user-id="${authorId}"
-        title="Visualizza profilo">
-    ${author}
-  </span>
-  <div class="rooms-message-bubble">
-    ${text}
-  </div>
-`;
+    div.innerHTML = `
+      <span
+        class="rooms-message-author"
+        ${authorId ? `data-user-id="${escapeHtml(authorId)}"` : ""}
+        ${authorId ? `title="Apri profilo"` : ""}
+      >
+        ${escapeHtml(authorName)}
+      </span>
+      <div class="rooms-message-bubble">${escapeHtml(text)}</div>
+    `;
 
     container.appendChild(div);
   });
@@ -80,8 +75,20 @@ div.innerHTML = `
 
 export function updateHeader(state) {
   const title = document.getElementById("roomsTitle");
+  if (!title) return;
 
-  if (state.roomMeta?.title) {
+  if (state?.roomMeta?.title) {
     title.textContent = state.roomMeta.title;
+    return;
   }
+
+  if (state?.eventId) {
+    title.textContent = "Chat Evento";
+  }
+}
+
+export function getAuthorProfileUrl(userId) {
+  if (!userId) return "";
+  const returnTo = encodeURIComponent(buildCurrentRoomReturnTo());
+  return `/pages/user-public.html?userId=${encodeURIComponent(userId)}&returnTo=${returnTo}`;
 }
