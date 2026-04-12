@@ -370,6 +370,21 @@ function resolveChatButtonLabel(event) {
   return "Apri chat evento";
 }
 
+function isRoomsAllowedSource(state) {
+  const fromView = String(state?.fromView || "").trim();
+
+  return [
+    "following",
+    "following-v2",
+    "following-users",
+    "following-users-v2",
+    "map",
+    "map-v2",
+    "private-map",
+    "map-private-v2",
+  ].includes(fromView);
+}
+
 function resolveBackLabel(state) {
   const fromView = String(state?.fromView || "").trim();
 
