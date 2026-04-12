@@ -96,11 +96,13 @@ await loadRooms();
     state.roomId = res?.data?.roomId;
   }
 
-  if (state.roomId) {
-    await loadMessages(state.roomId);
-  }
+  await loadRoomMeta();
 
-  updateHeader(state);
+if (state.roomId) {
+  await loadMessages(state.roomId);
+}
+
+updateHeader(state);
 
   document
     .getElementById("roomsComposer")
