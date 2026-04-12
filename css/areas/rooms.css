@@ -38,3 +38,40 @@
   padding: var(--gw-space-md);
   border-top: 1px solid var(--gw-border);
 }
+.rooms-header-center {
+  text-align: center;
+  flex: 1;
+}
+
+.rooms-subtitle {
+  font-size: 0.8rem;
+  color: var(--gw-text-secondary);
+}
+
+.rooms-message {
+  margin-bottom: 12px;
+}
+
+.rooms-message-author {
+  font-weight: 600;
+  color: var(--gw-accent);
+  cursor: pointer;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.rooms-message-author:hover {
+  text-decoration: underline;
+}
+
+.rooms-message-bubble {
+  background: var(--gw-surface-soft);
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.rooms-empty {
+  text-align: center;
+  color: var(--gw-text-secondary);
+  margin-top: 20px;
+}
