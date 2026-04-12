@@ -36,7 +36,12 @@ function bindBackButton() {
 
 async function loadRooms() {
   state.rooms = await getMyRooms({ onlyActive: 1 });
+  state.unreadSummary = await getUnreadSummary();
   renderRoomsList(state);
+
+  if (!state.roomId && state.rooms.length) {
+    state.roomId = state.rooms[0]._id;
+  }
 }
 
 async function loadMessages(roomId) {
