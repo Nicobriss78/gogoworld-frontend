@@ -30,7 +30,16 @@ function getQueryParams() {
 function bindBackButton() {
   const backBtn = document.getElementById("roomsBackBtn");
   backBtn.addEventListener("click", () => {
-    window.location.href = state.returnTo;
+    // Ritorno esplicito all'evento
+    if (state.returnTo) {
+      window.location.href = state.returnTo;
+    } else if (state.eventId) {
+      window.location.href = `/pages/evento-v2.html?id=${encodeURIComponent(
+        state.eventId
+      )}`;
+    } else {
+      window.location.href = "/pages/home-v2.html";
+    }
   });
 }
 function bindSidebarClick() {
