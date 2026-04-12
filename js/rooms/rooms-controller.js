@@ -56,9 +56,18 @@ async function loadRooms() {
 }
 
 async function loadMessages(roomId) {
+  if (!roomId) return;
+
   const response = await listRoomMessages(roomId, { limit: 50 });
-  state.messages = response?.data || [];
+  state.messages = response?.data || response || [];
   renderMessages(state);
+
+  if (state.messages.length) {
+    const lastMessage = state.messages[state.messages.length - 1];
+    if (lastMessage?._id) {
+      await markRoomRead(roomId, lastMessage._id);
+    }
+  }
 }
 async function loadRoomMeta() {
   if (state.eventId) {
