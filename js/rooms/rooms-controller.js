@@ -3,7 +3,9 @@ import {
   getEventRoomMeta,
   listRoomMessages,
   postRoomMessage,
+  markRoomRead,
   getMyRooms,
+  getUnreadSummary,
 } from "./rooms-api.js";
 
 import { createRoomsState } from "./rooms-state.js";
