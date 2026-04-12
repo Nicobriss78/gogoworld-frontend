@@ -20,12 +20,6 @@
   overflow: hidden;
 }
 
-.rooms-sidebar {
-  border-right: 1px solid var(--gw-border);
-  padding: var(--gw-space-md);
-  overflow-y: auto;
-}
-
 .rooms-chat {
   display: flex;
   flex-direction: column;
