@@ -52,10 +52,25 @@ export function renderMessages(state) {
 
     const text = msg.text || msg.message || "";
 
-    div.innerHTML = `
-      <span class="rooms-message-author">${author}</span>
-      <p class="rooms-message-text">${text}</p>
-    `;
+    const authorId =
+  msg.senderId ||
+  msg.sender?._id ||
+  msg.user?._id ||
+  "";
+
+const currentRoomUrl =
+  window.location.pathname + window.location.search;
+
+div.innerHTML = `
+  <span class="rooms-message-author"
+        data-user-id="${authorId}"
+        title="Visualizza profilo">
+    ${author}
+  </span>
+  <div class="rooms-message-bubble">
+    ${text}
+  </div>
+`;
 
     container.appendChild(div);
   });
