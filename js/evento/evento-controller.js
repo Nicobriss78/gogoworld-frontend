@@ -113,23 +113,37 @@ function goBack(state) {
 }
 
 function buildMessagesNavigationUrl(state) {
+function isRoomsAllowedSource(state) {
+  const fromView = String(state?.fromView || "").trim();
+
+  return [
+    "following",
+    "following-v2",
+    "following-users",
+    "following-users-v2",
+    "map",
+    "map-v2",
+    "private-map",
+    "map-private-v2",
+  ].includes(fromView);
+}
+
+function buildRoomsNavigationUrl(state) {
   const eventId = String(state.eventId || "").trim();
   if (!eventId) return "";
 
-  const params = new URLSearchParams();
-  params.set("tab", "events");
-  params.set("eventId", eventId);
-
-  const returnTo =
-    buildReturnUrl(state) ||
-    fallbackReturnUrl(state) ||
-    window.location.pathname + window.location.search;
-
-  if (returnTo) {
-    params.set("returnTo", returnTo);
+  if (!isRoomsAllowedSource(state)) {
+    return "";
   }
 
-  return `/pages/messages-v2.html?${params.toString()}`;
+  const params = new URLSearchParams();
+  params.set("eventId", eventId);
+  params.set(
+    "returnTo",
+    window.location.pathname + window.location.search
+  );
+
+  return `/pages/rooms.html?${params.toString()}`;
 }
 
 function isNotFoundError(error) {
