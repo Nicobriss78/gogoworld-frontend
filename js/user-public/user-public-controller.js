@@ -46,7 +46,9 @@ function resolveBackTarget({ isSelf, returnTo }) {
     return null;
   }
 
-  return "/pages/cerca-utenti-v2.html";
+  return `/pages/cerca-utenti-v2.html?returnTo=${encodeURIComponent(
+  window.location.pathname + window.location.search
+)}`;
 }
 
 function wireBackButton(context) {
