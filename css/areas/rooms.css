@@ -250,13 +250,13 @@
 
   .rooms-header,
   .rooms-composer {
-    padding-left: var(--gw-lg, 24px);
-    padding-right: var(--gw-lg, 24px);
+    padding-left: var(--gw-space-lg, 24px);
+    padding-right: var(--gw-space-lg, 24px);
   }
 
   .rooms-messages {
-    padding-left: var(--gw-lg, 24px);
-    padding-right: var(--gw-lg, 24px);
+    padding-left: var(--gw-space-lg, 24px);
+    padding-right: var(--gw-space-lg, 24px);
   }
 
   .rooms-title {
