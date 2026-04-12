@@ -85,6 +85,22 @@ function setupEventListeners(view) {
     }
   });
 }
+function bindOpenUserSearchLinks() {
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[data-return-to-current]");
+    if (!link) return;
+
+    event.preventDefault();
+
+    const returnTo =
+      window.location.pathname + window.location.search;
+
+    const params = new URLSearchParams();
+    params.set("returnTo", returnTo);
+
+    window.location.href = `/pages/cerca-utenti-v2.html?${params.toString()}`;
+  });
+}
 async function init() {
   const view = getSeguitiUtentiView();
 
