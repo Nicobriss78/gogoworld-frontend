@@ -60,7 +60,18 @@ async function loadMessages(roomId) {
   state.messages = response?.data || [];
   renderMessages(state);
 }
+async function loadRoomMeta() {
+  if (state.eventId) {
+    const resp = await getEventRoomMeta(state.eventId);
+    state.roomMeta = resp?.data || resp;
+  }
 
+  if (state.roomMeta?.eventId) {
+    state.eventId = state.roomMeta.eventId;
+  }
+
+  updateHeader(state);
+}
 async function init() {
   const params = getQueryParams();
   state.eventId = params.eventId;
