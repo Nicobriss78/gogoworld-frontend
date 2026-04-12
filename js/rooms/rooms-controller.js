@@ -86,7 +86,6 @@ async function init() {
   state.returnTo = params.returnTo;
 
   bindBackButton();
-bindSidebarClick();
 await loadRooms();
 
   if (state.eventId && !state.roomId) {
