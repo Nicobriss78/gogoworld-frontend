@@ -64,12 +64,21 @@ export function renderMessages(state) {
 }
 
 export function updateHeader(state) {
+  const title = document.getElementById("roomsTitle");
   const eventLink = document.getElementById("roomsEventLink");
+
+  if (state.roomMeta?.title) {
+    title.textContent = state.roomMeta.title;
+  }
+
   if (state.eventId) {
     eventLink.href = `/pages/evento-v2.html?id=${encodeURIComponent(
       state.eventId
     )}&returnTo=${encodeURIComponent(
       window.location.pathname + window.location.search
     )}`;
+    eventLink.hidden = false;
+  } else {
+    eventLink.hidden = true;
   }
 }
