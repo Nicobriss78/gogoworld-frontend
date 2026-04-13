@@ -112,24 +112,21 @@ function goBack(state) {
   window.location.assign("/pages/home-v2.html");
 }
 
-function buildMessagesNavigationUrl(state) {
+function buildRoomsNavigationUrl(state) {
   const eventId = String(state.eventId || "").trim();
   if (!eventId) return "";
 
   const params = new URLSearchParams();
-  params.set("tab", "events");
   params.set("eventId", eventId);
 
   const returnTo =
-    buildReturnUrl(state) ||
-    fallbackReturnUrl(state) ||
     window.location.pathname + window.location.search;
 
   if (returnTo) {
     params.set("returnTo", returnTo);
   }
 
-  return `/pages/messages-v2.html?${params.toString()}`;
+  return `/pages/rooms.html?${params.toString()}`;
 }
 
 function isNotFoundError(error) {
