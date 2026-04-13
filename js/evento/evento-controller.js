@@ -1,236 +1,328 @@
+import { createEventoState, setEventoError, setEventoLoading, setEventoNotFound } from "./evento-state.js";
 import {
-  openOrJoinEvent,
-  getEventRoomMeta,
-  listRoomMessages,
-  postRoomMessage,
-  markRoomRead,
-} from "./rooms-api.js";
+  getEventById,
+  getCurrentUser,
+  getEventReviews,
+  joinEvent,
+  leaveEvent,
+} from "./evento-api.js";
+import { createEventoRenderer } from "./evento-renderer.js";
 
-import { createRoomsState } from "./rooms-state.js";
-import {
-  renderRoomsPage,
-  getAuthorProfileUrl,
-} from "./rooms-renderer.js";
+function getSearchParams() {
+  return new URLSearchParams(window.location.search);
+}
 
-const state = createRoomsState();
+function readQueryValue(params, key) {
+  return String(params.get(key) || "").trim();
+}
 
-function getQueryParams() {
-  const params = new URLSearchParams(window.location.search);
+function readStoredSelectedEventId() {
+  try {
+    return String(sessionStorage.getItem("selectedEventId") || "").trim();
+  } catch {
+    return "";
+  }
+}
 
+function writeStoredSelectedEventId(eventId) {
+  try {
+    if (eventId) {
+      sessionStorage.setItem("selectedEventId", eventId);
+    }
+  } catch {
+    /* noop */
+  }
+}
+
+function resolveEventId(params) {
+  const fromQuery = readQueryValue(params, "id");
+  if (fromQuery) return fromQuery;
+
+  const fromStorage = readStoredSelectedEventId();
+  if (fromStorage) return fromStorage;
+
+  return "";
+}
+
+function resolveSourceContext(params) {
   return {
-    eventId: String(params.get("eventId") || "").trim(),
-    roomId: String(params.get("roomId") || "").trim(),
-    returnTo: String(params.get("returnTo") || "").trim() || "/pages/home-v2.html",
+    fromView: readQueryValue(params, "fromView"),
+    returnTo: readQueryValue(params, "returnTo"),
+    returnEventId: readQueryValue(params, "returnEventId") || readQueryValue(params, "eventId"),
   };
 }
 
-function goBack() {
-  if (state.returnTo) {
-    window.location.href = state.returnTo;
-    return;
-  }
-
-  if (state.eventId) {
-    window.location.href = `/pages/evento-v2.html?id=${encodeURIComponent(state.eventId)}`;
-    return;
-  }
-
-  window.location.href = "/pages/home-v2.html";
-}
-
-function bindBackButton() {
-  const backBtn = document.getElementById("roomsBackBtn");
-  if (!backBtn) return;
-
-  backBtn.addEventListener("click", () => {
-    goBack();
-  });
-}
-
-function bindAuthorProfileNavigation() {
-  const container = document.getElementById("roomsMessages");
-  if (!container) return;
-
-  container.addEventListener("click", (event) => {
-    const author = event.target.closest("[data-user-id]");
-    if (!author) return;
-
-    const userId = String(author.dataset.userId || "").trim();
-    if (!userId) return;
-
-    const url = getAuthorProfileUrl(userId);
-    if (!url) return;
-
-    window.location.href = url;
-  });
-}
-
-function normalizeErrorMessage(error, fallback) {
-  return String(error?.message || fallback || "Si è verificato un errore.");
-}
-
-async function openRoomFromEvent() {
-  if (!state.eventId || state.roomId) return;
-
-  state.isOpeningRoom = true;
-  state.error = "";
-  state.infoMessage = "";
-  renderRoomsPage(state);
+function buildReturnUrl(state) {
+  const returnTo = String(state.returnTo || "").trim();
+  if (!returnTo) return "";
 
   try {
-    const res = await openOrJoinEvent(state.eventId);
-    const payload = res?.data || res || null;
+    const url = new URL(returnTo, window.location.origin);
 
-    state.locked = Boolean(payload?.locked);
-    state.roomId = String(payload?.roomId || "").trim();
-    state.canSend = Boolean(payload?.canSend);
-    state.roomMeta = payload || null;
-
-    if (state.locked) {
-      state.infoMessage = "";
+    if (state.returnEventId) {
+      url.searchParams.set("eventId", state.returnEventId);
     }
-  } catch (error) {
-    state.error = normalizeErrorMessage(
-      error,
-      "Impossibile aprire la conversazione dell’evento."
-    );
-  } finally {
-    state.isOpeningRoom = false;
-    renderRoomsPage(state);
+
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return "";
   }
 }
 
-async function loadRoomMeta() {
+function fallbackReturnUrl(state) {
+  switch (String(state.fromView || "").trim()) {
+    case "home":
+      return "/pages/home-v2.html";
+
+    case "following":
+    case "following-v2":
+      return "/pages/partecipante-seguiti-v2.html";
+
+    case "map":
+    case "map-v2":
+      return "/pages/mappa-v2.html";
+
+    case "private-map":
+    case "map-private-v2":
+      return "/pages/mappa-privati-v2.html";
+
+    default:
+      return "";
+  }
+}
+
+function navigateTo(url) {
+  if (!url) return false;
+  window.location.assign(url);
+  return true;
+}
+
+function goBack(state) {
+  const explicitReturnUrl = buildReturnUrl(state);
+  if (navigateTo(explicitReturnUrl)) return;
+
+  const fallbackUrl = fallbackReturnUrl(state);
+  if (navigateTo(fallbackUrl)) return;
+
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+
+  window.location.assign("/pages/home-v2.html");
+}
+
+function buildMessagesNavigationUrl(state) {
+  const eventId = String(state.eventId || "").trim();
+  if (!eventId) return "";
+
+  const params = new URLSearchParams();
+  params.set("tab", "events");
+  params.set("eventId", eventId);
+
+  const returnTo =
+    buildReturnUrl(state) ||
+    fallbackReturnUrl(state) ||
+    window.location.pathname + window.location.search;
+
+  if (returnTo) {
+    params.set("returnTo", returnTo);
+  }
+
+  return `/pages/messages-v2.html?${params.toString()}`;
+}
+
+function isNotFoundError(error) {
+  const message = String(error?.message || error || "").toLowerCase();
+  return (
+    message.includes("404") ||
+    message.includes("not found") ||
+    message.includes("non trovato")
+  );
+}
+
+function getParticipationAction(refs) {
+  return String(refs?.participationButton?.dataset?.action || "").trim();
+}
+
+async function loadEventoData(state, renderer) {
+  setEventoLoading(state, true);
+  state.error = "";
+  state.notFound = false;
+  renderer.render(state);
+
+  if (!state.eventId) {
+    setEventoNotFound(state, true);
+    renderer.render(state);
+    return;
+  }
+
+  try {
+    const [event, currentUser] = await Promise.all([
+      getEventById(state.eventId),
+      getCurrentUser(),
+    ]);
+
+    state.event = event;
+    state.currentUser = currentUser;
+    state.error = "";
+    state.notFound = false;
+    state.isLoading = false;
+
+    writeStoredSelectedEventId(state.eventId);
+    renderer.render(state);
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      setEventoNotFound(state, true);
+    } else {
+      setEventoError(
+        state,
+        String(error?.message || "Impossibile caricare il dettaglio evento.")
+      );
+    }
+
+    state.event = null;
+    renderer.render(state);
+  }
+}
+async function loadEventoReviews(state, renderer) {
   if (!state.eventId) return;
 
   try {
-    const resp = await getEventRoomMeta(state.eventId);
-    const payload = resp?.data || resp || null;
+    state.isReviewsLoading = true;
+    state.reviewsError = "";
+    renderer.render(state);
 
-    state.roomMeta = payload || state.roomMeta;
-    state.locked = Boolean(payload?.locked);
-    state.canSend = Boolean(payload?.canSend);
+    const result = await getEventReviews(state.eventId, {
+      page: state.reviewsPage || 1,
+      limit: state.reviewsLimit || 20,
+    });
 
-    if (payload?.eventId) {
-      state.eventId = String(payload.eventId).trim();
-    }
-    if (payload?.roomId) {
-      state.roomId = String(payload.roomId).trim();
-    }
+    state.reviews = Array.isArray(result.reviews) ? result.reviews : [];
+    state.reviewsTotal = Number(result.total || 0);
+    state.reviewsPage = Number(result.page || 1);
+    state.reviewsLimit = Number(result.limit || 20);
+    state.reviewsError = "";
   } catch (error) {
-    if (!state.error) {
-      state.error = normalizeErrorMessage(
-        error,
-        "Impossibile caricare i dati della room."
-      );
-    }
+    state.reviews = [];
+    state.reviewsTotal = 0;
+    state.reviewsError = String(
+      error?.message || "Impossibile caricare le recensioni dell'evento."
+    );
   } finally {
-    renderRoomsPage(state);
+    state.isReviewsLoading = false;
+    renderer.render(state);
   }
 }
+async function handleParticipationClick(state, renderer, refs) {
+  if (!state.eventId || !state.event) return;
 
-async function loadMessages() {
-  if (!state.roomId || state.locked) {
-    state.messages = [];
-    renderRoomsPage(state);
-    return;
-  }
-
-  state.isMessagesLoading = true;
-  state.error = "";
-  renderRoomsPage(state);
+  const action = getParticipationAction(refs);
+  if (!action) return;
 
   try {
-    const response = await listRoomMessages(state.roomId, { limit: 50 });
-    state.messages = Array.isArray(response?.data)
-      ? response.data
-      : Array.isArray(response)
-        ? response
-        : [];
+    if (action === "leave") {
+      state.isLeaving = true;
+      renderer.render(state);
 
-    if (state.messages.length) {
-      const lastMessage = state.messages[state.messages.length - 1];
-      const upTo = lastMessage?.createdAt || null;
+      state.event = await leaveEvent(state.eventId);
+    } else {
+      state.isJoining = true;
+      renderer.render(state);
 
-      if (upTo) {
-        await markRoomRead(state.roomId, upTo);
-      }
+      state.event = await joinEvent(state.eventId);
     }
+
+    state.error = "";
   } catch (error) {
-    state.messages = [];
-    state.error = normalizeErrorMessage(
-      error,
-      "Impossibile caricare i messaggi della room."
+    state.error = String(
+      error?.message ||
+        (action === "leave"
+          ? "Impossibile lasciare l'evento."
+          : "Impossibile partecipare all'evento.")
     );
   } finally {
-    state.isMessagesLoading = false;
-    renderRoomsPage(state);
+    state.isJoining = false;
+    state.isLeaving = false;
+    state.isLoading = false;
+    renderer.render(state);
   }
 }
 
-function bindComposer() {
-  const composer = document.getElementById("roomsComposer");
-  const input = document.getElementById("roomsInput");
+async function handleOpenChatClick(state, renderer) {
+  if (!state.eventId) return;
 
-  if (!composer || !input) return;
-
-  composer.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const text = String(input.value || "").trim();
-
-    if (!text || !state.roomId || state.locked || !state.canSend || state.isSending) {
-      return;
-    }
-
-    state.isSending = true;
+  try {
+    state.isOpeningChat = true;
     state.error = "";
-    renderRoomsPage(state);
+    renderer.render(state);
 
-    try {
-      await postRoomMessage(state.roomId, text);
-      input.value = "";
-      await loadMessages();
-    } catch (error) {
-      state.error = normalizeErrorMessage(
-        error,
-        "Impossibile inviare il messaggio."
-      );
-    } finally {
-      state.isSending = false;
-      renderRoomsPage(state);
+    const messagesUrl = buildMessagesNavigationUrl(state);
+
+    if (!messagesUrl) {
+      throw new Error("Impossibile aprire la chat evento.");
     }
-  });
-}
 
-async function init() {
-  const params = getQueryParams();
-
-  state.eventId = params.eventId;
-  state.roomId = params.roomId;
-  state.returnTo = params.returnTo;
-  state.isLoading = true;
-
-  bindBackButton();
-  bindAuthorProfileNavigation();
-  bindComposer();
-  renderRoomsPage(state);
-
-  await openRoomFromEvent();
-  await loadRoomMeta();
-  await loadMessages();
-
-  state.isLoading = false;
-  renderRoomsPage(state);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  init().catch((error) => {
-    state.isLoading = false;
-    state.error = normalizeErrorMessage(
-      error,
-      "Impossibile inizializzare la chat evento."
+    navigateTo(messagesUrl);
+  } catch (error) {
+    state.error = String(
+      error?.message || "Impossibile aprire la chat evento."
     );
-    renderRoomsPage(state);
-  });
+    state.isOpeningChat = false;
+    renderer.render(state);
+    return;
+  }
+}
+
+function bindUi(state, renderer) {
+  const { refs } = renderer;
+
+  if (refs.participationButton) {
+    refs.participationButton.addEventListener("click", async () => {
+      await handleParticipationClick(state, renderer, refs);
+    });
+  }
+
+  if (refs.openChatButton) {
+    refs.openChatButton.addEventListener("click", async () => {
+      await handleOpenChatClick(state, renderer);
+    });
+  }
+
+  if (refs.backButton) {
+    refs.backButton.addEventListener("click", () => {
+      goBack(state);
+    });
+  }
+
+  if (refs.backFooterButton) {
+    refs.backFooterButton.addEventListener("click", () => {
+      goBack(state);
+    });
+  }
+}
+
+async function bootstrapEventoPage() {
+  const params = getSearchParams();
+  const state = createEventoState();
+  const renderer = createEventoRenderer(document);
+
+  state.eventId = resolveEventId(params);
+
+  const sourceContext = resolveSourceContext(params);
+  state.fromView = sourceContext.fromView;
+  state.returnTo = sourceContext.returnTo;
+  state.returnEventId = sourceContext.returnEventId;
+
+  bindUi(state, renderer);
+  renderer.render(state);
+
+  await loadEventoData(state, renderer);
+
+  if (state.event && !state.notFound && !state.error) {
+    await loadEventoReviews(state, renderer);
+  }
+}
+bootstrapEventoPage().catch(() => {
+  /* bootstrap error already reflected in UI state where possible */
 });
