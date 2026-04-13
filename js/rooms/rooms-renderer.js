@@ -92,3 +92,4 @@ export function getAuthorProfileUrl(userId) {
   const returnTo = encodeURIComponent(buildCurrentRoomReturnTo());
   return `/pages/user-public.html?userId=${encodeURIComponent(userId)}&returnTo=${returnTo}`;
 }
+
