@@ -132,7 +132,27 @@
   align-items: flex-start;
   max-width: min(100%, 760px);
 }
+/* Messaggi dell'utente corrente (Tu) */
+.rooms-message--me {
+  margin-left: auto;
+  align-items: flex-end;
+}
 
+/* Messaggi degli altri utenti */
+.rooms-message--them {
+  margin-right: auto;
+  align-items: flex-start;
+}
+
+/* Differenziazione visiva delle bolle */
+.rooms-message--me .rooms-message-bubble {
+  background: var(--gw-accent-soft, rgba(63, 124, 150, 0.12));
+  border-color: var(--gw-accent-border, rgba(63, 124, 150, 0.35));
+}
+
+.rooms-message--them .rooms-message-bubble {
+  background: var(--gw-surface, #ffffff);
+}
 .rooms-message-author {
   display: inline-flex;
   align-items: center;
