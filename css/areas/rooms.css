@@ -200,13 +200,9 @@
 }
 
 .rooms-composer {
-  display: flex;
-  gap: var(--gw-space-sm, 10px);
-  align-items: center;
-  padding: var(--gw-space-md, 16px);
-  background: var(--gw-surface, #ffffff);
-  border-top: 1px solid var(--gw-border, #e6eaf0);
-  box-shadow: 0 -4px 16px rgba(16, 24, 40, 0.04);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
 }
 
 .rooms-composer input[type="text"],
