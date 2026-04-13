@@ -8,13 +8,20 @@ function escapeHtml(value = "") {
 }
 
 function resolveAuthorName(msg) {
+  if (msg?.sender === "me") {
+    return "Tu";
+  }
+
   return (
+    msg?.author?.name ||
+    msg?.author?.nickname ||
+    msg?.author?.username ||
     msg?.senderName ||
     msg?.sender?.username ||
     msg?.sender?.name ||
     msg?.user?.username ||
     msg?.user?.name ||
-    "Utente"
+    "Partecipante"
   );
 }
 
