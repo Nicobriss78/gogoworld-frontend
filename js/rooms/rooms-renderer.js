@@ -59,7 +59,7 @@ export function renderMessages(state) {
 
   state.messages.forEach((msg) => {
     const div = document.createElement("div");
-    div.className = "rooms-message";
+div.className = `rooms-message ${msg?.sender === "me" ? "rooms-message--me" : "rooms-message--them"}`;
 
     const authorName = resolveAuthorName(msg);
     const authorId = resolveAuthorId(msg);
