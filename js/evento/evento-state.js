@@ -1,21 +1,51 @@
-export function createRoomsState() {
+export function createEventoState() {
   return {
-    roomId: "",
     eventId: "",
-    returnTo: "/pages/home-v2.html",
+    fromView: "",
+    returnTo: "",
+    returnEventId: "",
 
-    roomMeta: null,
-    messages: [],
+    event: null,
+    currentUser: null,
 
-    isLoading: true,
-    isOpeningRoom: false,
-    isMessagesLoading: false,
-    isSending: false,
+    isLoading: false,
+    isJoining: false,
+    isLeaving: false,
+    isOpeningChat: false,
 
-    locked: false,
-    canSend: false,
-
+    notFound: false,
     error: "",
-    infoMessage: "",
+
+    reviews: [],
+    reviewsTotal: 0,
+    reviewsPage: 1,
+    reviewsLimit: 20,
+    isReviewsLoading: false,
+    reviewsError: "",
   };
+}
+
+export function setEventoLoading(state, value) {
+  state.isLoading = Boolean(value);
+
+  if (state.isLoading) {
+    state.error = "";
+    state.notFound = false;
+  }
+
+  return state;
+}
+
+export function setEventoError(state, message) {
+  state.isLoading = false;
+  state.notFound = false;
+  state.error = String(message || "Si è verificato un errore.");
+  return state;
+}
+
+export function setEventoNotFound(state, value = true) {
+  state.isLoading = false;
+  state.notFound = Boolean(value);
+  state.error = "";
+  return state;
 }
