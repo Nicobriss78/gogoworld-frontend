@@ -78,7 +78,29 @@
   line-height: 1.3;
   color: var(--gw-text-secondary, #5a6572);
 }
+.rooms-status {
+  margin: 6px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  text-align: center;
+  border: 1px solid var(--gw-border, #e6eaf0);
+  background: var(--gw-surface, #ffffff);
+  color: var(--gw-text, #1c2430);
+}
 
+.rooms-status--info {
+  background: var(--gw-accent-soft, rgba(24, 119, 242, 0.08));
+  border-color: var(--gw-accent-border, rgba(24, 119, 242, 0.24));
+  color: var(--gw-accent, #1877f2);
+}
+
+.rooms-status--error {
+  background: rgba(181, 42, 50, 0.08);
+  border-color: rgba(181, 42, 50, 0.22);
+  color: var(--gw-danger, #b52a32);
+}
 .rooms-layout {
   flex: 1 1 auto;
   min-height: 0;
