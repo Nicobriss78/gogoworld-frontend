@@ -1,11 +1,10 @@
 .rooms-page {
-  min-height: 100vh;
+  height: 100dvh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--gw-bg, #f4f6f8);
-  color: var(--gw-text, #1c2430);
+  overflow: hidden;
 }
-
 .rooms-header {
   display: flex;
   align-items: center;
