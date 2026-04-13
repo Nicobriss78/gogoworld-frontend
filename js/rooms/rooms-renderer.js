@@ -27,6 +27,8 @@ function resolveAuthorName(msg) {
 
 function resolveAuthorId(msg) {
   return (
+    msg?.author?._id ||
+    msg?.author?.id ||
     msg?.senderId ||
     msg?.sender?._id ||
     msg?.sender?.id ||
