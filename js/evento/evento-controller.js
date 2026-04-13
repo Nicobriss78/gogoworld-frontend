@@ -112,7 +112,6 @@ function goBack(state) {
   window.location.assign("/pages/home-v2.html");
 }
 
-function buildMessagesNavigationUrl(state) {
 function isRoomsAllowedSource(state) {
   const fromView = String(state?.fromView || "").trim();
 
@@ -129,15 +128,16 @@ function isRoomsAllowedSource(state) {
 }
 
 function buildRoomsNavigationUrl(state) {
-  const eventId = String(state.eventId || "").trim();
+  const eventId = String(state?.eventId || "").trim();
   if (!eventId) return "";
+
+  if (!isRoomsAllowedSource(state)) {
+    return "";
+  }
 
   const params = new URLSearchParams();
   params.set("eventId", eventId);
-  params.set(
-    "returnTo",
-    window.location.pathname + window.location.search
-  );
+  params.set("returnTo", window.location.pathname + window.location.search);
 
   return `/pages/rooms.html?${params.toString()}`;
 }
