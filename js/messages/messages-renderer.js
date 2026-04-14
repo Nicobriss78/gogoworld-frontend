@@ -291,6 +291,25 @@ function renderThreadAction(action) {
     </a>
   `;
 }
+function getMessagesRootReturnTo() {
+  const params = new URLSearchParams(window.location.search);
+  return String(params.get("rootReturnTo") || "").trim();
+}
+
+function buildUserPublicHref(userId) {
+  const safeUserId = String(userId || "").trim();
+  if (!safeUserId) return "";
+
+  const params = new URLSearchParams();
+  params.set("userId", safeUserId);
+
+  const rootReturnTo = getMessagesRootReturnTo();
+  if (rootReturnTo) {
+    params.set("rootReturnTo", rootReturnTo);
+  }
+
+  return `/pages/user-public.html?${params.toString()}`;
+}
 function buildCurrentMessagesReturnTo() {
   return `${window.location.pathname}${window.location.search}${window.location.hash}`;
 }
