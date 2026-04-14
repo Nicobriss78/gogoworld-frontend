@@ -149,9 +149,7 @@ function wireMessageButton(context) {
   if (!messageBtn) return;
 
   messageBtn.addEventListener("click", async () => {
-    const resolvedReturnTo =
-      resolveBackTarget(context) ||
-      `${window.location.pathname}${window.location.search}`;
+    const resolvedReturnTo = resolveMessageReturnTarget(context);
 
     await openOrJoinDM(context.userId, {
       returnTo: resolvedReturnTo,
