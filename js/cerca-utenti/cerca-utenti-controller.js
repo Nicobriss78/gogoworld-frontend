@@ -107,18 +107,13 @@ async function handleResultAction(event) {
   const hasBlockedMe = cardNode?.getAttribute("data-has-blocked-me") === "1";
 
   if (action === "profile") {
-  const params = new URLSearchParams();
-  params.set("userId", userId);
+    const params = new URLSearchParams();
+    params.set("userId", userId);
+    params.set("rootReturnTo", getRootReturnTo());
 
-  // La pagina corrente (cerca-utenti) diventa il primo livello di ritorno
-  const currentSearchPage = getCurrentSearchPageReturnTo();
-  if (currentSearchPage) {
-    params.set("returnTo", currentSearchPage);
+    window.location.href = `/pages/user-public.html?${params.toString()}`;
+    return;
   }
-
-  window.location.href = `/pages/user-public.html?${params.toString()}`;
-  return;
-}
 
   if (action === "msg") {
     if (blockedByMe) {
