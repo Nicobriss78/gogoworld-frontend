@@ -208,7 +208,7 @@ function wireFollowButton(context, getProfileSnapshot, setProfileSnapshot) {
     }
   });
 }
-function wireActivityList() {
+function wireActivityList(context) {
   const listEl = document.getElementById("userPublicActivityList");
   if (!listEl) return;
 
