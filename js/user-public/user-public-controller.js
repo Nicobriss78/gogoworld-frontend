@@ -74,17 +74,6 @@ function wireBackButton(context) {
   });
 }
 
-function buildMessageUrl({ userId, returnTo }) {
-  const params = new URLSearchParams();
-  params.set("tab", "dm");
-  params.set("userId", userId);
-
-  if (isSafeInternalPath(returnTo)) {
-    params.set("returnTo", returnTo);
-  }
-
-  return `/pages/messages-v2.html?${params.toString()}`;
-}
 function buildEventDetailUrl(eventId) {
   const safeEventId = String(eventId || "").trim();
   if (!safeEventId) return "";
