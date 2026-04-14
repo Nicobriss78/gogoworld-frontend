@@ -291,7 +291,17 @@ function renderThreadAction(action) {
     </a>
   `;
 }
+function buildCurrentMessagesReturnTo() {
+  return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+}
 
+function buildUserPublicHref(userId) {
+  const safeUserId = String(userId || "").trim();
+  if (!safeUserId) return "";
+
+  const returnTo = encodeURIComponent(buildCurrentMessagesReturnTo());
+  return `/pages/user-public.html?userId=${encodeURIComponent(safeUserId)}&returnTo=${returnTo}`;
+}
 function renderBubbleAvatar(name, avatarUrl, userId = "") {
   const safeUserId = String(userId || "").trim();
 
