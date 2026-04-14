@@ -126,11 +126,12 @@ async function handleResultAction(event) {
       return;
     }
 
-    const returnTo = getSafeReturnUrl();
+    const params = new URLSearchParams();
+    params.set("tab", "dm");
+    params.set("userId", userId);
+    params.set("rootReturnTo", getRootReturnTo());
 
-    await openOrJoinDM(userId, {
-      returnTo,
-    });
+    window.location.href = `/pages/messages-v2.html?${params.toString()}`;
     return;
   }
 
