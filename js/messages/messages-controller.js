@@ -52,7 +52,7 @@ function getQueryParams() {
     eventId: params.get("eventId") || "",
     roomId: params.get("roomId") || "",
     userId: params.get("userId") || "",
-    returnTo: params.get("returnTo") || "",
+    rootReturnTo: params.get("rootReturnTo") || "",
   };
 }
 
