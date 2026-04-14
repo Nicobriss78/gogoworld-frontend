@@ -63,22 +63,20 @@ function resolveMessageReturnTarget(context) {
     `${window.location.pathname}${window.location.search}`
   );
 }
-function resolveBackTarget({ isSelf, returnTo }) {
-  if (isSafeInternalPath(returnTo)) {
-    return returnTo;
+function resolveBackTarget({ isSelf, rootReturnTo, structuralParent }) {
+  if (isSafeInternalPath(structuralParent)) {
+    return structuralParent;
+  }
+
+  if (isSafeInternalPath(rootReturnTo)) {
+    return rootReturnTo;
   }
 
   if (isSelf) {
     return "/pages/profilo-v2.html";
   }
 
-  if (window.history.length > 1) {
-    return null;
-  }
-
-  return `/pages/cerca-utenti-v2.html?returnTo=${encodeURIComponent(
-  window.location.pathname + window.location.search
-)}`;
+  return "/pages/home-v2.html";
 }
 
 function wireBackButton(context) {
