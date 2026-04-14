@@ -93,9 +93,17 @@ function renderCurrentListView() {
 function buildEventThreadAction(meta, activeEventId) {
   if (!activeEventId) return null;
 
+  const state = getMessagesState();
+  const params = new URLSearchParams();
+  params.set("id", activeEventId);
+
+  if (state.returnTo) {
+    params.set("rootReturnTo", state.returnTo);
+  }
+
   return {
     label: "Apri evento",
-    href: `/pages/evento-v2.html?id=${encodeURIComponent(activeEventId)}`,
+    href: `/pages/evento-v2.html?${params.toString()}`,
   };
 }
 
