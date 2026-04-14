@@ -1,100 +1,84 @@
-/**
- * user-public-api.js
- * API reali della pagina user-public.
- * Nessun rendering, nessuna orchestrazione.
- */
+import {
+  apiGet,
+  apiPost,
+  apiDelete,
+  apiErrorMessage,
+  getPublicProfile,
+} from "/js/api.js";
 
-function getAuthToken() {
-  try {
-    return (
-      localStorage.getItem("token") ||
-      sessionStorage.getItem("token") ||
-      sessionStorage.getItem("authToken") ||
-      localStorage.getItem("authToken") ||
-      sessionStorage.getItem("jwt") ||
-      localStorage.getItem("jwt") ||
-      sessionStorage.getItem("accessToken") ||
-      localStorage.getItem("accessToken") ||
-      null
-    );
-  } catch {
-    return null;
+function ensureUserId(userId) {
+  const safeUserId = String(userId || "").trim();
+  if (!safeUserId) {
+    throw new Error("USER_PUBLIC_USER_ID_REQUIRED");
   }
-}
-
-async function parseJsonSafe(response) {
-  try {
-    return await response.json();
-  } catch {
-    return null;
-  }
-}
-
-async function apiRequest(path, options = {}) {
-  const token = getAuthToken();
-
-  const response = await fetch(`/api${path}`, {
-    method: options.method || "GET",
-    credentials: "include",
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.body ? { "Content-Type": "application/json" } : {}),
-      ...(options.headers || {}),
-    },
-    ...(options.body ? { body: JSON.stringify(options.body) } : {}),
-  });
-
-  const payload = await parseJsonSafe(response);
-
-  if (!response.ok || payload?.ok === false) {
-    const error = new Error(
-      payload?.message || payload?.error || `HTTP ${response.status}`
-    );
-    error.status = response.status;
-    error.payload = payload;
-    throw error;
-  }
-
-  return payload;
+  return safeUserId;
 }
 
 export async function fetchPublicProfile(userId) {
-  const payload = await apiRequest(`/users/${encodeURIComponent(String(userId))}/public`);
-  return payload?.data || null;
+  const safeUserId = ensureUserId(userId);
+  const result = await getPublicProfile(safeUserId);
+
+  if (!result?.ok) {
+    throw new Error(
+      apiErrorMessage(result, "Impossibile caricare il profilo pubblico")
+    );
+  }
+
+  return result?.data || null;
 }
 
 export async function fetchUserActivity(userId) {
-  try {
-    const payload = await apiRequest(`/users/${encodeURIComponent(String(userId))}/activity`);
+  const safeUserId = ensureUserId(userId);
+  const result = await apiGet(
+    `/users/${encodeURIComponent(safeUserId)}/activity`
+  );
+
+  if (result?.ok) {
     return {
-      items: Array.isArray(payload?.data) ? payload.data : [],
+      items: Array.isArray(result?.data) ? result.data : [],
       activityPrivate: false,
     };
-  } catch (error) {
-    if (error.status === 403 && error.payload?.error === "activity_private") {
-      return {
-        items: [],
-        activityPrivate: true,
-      };
-    }
-    throw error;
   }
+
+  if (result?.status === 403 && result?.error === "activity_private") {
+    return {
+      items: [],
+      activityPrivate: true,
+    };
+  }
+
+  throw new Error(
+    apiErrorMessage(result, "Impossibile caricare l'attività utente")
+  );
 }
 
 export async function followUser(userId) {
-  const payload = await apiRequest(
-    `/users/${encodeURIComponent(String(userId))}/follow`,
-    { method: "POST" }
+  const safeUserId = ensureUserId(userId);
+  const result = await apiPost(
+    `/users/${encodeURIComponent(safeUserId)}/follow`,
+    {}
   );
 
-  return !!payload?.following;
+  if (!result?.ok) {
+    throw new Error(
+      apiErrorMessage(result, "Impossibile seguire questo utente")
+    );
+  }
+
+  return !!result?.following;
 }
 
 export async function unfollowUser(userId) {
-  const payload = await apiRequest(
-    `/users/${encodeURIComponent(String(userId))}/follow`,
-    { method: "DELETE" }
+  const safeUserId = ensureUserId(userId);
+  const result = await apiDelete(
+    `/users/${encodeURIComponent(safeUserId)}/follow`
   );
 
-  return !!payload?.following;
+  if (!result?.ok) {
+    throw new Error(
+      apiErrorMessage(result, "Impossibile smettere di seguire questo utente")
+    );
+  }
+
+  return !!result?.following;
 }
