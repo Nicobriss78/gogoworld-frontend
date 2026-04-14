@@ -361,7 +361,7 @@ function renderEventMessageBubble(message) {
   const createdAt = formatRelativeMeta(message.createdAt);
   const profileHref =
     !isOwn && message.userId
-      ? `/pages/user-public.html?userId=${encodeURIComponent(message.userId)}`
+      ? buildUserPublicHref(message.userId)
       : "";
 
   return `
