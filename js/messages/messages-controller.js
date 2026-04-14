@@ -102,9 +102,13 @@ function buildEventThreadAction(meta, activeEventId) {
 function buildDmThreadAction(activeUserId) {
   if (!activeUserId) return null;
 
+  const returnTo = `${window.location.pathname}${window.location.search}`;
+
   return {
     label: "Apri profilo",
-    href: `/pages/user-public.html?userId=${encodeURIComponent(activeUserId)}`,
+    href:
+      `/pages/user-public.html?userId=${encodeURIComponent(activeUserId)}` +
+      `&returnTo=${encodeURIComponent(returnTo)}`,
   };
 }
 
