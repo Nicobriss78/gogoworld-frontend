@@ -295,12 +295,25 @@ function buildCurrentMessagesReturnTo() {
   return `${window.location.pathname}${window.location.search}${window.location.hash}`;
 }
 
+function getMessagesOriginReturnTo() {
+  const params = new URLSearchParams(window.location.search);
+  return String(params.get("returnTo") || "").trim();
+}
+
 function buildUserPublicHref(userId) {
   const safeUserId = String(userId || "").trim();
   if (!safeUserId) return "";
 
-  const returnTo = encodeURIComponent(buildCurrentMessagesReturnTo());
-  return `/pages/user-public.html?userId=${encodeURIComponent(safeUserId)}&returnTo=${returnTo}`;
+  const params = new URLSearchParams();
+  params.set("userId", safeUserId);
+  params.set("returnTo", buildCurrentMessagesReturnTo());
+
+  const originReturnTo = getMessagesOriginReturnTo();
+  if (originReturnTo) {
+    params.set("originReturnTo", originReturnTo);
+  }
+
+  return `/pages/user-public.html?${params.toString()}`;
 }
 function renderBubbleAvatar(name, avatarUrl, userId = "") {
   const safeUserId = String(userId || "").trim();
