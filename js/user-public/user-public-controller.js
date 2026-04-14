@@ -219,7 +219,7 @@ function wireActivityList(context) {
     const eventId = String(item.dataset.eventId || "").trim();
     if (!eventId) return;
 
-    window.location.href = buildEventDetailUrl(eventId);
+    window.location.href = buildEventDetailUrl(eventId, context);
   });
 
   listEl.addEventListener("keydown", (event) => {
