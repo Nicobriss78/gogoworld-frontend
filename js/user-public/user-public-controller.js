@@ -5,6 +5,7 @@ import {
   unfollowUser,
 } from "/js/user-public/user-public-api.js";
 
+import { openOrJoinDM } from "/js/api.js";
 import {
   renderGlobalState,
   hideGlobalState,
