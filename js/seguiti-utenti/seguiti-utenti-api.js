@@ -23,17 +23,15 @@ function normalizeFollowedUser(user) {
     normalizeText(user?.avatarUrl) ||
     normalizeText(user?.avatar);
 
-  const currentReturnTo =
+  const currentRootReturnTo =
     typeof window !== "undefined"
       ? `${window.location.pathname}${window.location.search}`
-      : "";
+      : "/pages/seguiti-utenti-v2.html";
 
   const params = new URLSearchParams();
   if (id) {
     params.set("userId", id);
-  }
-  if (currentReturnTo) {
-    params.set("returnTo", currentReturnTo);
+    params.set("rootReturnTo", currentRootReturnTo);
   }
 
   return {
@@ -42,10 +40,9 @@ function normalizeFollowedUser(user) {
     role,
     avatarUrl,
     locationLabel: buildLocationLabel(user),
-    publicProfileUrl:
-      id
-        ? `/pages/user-public.html?${params.toString()}`
-        : "#",
+    publicProfileUrl: id
+      ? `/pages/user-public.html?${params.toString()}`
+      : "#",
   };
 }
 
