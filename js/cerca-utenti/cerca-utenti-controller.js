@@ -128,16 +128,11 @@ async function handleResultAction(event) {
       return;
     }
 
-    const params = new URLSearchParams();
-    params.set("tab", "dm");
-    params.set("userId", userId);
-
     const returnTo = getSafeReturnUrl();
-    if (returnTo) {
-      params.set("returnTo", returnTo);
-    }
 
-    window.location.href = `/pages/messages-v2.html?${params.toString()}`;
+    await openOrJoinDM(userId, {
+      returnTo,
+    });
     return;
   }
 
