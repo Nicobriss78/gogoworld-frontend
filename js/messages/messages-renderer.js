@@ -322,7 +322,7 @@ function renderBubbleAvatar(name, avatarUrl, userId = "") {
     return `
       <a
         class="messages-bubble__avatar-link"
-        href="/pages/user-public.html?userId=${encodeURIComponent(safeUserId)}"
+        href="${escapeHtml(buildUserPublicHref(safeUserId))}"
         aria-label="Apri il profilo di ${escapeHtml(name || "questo utente")}"
       >
         ${imageMarkup}
