@@ -253,31 +253,50 @@ export async function getUnreadCount(token) {
 export async function openOrJoinEvent(eventId, token) {
   return await apiPost(`/rooms/event/${eventId}/open-or-join`, {}, token ?? getToken());
 }
-// Apri una chat privata (DM) reindirizzando a messages.html
+function isSafeInternalReturnTo(value) {
+  const safeValue = String(value || "").trim();
+  if (!safeValue) return "";
+  if (!safeValue.startsWith("/")) return "";
+  if (safeValue.startsWith("//")) return "";
+  return safeValue;
+}
+
+// Apri una chat privata (DM) reindirizzando a messages-v2.html
 export async function openOrJoinDM(
   targetUserId,
-  token = (typeof localStorage !== "undefined" ? localStorage.getItem("token") : null)
+  options = {},
+  token = getToken()
 ) {
-  // opzionale: piccolo check sul token, ma non chiamiamo l'API
   if (!token) {
     return { ok: false, error: "NO_TOKEN" };
   }
-  if (!targetUserId) {
+
+  const safeTargetUserId = String(targetUserId || "").trim();
+  if (!safeTargetUserId) {
     return { ok: false, error: "NO_TARGET" };
   }
 
-  // Costruisci l'URL verso la pagina DM già esistente
+  const safeReturnTo = isSafeInternalReturnTo(options?.returnTo);
+
+  const params = new URLSearchParams();
+  params.set("tab", "dm");
+  params.set("userId", safeTargetUserId);
+
+  if (safeReturnTo) {
+    params.set("returnTo", safeReturnTo);
+  }
+
   const base =
     typeof window !== "undefined"
       ? window.location.origin
       : "";
-  const url = `${base}/messages.html?to=${encodeURIComponent(targetUserId)}`;
+
+  const url = `${base}/pages/messages-v2.html?${params.toString()}`;
 
   if (typeof window !== "undefined") {
     window.location.href = url;
   }
 
-  // Ritorniamo comunque una struttura "ok" per coerenza
   return {
     ok: true,
     status: 200,
