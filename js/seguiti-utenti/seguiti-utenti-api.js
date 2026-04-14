@@ -23,15 +23,29 @@ function normalizeFollowedUser(user) {
     normalizeText(user?.avatarUrl) ||
     normalizeText(user?.avatar);
 
+  const currentReturnTo =
+    typeof window !== "undefined"
+      ? `${window.location.pathname}${window.location.search}`
+      : "";
+
+  const params = new URLSearchParams();
+  if (id) {
+    params.set("userId", id);
+  }
+  if (currentReturnTo) {
+    params.set("returnTo", currentReturnTo);
+  }
+
   return {
     id,
     name,
     role,
     avatarUrl,
     locationLabel: buildLocationLabel(user),
-    publicProfileUrl: id
-      ? `/pages/user-public.html?userId=${encodeURIComponent(id)}`
-      : "#",
+    publicProfileUrl:
+      id
+        ? `/pages/user-public.html?${params.toString()}`
+        : "#",
   };
 }
 
