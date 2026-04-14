@@ -23,8 +23,8 @@ function getQueryParams() {
   return {
     userId: String(params.get("userId") || "").trim(),
     isSelf: params.get("self") === "1",
-    returnTo: String(params.get("returnTo") || "").trim(),
-    originReturnTo: String(params.get("originReturnTo") || "").trim(),
+    rootReturnTo: String(params.get("rootReturnTo") || "").trim(),
+    structuralParent: String(params.get("structuralParent") || "").trim(),
   };
 }
 
