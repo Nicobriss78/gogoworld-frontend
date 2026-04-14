@@ -91,13 +91,7 @@ function wireBackButton(context) {
 
   backBtn.addEventListener("click", (event) => {
     event.preventDefault();
-
-    if (target) {
-      window.location.href = target;
-      return;
-    }
-
-    window.history.back();
+    window.location.href = target;
   });
 }
 
