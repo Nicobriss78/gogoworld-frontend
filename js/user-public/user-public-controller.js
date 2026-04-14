@@ -246,7 +246,7 @@ async function bootstrap() {
 
   wireBackButton(context);
   wireMessageButton(context);
-  wireActivityList();
+  wireActivityList(context);
   
   let profileSnapshot = null;
   const getProfileSnapshot = () => profileSnapshot;
