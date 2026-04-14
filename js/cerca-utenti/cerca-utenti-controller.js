@@ -24,28 +24,31 @@ function debounce(fn, wait = 500) {
   };
 }
 
-function getSafeReturnUrl() {
-  // Fallback deterministico per evitare loop di navigazione
-  return "/pages/home-v2.html";
+function isSafeInternalPath(value) {
+  if (!value) return false;
+  if (!value.startsWith("/")) return false;
+  if (value.startsWith("//")) return false;
+  return true;
 }
-function getUpstreamReturnTo() {
-  const params = new URLSearchParams(window.location.search);
-  const returnTo = params.get("returnTo");
 
-  if (returnTo && returnTo.startsWith("/")) {
-    return returnTo;
+function getRootReturnTo() {
+  const params = new URLSearchParams(window.location.search);
+  const rootReturnTo = String(params.get("rootReturnTo") || "").trim();
+
+  if (isSafeInternalPath(rootReturnTo)) {
+    return rootReturnTo;
   }
 
-  // Fallback deterministico: evita l'uso del referrer per prevenire loop
   return "/pages/home-v2.html";
 }
-function getCurrentSearchPageReturnTo() {
+
+function getCurrentSearchPageUrl() {
   const currentUrl = new URL(window.location.href);
   const params = new URLSearchParams(currentUrl.search);
-  const upstreamReturnTo = getUpstreamReturnTo();
+  const rootReturnTo = getRootReturnTo();
 
-  if (upstreamReturnTo && !params.get("returnTo")) {
-    params.set("returnTo", upstreamReturnTo);
+  if (rootReturnTo && !params.get("rootReturnTo")) {
+    params.set("rootReturnTo", rootReturnTo);
   }
 
   const query = params.toString();
