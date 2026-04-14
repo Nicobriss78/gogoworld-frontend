@@ -115,12 +115,16 @@ function wireMessageButton(context) {
   const messageBtn = document.getElementById("userPublicMessageBtn");
   if (!messageBtn) return;
 
-  messageBtn.addEventListener("click", async () => {
-    const resolvedReturnTo = resolveMessageReturnTarget(context);
+  messageBtn.addEventListener("click", () => {
+    const params = new URLSearchParams();
+    params.set("tab", "dm");
+    params.set("userId", context.userId);
 
-    await openOrJoinDM(context.userId, {
-      returnTo: resolvedReturnTo,
-    });
+    if (isSafeInternalPath(context.rootReturnTo)) {
+      params.set("rootReturnTo", context.rootReturnTo);
+    }
+
+    window.location.href = `/pages/messages-v2.html?${params.toString()}`;
   });
 }
 
