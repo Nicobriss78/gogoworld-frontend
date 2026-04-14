@@ -163,7 +163,7 @@ async function handleResultAction(event) {
 }
 
 function bindBackButton() {
-  const fallback = getUpstreamReturnTo();
+  const fallback = getRootReturnTo();
 
   backNode.addEventListener("click", () => {
     window.location.href = fallback;
