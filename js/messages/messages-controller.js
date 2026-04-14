@@ -349,15 +349,10 @@ function handleThreadBack() {
 }
 function handlePageBack() {
   const state = getMessagesState();
-  const returnTo = String(state.returnTo || "").trim();
+  const rootReturnTo = String(state.returnTo || "").trim();
 
-  if (returnTo) {
-    window.location.href = returnTo;
-    return;
-  }
-
-  if (window.history.length > 1) {
-    window.history.back();
+  if (rootReturnTo) {
+    window.location.href = rootReturnTo;
     return;
   }
 
