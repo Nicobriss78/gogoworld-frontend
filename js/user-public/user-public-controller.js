@@ -95,13 +95,16 @@ function wireBackButton(context) {
   });
 }
 
-function buildEventDetailUrl(eventId) {
+function buildEventDetailUrl(eventId, context) {
   const safeEventId = String(eventId || "").trim();
   if (!safeEventId) return "";
 
   const params = new URLSearchParams();
   params.set("id", safeEventId);
-  params.set("returnTo", window.location.pathname + window.location.search);
+
+  if (isSafeInternalPath(context.rootReturnTo)) {
+    params.set("rootReturnTo", context.rootReturnTo);
+  }
 
   return `/pages/evento-v2.html?${params.toString()}`;
 }
