@@ -24,6 +24,7 @@ function getQueryParams() {
     userId: String(params.get("userId") || "").trim(),
     isSelf: params.get("self") === "1",
     returnTo: String(params.get("returnTo") || "").trim(),
+    originReturnTo: String(params.get("originReturnTo") || "").trim(),
   };
 }
 
