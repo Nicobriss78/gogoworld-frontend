@@ -34,35 +34,7 @@ function isSafeInternalPath(value) {
   if (value.startsWith("//")) return false;
   return true;
 }
-function extractMessagesUpstreamReturnTo(value) {
-  if (!isSafeInternalPath(value)) return "";
 
-  try {
-    const url = new URL(value, window.location.origin);
-    if (url.pathname !== "/pages/messages-v2.html") return "";
-
-    const nestedReturnTo = String(url.searchParams.get("returnTo") || "").trim();
-    return isSafeInternalPath(nestedReturnTo) ? nestedReturnTo : "";
-  } catch {
-    return "";
-  }
-}
-
-function resolveMessageReturnTarget(context) {
-  if (isSafeInternalPath(context.originReturnTo)) {
-    return context.originReturnTo;
-  }
-
-  const nestedReturnTo = extractMessagesUpstreamReturnTo(context.returnTo);
-  if (nestedReturnTo) {
-    return nestedReturnTo;
-  }
-
-  return (
-    resolveBackTarget(context) ||
-    `${window.location.pathname}${window.location.search}`
-  );
-}
 function resolveBackTarget({ isSelf, rootReturnTo, structuralParent }) {
   if (isSafeInternalPath(structuralParent)) {
     return structuralParent;
