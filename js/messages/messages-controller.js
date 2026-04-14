@@ -102,13 +102,21 @@ function buildEventThreadAction(meta, activeEventId) {
 function buildDmThreadAction(activeUserId) {
   if (!activeUserId) return null;
 
-  const returnTo = `${window.location.pathname}${window.location.search}`;
+  const currentReturnTo = `${window.location.pathname}${window.location.search}`;
+  const state = getMessagesState();
+  const originReturnTo = String(state.returnTo || "").trim();
+
+  const params = new URLSearchParams();
+  params.set("userId", activeUserId);
+  params.set("returnTo", currentReturnTo);
+
+  if (originReturnTo) {
+    params.set("originReturnTo", originReturnTo);
+  }
 
   return {
     label: "Apri profilo",
-    href:
-      `/pages/user-public.html?userId=${encodeURIComponent(activeUserId)}` +
-      `&returnTo=${encodeURIComponent(returnTo)}`,
+    href: `/pages/user-public.html?${params.toString()}`,
   };
 }
 
