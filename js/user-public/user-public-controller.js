@@ -119,13 +119,12 @@ function wireMessageButton(context) {
   const messageBtn = document.getElementById("userPublicMessageBtn");
   if (!messageBtn) return;
 
-  messageBtn.addEventListener("click", () => {
+  messageBtn.addEventListener("click", async () => {
     const resolvedReturnTo =
       resolveBackTarget(context) ||
       `${window.location.pathname}${window.location.search}`;
 
-    window.location.href = buildMessageUrl({
-      userId: context.userId,
+    await openOrJoinDM(context.userId, {
       returnTo: resolvedReturnTo,
     });
   });
