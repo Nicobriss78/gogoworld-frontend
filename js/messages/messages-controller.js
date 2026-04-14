@@ -453,7 +453,7 @@ function bindEvents() {
 async function bootstrapFromQuery() {
   const query = getQueryParams();
 
-  setMessagesReturnTo(query.returnTo);
+  setMessagesReturnTo(query.rootReturnTo);
   setMessagesActiveTab(query.tab);
   syncBaseUi();
 
