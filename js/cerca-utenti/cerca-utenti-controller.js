@@ -2,7 +2,9 @@ import {
   searchUsersForView,
   blockUserForView,
   unblockUserForView,
-} from "./cerca-utenti-api.js";
+} from "/js/cerca-utenti/cerca-utenti-api.js";
+
+import { openOrJoinDM } from "/js/api.js";
 import {
   renderSearchState,
   hideSearchState,
