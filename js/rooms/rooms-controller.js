@@ -112,7 +112,8 @@ async function init() {
   const params = getQueryParams();
   state.eventId = params.eventId;
   state.roomId = params.roomId;
-  state.returnTo = params.returnTo;
+  state.rootReturnTo = params.rootReturnTo;
+  state.structuralParent = params.structuralParent;
 
   bindBackButton();
   bindAuthorProfileNavigation();
