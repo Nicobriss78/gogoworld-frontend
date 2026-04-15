@@ -92,11 +92,11 @@ function bindOpenUserSearchLinks() {
 
     event.preventDefault();
 
-    const returnTo =
+    const rootReturnTo =
       window.location.pathname + window.location.search;
 
     const params = new URLSearchParams();
-    params.set("returnTo", returnTo);
+    params.set("rootReturnTo", rootReturnTo);
 
     window.location.href = `/pages/cerca-utenti-v2.html?${params.toString()}`;
   });
