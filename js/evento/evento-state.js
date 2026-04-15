@@ -2,7 +2,8 @@ export function createEventoState() {
   return {
     eventId: "",
     fromView: "",
-    returnTo: "",
+    rootReturnTo: "",
+    structuralParent: "",
     returnEventId: "",
 
     event: null,
