@@ -257,7 +257,7 @@ function handleOpenFullChat(eventId) {
         "gw:mappa-v2:return-context",
         JSON.stringify({
           fromView: "map-v2",
-          returnTo: "/pages/mappa-v2.html",
+          rootReturnTo: "/pages/mappa-v2.html",
           returnEventId,
           returnDrawerOpen: Boolean(returnDrawerOpen)
         })
