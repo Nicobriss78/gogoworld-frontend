@@ -209,11 +209,11 @@ export function setMessagesComposerEnabled(enabled) {
   return cloneMessagesState();
 }
 
-export function setMessagesReturnTo(returnTo) {
+export function setMessagesReturnTo(rootReturnTo) {
   messagesState = {
     ...messagesState,
-    returnTo: typeof returnTo === "string" ? returnTo : "",
+    rootReturnTo: typeof rootReturnTo === "string" ? rootReturnTo : "",
   };
 
   return cloneMessagesState();
-                         }
+}
