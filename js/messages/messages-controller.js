@@ -114,8 +114,8 @@ function buildDmThreadAction(activeUserId) {
   const params = new URLSearchParams();
   params.set("userId", activeUserId);
 
-  if (state.returnTo) {
-    params.set("rootReturnTo", state.returnTo);
+  if (state.rootReturnTo) {
+    params.set("rootReturnTo", state.rootReturnTo);
   }
 
   return {
