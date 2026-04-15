@@ -409,7 +409,48 @@ function normalizeReviewAuthorId(review) {
 
   return "";
 }
+function isSafeInternalPath(value) {
+  const normalized = String(value || "").trim();
+  if (!normalized) return false;
+  if (!normalized.startsWith("/")) return false;
+  if (normalized.startsWith("//")) return false;
+  return true;
+}
 
+function getEventoRootReturnTo() {
+  const params = new URLSearchParams(window.location.search);
+  const rootReturnTo = String(params.get("rootReturnTo") || "").trim();
+
+  if (isSafeInternalPath(rootReturnTo)) {
+    return rootReturnTo;
+  }
+
+  return "";
+}
+
+function getEventoStructuralParent() {
+  return `${window.location.pathname}${window.location.search}`;
+}
+
+function buildReviewAuthorUrl(authorId) {
+  const safeAuthorId = String(authorId || "").trim();
+  if (!safeAuthorId) return "";
+
+  const params = new URLSearchParams();
+  params.set("userId", safeAuthorId);
+
+  const rootReturnTo = getEventoRootReturnTo();
+  if (rootReturnTo) {
+    params.set("rootReturnTo", rootReturnTo);
+  }
+
+  const structuralParent = getEventoStructuralParent();
+  if (structuralParent) {
+    params.set("structuralParent", structuralParent);
+  }
+
+  return `/pages/user-public.html?${params.toString()}`;
+}
 function buildReviewsSummaryHtml(state) {
   const reviews = Array.isArray(state?.reviews) ? state.reviews : [];
   const total = Number(state?.reviewsTotal || reviews.length || 0);
