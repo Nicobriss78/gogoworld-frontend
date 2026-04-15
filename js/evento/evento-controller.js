@@ -107,11 +107,6 @@ function goBack(state) {
   const fallbackUrl = fallbackReturnUrl(state);
   if (navigateTo(fallbackUrl)) return;
 
-  if (window.history.length > 1) {
-    window.history.back();
-    return;
-  }
-
   window.location.assign("/pages/home-v2.html");
 }
 
