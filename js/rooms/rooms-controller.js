@@ -63,13 +63,15 @@ function bindAuthorProfileNavigation() {
     const userId = author.dataset.userId || "";
     if (!userId) return;
 
-    const url = getAuthorProfileUrl(userId);
+    const url = getAuthorProfileUrl(userId, {
+      rootReturnTo: state.rootReturnTo,
+      structuralParent: state.structuralParent,
+    });
     if (!url) return;
 
     window.location.href = url;
   });
 }
-
 async function loadRoomMeta() {
   if (!state.eventId) return;
 
