@@ -276,14 +276,14 @@ export async function openOrJoinDM(
     return { ok: false, error: "NO_TARGET" };
   }
 
-  const safeReturnTo = isSafeInternalReturnTo(options?.returnTo);
+  const safeRootReturnTo = isSafeInternalReturnTo(options?.rootReturnTo);
 
   const params = new URLSearchParams();
   params.set("tab", "dm");
   params.set("userId", safeTargetUserId);
 
-  if (safeReturnTo) {
-    params.set("returnTo", safeReturnTo);
+  if (safeRootReturnTo) {
+    params.set("rootReturnTo", safeRootReturnTo);
   }
 
   const base =
