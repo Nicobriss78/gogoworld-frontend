@@ -1,7 +1,7 @@
 const INITIAL_MESSAGES_STATE = {
   activeTab: "events",
   viewMode: "list",
-  returnTo: "",
+  rootReturnTo: "",
 
   activeThreadType: null,
   activeEventId: "",
