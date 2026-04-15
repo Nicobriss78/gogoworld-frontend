@@ -338,5 +338,5 @@ export function buildMyPublicProfileUrl(userId) {
     return "";
   }
 
-  return `/pages/user-public.html?userId=${encodeURIComponent(userId)}&self=1&returnTo=${encodeURIComponent("/pages/profilo-v2.html")}`;
+  return `/pages/user-public.html?userId=${encodeURIComponent(userId)}&self=1&rootReturnTo=${encodeURIComponent("/pages/profilo-v2.html")}`;
 }
