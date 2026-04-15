@@ -345,7 +345,7 @@ function handleThreadBack() {
 }
 function handlePageBack() {
   const state = getMessagesState();
-  const rootReturnTo = String(state.returnTo || "").trim();
+  const rootReturnTo = String(state.rootReturnTo || "").trim();
 
   if (rootReturnTo) {
     window.location.href = rootReturnTo;
