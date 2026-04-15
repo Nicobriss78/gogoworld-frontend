@@ -54,11 +54,13 @@ function resolveSourceContext(params) {
 }
 
 function buildReturnUrl(state) {
-  const returnTo = String(state.returnTo || "").trim();
-  if (!returnTo) return "";
+  const structuralParent = String(state.structuralParent || "").trim();
+  const rootReturnTo = String(state.rootReturnTo || "").trim();
+  const target = structuralParent || rootReturnTo;
+  if (!target) return "";
 
   try {
-    const url = new URL(returnTo, window.location.origin);
+    const url = new URL(target, window.location.origin);
 
     if (state.returnEventId) {
       url.searchParams.set("eventId", state.returnEventId);
