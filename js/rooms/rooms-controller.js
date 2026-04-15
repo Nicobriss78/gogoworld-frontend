@@ -20,7 +20,8 @@ function getQueryParams() {
   return {
     eventId: params.get("eventId"),
     roomId: params.get("roomId"),
-    returnTo: params.get("returnTo") || "/pages/home-v2.html",
+    rootReturnTo: params.get("rootReturnTo") || "/pages/home-v2.html",
+    structuralParent: params.get("structuralParent") || "",
   };
 }
 
