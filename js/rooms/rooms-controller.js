@@ -26,7 +26,6 @@ function getQueryParams() {
 }
 
 function bindBackButton() {
-function bindBackButton() {
   const backBtn = document.getElementById("roomsBackBtn");
   if (!backBtn) return;
 
