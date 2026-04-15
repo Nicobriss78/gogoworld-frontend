@@ -310,7 +310,8 @@ async function bootstrapEventoPage() {
 
   const sourceContext = resolveSourceContext(params);
   state.fromView = sourceContext.fromView;
-  state.returnTo = sourceContext.returnTo;
+  state.rootReturnTo = sourceContext.rootReturnTo;
+  state.structuralParent = sourceContext.structuralParent;
   state.returnEventId = sourceContext.returnEventId;
 
   bindUi(state, renderer);
