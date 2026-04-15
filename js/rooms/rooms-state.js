@@ -4,7 +4,8 @@ export function createRoomsState() {
     eventId: null,
     roomMeta: null,
     messages: [],
-    returnTo: "/pages/home-v2.html",
+    rootReturnTo: "/pages/home-v2.html",
+    structuralParent: "",
 
     // Stati di caricamento
     isLoading: false,
