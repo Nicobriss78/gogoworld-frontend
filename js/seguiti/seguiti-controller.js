@@ -60,7 +60,7 @@ function openEventDetail(eventId) {
   window.location.href =
     `/pages/evento-v2.html?id=${encodeURIComponent(eventId)}` +
     `&fromView=following` +
-    `&returnTo=${encodeURIComponent("/pages/partecipante-seguiti-v2.html")}`;
+    `&rootReturnTo=${encodeURIComponent("/pages/partecipante-seguiti-v2.html")}`;
 }
 
 async function joinEvent(eventId, buttonEl, refs) {
