@@ -117,11 +117,15 @@ function buildRoomsNavigationUrl(state) {
   const params = new URLSearchParams();
   params.set("eventId", eventId);
 
-  const returnTo =
+  if (state.rootReturnTo) {
+    params.set("rootReturnTo", state.rootReturnTo);
+  }
+
+  const structuralParent =
     window.location.pathname + window.location.search;
 
-  if (returnTo) {
-    params.set("returnTo", returnTo);
+  if (structuralParent) {
+    params.set("structuralParent", structuralParent);
   }
 
   return `/pages/rooms.html?${params.toString()}`;
