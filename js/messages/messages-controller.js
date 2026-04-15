@@ -110,16 +110,12 @@ function buildEventThreadAction(meta, activeEventId) {
 function buildDmThreadAction(activeUserId) {
   if (!activeUserId) return null;
 
-  const currentReturnTo = `${window.location.pathname}${window.location.search}`;
   const state = getMessagesState();
-  const originReturnTo = String(state.returnTo || "").trim();
-
   const params = new URLSearchParams();
   params.set("userId", activeUserId);
-  params.set("returnTo", currentReturnTo);
 
-  if (originReturnTo) {
-    params.set("originReturnTo", originReturnTo);
+  if (state.returnTo) {
+    params.set("rootReturnTo", state.returnTo);
   }
 
   return {
