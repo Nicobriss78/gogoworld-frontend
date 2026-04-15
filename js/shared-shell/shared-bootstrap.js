@@ -156,15 +156,18 @@ export function initSharedShell() {
       }
 
       if (event.action === "search") {
-        const returnTo = encodeURIComponent(
-  window.location.pathname + window.location.search
-);
-window.location.href = `/pages/cerca-utenti-v2.html?returnTo=${returnTo}`;
+        const rootReturnTo = encodeURIComponent(
+          window.location.pathname + window.location.search
+        );
+        window.location.href = `/pages/cerca-utenti-v2.html?rootReturnTo=${rootReturnTo}`;
         return;
       }
 
       if (event.action === "messages") {
-        window.location.href = "/pages/messages-v2.html";
+        const rootReturnTo = encodeURIComponent(
+          window.location.pathname + window.location.search
+        );
+        window.location.href = `/pages/messages-v2.html?rootReturnTo=${rootReturnTo}`;
         return;
       }
 
