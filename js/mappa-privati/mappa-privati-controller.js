@@ -335,7 +335,7 @@ bindUi();
         "gw:mappa-privati-v2:return-context",
         JSON.stringify({
           fromView: "map-private-v2",
-          returnTo: "/pages/mappa-privati-v2.html",
+          rootReturnTo: "/pages/mappa-privati-v2.html",
           returnEventId,
           returnDrawerOpen: Boolean(returnDrawerOpen)
         })
