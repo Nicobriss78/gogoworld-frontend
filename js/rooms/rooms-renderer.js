@@ -42,10 +42,6 @@ function resolveMessageText(msg) {
   return msg?.text || msg?.message || "";
 }
 
-function buildCurrentRoomReturnTo() {
-  return `${window.location.pathname}${window.location.search}${window.location.hash}`;
-}
-
 export function renderMessages(state) {
   const container = document.getElementById("roomsMessages");
   if (!container) return;
