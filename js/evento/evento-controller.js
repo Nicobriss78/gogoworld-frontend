@@ -47,7 +47,8 @@ function resolveEventId(params) {
 function resolveSourceContext(params) {
   return {
     fromView: readQueryValue(params, "fromView"),
-    returnTo: readQueryValue(params, "returnTo"),
+    rootReturnTo: readQueryValue(params, "rootReturnTo"),
+    structuralParent: readQueryValue(params, "structuralParent"),
     returnEventId: readQueryValue(params, "returnEventId") || readQueryValue(params, "eventId"),
   };
 }
