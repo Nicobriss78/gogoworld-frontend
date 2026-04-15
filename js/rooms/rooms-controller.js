@@ -26,19 +26,25 @@ function getQueryParams() {
 }
 
 function bindBackButton() {
+function bindBackButton() {
   const backBtn = document.getElementById("roomsBackBtn");
   if (!backBtn) return;
 
   backBtn.addEventListener("click", () => {
-    if (state.returnTo) {
-      window.location.href = state.returnTo;
+    if (state.structuralParent) {
+      window.location.href = state.structuralParent;
       return;
     }
 
     if (state.eventId) {
-      window.location.href = `/pages/evento-v2.html?id=${encodeURIComponent(
-        state.eventId
-      )}`;
+      const params = new URLSearchParams();
+      params.set("id", state.eventId);
+
+      if (state.rootReturnTo) {
+        params.set("rootReturnTo", state.rootReturnTo);
+      }
+
+      window.location.href = `/pages/evento-v2.html?${params.toString()}`;
       return;
     }
 
