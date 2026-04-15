@@ -284,7 +284,7 @@ bindUi();
   window.location.href =
     `/pages/evento-v2.html?id=${encodeURIComponent(eventId)}` +
     `&fromView=map-private-v2` +
-    `&returnTo=${encodeURIComponent("/pages/mappa-privati-v2.html")}` +
+    `&rootReturnTo=${encodeURIComponent("/pages/mappa-privati-v2.html")}` +
     `&returnEventId=${encodeURIComponent(eventId)}`;
 }
 
