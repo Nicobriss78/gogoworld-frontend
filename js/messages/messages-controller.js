@@ -97,8 +97,8 @@ function buildEventThreadAction(meta, activeEventId) {
   const params = new URLSearchParams();
   params.set("id", activeEventId);
 
-  if (state.returnTo) {
-    params.set("rootReturnTo", state.returnTo);
+  if (state.rootReturnTo) {
+    params.set("rootReturnTo", state.rootReturnTo);
   }
 
   return {
