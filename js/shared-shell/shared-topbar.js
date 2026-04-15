@@ -18,7 +18,7 @@ export function mountTopbar({ mountPoint, onEvent }) {
 
       <div class="home-topbar__row home-topbar__row--actions">
         <a
-          href="/pages/cerca-utenti-v2.html?returnTo=" + encodeURIComponent(window.location.pathname + window.location.search)"
+          href="/pages/cerca-utenti-v2.html?rootReturnTo=${encodeURIComponent(window.location.pathname + window.location.search)}"
           class="home-topbar__btn gw-iconbtn"
           aria-label="Cerca"
           title="Cerca"
