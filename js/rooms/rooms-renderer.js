@@ -92,9 +92,20 @@ export function updateHeader(state) {
   }
 }
 
-export function getAuthorProfileUrl(userId) {
+export function getAuthorProfileUrl(userId, options = {}) {
   if (!userId) return "";
-  const returnTo = encodeURIComponent(buildCurrentRoomReturnTo());
-  return `/pages/user-public.html?userId=${encodeURIComponent(userId)}&returnTo=${returnTo}`;
+
+  const params = new URLSearchParams();
+  params.set("userId", userId);
+
+  if (options.rootReturnTo) {
+    params.set("rootReturnTo", options.rootReturnTo);
+  }
+
+  if (options.structuralParent) {
+    params.set("structuralParent", options.structuralParent);
+  }
+
+  return `/pages/user-public.html?${params.toString()}`;
 }
 
