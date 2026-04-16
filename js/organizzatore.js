@@ -335,7 +335,7 @@ if (btnProfile) btnProfile.href = `/pages/profilo-v2.html?rootReturnTo=organizer
       const canOrg = me?.user?.canOrganize === true;
       if (!(role === "organizer" || role === "admin" || canOrg)) {
         showAlert("Accesso riservato agli organizzatori.", "error", { autoHideMs: 3500 });
-        setTimeout(() => (window.location.href = "partecipante.html"), 600);
+        setTimeout(() => (window.location.href = "/pages/home-v2.html"), 600);
         return;
       }
       // Banner: invito a completare il profilo
