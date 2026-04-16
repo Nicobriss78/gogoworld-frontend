@@ -917,7 +917,7 @@ try {
     if (btnProfile) {
       btnProfile.addEventListener("click", () => {
         // Torna poi a admin.html
-        window.location.href = "profile.html?returnTo=admin.html";
+        window.location.href = "/pages/profilo-v2.html?rootReturnTo=admin";
       });
     }
 
