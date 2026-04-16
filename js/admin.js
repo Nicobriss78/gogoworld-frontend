@@ -935,7 +935,7 @@ try {
     if (btnAsPar) {
       btnAsPar.addEventListener("click", () => {
         try { localStorage.setItem("desiredRole", "participant"); } catch {}
-        window.location.href = "partecipante.html";
+        window.location.href = "/pages/home-v2.html";
       });
     }
   } catch (e) {
