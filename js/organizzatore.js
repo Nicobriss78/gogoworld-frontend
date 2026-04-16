@@ -198,8 +198,7 @@ el.innerHTML = `
   <button id="nagLater" class="btn btn-secondary">Più tardi</button>
 `;
 document.getElementById("nagGoProfile")?.addEventListener("click", () => {
-  const ret = "/organizzatore.html";
-  window.location.href = `profile.html?returnTo=${encodeURIComponent(ret)}`;
+  window.location.href = `/pages/profilo-v2.html?rootReturnTo=organizer`;
 });
 document.getElementById("nagLater")?.addEventListener("click", () => {
   try { sessionStorage.setItem("profileNag", "0"); } catch {}
