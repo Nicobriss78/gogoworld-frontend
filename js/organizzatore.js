@@ -320,8 +320,7 @@ pollRoomsBadge();
 // === A9.3.2 — avvia polling notifiche
 _notiInterval = setInterval(pollNotifications, 20000);
 pollNotifications();
-if (btnProfile) btnProfile.href = `profile.html?returnTo=${encodeURIComponent("/organizzatore.html")}`;
-
+if (btnProfile) btnProfile.href = `/pages/profilo-v2.html?rootReturnTo=organizer`;
   if (!token) {
     window.location.href = "../index.html";
     return;
