@@ -1343,7 +1343,7 @@ if (action === "promote") {
   if (btnSwitchRole) {
     btnSwitchRole.addEventListener("click", () => {
       sessionStorage.setItem("desiredRole", "participant");
-      window.location.href = "partecipante.html";
+      window.location.href = "/pages/home-v2.html";
     });
   }
 
