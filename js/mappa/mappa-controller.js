@@ -139,7 +139,10 @@ async function init() {
     try {
       setLocateBtnBusy(true);
       setGeoStatus("Sto cercando la tua posizione...", "loading");
-
+      state.setGeoState({
+        geoError: "",
+        permission: state.getState().geo?.permission || "unknown"
+      });
       const position = await requestUserPosition();
       const normalized = normalizePosition(position);
 
