@@ -125,7 +125,50 @@ export function createMappaState() {
 
     return state;
   }
+  function setGeoState(partial = {}) {
+    const currentGeo = state.geo || {};
 
+    state = {
+      ...state,
+      geo: {
+        ...currentGeo,
+        permission:
+          typeof partial.permission === "string"
+            ? partial.permission
+            : currentGeo.permission,
+        mode:
+          typeof partial.mode === "string"
+            ? partial.mode
+            : currentGeo.mode,
+        userPosition:
+          partial.userPosition !== undefined
+            ? partial.userPosition
+            : currentGeo.userPosition,
+        mapCenter:
+          partial.mapCenter !== undefined
+            ? partial.mapCenter
+            : currentGeo.mapCenter,
+        radiusMeters:
+          Number.isFinite(partial.radiusMeters)
+            ? partial.radiusMeters
+            : currentGeo.radiusMeters,
+        lastUpdate:
+          partial.lastUpdate !== undefined
+            ? partial.lastUpdate
+            : currentGeo.lastUpdate,
+        accuracy:
+          partial.accuracy !== undefined
+            ? partial.accuracy
+            : currentGeo.accuracy,
+        geoError:
+          typeof partial.geoError === "string"
+            ? partial.geoError
+            : currentGeo.geoError
+      }
+    };
+
+    return state;
+  }
   function setDrawerOpen(isOpen) {
     state = {
       ...state,
