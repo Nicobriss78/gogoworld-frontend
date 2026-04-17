@@ -1,6 +1,7 @@
 export function createMappaMap({
   mapElementId,
-  onSelectEvent
+  onSelectEvent,
+  onViewportChanged
 }) {
   let map = null;
   let clusterGroup = null;
