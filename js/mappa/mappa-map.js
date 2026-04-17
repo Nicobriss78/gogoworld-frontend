@@ -227,6 +227,7 @@ export function createMappaMap({
     focusEvent,
     clearSelection,
     refreshLayout,
+    setViewCenter,
     destroy
   };
 }
