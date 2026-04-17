@@ -124,8 +124,8 @@ body.mappa-page button {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--mappa-space-md);
+  flex-wrap: wrap;
 }
-
 .mappa-title {
   font-size: 17px;
   line-height: 1.15;
