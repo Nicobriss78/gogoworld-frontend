@@ -163,7 +163,7 @@ async function init() {
         geoError: ""
       });
 
-      map.setViewCenter(normalized, 10);
+      map.setViewCenter(normalized, 9);
 
       setGeoStatus("Posizione rilevata. Ti mostro l’area vicina a te.", "success");
     } catch (error) {
