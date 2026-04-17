@@ -263,6 +263,7 @@ function setCurrentUserId(userId) {
     setSelectedEvent,
     clearSelectedEvent,
     setMapStatus,
+    setGeoState,
     setDrawerOpen,
     setChatState,
     resetChatState,
