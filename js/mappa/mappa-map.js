@@ -128,6 +128,30 @@ export function createMappaMap({
     const bounds = clusterGroup.getBounds();
     map.fitBounds(bounds, { padding: [30, 30] });
   }
+  function handleMoveEnd() {
+    if (!map) return;
+
+    const center = map.getCenter();
+
+    onViewportChanged?.({
+      lat: center.lat,
+      lng: center.lng,
+      zoom: map.getZoom()
+    });
+  }
+
+  function setViewCenter(position, zoom = 13) {
+    if (!map || !position) return;
+
+    const lat = Number(position.lat);
+    const lng = Number(position.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    map.setView([lat, lng], zoom, {
+      animate: true
+    });
+  }
   function refreshLayout() {
     if (!map) return;
 
