@@ -31,7 +31,8 @@ async function init() {
 
   const map = createMappaMap({
     mapElementId: "mappaMap",
-    onSelectEvent: handleMapEventSelect
+    onSelectEvent: handleMapEventSelect,
+    onViewportChanged: handleViewportChanged
   });
 
   const chat = createMappaChat({
