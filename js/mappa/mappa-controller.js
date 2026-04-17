@@ -81,8 +81,8 @@ async function init() {
   function unbindUi() {
     elements.infoBtn?.removeEventListener("click", handleOpenDetail);
     elements.drawerContent?.removeEventListener("click", handleDrawerActions);
+    elements.locateBtn?.removeEventListener("click", handleLocateMe);
   }
-
   function handleDrawerActions(event) {
     const action = event.target?.closest?.("[data-action]")?.dataset?.action;
     if (!action) return;
