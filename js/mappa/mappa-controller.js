@@ -75,6 +75,7 @@ async function init() {
   function bindUi() {
     elements.infoBtn?.addEventListener("click", handleOpenDetail);
     elements.drawerContent?.addEventListener("click", handleDrawerActions);
+    elements.locateBtn?.addEventListener("click", handleLocateMe);
   }
 
   function unbindUi() {
