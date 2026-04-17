@@ -411,6 +411,7 @@ function getDomElements() {
     chatSend: document.getElementById("mappaChatSend"),
 
     infoBtn: document.getElementById("mappaChatInfoBtn"),
-    locateBtn: document.getElementById("mappaLocateBtn")
+    locateBtn: document.getElementById("mappaLocateBtn"),
+    geoStatus: document.getElementById("mappaGeoStatus")
   };
 }
