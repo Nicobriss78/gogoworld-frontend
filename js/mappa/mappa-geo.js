@@ -42,9 +42,9 @@ export async function requestUserPosition() {
         });
       },
       {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
+        enableHighAccuracy: false,
+        timeout: 15000,
+        maximumAge: 60000
       }
     );
   });
