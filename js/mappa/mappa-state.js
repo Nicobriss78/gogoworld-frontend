@@ -24,8 +24,19 @@ export function createMappaState() {
 
       currentUserId: null,
 
-returnEventId: null,
-returnDrawerOpen: false
+      geo: {
+        permission: "unknown",
+        mode: "explore",
+        userPosition: null,
+        mapCenter: null,
+        radiusMeters: 5000,
+        lastUpdate: null,
+        accuracy: null,
+        geoError: ""
+      },
+
+      returnEventId: null,
+      returnDrawerOpen: false
     };
   }
 
