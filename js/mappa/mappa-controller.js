@@ -112,6 +112,25 @@ async function init() {
      SHELL SHARED
      Topbar / menu / notifications delegati alla shared shell
      =============================== */
+  function setGeoStatus(message = "", type = "") {
+    if (!elements.geoStatus) return;
+
+    elements.geoStatus.textContent = message;
+    elements.geoStatus.dataset.state = type || "";
+  }
+
+  function setLocateBtnBusy(isBusy) {
+    if (!elements.locateBtn) return;
+
+    if (isBusy) {
+      elements.locateBtn.setAttribute("disabled", "disabled");
+      elements.locateBtn.textContent = "📍 Localizzo...";
+      return;
+    }
+
+    elements.locateBtn.removeAttribute("disabled");
+    elements.locateBtn.textContent = "📍 Vicino a me";
+  }
 /* ===============================
      GEO
      =============================== */
