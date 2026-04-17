@@ -112,7 +112,80 @@ async function init() {
      SHELL SHARED
      Topbar / menu / notifications delegati alla shared shell
      =============================== */
+/* ===============================
+     GEO
+     =============================== */
 
+  async function handleLocateMe() {
+    try {
+      elements.locateBtn?.setAttribute("disabled", "disabled");
+
+      const position = await requestUserPosition();
+      const normalized = normalizePosition(position);
+
+      if (!normalized) {
+        throw new Error("MAPPA_GEO_INVALID_POSITION");
+      }
+
+      state.setGeoState({
+        permission: "granted",
+        mode: "near_me",
+        userPosition: normalized,
+        mapCenter: normalized,
+        accuracy: position.accuracy ?? null,
+        lastUpdate: position.timestamp ?? Date.now(),
+        geoError: ""
+      });
+
+      map.setViewCenter(normalized, 13);
+    } catch (error) {
+      const code =
+        error && typeof error.code === "string"
+          ? error.code
+          : "UNKNOWN";
+
+      state.setGeoState({
+        permission: code === "PERMISSION_DENIED" ? "denied" : state.getState().geo?.permission || "unknown",
+        mode: "explore",
+        geoError: code
+      });
+
+      elements.chatNotice.innerHTML = renderer.renderChatNotice(
+        "Geolocalizzazione non disponibile. Puoi continuare a esplorare la mappa manualmente."
+      );
+    } finally {
+      elements.locateBtn?.removeAttribute("disabled");
+    }
+  }
+
+  function handleViewportChanged(viewport) {
+    if (!viewport) return;
+
+    const currentGeo = state.getState().geo || {};
+    const userPosition = currentGeo.userPosition;
+
+    const nextCenter = {
+      lat: Number(viewport.lat),
+      lng: Number(viewport.lng)
+    };
+
+    if (!Number.isFinite(nextCenter.lat) || !Number.isFinite(nextCenter.lng)) {
+      return;
+    }
+
+    const sameAsUserPosition =
+      userPosition &&
+      Math.abs(userPosition.lat - nextCenter.lat) < 0.00001 &&
+      Math.abs(userPosition.lng - nextCenter.lng) < 0.00001;
+
+    state.setGeoState({
+      mapCenter: nextCenter,
+      mode:
+        currentGeo.mode === "near_me" && sameAsUserPosition
+          ? "near_me"
+          : "explore"
+    });
+  }
   /* ===============================
      LOAD EVENTI PUBBLICI
      =============================== */
