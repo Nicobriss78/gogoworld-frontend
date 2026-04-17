@@ -137,13 +137,17 @@ async function init() {
 
   async function handleLocateMe() {
     try {
-      elements.locateBtn?.setAttribute("disabled", "disabled");
+      setLocateBtnBusy(true);
+      setGeoStatus("Sto cercando la tua posizione...", "loading");
 
       const position = await requestUserPosition();
       const normalized = normalizePosition(position);
 
       if (!normalized) {
-        throw new Error("MAPPA_GEO_INVALID_POSITION");
+        throw {
+          code: "INVALID_POSITION",
+          message: "Posizione non valida"
+        };
       }
 
       state.setGeoState({
@@ -157,6 +161,8 @@ async function init() {
       });
 
       map.setViewCenter(normalized, 13);
+
+      setGeoStatus("Posizione rilevata. Ti mostro l’area vicina a te.", "success");
     } catch (error) {
       const code =
         error && typeof error.code === "string"
@@ -164,16 +170,34 @@ async function init() {
           : "UNKNOWN";
 
       state.setGeoState({
-        permission: code === "PERMISSION_DENIED" ? "denied" : state.getState().geo?.permission || "unknown",
+        permission:
+          code === "PERMISSION_DENIED"
+            ? "denied"
+            : state.getState().geo?.permission || "unknown",
         mode: "explore",
         geoError: code
       });
 
-      elements.chatNotice.innerHTML = renderer.renderChatNotice(
-        "Geolocalizzazione non disponibile. Puoi continuare a esplorare la mappa manualmente."
-      );
+      let message =
+        "Geolocalizzazione non disponibile. Puoi continuare a esplorare la mappa manualmente.";
+
+      if (code === "PERMISSION_DENIED") {
+        message =
+          "Permesso posizione negato. Puoi continuare a esplorare la mappa manualmente.";
+      } else if (code === "TIMEOUT") {
+        message =
+          "Tempo scaduto nel rilevare la posizione. Riprova tra poco o usa la mappa manualmente.";
+      } else if (code === "UNAVAILABLE") {
+        message =
+          "Posizione temporaneamente non disponibile. Puoi continuare a esplorare la mappa manualmente.";
+      } else if (code === "NOT_SUPPORTED") {
+        message =
+          "Geolocalizzazione non supportata da questo dispositivo/browser.";
+      }
+
+      setGeoStatus(message, "error");
     } finally {
-      elements.locateBtn?.removeAttribute("disabled");
+      setLocateBtnBusy(false);
     }
   }
 
