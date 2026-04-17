@@ -133,7 +133,30 @@ body.mappa-page button {
   letter-spacing: 0.01em;
   color: var(--mappa-text);
 }
+.mappa-locate-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
 
+.mappa-geo-status {
+  width: 100%;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--mappa-text-secondary);
+}
+
+.mappa-geo-status[data-state="loading"] {
+  color: var(--mappa-text-secondary);
+}
+
+.mappa-geo-status[data-state="success"] {
+  color: var(--mappa-accent-hover);
+}
+
+.mappa-geo-status[data-state="error"] {
+  color: var(--mappa-danger);
+}
 /* CARD */
 
 .mappa-card {
