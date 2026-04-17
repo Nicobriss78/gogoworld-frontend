@@ -21,6 +21,7 @@ export function createMappaMap({
 
     clusterGroup = L.markerClusterGroup();
     map.addLayer(clusterGroup);
+    map.on("moveend", handleMoveEnd);
   }
 
   function setEvents(events = []) {
