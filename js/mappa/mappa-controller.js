@@ -285,10 +285,25 @@ async function init() {
           ? Number(currentGeo.radiusMeters)
           : DEFAULT_GEO_RADIUS;
 
-      const fetchOptions =
-        Number.isFinite(lat) && Number.isFinite(lng)
-          ? { lat, lng, radius }
-          : {};
+      const bounds =
+        options.bounds &&
+        Number.isFinite(Number(options.bounds.north)) &&
+        Number.isFinite(Number(options.bounds.south)) &&
+        Number.isFinite(Number(options.bounds.east)) &&
+        Number.isFinite(Number(options.bounds.west))
+          ? {
+              north: Number(options.bounds.north),
+              south: Number(options.bounds.south),
+              east: Number(options.bounds.east),
+              west: Number(options.bounds.west)
+            }
+          : null;
+
+      const fetchOptions = bounds
+        ? bounds
+        : Number.isFinite(lat) && Number.isFinite(lng)
+        ? { lat, lng, radius }
+        : {};
 
       const events = await api.fetchPublicMapEvents(fetchOptions);
 
