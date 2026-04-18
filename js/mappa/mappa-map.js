@@ -166,6 +166,66 @@ export function createMappaMap({
       animate: true
     });
   }
+  function setUserLocation(position, options = {}) {
+    if (!map || !position) return;
+
+    const lat = Number(position.lat);
+    const lng = Number(position.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    const showCircle = options.showCircle !== false;
+    const accuracy =
+      Number.isFinite(Number(options.accuracy)) && Number(options.accuracy) > 0
+        ? Number(options.accuracy)
+        : 150;
+
+    if (!userLocationMarker) {
+      userLocationMarker = L.circleMarker([lat, lng], {
+        radius: 8,
+        weight: 3,
+        color: "#ffffff",
+        fillColor: "#1d9bf0",
+        fillOpacity: 1,
+        pane: "markerPane"
+      }).addTo(map);
+    } else {
+      userLocationMarker.setLatLng([lat, lng]);
+    }
+
+    if (showCircle) {
+      if (!userLocationCircle) {
+        userLocationCircle = L.circle([lat, lng], {
+          radius: accuracy,
+          weight: 1,
+          color: "#1d9bf0",
+          fillColor: "#1d9bf0",
+          fillOpacity: 0.12,
+          pane: "overlayPane"
+        }).addTo(map);
+      } else {
+        userLocationCircle.setLatLng([lat, lng]);
+        userLocationCircle.setRadius(accuracy);
+      }
+    } else if (userLocationCircle) {
+      map.removeLayer(userLocationCircle);
+      userLocationCircle = null;
+    }
+  }
+
+  function clearUserLocation() {
+    if (!map) return;
+
+    if (userLocationMarker) {
+      map.removeLayer(userLocationMarker);
+      userLocationMarker = null;
+    }
+
+    if (userLocationCircle) {
+      map.removeLayer(userLocationCircle);
+      userLocationCircle = null;
+    }
+  }
   function getViewportBounds() {
     if (!map) return null;
 
