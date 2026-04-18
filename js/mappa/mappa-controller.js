@@ -178,6 +178,7 @@ async function init() {
         lastUpdate: position.timestamp ?? Date.now(),
         geoError: ""
       });
+      syncLocateBtnMode("near_me");
      map.setUserLocation(normalized, {
         accuracy: position.accuracy ?? null,
         showCircle: true
