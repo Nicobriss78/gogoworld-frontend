@@ -156,6 +156,8 @@ export function createMappaMap({
 
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
 
+    suppressViewportChanged = true;
+
     map.setView([lat, lng], zoom, {
       animate: true
     });
