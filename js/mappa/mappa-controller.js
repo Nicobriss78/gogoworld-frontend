@@ -165,7 +165,11 @@ async function init() {
       });
 
       map.setViewCenter(normalized, 9);
-
+      await loadEvents({
+              lat: normalized.lat,
+              lng: normalized.lng,
+              radius: state.getState().geo?.radiusMeters || DEFAULT_GEO_RADIUS
+      });
       setGeoStatus("Posizione rilevata. Ti mostro l’area vicina a te.", "success");
     } catch (error) {
       const code =
