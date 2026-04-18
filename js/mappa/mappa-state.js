@@ -29,7 +29,7 @@ export function createMappaState() {
         mode: "explore",
         userPosition: null,
         mapCenter: null,
-        radiusMeters: 5000,
+        radiusMeters: 30000,
         lastUpdate: null,
         accuracy: null,
         geoError: ""
