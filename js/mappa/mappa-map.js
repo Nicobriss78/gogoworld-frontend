@@ -253,6 +253,7 @@ export function createMappaMap({
     clearSelection,
     refreshLayout,
     setViewCenter,
+    getViewportBounds,
     destroy
   };
 }
