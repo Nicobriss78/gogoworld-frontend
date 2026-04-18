@@ -127,12 +127,19 @@ async function init() {
 
     if (isBusy) {
       elements.locateBtn.setAttribute("disabled", "disabled");
-      elements.locateBtn.textContent = "📍 Localizzo...";
+      elements.locateBtn.dataset.state = "loading";
+
+      if (elements.locateBtnLabel) {
+        elements.locateBtnLabel.textContent = "Localizzo...";
+      }
       return;
     }
 
     elements.locateBtn.removeAttribute("disabled");
-    elements.locateBtn.textContent = "📍 Vicino a me";
+
+    if (elements.locateBtnLabel) {
+      elements.locateBtnLabel.textContent = "Vicino a me";
+    }
   }
 /* ===============================
      GEO
