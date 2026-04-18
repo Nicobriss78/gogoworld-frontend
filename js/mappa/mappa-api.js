@@ -111,7 +111,26 @@ export function createMappaApi({ fetchImpl } = {}) {
     // silenzioso
   }
 }
+function buildPublicMapEventsQuery(options = {}) {
+    const params = new URLSearchParams();
+    params.set("visibility", "public");
 
+    const lat = Number(options.lat);
+    const lng = Number(options.lng);
+    const radius = Number(options.radius);
+
+    if (
+      Number.isFinite(lat) &&
+      Number.isFinite(lng) &&
+      Number.isFinite(radius)
+    ) {
+      params.set("lat", String(lat));
+      params.set("lng", String(lng));
+      params.set("radius", String(radius));
+    }
+
+    return params;
+}
   /* ===============================
      NORMALIZZAZIONE EVENTI
      =============================== */
