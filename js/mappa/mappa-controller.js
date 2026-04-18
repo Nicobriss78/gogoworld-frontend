@@ -55,7 +55,7 @@ async function init() {
   map.mount();
   chat.mount();
   chat.showIdle();
-
+syncLocateBtnMode(state.getState().geo?.mode || "explore");
   await loadEvents({
     fitBounds: true
   });
