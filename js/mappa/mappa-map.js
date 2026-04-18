@@ -134,6 +134,11 @@ export function createMappaMap({
   function handleMoveEnd() {
     if (!map) return;
 
+    if (suppressViewportChanged) {
+      suppressViewportChanged = false;
+      return;
+    }
+
     const center = map.getCenter();
 
     onViewportChanged?.({
