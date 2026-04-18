@@ -25,7 +25,7 @@ export function createMappaMap({
     map.on("moveend", handleMoveEnd);
   }
 
-  function setEvents(events = []) {
+  function setEvents(events = [], options = {}) {
     if (!clusterGroup) return;
 
     clusterGroup.clearLayers();
@@ -46,7 +46,9 @@ export function createMappaMap({
       markersById.set(ev.id, marker);
     });
 
-    fitBounds();
+    if (options.fitBounds === true) {
+      fitBounds();
+    }
   }
 
   function createMarker(ev) {
