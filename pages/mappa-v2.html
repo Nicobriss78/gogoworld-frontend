@@ -42,11 +42,27 @@
         <button
           id="mappaLocateBtn"
           type="button"
-          class="gw-btn-secondary mappa-locate-btn"
+          class="mappa-locate-btn"
+          data-state="idle"
           aria-label="Trova eventi vicino a me"
           title="Vicino a me"
         >
-          📍 Vicino a me
+          <span class="mappa-locate-btn__icon" aria-hidden="true">
+            <svg
+              class="mappa-target-icon"
+              viewBox="0 0 24 24"
+              focusable="false"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="9" class="mappa-target-icon__outer"></circle>
+              <circle cx="12" cy="12" r="5.5" class="mappa-target-icon__middle"></circle>
+              <circle cx="12" cy="12" r="2.5" class="mappa-target-icon__inner"></circle>
+            </svg>
+          </span>
+
+          <span id="mappaLocateBtnLabel" class="mappa-locate-btn__label">
+            Vicino a me
+          </span>
         </button>
         <div
           id="mappaGeoStatus"
