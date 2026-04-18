@@ -259,7 +259,7 @@ async function init() {
       mapCenter: nextCenter,
       mode: nextMode
     });
-
+syncLocateBtnMode(nextMode);
     if (nextMode === "explore") {
       const bounds = map.getViewportBounds();
 
