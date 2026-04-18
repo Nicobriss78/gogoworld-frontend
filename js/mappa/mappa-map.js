@@ -249,12 +249,17 @@ export function createMappaMap({
     }
   }
   function destroy() {
-    if (!map) return;
+    if (map) {
+      map.off();
+      map.remove();
+      map = null;
+    }
 
-    map.remove();
-    map = null;
+    clusterGroup = null;
     markersById.clear();
     selectedMarker = null;
+    userLocationMarker = null;
+    userLocationCircle = null;
   }
 
   function isValidEvent(ev) {
