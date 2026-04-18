@@ -525,6 +525,7 @@ function getDomElements() {
 
     infoBtn: document.getElementById("mappaChatInfoBtn"),
     locateBtn: document.getElementById("mappaLocateBtn"),
+    locateBtnLabel: document.getElementById("mappaLocateBtnLabel"),
     geoStatus: document.getElementById("mappaGeoStatus")
   };
 }
