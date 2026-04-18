@@ -166,9 +166,10 @@ async function init() {
 
       map.setViewCenter(normalized, 9);
       await loadEvents({
-              lat: normalized.lat,
-              lng: normalized.lng,
-              radius: state.getState().geo?.radiusMeters || DEFAULT_GEO_RADIUS
+        lat: normalized.lat,
+        lng: normalized.lng,
+        radius: state.getState().geo?.radiusMeters || DEFAULT_GEO_RADIUS,
+        fitBounds: false
       });
       setGeoStatus("Posizione rilevata. Ti mostro l’area vicina a te.", "success");
     } catch (error) {
