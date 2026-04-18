@@ -7,6 +7,7 @@ export function createMappaMap({
   let clusterGroup = null;
   let markersById = new Map();
   let selectedMarker = null;
+  let suppressViewportChanged = false;
 
   function mount() {
     if (map) return;
