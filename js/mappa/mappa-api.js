@@ -8,21 +8,22 @@ export function createMappaApi({ fetchImpl } = {}) {
      EVENTI PUBBLICI (MAPPA)
      =============================== */
 
-  async function fetchPublicMapEvents() {
-  try {
-    const res = await apiGet("/events?visibility=public");
+  async function fetchPublicMapEvents(options = {}) {
+    try {
+      const query = buildPublicMapEventsQuery(options);
+      const res = await apiGet(`/events?${query.toString()}`);
 
-    if (!res.ok) return [];
+      if (!res.ok) return [];
 
-    const rawEvents = Array.isArray(res.events) ? res.events : [];
+      const rawEvents = Array.isArray(res.events) ? res.events : [];
 
-    return rawEvents
-      .map(normalizeEventForMap)
-      .filter(isValidMapEvent);
-  } catch {
-    throw new Error("MAPPA_API_FETCH_EVENTS_ERROR");
+      return rawEvents
+        .map(normalizeEventForMap)
+        .filter(isValidMapEvent);
+    } catch {
+      throw new Error("MAPPA_API_FETCH_EVENTS_ERROR");
+    }
   }
-}
 
   /* ===============================
      EVENTO SINGOLO
