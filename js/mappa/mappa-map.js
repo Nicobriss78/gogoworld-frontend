@@ -164,6 +164,19 @@ export function createMappaMap({
       animate: true
     });
   }
+  function getViewportBounds() {
+    if (!map) return null;
+
+    const bounds = map.getBounds();
+    if (!bounds) return null;
+
+    return {
+      north: bounds.getNorth(),
+      south: bounds.getSouth(),
+      east: bounds.getEast(),
+      west: bounds.getWest()
+    };
+  }
   function refreshLayout() {
     if (!map) return;
 
