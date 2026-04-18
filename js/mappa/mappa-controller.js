@@ -141,6 +141,12 @@ async function init() {
       elements.locateBtnLabel.textContent = "Vicino a me";
     }
   }
+  function syncLocateBtnMode(mode) {
+    if (!elements.locateBtn) return;
+
+    elements.locateBtn.dataset.state =
+      mode === "near_me" ? "active" : "idle";
+  }
 /* ===============================
      GEO
      =============================== */
