@@ -315,6 +315,8 @@ export function createMappaMap({
     clearSelection,
     refreshLayout,
     setViewCenter,
+    setUserLocation,
+    clearUserLocation,
     getViewportBounds,
     destroy
   };
