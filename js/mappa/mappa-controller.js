@@ -191,7 +191,7 @@ async function init() {
         mode: "explore",
         geoError: code
       });
-
+      map.clearUserLocation();
       let message =
         "Geolocalizzazione non disponibile. Puoi continuare a esplorare la mappa manualmente.";
 
