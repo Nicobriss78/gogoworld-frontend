@@ -209,7 +209,7 @@ async function init() {
     }
   }
 
-  function handleViewportChanged(viewport) {
+  async function handleViewportChanged(viewport) {
     if (!viewport) return;
 
     const currentGeo = state.getState().geo || {};
@@ -229,13 +229,23 @@ async function init() {
       Math.abs(userPosition.lat - nextCenter.lat) < 0.00001 &&
       Math.abs(userPosition.lng - nextCenter.lng) < 0.00001;
 
+    const nextMode =
+      currentGeo.mode === "near_me" && sameAsUserPosition
+        ? "near_me"
+        : "explore";
+
     state.setGeoState({
       mapCenter: nextCenter,
-      mode:
-        currentGeo.mode === "near_me" && sameAsUserPosition
-          ? "near_me"
-          : "explore"
+      mode: nextMode
     });
+
+    if (nextMode === "explore") {
+      await loadEvents({
+        lat: nextCenter.lat,
+        lng: nextCenter.lng,
+        radius: currentGeo.radiusMeters || DEFAULT_GEO_RADIUS
+      });
+    }
   }
   /* ===============================
      LOAD EVENTI PUBBLICI
