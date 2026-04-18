@@ -14,6 +14,7 @@ async function init() {
   const state = createMappaState();
   const api = createMappaApi();
   const renderer = createMappaRenderer();
+  const DEFAULT_GEO_RADIUS = 30000;
   const elements = getDomElements();
 
   if (!elements.mapEl) {
