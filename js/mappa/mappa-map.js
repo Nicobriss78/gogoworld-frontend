@@ -125,8 +125,10 @@ export function createMappaMap({
 
   function fitBounds() {
     if (!clusterGroup || clusterGroup.getLayers().length === 0) return;
+    if (!map) return;
 
     const bounds = clusterGroup.getBounds();
+    suppressViewportChanged = true;
     map.fitBounds(bounds, { padding: [30, 30] });
   }
   function handleMoveEnd() {
