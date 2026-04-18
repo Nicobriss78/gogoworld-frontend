@@ -56,7 +56,9 @@ async function init() {
   chat.mount();
   chat.showIdle();
 
-  await loadEvents();
+  await loadEvents({
+    fitBounds: true
+  });
   await handleReturnContext();
 
   window.requestAnimationFrame(() => {
