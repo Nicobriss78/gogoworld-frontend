@@ -243,10 +243,10 @@ async function init() {
     });
 
     if (nextMode === "explore") {
+      const bounds = map.getViewportBounds();
+
       await loadEvents({
-        lat: nextCenter.lat,
-        lng: nextCenter.lng,
-        radius: currentGeo.radiusMeters || DEFAULT_GEO_RADIUS,
+        bounds,
         fitBounds: false
       });
     }
