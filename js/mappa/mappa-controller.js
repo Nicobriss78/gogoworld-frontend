@@ -244,7 +244,8 @@ async function init() {
       await loadEvents({
         lat: nextCenter.lat,
         lng: nextCenter.lng,
-        radius: currentGeo.radiusMeters || DEFAULT_GEO_RADIUS
+        radius: currentGeo.radiusMeters || DEFAULT_GEO_RADIUS,
+        fitBounds: false
       });
     }
   }
