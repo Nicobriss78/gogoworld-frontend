@@ -165,7 +165,10 @@ async function init() {
         lastUpdate: position.timestamp ?? Date.now(),
         geoError: ""
       });
-
+     map.setUserLocation(normalized, {
+        accuracy: position.accuracy ?? null,
+        showCircle: true
+      }); 
       map.setViewCenter(normalized, 9);
       await loadEvents({
         lat: normalized.lat,
