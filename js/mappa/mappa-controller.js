@@ -288,8 +288,10 @@ async function init() {
 
       const events = await api.fetchPublicMapEvents(fetchOptions);
 
+      const shouldFitBounds = options.fitBounds === true;
+
       state.setEvents(events);
-      map.setEvents(events);
+      map.setEvents(events, { fitBounds: shouldFitBounds });
 
       state.setMapStatus({
         mapLoading: false,
