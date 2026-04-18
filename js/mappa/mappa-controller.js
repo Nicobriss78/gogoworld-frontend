@@ -251,14 +251,42 @@ async function init() {
      LOAD EVENTI PUBBLICI
      =============================== */
 
-  async function loadEvents() {
+  async function loadEvents(options = {}) {
     try {
       state.setMapStatus({
         mapLoading: true,
         mapError: ""
       });
 
-      const events = await api.fetchPublicMapEvents();
+      const currentGeo = state.getState().geo || {};
+
+      const lat =
+        Number.isFinite(Number(options.lat))
+          ? Number(options.lat)
+          : Number.isFinite(Number(currentGeo.mapCenter?.lat))
+          ? Number(currentGeo.mapCenter.lat)
+          : null;
+
+      const lng =
+        Number.isFinite(Number(options.lng))
+          ? Number(options.lng)
+          : Number.isFinite(Number(currentGeo.mapCenter?.lng))
+          ? Number(currentGeo.mapCenter.lng)
+          : null;
+
+      const radius =
+        Number.isFinite(Number(options.radius))
+          ? Number(options.radius)
+          : Number.isFinite(Number(currentGeo.radiusMeters))
+          ? Number(currentGeo.radiusMeters)
+          : DEFAULT_GEO_RADIUS;
+
+      const fetchOptions =
+        Number.isFinite(lat) && Number.isFinite(lng)
+          ? { lat, lng, radius }
+          : {};
+
+      const events = await api.fetchPublicMapEvents(fetchOptions);
 
       state.setEvents(events);
       map.setEvents(events);
