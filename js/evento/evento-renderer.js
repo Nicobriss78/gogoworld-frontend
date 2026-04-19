@@ -914,6 +914,12 @@ function renderEmptyContent(refs) {
     refs.checkInButton.hidden = false;
   }
 
+  if (refs.navigateButton) {
+    refs.navigateButton.textContent = "Raggiungi evento";
+    refs.navigateButton.disabled = true;
+    refs.navigateButton.hidden = true;
+  }
+
   if (refs.checkInStrip) refs.checkInStrip.hidden = false;
   if (refs.checkInMessage) {
     refs.checkInMessage.textContent = "Check-in non disponibile.";
