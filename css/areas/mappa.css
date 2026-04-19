@@ -515,7 +515,9 @@ body.mappa-detail-open {
   line-height: 1.15;
   font-weight: 800;
   color: var(--mappa-text);
-  margin-bottom: 2px;
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .mappa-chat-header {
