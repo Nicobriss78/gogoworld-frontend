@@ -900,6 +900,7 @@ export function createEventoRenderer(root = document) {
 
     renderHero(refs, state);
     renderActions(refs, state);
+    renderCheckIn(refs, state);
     renderContent(refs, state);
     renderReviews(refs, state);
   }
