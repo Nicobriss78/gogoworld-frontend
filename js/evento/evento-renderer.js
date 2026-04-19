@@ -537,6 +537,7 @@ function createDomRefs(root = document) {
     participationButton: root.getElementById("eventoToggleParticipationButton"),
     openChatButton: root.getElementById("eventoOpenChatButton"),
     checkInButton: root.getElementById("eventoCheckInButton"),
+    navigateButton: root.getElementById("eventoNavigateButton"),
     checkInStrip: root.getElementById("eventoCheckInStrip"),
     checkInMessage: root.getElementById("eventoCheckInMessage"),
     checkInSummary: root.getElementById("eventoCheckInSummary"),
