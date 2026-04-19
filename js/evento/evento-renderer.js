@@ -718,29 +718,49 @@ function renderActions(refs, state) {
   }
 
   if (refs.checkInButton) {
-    const status = state.checkInStatus || null;
-    const alreadyCheckedIn = Boolean(status?.alreadyCheckedIn);
-    const canCheckIn = Boolean(status?.canCheckIn);
+    const uxState = String(state.checkInUxState || "unknown").trim();
     const isCheckInBusy = state.isCheckInLoading || state.isSubmittingCheckIn;
 
-    refs.checkInButton.hidden = false;
-    refs.checkInButton.textContent = state.isSubmittingCheckIn
-      ? "Check-in…"
-      : alreadyCheckedIn
-        ? "Check-in effettuato"
-        : "Fai check-in";
+    let label = "Fai check-in";
+    let disabled = false;
 
+    if (state.isSubmittingCheckIn) {
+      label = "Check-in…";
+      disabled = true;
+    } else if (uxState === "checked_in") {
+      label = "Check-in effettuato";
+      disabled = true;
+    } else if (uxState === "gps_missing" || uxState === "gps_denied") {
+      label = "Attiva posizione";
+      disabled = false;
+    } else if (uxState === "outside_radius") {
+      label = "Raggiungi evento";
+      disabled = true;
+    } else if (uxState === "inside_radius_ready") {
+      label = "Fai check-in";
+      disabled = false;
+    } else if (
+      uxState === "event_not_started" ||
+      uxState === "event_ended" ||
+      uxState === "event_location_missing" ||
+      uxState === "gps_not_supported"
+    ) {
+      label = "Check-in non disponibile";
+      disabled = true;
+    } else {
+      label = "Fai check-in";
+      disabled = false;
+    }
+
+    refs.checkInButton.hidden = false;
+    refs.checkInButton.textContent = label;
     refs.checkInButton.disabled =
       isBusy ||
       state.isOpeningChat ||
       isCheckInBusy ||
-      alreadyCheckedIn ||
-      !canCheckIn;
+      disabled;
 
-    refs.checkInButton.setAttribute(
-      "aria-label",
-      alreadyCheckedIn ? "Check-in già effettuato" : "Fai check-in"
-    );
+    refs.checkInButton.setAttribute("aria-label", label);
   }
 
   const backLabel = resolveBackLabel(state);
