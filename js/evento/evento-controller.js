@@ -329,7 +329,37 @@ async function handleParticipationClick(state, renderer, refs) {
     renderer.render(state);
   }
 }
+async function handleCheckInClick(state, renderer) {
+  if (!state.eventId || !state.event) return;
 
+  try {
+    state.isSubmittingCheckIn = true;
+    state.checkInError = "";
+    renderer.render(state);
+
+    const position = await requestUserPosition();
+    const payload = buildCheckInPayload(state, position);
+
+    const result = await createEventCheckIn(payload);
+
+    const [status, summary] = await Promise.all([
+      getEventCheckInStatus(state.eventId),
+      Promise.resolve(result.summary || null),
+    ]);
+
+    state.checkInStatus = status;
+    state.checkInSummary = summary || state.checkInSummary;
+    state.checkInError = "";
+  } catch (error) {
+    const normalizedMessage = mapCheckInReasonToMessage(
+      String(error?.message || error || "")
+    );
+    state.checkInError = normalizedMessage;
+  } finally {
+    state.isSubmittingCheckIn = false;
+    renderer.render(state);
+  }
+}
 async function handleOpenChatClick(state, renderer) {
   if (!state.eventId) return;
 
