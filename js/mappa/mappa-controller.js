@@ -579,7 +579,14 @@ function handleOpenFullChat(eventId) {
   });
 });
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState !== "visible") return;
+  if (document.visibilityState !== "visible") {
+    stopGeoWatchTracking();
+    return;
+  }
+
+  if ((state.getState().geo?.mode || "explore") === "near_me") {
+    ensureGeoWatchStarted();
+  }
 
   window.requestAnimationFrame(() => {
     map.refreshLayout();
