@@ -610,6 +610,12 @@ function bindUi(state, renderer) {
     });
   }
 
+  if (refs.navigateButton) {
+    refs.navigateButton.addEventListener("click", async () => {
+      await handleNavigateClick(state, renderer);
+    });
+  }
+
   if (refs.backButton) {
     refs.backButton.addEventListener("click", () => {
       goBack(state);
