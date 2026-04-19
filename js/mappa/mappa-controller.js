@@ -329,7 +329,12 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
       mapCenter: nextCenter,
       mode: nextMode
     });
-syncLocateBtnMode(nextMode);
+    syncLocateBtnMode(nextMode);
+
+    if (nextMode === "explore") {
+      stopGeoWatchTracking();
+    }
+
     if (nextMode === "explore") {
       const bounds = map.getViewportBounds();
 
