@@ -438,6 +438,7 @@ async function bootstrapEventoPage() {
   await loadEventoData(state, renderer);
 
   if (state.event && !state.notFound && !state.error) {
+    await loadEventoCheckIn(state, renderer);
     await loadEventoReviews(state, renderer);
   }
 }
