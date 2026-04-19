@@ -747,9 +747,6 @@ function renderActions(refs, state) {
     } else if (uxState === "gps_missing" || uxState === "gps_denied") {
       label = "Attiva posizione";
       disabled = false;
-    } else if (uxState === "outside_radius") {
-      label = "Raggiungi evento";
-      disabled = true;
     } else if (uxState === "inside_radius_ready") {
       label = "Fai check-in";
       disabled = false;
@@ -775,6 +772,18 @@ function renderActions(refs, state) {
       disabled;
 
     refs.checkInButton.setAttribute("aria-label", label);
+  }
+
+  if (refs.navigateButton) {
+    const canNavigate = hasEventNavigationCoords(event);
+
+    refs.navigateButton.hidden = !canNavigate;
+    refs.navigateButton.textContent = "Raggiungi evento";
+    refs.navigateButton.disabled =
+      !canNavigate ||
+      state.isOpeningChat ||
+      state.isSubmittingCheckIn;
+    refs.navigateButton.setAttribute("aria-label", "Raggiungi evento");
   }
 
   const backLabel = resolveBackLabel(state);
