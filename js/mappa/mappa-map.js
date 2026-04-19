@@ -103,11 +103,11 @@ export function createMappaMap({
   const color = getColorByStatus(status);
 
   marker.setStyle({
-    radius: 8,
+    radius: 12,
     color,
     fillColor: color,
-    fillOpacity: 0.9,
-    weight: 1
+    fillOpacity: 0.95,
+    weight: 2
   });
 }
 
