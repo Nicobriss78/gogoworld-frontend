@@ -591,6 +591,7 @@ document.addEventListener("visibilitychange", () => {
   window.addEventListener("pagehide", (event) => {
     if (event.persisted) return;
 
+    stopGeoWatchTracking();
     unbindUi();
     chat.destroy();
     drawer.destroy();
