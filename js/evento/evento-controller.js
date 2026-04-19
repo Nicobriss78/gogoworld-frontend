@@ -453,7 +453,7 @@ async function handleParticipationClick(state, renderer, refs) {
     renderer.render(state);
   }
 }
-async function handleCheckInClick(state, renderer) {
+
 async function handleCheckInClick(state, renderer) {
   if (!state.eventId || !state.event) return;
 
