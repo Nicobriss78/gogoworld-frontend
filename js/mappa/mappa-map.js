@@ -350,11 +350,12 @@ function fitUserAndEvents(position, options = {}) {
     setEvents,
     focusEvent,
     clearSelection,
-    refreshLayout,
-    setViewCenter,
     setUserLocation,
     clearUserLocation,
     getViewportBounds,
+    refreshLayout,
+    setViewCenter,
+    fitUserAndEvents,
     destroy
   };
 }
