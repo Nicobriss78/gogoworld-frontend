@@ -8,6 +8,7 @@ export function createMappaMap({
   let markersById = new Map();
   let selectedMarker = null;
   let suppressViewportChanged = false;
+  let userGestureActive = false;
   let userLocationMarker = null;
   let userLocationCircle = null;
 
