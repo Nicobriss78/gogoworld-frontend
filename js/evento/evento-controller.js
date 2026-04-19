@@ -373,6 +373,8 @@ async function loadEventoCheckIn(state, renderer) {
     state.checkInStatus = status;
     state.checkInSummary = summary;
     state.checkInError = "";
+
+    await hydrateCheckInUxState(state);
   } catch (error) {
     state.checkInStatus = null;
     state.checkInSummary = null;
