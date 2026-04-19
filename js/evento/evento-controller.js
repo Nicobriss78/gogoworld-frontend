@@ -314,12 +314,7 @@ function buildCheckInPayload(state, position) {
       accuracy: Number(position?.accuracy),
     },
     source: "event_page",
-    meta: {
-      geoMode: "unknown",
-      locationTimestamp: new Date(
-        Number(position?.timestamp || Date.now())
-      ).toISOString(),
-    },
+    meta: buildCheckInMeta(position),
   };
 }
 async function loadEventoData(state, renderer) {
