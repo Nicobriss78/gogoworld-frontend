@@ -56,7 +56,61 @@ export async function requestUserPosition() {
 export function isGeoSupported() {
   return "geolocation" in navigator;
 }
+export function startUserPositionWatch({ onUpdate, onError } = {}) {
+  if (!navigator.geolocation) {
+    onError?.({
+      code: "NOT_SUPPORTED",
+      message: "Geolocation not supported"
+    });
+    return null;
+  }
 
+  if (activeGeoWatchId != null) {
+    navigator.geolocation.clearWatch(activeGeoWatchId);
+    activeGeoWatchId = null;
+  }
+
+  activeGeoWatchId = navigator.geolocation.watchPosition(
+    (pos) => {
+      onUpdate?.({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        accuracy: pos.coords.accuracy,
+        timestamp: Date.now()
+      });
+    },
+    (err) => {
+      let code = "UNKNOWN";
+
+      if (err.code === err.PERMISSION_DENIED) {
+        code = "PERMISSION_DENIED";
+      } else if (err.code === err.TIMEOUT) {
+        code = "TIMEOUT";
+      } else if (err.code === err.POSITION_UNAVAILABLE) {
+        code = "UNAVAILABLE";
+      }
+
+      onError?.({
+        code,
+        message: err.message || "Geolocation error"
+      });
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 5000
+    }
+  );
+
+  return activeGeoWatchId;
+}
+
+export function stopUserPositionWatch() {
+  if (!navigator.geolocation || activeGeoWatchId == null) return;
+
+  navigator.geolocation.clearWatch(activeGeoWatchId);
+  activeGeoWatchId = null;
+}
 /**
  * Normalizza coordinate in formato coerente
  */
