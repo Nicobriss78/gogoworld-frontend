@@ -152,7 +152,65 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
 /* ===============================
      GEO
      =============================== */
+  function handleGeoWatchUpdate(position) {
+    const normalized = normalizePosition(position);
+    if (!normalized) return;
 
+    const currentGeo = state.getState().geo || {};
+    if (currentGeo.mode !== "near_me") return;
+
+    state.setGeoState({
+      permission: "granted",
+      userPosition: normalized,
+      mapCenter: normalized,
+      accuracy: position.accuracy ?? null,
+      lastUpdate: position.timestamp ?? Date.now(),
+      geoError: ""
+    });
+
+    map.setUserLocation(normalized, {
+      accuracy: position.accuracy ?? null,
+      showCircle: true
+    });
+  }
+
+  function handleGeoWatchError(error) {
+    const code =
+      error && typeof error.code === "string"
+        ? error.code
+        : "UNKNOWN";
+
+    state.setGeoState({
+      permission:
+        code === "PERMISSION_DENIED"
+          ? "denied"
+          : state.getState().geo?.permission || "unknown",
+      geoError: code
+    });
+
+    if (code === "PERMISSION_DENIED") {
+      setGeoStatus(
+        "Permesso posizione negato. Puoi continuare a esplorare la mappa manualmente.",
+        "error"
+      );
+    }
+  }
+
+  function ensureGeoWatchStarted() {
+    if (geoWatchActive) return;
+
+    const watchId = startUserPositionWatch({
+      onUpdate: handleGeoWatchUpdate,
+      onError: handleGeoWatchError
+    });
+
+    geoWatchActive = watchId != null;
+  }
+
+  function stopGeoWatchTracking() {
+    stopUserPositionWatch();
+    geoWatchActive = false;
+  }
   async function handleLocateMe() {
     try {
       setLocateBtnBusy(true);
