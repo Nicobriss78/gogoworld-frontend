@@ -725,6 +725,7 @@
   .evento-hero__content,
   .evento-content,
   .evento-actions-bar,
+  .evento-checkin-strip,
   .evento-footer-actions {
     max-width: 1240px;
     margin-left: auto;
