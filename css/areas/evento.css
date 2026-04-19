@@ -332,7 +332,18 @@
   border-color: var(--evento-accent-border);
   color: var(--evento-text);
 }
+.evento-btn--accent {
+  background: rgba(181, 42, 50, 0.08);
+  border-color: rgba(181, 42, 50, 0.22);
+  color: var(--evento-danger);
+}
 
+.evento-btn--accent:hover,
+.evento-btn--accent:focus-visible {
+  background: rgba(181, 42, 50, 0.14);
+  border-color: rgba(181, 42, 50, 0.32);
+  color: var(--evento-danger);
+}
 /* CONTENUTO EDITORIALE */
 
 .evento-content {
