@@ -339,8 +339,6 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     if (!viewport) return;
 
     const currentGeo = state.getState().geo || {};
-    const userPosition = currentGeo.userPosition;
-
     const nextCenter = {
       lat: Number(viewport.lat),
       lng: Number(viewport.lng)
@@ -350,34 +348,26 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
       return;
     }
 
-    const sameAsUserPosition =
-      userPosition &&
-      Math.abs(userPosition.lat - nextCenter.lat) < 0.00001 &&
-      Math.abs(userPosition.lng - nextCenter.lng) < 0.00001;
-
-    const nextMode =
-      currentGeo.mode === "near_me" && sameAsUserPosition
-        ? "near_me"
-        : "explore";
+    if (viewport.source !== "user") {
+      state.setGeoState({
+        mapCenter: nextCenter
+      });
+      return;
+    }
 
     state.setGeoState({
       mapCenter: nextCenter,
-      mode: nextMode
+      mode: "explore"
     });
-    syncLocateBtnMode(nextMode);
+    syncLocateBtnMode("explore");
+    stopGeoWatchTracking();
 
-    if (nextMode === "explore") {
-      stopGeoWatchTracking();
-    }
+    const bounds = map.getViewportBounds();
 
-    if (nextMode === "explore") {
-      const bounds = map.getViewportBounds();
-
-      await loadEvents({
-        bounds,
-        fitBounds: false
-      });
-    }
+    await loadEvents({
+      bounds,
+      fitBounds: false
+    });
   }
   /* ===============================
      LOAD EVENTI PUBBLICI
