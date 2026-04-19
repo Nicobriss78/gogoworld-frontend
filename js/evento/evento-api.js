@@ -109,7 +109,20 @@ function unwrapCheckInSummaryResponse(result) {
 
   return summary;
 }
+function unwrapCheckInPreviewResponse(result) {
+  if (!result?.ok) {
+    throw new Error(
+      apiErrorMessage(result, "Impossibile pre-validare il check-in")
+    );
+  }
 
+  const preview = result.preview ?? result.data?.preview ?? null;
+  if (!preview || typeof preview !== "object") {
+    throw new Error("CHECKIN_PREVIEW_PAYLOAD_INVALID");
+  }
+
+  return preview;
+}
 function unwrapCreateCheckInResponse(result) {
   if (!result?.ok) {
     throw new Error(
