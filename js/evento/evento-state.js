@@ -23,6 +23,10 @@ export function createEventoState() {
 
     checkInStatus: null,
     checkInSummary: null,
+    checkInPreview: null,
+    checkInUxState: "unknown",
+    checkInPermission: "unknown",
+    checkInPosition: null,
 
     reviews: [],
     reviewsTotal: 0,
