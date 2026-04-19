@@ -152,6 +152,16 @@ export async function getEventCheckInSummary(eventId) {
   return unwrapCheckInSummaryResponse(result);
 }
 
+export async function getEventCheckInPrecheck(payload = {}) {
+  const safeEventId = ensureEventId(payload.eventId);
+  const result = await apiPost(`/checkins/events/${encodeURIComponent(safeEventId)}/precheck`, {
+    position: payload.position || {},
+    meta: payload.meta || {},
+  });
+
+  return unwrapCheckInPreviewResponse(result);
+}
+
 export async function createEventCheckIn(payload = {}) {
   const safeEventId = ensureEventId(payload.eventId);
   const result = await apiPost("/checkins", {
