@@ -857,6 +857,22 @@ function renderEmptyContent(refs) {
     refs.openChatButton.disabled = true;
   }
 
+  if (refs.checkInButton) {
+    refs.checkInButton.textContent = "Fai check-in";
+    refs.checkInButton.disabled = true;
+    refs.checkInButton.hidden = false;
+  }
+
+  if (refs.checkInStrip) refs.checkInStrip.hidden = false;
+  if (refs.checkInMessage) {
+    refs.checkInMessage.textContent = "Check-in non disponibile.";
+    refs.checkInMessage.dataset.state = "idle";
+  }
+  if (refs.checkInSummary) {
+    refs.checkInSummary.hidden = true;
+    refs.checkInSummary.textContent = "";
+  }
+
   const fallbackBack = "Torna alla schermata precedente";
   if (refs.backFooterButton) refs.backFooterButton.textContent = fallbackBack;
   if (refs.backButton) {
