@@ -56,6 +56,26 @@ export async function requestUserPosition() {
 export function isGeoSupported() {
   return "geolocation" in navigator;
 }
+export async function getGeoPermissionState() {
+  if (!navigator.geolocation) return "not_supported";
+
+  if (!navigator.permissions || typeof navigator.permissions.query !== "function") {
+    return "unknown";
+  }
+
+  try {
+    const result = await navigator.permissions.query({ name: "geolocation" });
+    const state = String(result?.state || "").trim();
+
+    if (state === "granted") return "granted";
+    if (state === "denied") return "denied";
+    if (state === "prompt") return "prompt";
+
+    return "unknown";
+  } catch {
+    return "unknown";
+  }
+}
 export function startUserPositionWatch({ onUpdate, onError } = {}) {
   if (!navigator.geolocation) {
     onError?.({
