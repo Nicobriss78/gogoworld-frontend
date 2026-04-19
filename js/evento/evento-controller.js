@@ -3,9 +3,13 @@ import {
   getEventById,
   getCurrentUser,
   getEventReviews,
+  getEventCheckInStatus,
+  getEventCheckInSummary,
+  createEventCheckIn,
   joinEvent,
   leaveEvent,
 } from "./evento-api.js";
+import { requestUserPosition } from "../mappa/mappa-geo.js";
 import { createEventoRenderer } from "./evento-renderer.js";
 
 function getSearchParams() {
