@@ -239,6 +239,33 @@ async function loadEventoData(state, renderer) {
     renderer.render(state);
   }
 }
+async function loadEventoCheckIn(state, renderer) {
+  if (!state.eventId) return;
+
+  try {
+    state.isCheckInLoading = true;
+    state.checkInError = "";
+    renderer.render(state);
+
+    const [status, summary] = await Promise.all([
+      getEventCheckInStatus(state.eventId),
+      getEventCheckInSummary(state.eventId),
+    ]);
+
+    state.checkInStatus = status;
+    state.checkInSummary = summary;
+    state.checkInError = "";
+  } catch (error) {
+    state.checkInStatus = null;
+    state.checkInSummary = null;
+    state.checkInError = String(
+      error?.message || "Impossibile recuperare i dati del check-in."
+    );
+  } finally {
+    state.isCheckInLoading = false;
+    renderer.render(state);
+  }
+}
 async function loadEventoReviews(state, renderer) {
   if (!state.eventId) return;
 
