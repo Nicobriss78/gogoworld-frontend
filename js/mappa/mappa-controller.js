@@ -8,7 +8,8 @@ import {
   requestUserPosition,
   startUserPositionWatch,
   stopUserPositionWatch,
-  normalizePosition
+  normalizePosition,
+  getDistanceMeters
 } from "/js/mappa/mappa-geo.js";
 document.addEventListener("DOMContentLoaded", init);
 
