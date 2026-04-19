@@ -197,7 +197,20 @@ function fitUserAndEvents(position, options = {}) {
 
     userGestureActive = false;
   }
+  function panToPosition(position) {
+    if (!map || !position) return;
 
+    const lat = Number(position.lat);
+    const lng = Number(position.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    suppressViewportChanged = true;
+
+    map.panTo([lat, lng], {
+      animate: true
+    });
+  }
   function setViewCenter(position, zoom = 13) {
     if (!map || !position) return;
 
