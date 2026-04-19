@@ -454,6 +454,7 @@ async function handleParticipationClick(state, renderer, refs) {
   }
 }
 async function handleCheckInClick(state, renderer) {
+async function handleCheckInClick(state, renderer) {
   if (!state.eventId || !state.event) return;
 
   try {
@@ -462,8 +463,23 @@ async function handleCheckInClick(state, renderer) {
     renderer.render(state);
 
     const position = await requestUserPosition();
-    const payload = buildCheckInPayload(state, position);
+    state.checkInPermission = "granted";
+    state.checkInPosition = position;
 
+    const preview = await getEventCheckInPrecheck(
+      buildCheckInPrecheckPayload(state, position)
+    );
+
+    state.checkInPreview = preview;
+    state.checkInUxState = resolveCheckInUxState(state);
+    renderer.render(state);
+
+    if (!preview?.canCheckIn || String(preview?.reasonCode || "").trim() !== "VALID") {
+      state.checkInError = mapCheckInReasonToMessage(preview?.reasonCode);
+      return;
+    }
+
+    const payload = buildCheckInPayload(state, position);
     const result = await createEventCheckIn(payload);
 
     const [status, summary] = await Promise.all([
@@ -473,12 +489,25 @@ async function handleCheckInClick(state, renderer) {
 
     state.checkInStatus = status;
     state.checkInSummary = summary || state.checkInSummary;
+    state.checkInPreview = preview;
+    state.checkInUxState = resolveCheckInUxState(state);
     state.checkInError = "";
   } catch (error) {
-    const normalizedMessage = mapCheckInReasonToMessage(
-      String(error?.message || error || "")
-    );
-    state.checkInError = normalizedMessage;
+    const errorCode = String(error?.code || error?.message || error || "").trim();
+
+    if (errorCode === "PERMISSION_DENIED") {
+      state.checkInPermission = "denied";
+      state.checkInUxState = "gps_denied";
+    } else if (errorCode === "NOT_SUPPORTED") {
+      state.checkInPermission = "not_supported";
+      state.checkInUxState = "gps_not_supported";
+    } else if (errorCode === "TIMEOUT") {
+      state.checkInUxState = "gps_timeout";
+    } else if (errorCode === "UNAVAILABLE") {
+      state.checkInUxState = "gps_unavailable";
+    }
+
+    state.checkInError = mapCheckInReasonToMessage(errorCode);
   } finally {
     state.isSubmittingCheckIn = false;
     renderer.render(state);
