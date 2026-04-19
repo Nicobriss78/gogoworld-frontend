@@ -22,7 +22,7 @@ async function init() {
   if (!elements.mapEl) {
     return;
   }
-
+let geoWatchActive = false;
   const drawer = createMappaDrawer({
     overlayEl: elements.drawerOverlay,
     drawerEl: elements.drawer,
