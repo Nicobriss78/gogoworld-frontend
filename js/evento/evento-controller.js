@@ -549,6 +549,21 @@ async function handleCheckInClick(state, renderer) {
     renderer.render(state);
   }
 }
+async function handleNavigateClick(state, renderer) {
+  if (!state.event) return;
+
+  try {
+    state.error = "";
+    renderer.render(state);
+
+    openExternalNavigation(state.event);
+  } catch (error) {
+    state.error = String(
+      error?.message || "Impossibile avviare la navigazione verso l’evento."
+    );
+    renderer.render(state);
+  }
+}
 async function handleOpenChatClick(state, renderer) {
   if (!state.eventId) return;
 
