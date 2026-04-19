@@ -147,7 +147,58 @@ function isNotFoundError(error) {
 function getParticipationAction(refs) {
   return String(refs?.participationButton?.dataset?.action || "").trim();
 }
+function mapCheckInReasonToMessage(reasonCode) {
+  const code = String(reasonCode || "").trim();
 
+  switch (code) {
+    case "VALID":
+      return "Puoi effettuare il check-in quando sei sul posto.";
+    case "ALREADY_CHECKED_IN":
+      return "Hai già effettuato il check-in per questo evento.";
+    case "EVENT_NOT_ACTIVE":
+      return "Il check-in è disponibile solo mentre l'evento è in corso.";
+    case "EVENT_HAS_NO_LOCATION":
+      return "Check-in non disponibile: posizione evento non configurata.";
+    case "LOCATION_REQUIRED":
+      return "Per il check-in serve una posizione valida.";
+    case "LOCATION_TOO_OLD":
+      return "La posizione è troppo vecchia. Riprova.";
+    case "LOCATION_TOO_IMPRECISE":
+      return "La posizione rilevata non è abbastanza precisa. Riprova.";
+    case "OUTSIDE_RADIUS":
+      return "Non risulti abbastanza vicino al luogo dell'evento per effettuare il check-in.";
+    case "FORBIDDEN":
+      return "Non puoi effettuare il check-in per questo evento.";
+    case "PERMISSION_DENIED":
+      return "Permesso posizione negato. Abilita la geolocalizzazione per fare check-in.";
+    case "TIMEOUT":
+      return "Tempo scaduto durante la rilevazione della posizione. Riprova.";
+    case "UNAVAILABLE":
+      return "Posizione non disponibile in questo momento. Riprova.";
+    case "NOT_SUPPORTED":
+      return "Il tuo browser non supporta la geolocalizzazione.";
+    default:
+      return "Check-in non disponibile in questo momento.";
+  }
+}
+
+function buildCheckInPayload(state, position) {
+  return {
+    eventId: state.eventId,
+    position: {
+      lat: Number(position?.lat),
+      lng: Number(position?.lng),
+      accuracy: Number(position?.accuracy),
+    },
+    source: "event_page",
+    meta: {
+      geoMode: "unknown",
+      locationTimestamp: new Date(
+        Number(position?.timestamp || Date.now())
+      ).toISOString(),
+    },
+  };
+}
 async function loadEventoData(state, renderer) {
   setEventoLoading(state, true);
   state.error = "";
