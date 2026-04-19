@@ -626,33 +626,39 @@ function resolveCheckInMessage(state) {
   }
 
   if (state.isSubmittingCheckIn) {
-    return "Rilevazione posizione e invio check-in…";
+    return "Verifica posizione e invio check-in…";
   }
 
   if (state.checkInError) {
     return state.checkInError;
   }
 
-  const status = state.checkInStatus;
-  if (!status) {
-    return "Check-in non disponibile.";
-  }
-
-  if (status.alreadyCheckedIn) {
-    return "Hai già effettuato il check-in per questo evento.";
-  }
-
-  if (status.canCheckIn) {
-    return "Puoi effettuare il check-in quando sei sul posto.";
-  }
-
-  switch (String(status.reasonCode || "").trim()) {
-    case "EVENT_NOT_ACTIVE":
-      return "Il check-in è disponibile solo mentre l'evento è in corso.";
-    case "EVENT_HAS_NO_LOCATION":
-      return "Check-in non disponibile: posizione evento non configurata.";
-    case "FORBIDDEN":
-      return "Non puoi effettuare il check-in per questo evento.";
+  switch (String(state.checkInUxState || "unknown").trim()) {
+    case "checked_in":
+      return "Check-in già effettuato, complimenti e grazie per la tua partecipazione!";
+    case "gps_missing":
+      return "Check-in non effettuato. Se ti trovi sul posto, attiva la posizione e fai il check-in.";
+    case "gps_denied":
+      return "Check-in non effettuato. Hai negato l’accesso alla posizione: abilitalo per fare check-in.";
+    case "gps_not_supported":
+      return "Il tuo browser non supporta la geolocalizzazione.";
+    case "gps_timeout":
+    case "gps_unavailable":
+      return "Non riusciamo a rilevare la tua posizione in questo momento. Riprova.";
+    case "gps_imprecise":
+      return "La posizione rilevata non è abbastanza precisa per il check-in. Riprova.";
+    case "gps_stale":
+      return "La posizione rilevata è troppo vecchia. Aggiornala e riprova.";
+    case "event_not_started":
+      return "Il check-in sarà disponibile quando l’evento sarà in corso.";
+    case "event_ended":
+      return "Il check-in non è più disponibile perché l’evento è terminato.";
+    case "event_location_missing":
+      return "Check-in non disponibile: la posizione dell’evento non è ancora configurata.";
+    case "outside_radius":
+      return "Check-in non effettuato. Raggiungi l’evento e fai check-in.";
+    case "inside_radius_ready":
+      return "Check-in non effettuato. Risulti presente all’evento: fai check-in.";
     default:
       return "Check-in non disponibile in questo momento.";
   }
