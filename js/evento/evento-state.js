@@ -14,8 +14,15 @@ export function createEventoState() {
     isLeaving: false,
     isOpeningChat: false,
 
+    isCheckInLoading: false,
+    isSubmittingCheckIn: false,
+
     notFound: false,
     error: "",
+    checkInError: "",
+
+    checkInStatus: null,
+    checkInSummary: null,
 
     reviews: [],
     reviewsTotal: 0,
