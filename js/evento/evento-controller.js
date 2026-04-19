@@ -400,6 +400,12 @@ function bindUi(state, renderer) {
     });
   }
 
+  if (refs.checkInButton) {
+    refs.checkInButton.addEventListener("click", async () => {
+      await handleCheckInClick(state, renderer);
+    });
+  }
+
   if (refs.backButton) {
     refs.backButton.addEventListener("click", () => {
       goBack(state);
