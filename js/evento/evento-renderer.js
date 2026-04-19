@@ -369,7 +369,20 @@ function resolveChatButtonLabel(event) {
   }
   return "Apri chat evento";
 }
+function hasEventNavigationCoords(event) {
+  const locationCoords = Array.isArray(event?.location?.coordinates)
+    ? event.location.coordinates
+    : null;
 
+  if (locationCoords && locationCoords.length === 2) {
+    const [lng, lat] = locationCoords.map(Number);
+    return Number.isFinite(lat) && Number.isFinite(lng);
+  }
+
+  const lat = Number(event?.lat);
+  const lon = Number(event?.lon);
+  return Number.isFinite(lat) && Number.isFinite(lon);
+}
 function resolveBackLabel(state) {
   const fromView = String(state?.fromView || "").trim();
 
