@@ -470,13 +470,11 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     elements.drawerContent.innerHTML = renderer.renderSelectedEventCard(event);
   }
 
-  function handleOpenDetail() {
+  function handleOpenEventPage() {
     const selectedEvent = getSelectedEvent();
-    if (!selectedEvent) return;
+    if (!selectedEvent?.id) return;
 
-    renderDetailCard(selectedEvent);
-    drawer.open();
-    state.setDrawerOpen(true);
+    handleOpenFullDetail(selectedEvent.id);
   }
 
   function handleCloseDetail() {
