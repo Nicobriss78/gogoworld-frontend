@@ -606,7 +606,81 @@ function renderHero(refs, state) {
     refs.statusBadge.hidden = false;
   }
 }
+function buildCheckInSummaryText(summary) {
+  if (!summary || typeof summary !== "object") return "";
 
+  const total = Number(summary.total || 0);
+  const planned = Number(summary.planned || 0);
+  const spontaneous = Number(summary.spontaneous || 0);
+
+  if (total <= 0) {
+    return "Nessun check-in registrato finora.";
+  }
+
+  return `${total} check-in · ${planned} pianificati · ${spontaneous} spontanei`;
+}
+
+function resolveCheckInMessage(state) {
+  if (state.isCheckInLoading) {
+    return "Caricamento stato check-in…";
+  }
+
+  if (state.isSubmittingCheckIn) {
+    return "Rilevazione posizione e invio check-in…";
+  }
+
+  if (state.checkInError) {
+    return state.checkInError;
+  }
+
+  const status = state.checkInStatus;
+  if (!status) {
+    return "Check-in non disponibile.";
+  }
+
+  if (status.alreadyCheckedIn) {
+    return "Hai già effettuato il check-in per questo evento.";
+  }
+
+  if (status.canCheckIn) {
+    return "Puoi effettuare il check-in quando sei sul posto.";
+  }
+
+  switch (String(status.reasonCode || "").trim()) {
+    case "EVENT_NOT_ACTIVE":
+      return "Il check-in è disponibile solo mentre l'evento è in corso.";
+    case "EVENT_HAS_NO_LOCATION":
+      return "Check-in non disponibile: posizione evento non configurata.";
+    case "FORBIDDEN":
+      return "Non puoi effettuare il check-in per questo evento.";
+    default:
+      return "Check-in non disponibile in questo momento.";
+  }
+}
+
+function renderCheckIn(refs, state) {
+  if (refs.checkInStrip) {
+    refs.checkInStrip.hidden = false;
+  }
+
+  if (refs.checkInMessage) {
+    refs.checkInMessage.textContent = resolveCheckInMessage(state);
+    refs.checkInMessage.dataset.state =
+      state.checkInError
+        ? "error"
+        : state.checkInStatus?.alreadyCheckedIn
+          ? "success"
+          : state.checkInStatus?.canCheckIn
+            ? "ready"
+            : "idle";
+  }
+
+  if (refs.checkInSummary) {
+    const summaryText = buildCheckInSummaryText(state.checkInSummary);
+    refs.checkInSummary.textContent = summaryText;
+    refs.checkInSummary.hidden = !summaryText;
+  }
+}
 function renderActions(refs, state) {
   const event = state.event || null;
   if (!event) return;
