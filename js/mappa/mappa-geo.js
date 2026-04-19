@@ -117,8 +117,8 @@ export function startUserPositionWatch({ onUpdate, onError } = {}) {
     },
     {
       enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 5000
+      timeout: 10000,
+      maximumAge: 0
     }
   );
 
