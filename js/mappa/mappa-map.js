@@ -126,7 +126,39 @@ export function createMappaMap({
   map.closePopup();
 }
   }
+function fitUserAndEvents(position, options = {}) {
+    if (!map) return;
 
+    const lat = Number(position?.lat);
+    const lng = Number(position?.lng);
+    const hasUserPosition = Number.isFinite(lat) && Number.isFinite(lng);
+    const hasEventMarkers =
+      clusterGroup && clusterGroup.getLayers().length > 0;
+
+    if (!hasUserPosition && !hasEventMarkers) return;
+
+    if (!hasEventMarkers && hasUserPosition) {
+      suppressViewportChanged = true;
+      map.setView([lat, lng], Number(options.zoom || 15), {
+        animate: true
+      });
+      return;
+    }
+
+    const bounds = clusterGroup.getBounds();
+
+    if (hasUserPosition) {
+      bounds.extend([lat, lng]);
+    }
+
+    suppressViewportChanged = true;
+    map.fitBounds(bounds, {
+      padding: Array.isArray(options.padding) ? options.padding : [40, 40],
+      maxZoom: Number.isFinite(Number(options.maxZoom))
+        ? Number(options.maxZoom)
+        : 15
+    });
+}
   function fitBounds() {
     if (!clusterGroup || clusterGroup.getLayers().length === 0) return;
     if (!map) return;
