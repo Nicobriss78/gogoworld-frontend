@@ -25,6 +25,15 @@ export function createMappaMap({
 
     clusterGroup = L.markerClusterGroup();
     map.addLayer(clusterGroup);
+
+    map.on("dragstart", () => {
+      userGestureActive = true;
+    });
+
+    map.on("zoomstart", () => {
+      userGestureActive = true;
+    });
+
     map.on("moveend", handleMoveEnd);
   }
 
