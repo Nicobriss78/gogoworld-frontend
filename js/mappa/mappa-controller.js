@@ -82,13 +82,13 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
   }
 
   function bindUi() {
-    elements.infoBtn?.addEventListener("click", handleOpenDetail);
+    elements.infoBtn?.addEventListener("click", handleOpenEventPage);
     elements.drawerContent?.addEventListener("click", handleDrawerActions);
     elements.locateBtn?.addEventListener("click", handleLocateMe);
   }
 
   function unbindUi() {
-    elements.infoBtn?.removeEventListener("click", handleOpenDetail);
+    elements.infoBtn?.removeEventListener("click", handleOpenEventPage);
     elements.drawerContent?.removeEventListener("click", handleDrawerActions);
     elements.locateBtn?.removeEventListener("click", handleLocateMe);
   }
