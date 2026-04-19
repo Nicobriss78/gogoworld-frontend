@@ -22,7 +22,7 @@ export async function requestUserPosition() {
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
           accuracy: pos.coords.accuracy,
-          timestamp: Date.now()
+          timestamp: Number(pos.timestamp || Date.now())
         });
       },
       (err) => {
