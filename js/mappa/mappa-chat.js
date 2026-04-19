@@ -10,6 +10,12 @@ export function createMappaChat({
 
   function mount() {
     elements.sendBtnEl.addEventListener("click", handleSend);
+
+    if (elements.infoBtn) {
+      elements.infoBtn.textContent = "Vai all’evento";
+      elements.infoBtn.setAttribute("aria-label", "Vai all’evento");
+      elements.infoBtn.setAttribute("title", "Vai all’evento");
+    }
   }
 
   /* ===============================
