@@ -378,6 +378,10 @@ async function loadEventoCheckIn(state, renderer) {
   } catch (error) {
     state.checkInStatus = null;
     state.checkInSummary = null;
+    state.checkInPreview = null;
+    state.checkInUxState = "unknown";
+    state.checkInPermission = "unknown";
+    state.checkInPosition = null;
     state.checkInError = String(
       error?.message || "Impossibile recuperare i dati del check-in."
     );
