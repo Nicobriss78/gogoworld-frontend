@@ -79,8 +79,6 @@ export function createMappaMap({
     status: ev.status
   };
 
-  marker.bindPopup(createPopupHtml(ev));
-
   return marker;
 }
 
