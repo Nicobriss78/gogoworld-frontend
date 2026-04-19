@@ -702,7 +702,37 @@ function renderActions(refs, state) {
     refs.openChatButton.textContent = state.isOpeningChat
       ? "Apertura chat…"
       : resolveChatButtonLabel(event);
-    refs.openChatButton.disabled = state.isOpeningChat || state.isJoining || state.isLeaving;
+    refs.openChatButton.disabled =
+      state.isOpeningChat ||
+      state.isJoining ||
+      state.isLeaving ||
+      state.isSubmittingCheckIn;
+  }
+
+  if (refs.checkInButton) {
+    const status = state.checkInStatus || null;
+    const alreadyCheckedIn = Boolean(status?.alreadyCheckedIn);
+    const canCheckIn = Boolean(status?.canCheckIn);
+    const isCheckInBusy = state.isCheckInLoading || state.isSubmittingCheckIn;
+
+    refs.checkInButton.hidden = false;
+    refs.checkInButton.textContent = state.isSubmittingCheckIn
+      ? "Check-in…"
+      : alreadyCheckedIn
+        ? "Check-in effettuato"
+        : "Fai check-in";
+
+    refs.checkInButton.disabled =
+      isBusy ||
+      state.isOpeningChat ||
+      isCheckInBusy ||
+      alreadyCheckedIn ||
+      !canCheckIn;
+
+    refs.checkInButton.setAttribute(
+      "aria-label",
+      alreadyCheckedIn ? "Check-in già effettuato" : "Fai check-in"
+    );
   }
 
   const backLabel = resolveBackLabel(state);
