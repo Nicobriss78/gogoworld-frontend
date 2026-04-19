@@ -151,7 +151,7 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     if (!elements.locateBtn) return;
 
     elements.locateBtn.dataset.state =
-      mode === "near_me" ? "active" : "idle";
+      mode === "near_me" || mode === GEO_FOLLOW_MODE ? "active" : "idle";
   }
 /* ===============================
      GEO
