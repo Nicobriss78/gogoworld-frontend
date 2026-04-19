@@ -161,14 +161,38 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     if (!normalized) return;
 
     const currentGeo = state.getState().geo || {};
-    if (currentGeo.mode !== "near_me") return;
+    const currentMode = String(currentGeo.mode || "explore").trim();
+
+    if (currentMode !== "near_me" && currentMode !== GEO_FOLLOW_MODE) return;
+
+    const nextAccuracy = Number(position?.accuracy);
+    const prevPosition = currentGeo.userPosition || null;
+    const prevAccuracy = Number(currentGeo?.accuracy);
+    const nextTimestamp = Number(position?.timestamp || Date.now());
+    const prevTimestamp = Number(currentGeo?.lastUpdate || 0);
+    const movedMeters =
+      prevPosition ? getDistanceMeters(prevPosition, normalized) : null;
+
+    if (Number.isFinite(prevTimestamp) && nextTimestamp <= prevTimestamp) {
+      return;
+    }
+
+    if (
+      prevPosition &&
+      Number.isFinite(nextAccuracy) &&
+      nextAccuracy > GEO_MAX_NOISY_ACCURACY &&
+      (!Number.isFinite(movedMeters) || movedMeters < 15) &&
+      (!Number.isFinite(prevAccuracy) || nextAccuracy >= prevAccuracy)
+    ) {
+      return;
+    }
 
     state.setGeoState({
       permission: "granted",
       userPosition: normalized,
       mapCenter: normalized,
       accuracy: position.accuracy ?? null,
-      lastUpdate: position.timestamp ?? Date.now(),
+      lastUpdate: nextTimestamp,
       geoError: ""
     });
 
@@ -176,6 +200,13 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
       accuracy: position.accuracy ?? null,
       showCircle: true
     });
+
+    if (
+      currentMode === GEO_FOLLOW_MODE &&
+      (!prevPosition || !Number.isFinite(movedMeters) || movedMeters >= GEO_MIN_MOVE_METERS)
+    ) {
+      map.panToPosition(normalized);
+    }
   }
 
   function handleGeoWatchError(error) {
