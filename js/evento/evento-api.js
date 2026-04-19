@@ -80,7 +80,76 @@ export async function leaveEvent(eventId) {
   const result = await apiPost(`/events/${encodeURIComponent(safeEventId)}/leave`, {});
   return unwrapEventResponse(result);
 }
+function unwrapCheckInStatusResponse(result) {
+  if (!result?.ok) {
+    throw new Error(
+      apiErrorMessage(result, "Impossibile recuperare lo stato del check-in")
+    );
+  }
 
+  const status = result.status ?? result.data?.status ?? null;
+  if (!status || typeof status !== "object") {
+    throw new Error("CHECKIN_STATUS_PAYLOAD_INVALID");
+  }
+
+  return status;
+}
+
+function unwrapCheckInSummaryResponse(result) {
+  if (!result?.ok) {
+    throw new Error(
+      apiErrorMessage(result, "Impossibile recuperare il riepilogo check-in")
+    );
+  }
+
+  const summary = result.summary ?? result.data?.summary ?? null;
+  if (!summary || typeof summary !== "object") {
+    throw new Error("CHECKIN_SUMMARY_PAYLOAD_INVALID");
+  }
+
+  return summary;
+}
+
+function unwrapCreateCheckInResponse(result) {
+  if (!result?.ok) {
+    throw new Error(
+      apiErrorMessage(result, "Impossibile completare il check-in")
+    );
+  }
+
+  const checkIn = result.checkIn ?? result.data?.checkIn ?? null;
+  const summary = result.summary ?? result.data?.summary ?? null;
+
+  if (!checkIn || typeof checkIn !== "object") {
+    throw new Error("CHECKIN_CREATE_PAYLOAD_INVALID");
+  }
+
+  return { checkIn, summary: summary && typeof summary === "object" ? summary : null };
+}
+
+export async function getEventCheckInStatus(eventId) {
+  const safeEventId = ensureEventId(eventId);
+  const result = await apiGet(`/checkins/events/${encodeURIComponent(safeEventId)}/status`);
+  return unwrapCheckInStatusResponse(result);
+}
+
+export async function getEventCheckInSummary(eventId) {
+  const safeEventId = ensureEventId(eventId);
+  const result = await apiGet(`/checkins/events/${encodeURIComponent(safeEventId)}/summary`);
+  return unwrapCheckInSummaryResponse(result);
+}
+
+export async function createEventCheckIn(payload = {}) {
+  const safeEventId = ensureEventId(payload.eventId);
+  const result = await apiPost("/checkins", {
+    eventId: safeEventId,
+    position: payload.position || {},
+    source: payload.source || "event_page",
+    meta: payload.meta || {},
+  });
+
+  return unwrapCreateCheckInResponse(result);
+}
 export async function openOrJoinEventRoom(eventId) {
   const safeEventId = ensureEventId(eventId);
   const result = await apiPost(
