@@ -909,4 +909,4 @@ export function createEventoRenderer(root = document) {
     refs,
     render,
   };
-    }
+}
