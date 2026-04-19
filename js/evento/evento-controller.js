@@ -152,32 +152,32 @@ function mapCheckInReasonToMessage(reasonCode) {
   const code = String(reasonCode || "").trim();
 
   switch (code) {
-    case "VALID":
-      return "Puoi effettuare il check-in quando sei sul posto.";
     case "ALREADY_CHECKED_IN":
-      return "Hai già effettuato il check-in per questo evento.";
+      return "Check-in già effettuato, complimenti e grazie per la tua partecipazione!";
     case "EVENT_NOT_ACTIVE":
       return "Il check-in è disponibile solo mentre l'evento è in corso.";
     case "EVENT_HAS_NO_LOCATION":
-      return "Check-in non disponibile: posizione evento non configurata.";
+      return "Check-in non disponibile: la posizione dell'evento non è ancora configurata.";
     case "LOCATION_REQUIRED":
-      return "Per il check-in serve una posizione valida.";
+      return "Check-in non effettuato. Se ti trovi sul posto, attiva la posizione e fai il check-in.";
     case "LOCATION_TOO_OLD":
-      return "La posizione è troppo vecchia. Riprova.";
+      return "La posizione rilevata è troppo vecchia. Aggiornala e riprova.";
     case "LOCATION_TOO_IMPRECISE":
-      return "La posizione rilevata non è abbastanza precisa. Riprova.";
+      return "La posizione rilevata non è abbastanza precisa per il check-in. Riprova.";
     case "OUTSIDE_RADIUS":
-      return "Non risulti abbastanza vicino al luogo dell'evento per effettuare il check-in.";
+      return "Check-in non effettuato. Raggiungi l'evento e fai check-in.";
     case "FORBIDDEN":
       return "Non puoi effettuare il check-in per questo evento.";
     case "PERMISSION_DENIED":
-      return "Permesso posizione negato. Abilita la geolocalizzazione per fare check-in.";
+      return "Check-in non effettuato. Hai negato l’accesso alla posizione: abilitalo per fare check-in.";
     case "TIMEOUT":
-      return "Tempo scaduto durante la rilevazione della posizione. Riprova.";
+      return "Non riusciamo a rilevare la tua posizione in questo momento. Riprova.";
     case "UNAVAILABLE":
       return "Posizione non disponibile in questo momento. Riprova.";
     case "NOT_SUPPORTED":
       return "Il tuo browser non supporta la geolocalizzazione.";
+    case "VALID":
+      return "Check-in non effettuato. Risulti presente all’evento: fai check-in.";
     default:
       return "Check-in non disponibile in questo momento.";
   }
