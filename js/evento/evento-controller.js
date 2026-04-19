@@ -182,7 +182,129 @@ function mapCheckInReasonToMessage(reasonCode) {
       return "Check-in non disponibile in questo momento.";
   }
 }
+function buildCheckInMeta(position) {
+  return {
+    geoMode: "unknown",
+    locationTimestamp: new Date(
+      Number(position?.timestamp || Date.now())
+    ).toISOString(),
+  };
+}
 
+function buildCheckInPrecheckPayload(state, position) {
+  return {
+    eventId: state.eventId,
+    position: {
+      lat: Number(position?.lat),
+      lng: Number(position?.lng),
+      accuracy: Number(position?.accuracy),
+    },
+    meta: buildCheckInMeta(position),
+  };
+}
+
+function resolveCheckInUxState(state) {
+  const status = state.checkInStatus || null;
+  const preview = state.checkInPreview || null;
+  const permission = String(state.checkInPermission || "unknown").trim();
+
+  if (status?.alreadyCheckedIn) return "checked_in";
+
+  if (String(status?.reasonCode || "").trim() === "EVENT_HAS_NO_LOCATION") {
+    return "event_location_missing";
+  }
+
+  if (status?.eventStatus === "upcoming") return "event_not_started";
+  if (status?.eventStatus === "past") return "event_ended";
+
+  if (permission === "denied") return "gps_denied";
+  if (permission === "prompt" || permission === "unknown") return "gps_missing";
+  if (permission === "not_supported") return "gps_not_supported";
+
+  const previewReason = String(preview?.reasonCode || "").trim();
+  if (previewReason === "OUTSIDE_RADIUS") return "outside_radius";
+  if (previewReason === "VALID") return "inside_radius_ready";
+  if (previewReason === "LOCATION_TOO_IMPRECISE") return "gps_imprecise";
+  if (previewReason === "LOCATION_TOO_OLD") return "gps_stale";
+  if (previewReason === "LOCATION_REQUIRED") return "gps_missing";
+  if (previewReason === "EVENT_NOT_ACTIVE") {
+    return status?.eventStatus === "past" ? "event_ended" : "event_not_started";
+  }
+
+  return "unknown";
+}
+
+async function hydrateCheckInUxState(state) {
+  const status = state.checkInStatus || null;
+
+  if (!status) {
+    state.checkInPreview = null;
+    state.checkInUxState = "unknown";
+    state.checkInPermission = "unknown";
+    state.checkInPosition = null;
+    return;
+  }
+
+  if (status.alreadyCheckedIn) {
+    state.checkInPreview = null;
+    state.checkInUxState = "checked_in";
+    return;
+  }
+
+  if (String(status.reasonCode || "").trim() === "EVENT_HAS_NO_LOCATION") {
+    state.checkInPreview = null;
+    state.checkInUxState = "event_location_missing";
+    return;
+  }
+
+  if (status.eventStatus === "upcoming") {
+    state.checkInPreview = null;
+    state.checkInUxState = "event_not_started";
+    return;
+  }
+
+  if (status.eventStatus === "past") {
+    state.checkInPreview = null;
+    state.checkInUxState = "event_ended";
+    return;
+  }
+
+  const permission = await getGeoPermissionState();
+  state.checkInPermission = permission;
+
+  if (permission === "denied" || permission === "prompt" || permission === "unknown" || permission === "not_supported") {
+    state.checkInPreview = null;
+    state.checkInPosition = null;
+    state.checkInUxState = resolveCheckInUxState(state);
+    return;
+  }
+
+  try {
+    const position = await requestUserPosition();
+    state.checkInPosition = position;
+
+    const preview = await getEventCheckInPrecheck(
+      buildCheckInPrecheckPayload(state, position)
+    );
+
+    state.checkInPreview = preview;
+    state.checkInUxState = resolveCheckInUxState(state);
+  } catch (error) {
+    const code = String(error?.code || error?.message || error || "").trim();
+
+    state.checkInPreview = null;
+    state.checkInUxState =
+      code === "PERMISSION_DENIED"
+        ? "gps_denied"
+        : code === "NOT_SUPPORTED"
+          ? "gps_not_supported"
+          : code === "TIMEOUT"
+            ? "gps_timeout"
+            : code === "UNAVAILABLE"
+              ? "gps_unavailable"
+              : "unknown";
+  }
+}
 function buildCheckInPayload(state, position) {
   return {
     eventId: state.eventId,
