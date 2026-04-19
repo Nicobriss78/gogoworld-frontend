@@ -182,6 +182,7 @@ function fitUserAndEvents(position, options = {}) {
 
     if (suppressViewportChanged) {
       suppressViewportChanged = false;
+      userGestureActive = false;
       return;
     }
 
@@ -190,8 +191,11 @@ function fitUserAndEvents(position, options = {}) {
     onViewportChanged?.({
       lat: center.lat,
       lng: center.lng,
-      zoom: map.getZoom()
+      zoom: map.getZoom(),
+      source: userGestureActive ? "user" : "programmatic"
     });
+
+    userGestureActive = false;
   }
 
   function setViewCenter(position, zoom = 13) {
