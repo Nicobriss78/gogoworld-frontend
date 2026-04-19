@@ -239,18 +239,28 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
         geoError: ""
       });
       syncLocateBtnMode("near_me");
-     map.setUserLocation(normalized, {
+
+      map.setUserLocation(normalized, {
         accuracy: position.accuracy ?? null,
         showCircle: true
-      }); 
-      map.setViewCenter(normalized, 9);
+      });
+
       await loadEvents({
         lat: normalized.lat,
         lng: normalized.lng,
         radius: state.getState().geo?.radiusMeters || DEFAULT_GEO_RADIUS,
         fitBounds: false
       });
-      setGeoStatus("Posizione rilevata. Ti mostro l’area vicina a te.", "success");
+
+      map.fitUserAndEvents(normalized, {
+        padding: [40, 40],
+        maxZoom: 15,
+        zoom: 15
+      });
+
+      ensureGeoWatchStarted();
+
+      setGeoStatus("Posizione rilevata. Ti mostro la tua area e gli eventi vicini.", "success");
     } catch (error) {
       const code =
         error && typeof error.code === "string"
