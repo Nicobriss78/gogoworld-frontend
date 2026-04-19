@@ -377,6 +377,7 @@ function fitUserAndEvents(position, options = {}) {
     getViewportBounds,
     refreshLayout,
     setViewCenter,
+    panToPosition,
     fitUserAndEvents,
     destroy
   };
