@@ -6,7 +6,7 @@
  * NON contiene logica UI
  * NON contiene logica di business
  */
-
+let activeGeoWatchId = null;
 export async function requestUserPosition() {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
