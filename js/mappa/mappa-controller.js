@@ -6,6 +6,8 @@ import { createMappaChat } from "/js/mappa/mappa-chat.js";
 import { createMappaDrawer } from "/js/mappa/mappa-drawer.js";
 import {
   requestUserPosition,
+  startUserPositionWatch,
+  stopUserPositionWatch,
   normalizePosition
 } from "/js/mappa/mappa-geo.js";
 document.addEventListener("DOMContentLoaded", init);
