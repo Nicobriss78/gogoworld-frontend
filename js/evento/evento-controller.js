@@ -5,11 +5,12 @@ import {
   getEventReviews,
   getEventCheckInStatus,
   getEventCheckInSummary,
+  getEventCheckInPrecheck,
   createEventCheckIn,
   joinEvent,
   leaveEvent,
 } from "./evento-api.js";
-import { requestUserPosition } from "../mappa/mappa-geo.js";
+import { requestUserPosition, getGeoPermissionState } from "../mappa/mappa-geo.js";
 import { createEventoRenderer } from "./evento-renderer.js";
 
 function getSearchParams() {
