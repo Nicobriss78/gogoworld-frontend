@@ -266,14 +266,14 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
 
       state.setGeoState({
         permission: "granted",
-        mode: "near_me",
+        mode: GEO_FOLLOW_MODE,
         userPosition: normalized,
         mapCenter: normalized,
         accuracy: position.accuracy ?? null,
         lastUpdate: position.timestamp ?? Date.now(),
         geoError: ""
       });
-      syncLocateBtnMode("near_me");
+      syncLocateBtnMode(GEO_FOLLOW_MODE);
 
       map.setUserLocation(normalized, {
         accuracy: position.accuracy ?? null,
