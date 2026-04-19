@@ -671,12 +671,14 @@ function renderCheckIn(refs, state) {
 
   if (refs.checkInMessage) {
     refs.checkInMessage.textContent = resolveCheckInMessage(state);
+
+    const uxState = String(state.checkInUxState || "unknown").trim();
     refs.checkInMessage.dataset.state =
       state.checkInError
         ? "error"
-        : state.checkInStatus?.alreadyCheckedIn
+        : uxState === "checked_in"
           ? "success"
-          : state.checkInStatus?.canCheckIn
+          : uxState === "inside_radius_ready"
             ? "ready"
             : "idle";
   }
