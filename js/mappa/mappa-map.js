@@ -67,11 +67,11 @@ export function createMappaMap({
   const color = getColorByStatus(ev.status);
 
   const marker = L.circleMarker([ev.lat, ev.lon], {
-    radius: 8,
+    radius: 12,
     color,
     fillColor: color,
-    fillOpacity: 0.9,
-    weight: 1
+    fillOpacity: 0.95,
+    weight: 2
   });
 
   marker._gwEventMeta = {
