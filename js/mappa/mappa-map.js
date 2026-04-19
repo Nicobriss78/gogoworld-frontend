@@ -273,12 +273,7 @@ function fitUserAndEvents(position, options = {}) {
   }
   function refreshLayout() {
     if (!map) return;
-
     map.invalidateSize();
-
-    if (clusterGroup && clusterGroup.getLayers().length > 0) {
-      fitBounds();
-    }
   }
   function destroy() {
     if (map) {
