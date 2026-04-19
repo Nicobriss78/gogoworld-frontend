@@ -114,7 +114,43 @@ function goBack(state) {
 
   window.location.assign("/pages/home-v2.html");
 }
+function resolveEventNavigationCoords(event) {
+  const locationCoords = Array.isArray(event?.location?.coordinates)
+    ? event.location.coordinates
+    : null;
 
+  if (locationCoords && locationCoords.length === 2) {
+    const [lngRaw, latRaw] = locationCoords;
+    const lat = Number(latRaw);
+    const lng = Number(lngRaw);
+
+    if (Number.isFinite(lat) && Number.isFinite(lng)) {
+      return { lat, lng };
+    }
+  }
+
+  const lat = Number(event?.lat);
+  const lng = Number(event?.lon);
+
+  if (Number.isFinite(lat) && Number.isFinite(lng)) {
+    return { lat, lng };
+  }
+
+  return null;
+}
+
+function openExternalNavigation(event) {
+  const coords = resolveEventNavigationCoords(event);
+  if (!coords) {
+    throw new Error("Coordinate evento non disponibili.");
+  }
+
+  const destination = `${coords.lat},${coords.lng}`;
+  const googleMapsUrl =
+    `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
+
+  window.location.assign(googleMapsUrl);
+}
 function buildRoomsNavigationUrl(state) {
   const eventId = String(state.eventId || "").trim();
   if (!eventId) return "";
