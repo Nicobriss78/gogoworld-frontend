@@ -179,49 +179,49 @@ export function createMappaPrivatiState() {
     return state;
   }
   function setGeoState(partial = {}) {
-    const current = state.geo || {};
+  const currentGeo = state.geo || {};
 
-    state = {
-      ...state,
-      geo: {
-        permission:
-          partial.permission !== undefined
-            ? partial.permission
-            : current.permission,
-        mode:
-          partial.mode !== undefined
-            ? partial.mode
-            : current.mode,
-        userPosition:
-          partial.userPosition !== undefined
-            ? partial.userPosition
-            : current.userPosition,
-        mapCenter:
-          partial.mapCenter !== undefined
-            ? partial.mapCenter
-            : current.mapCenter,
-        radiusMeters:
-          partial.radiusMeters !== undefined
-            ? partial.radiusMeters
-            : current.radiusMeters,
-        accuracy:
-          partial.accuracy !== undefined
-            ? partial.accuracy
-            : current.accuracy,
-        lastUpdate:
-          partial.lastUpdate !== undefined
-            ? partial.lastUpdate
-            : current.lastUpdate,
-        geoError:
-          partial.geoError !== undefined
-            ? partial.geoError
-            : current.geoError
-      }
-    };
+  state = {
+    ...state,
+    geo: {
+      ...currentGeo,
+      permission:
+        typeof partial.permission === "string"
+          ? partial.permission
+          : currentGeo.permission,
+      mode:
+        typeof partial.mode === "string"
+          ? partial.mode
+          : currentGeo.mode,
+      userPosition:
+        partial.userPosition !== undefined
+          ? partial.userPosition
+          : currentGeo.userPosition,
+      mapCenter:
+        partial.mapCenter !== undefined
+          ? partial.mapCenter
+          : currentGeo.mapCenter,
+      radiusMeters:
+        Number.isFinite(partial.radiusMeters)
+          ? partial.radiusMeters
+          : currentGeo.radiusMeters,
+      lastUpdate:
+        partial.lastUpdate !== undefined
+          ? partial.lastUpdate
+          : currentGeo.lastUpdate,
+      accuracy:
+        partial.accuracy !== undefined
+          ? partial.accuracy
+          : currentGeo.accuracy,
+      geoError:
+        typeof partial.geoError === "string"
+          ? partial.geoError
+          : currentGeo.geoError
+    }
+  };
 
-    return state;
-  }
-function setCurrentUserId(userId) {
+  return state;
+}
   state = {
     ...state,
     currentUserId: userId != null ? String(userId) : null
