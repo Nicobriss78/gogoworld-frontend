@@ -455,6 +455,7 @@ bindUi();
   /* ===============================
      LOAD EVENTI PRIVATI
      =============================== */
+  async function loadEvents(options = {}) {
 
     try {
       state.setMapStatus({
