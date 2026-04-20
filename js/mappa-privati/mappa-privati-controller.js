@@ -666,11 +666,11 @@ function handleGeoWatchUpdate(position) {
   }
 
   function handleOpenDetail() {
-  const selectedEvent = getSelectedEvent();
-  if (!selectedEvent?.id) return;
+    const selectedEvent = getSelectedEvent();
+    if (!selectedEvent?.id) return;
 
-  handleOpenFullDetail(selectedEvent.id);
-}
+    handleOpenFullDetail(selectedEvent.id);
+  }
 
   function handleCloseDetail() {
     drawer.close();
