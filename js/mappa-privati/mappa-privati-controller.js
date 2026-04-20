@@ -63,10 +63,13 @@ bindUi();
   map.mount();
   chat.mount();
   chat.showIdle();
+  syncLocateBtnMode(state.getState().geo?.mode || "explore");
 
   window.gwMappaPrivatiUnlockPrivateEvent = handleUnlockPrivateEventRequest;
 
-  await loadEvents();
+  await loadEvents({
+    fitBounds: true
+  });
   await handleReturnContext();
 
   window.requestAnimationFrame(() => {
