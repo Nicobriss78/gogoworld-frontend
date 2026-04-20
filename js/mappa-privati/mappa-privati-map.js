@@ -284,16 +284,6 @@ function setViewCenter(position, zoom = 13) {
         return "#94a3b8";
     }
   }
-
-  function createPopupHtml(ev) {
-    return `
-      <div class="mappa-popup">
-        <strong>${escapeHtml(ev.title || "")}</strong><br/>
-        ${escapeHtml(formatDate(ev.startAt))}
-      </div>
-    `;
-  }
-
   function formatDate(value) {
     if (!value) return "";
 
