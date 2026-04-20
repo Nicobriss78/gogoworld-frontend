@@ -117,7 +117,80 @@ export function createMappaPrivatiMap({
   map.closePopup();
 }
   }
+function setUserLocation(position, { accuracy = null, showCircle = true } = {}) {
+    if (!map || !position) return;
 
+    const lat = Number(position.lat);
+    const lng = Number(position.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    if (!userLocationMarker) {
+      userLocationMarker = L.circleMarker([lat, lng], {
+        radius: 6,
+        color: "#ef4444",
+        fillColor: "#ef4444",
+        fillOpacity: 1,
+        weight: 2
+      }).addTo(map);
+    } else {
+      userLocationMarker.setLatLng([lat, lng]);
+    }
+
+    if (showCircle && Number.isFinite(accuracy)) {
+      if (!userAccuracyCircle) {
+        userAccuracyCircle = L.circle([lat, lng], {
+          radius: accuracy,
+          color: "#ef4444",
+          fillColor: "#ef4444",
+          fillOpacity: 0.08,
+          weight: 1
+        }).addTo(map);
+      } else {
+        userAccuracyCircle.setLatLng([lat, lng]);
+        userAccuracyCircle.setRadius(accuracy);
+      }
+    }
+  }
+
+  function clearUserLocation() {
+    if (userLocationMarker) {
+      map.removeLayer(userLocationMarker);
+      userLocationMarker = null;
+    }
+
+    if (userAccuracyCircle) {
+      map.removeLayer(userAccuracyCircle);
+      userAccuracyCircle = null;
+    }
+  }
+
+  function panToPosition(position) {
+    if (!map || !position) return;
+
+    map.panTo([position.lat, position.lng], {
+      animate: true
+    });
+  }
+
+  function fitUserAndEvents(position) {
+    if (!map) return;
+
+    if (!clusterGroup || clusterGroup.getLayers().length === 0) {
+      if (position) {
+        map.setView([position.lat, position.lng], 14);
+      }
+      return;
+    }
+
+    const bounds = clusterGroup.getBounds();
+
+    if (position) {
+      bounds.extend([position.lat, position.lng]);
+    }
+
+    map.fitBounds(bounds, { padding: [40, 40] });
+  }
   function fitBounds() {
     if (!clusterGroup || clusterGroup.getLayers().length === 0) return;
 
