@@ -29,9 +29,9 @@ export function createMappaPrivatiState() {
         mode: "explore",
         userPosition: null,
         mapCenter: null,
-        radiusMeters: null,
+        radiusMeters: 30000,
+        lastUpdate: null,
         accuracy: null,
-        lastUpdate: 0,
         geoError: ""
       },
 
