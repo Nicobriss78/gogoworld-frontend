@@ -819,6 +819,8 @@ document.addEventListener("visibilitychange", () => {
   window.addEventListener("pagehide", (event) => {
     if (event.persisted) return;
 
+    stopGeoWatchTracking();
+
     try {
       delete window.gwMappaPrivatiUnlockPrivateEvent;
     } catch {
