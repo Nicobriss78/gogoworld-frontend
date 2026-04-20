@@ -283,15 +283,17 @@ function setViewCenter(position, zoom = 13) {
   }
 
   return {
-    mount,
-    setEvents,
-    focusEvent,
-    clearSelection,
-    refreshLayout,
-    setUserLocation,
-    clearUserLocation,
-    panToPosition,
-    fitUserAndEvents,
-    destroy
-  };
+  mount,
+  setEvents,
+  focusEvent,
+  clearSelection,
+  refreshLayout,
+  getViewportBounds,
+  setViewCenter,
+  setUserLocation,
+  clearUserLocation,
+  panToPosition,
+  fitUserAndEvents,
+  destroy
+};
 }
