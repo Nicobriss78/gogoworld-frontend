@@ -178,6 +178,49 @@ export function createMappaPrivatiState() {
 
     return state;
   }
+  function setGeoState(partial = {}) {
+    const current = state.geo || {};
+
+    state = {
+      ...state,
+      geo: {
+        permission:
+          partial.permission !== undefined
+            ? partial.permission
+            : current.permission,
+        mode:
+          partial.mode !== undefined
+            ? partial.mode
+            : current.mode,
+        userPosition:
+          partial.userPosition !== undefined
+            ? partial.userPosition
+            : current.userPosition,
+        mapCenter:
+          partial.mapCenter !== undefined
+            ? partial.mapCenter
+            : current.mapCenter,
+        radiusMeters:
+          partial.radiusMeters !== undefined
+            ? partial.radiusMeters
+            : current.radiusMeters,
+        accuracy:
+          partial.accuracy !== undefined
+            ? partial.accuracy
+            : current.accuracy,
+        lastUpdate:
+          partial.lastUpdate !== undefined
+            ? partial.lastUpdate
+            : current.lastUpdate,
+        geoError:
+          partial.geoError !== undefined
+            ? partial.geoError
+            : current.geoError
+      }
+    };
+
+    return state;
+  }
 function setCurrentUserId(userId) {
   state = {
     ...state,
