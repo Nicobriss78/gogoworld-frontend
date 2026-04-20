@@ -197,7 +197,119 @@ elements.locateBtn?.removeEventListener("click", handleLocateMe);
   /* ===============================
      LOAD EVENTI PRIVATI
      =============================== */
+let geoWatchStop = null;
 
+function syncLocateBtnMode(mode) {
+  if (!elements.locateBtn) return;
+
+  elements.locateBtn.dataset.state =
+    mode === "near_me" || mode === "follow_me"
+      ? "active"
+      : "idle";
+}
+
+async function handleLocateMe() {
+  const geo = state.getState().geo || {};
+
+  if (geo.mode === "follow_me") {
+    stopGeoWatchTracking();
+    state.setGeoState({ mode: "explore" });
+    syncLocateBtnMode("explore");
+    return;
+  }
+
+  try {
+    const position = await requestUserPosition();
+    const normalized = normalizePosition(position);
+    if (!normalized) return;
+
+    state.setGeoState({
+      permission: "granted",
+      mode: "follow_me",
+      userPosition: normalized,
+      mapCenter: normalized,
+      accuracy: position.accuracy ?? null,
+      lastUpdate: position.timestamp ?? Date.now(),
+      geoError: ""
+    });
+
+    map.setUserLocation(normalized, {
+      accuracy: position.accuracy ?? null,
+      showCircle: true
+    });
+
+    map.fitUserAndEvents(normalized);
+
+    syncLocateBtnMode("follow_me");
+
+    ensureGeoWatchStarted();
+
+  } catch {
+    state.setGeoState({
+      permission: "denied",
+      geoError: "POSIZIONE NON DISPONIBILE"
+    });
+
+    syncLocateBtnMode("explore");
+  }
+}
+
+function ensureGeoWatchStarted() {
+  if (geoWatchStop) return;
+
+  geoWatchStop = startUserPositionWatch({
+    onUpdate: handleGeoWatchUpdate
+  });
+}
+
+function stopGeoWatchTracking() {
+  if (geoWatchStop) {
+    geoWatchStop();
+    geoWatchStop = null;
+  }
+}
+
+function handleGeoWatchUpdate(position) {
+  const normalized = normalizePosition(position);
+  if (!normalized) return;
+
+  const geo = state.getState().geo || {};
+  const mode = geo.mode;
+
+  if (mode !== "near_me" && mode !== "follow_me") return;
+
+  const prev = geo.userPosition;
+  const moved =
+    prev ? getDistanceMeters(prev, normalized) : null;
+
+  const nextAccuracy = Number(position?.accuracy);
+  const prevAccuracy = Number(geo?.accuracy);
+
+  if (
+    prev &&
+    nextAccuracy > 120 &&
+    moved < 15 &&
+    nextAccuracy >= prevAccuracy
+  ) {
+    return;
+  }
+
+  state.setGeoState({
+    userPosition: normalized,
+    mapCenter: normalized,
+    accuracy: position.accuracy ?? null,
+    lastUpdate: position.timestamp ?? Date.now()
+  });
+
+  map.setUserLocation(normalized, {
+    accuracy: position.accuracy ?? null,
+    showCircle: true
+  });
+
+  if (mode === "follow_me" && (!moved || moved >= 5)) {
+    map.panToPosition(normalized);
+  }
+}
   async function loadEvents() {
     try {
       state.setMapStatus({
