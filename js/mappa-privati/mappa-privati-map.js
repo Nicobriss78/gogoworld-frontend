@@ -52,7 +52,7 @@ export function createMappaPrivatiMap({
   const color = getColorByStatus(ev.status);
 
   const marker = L.circleMarker([ev.lat, ev.lon], {
-    radius: 8,
+    radius: 12,
     color,
     fillColor: color,
     fillOpacity: 0.9,
