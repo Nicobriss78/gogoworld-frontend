@@ -740,6 +740,9 @@ function getDomElements() {
     infoBtn: document.getElementById("mappaChatInfoBtn"),
     locateBtn: document.getElementById("mappaLocateBtn"),
     locateBtnLabel: document.getElementById("mappaLocateBtnLabel"),
+    infoBtn: document.getElementById("mappaChatInfoBtn"),
+    locateBtn: document.getElementById("mappaLocateBtn"),
+    locateBtnLabel: document.getElementById("mappaLocateBtnLabel"),
     geoStatus: document.getElementById("mappaGeoStatus")
 locateBtn: document.getElementById("mappaLocateBtn"),
 geoStatus: document.getElementById("mappaGeoStatus")
