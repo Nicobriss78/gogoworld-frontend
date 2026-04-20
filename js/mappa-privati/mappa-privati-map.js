@@ -7,6 +7,8 @@ export function createMappaPrivatiMap({
   let clusterGroup = null;
   let markersById = new Map();
   let selectedMarker = null;
+  let suppressViewportChanged = false;
+  let userGestureActive = false;
   let userLocationMarker = null;
   let userAccuracyCircle = null;
 
