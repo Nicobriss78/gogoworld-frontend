@@ -1,5 +1,12 @@
 import { createMappaPrivatiState } from "/js/mappa-privati/mappa-privati-state.js";
 import { createMappaPrivatiApi } from "/js/mappa-privati/mappa-privati-api.js";
+import {
+  requestUserPosition,
+  startUserPositionWatch,
+  stopUserPositionWatch,
+  normalizePosition,
+  getDistanceMeters
+} from "/js/mappa/mappa-geo.js";
 import { createMappaPrivatiRenderer } from "/js/mappa-privati/mappa-privati-renderer.js";
 import { createMappaPrivatiMap } from "/js/mappa-privati/mappa-privati-map.js";
 import { createMappaPrivatiChat } from "/js/mappa-privati/mappa-privati-chat.js";
