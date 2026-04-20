@@ -24,8 +24,19 @@ export function createMappaPrivatiState() {
 
       currentUserId: null,
 
-returnEventId: null,
-returnDrawerOpen: false
+      geo: {
+        permission: "unknown",
+        mode: "explore",
+        userPosition: null,
+        mapCenter: null,
+        radiusMeters: null,
+        accuracy: null,
+        lastUpdate: 0,
+        geoError: ""
+      },
+
+      returnEventId: null,
+      returnDrawerOpen: false
     };
   }
 
