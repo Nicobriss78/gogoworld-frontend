@@ -179,6 +179,8 @@ function setUserLocation(position, { accuracy = null, showCircle = true } = {}) 
   function panToPosition(position) {
     if (!map || !position) return;
 
+    suppressViewportChanged = true;
+
     map.panTo([position.lat, position.lng], {
       animate: true
     });
