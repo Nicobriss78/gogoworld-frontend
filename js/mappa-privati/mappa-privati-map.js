@@ -260,6 +260,7 @@ function setViewCenter(position, zoom = 13) {
   function destroy() {
     if (!map) return;
 
+    map.off("moveend", handleMoveEnd);
     map.remove();
     map = null;
     markersById.clear();
