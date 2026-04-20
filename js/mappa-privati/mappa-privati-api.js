@@ -7,9 +7,10 @@ export function createMappaPrivatiApi({ fetchImpl } = {}) {
      EVENTI PRIVATI (MAPPA)
      =============================== */
 
-  async function fetchPrivateMapEvents() {
+  async function fetchPrivateMapEvents(options = {}) {
   try {
-    const res = await apiGet("/events/private");
+    const query = buildPrivateMapEventsQuery(options);
+    const res = await apiGet(`/events/private?${query.toString()}`);
 
     if (!res.ok) return [];
 
