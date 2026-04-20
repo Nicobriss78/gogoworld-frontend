@@ -37,6 +37,38 @@
     <section id="mappaMapSection" class="mappa-section" aria-labelledby="mappaTitle">
       <div class="mappa-header">
         <h1 id="mappaTitle" class="mappa-title">Mappa eventi privati</h1>
+
+        <button
+          id="mappaLocateBtn"
+          type="button"
+          class="mappa-locate-btn"
+          data-state="idle"
+          aria-label="Trova eventi privati vicino a me"
+          title="Vicino a me"
+        >
+          <span class="mappa-locate-btn__icon" aria-hidden="true">
+            <svg
+              class="mappa-target-icon"
+              viewBox="0 0 24 24"
+              focusable="false"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="9" class="mappa-target-icon__outer"></circle>
+              <circle cx="12" cy="12" r="5.5" class="mappa-target-icon__middle"></circle>
+              <circle cx="12" cy="12" r="2.5" class="mappa-target-icon__inner"></circle>
+            </svg>
+          </span>
+
+          <span id="mappaLocateBtnLabel" class="mappa-locate-btn__label">
+            Vicino a me
+          </span>
+        </button>
+
+        <div
+          id="mappaGeoStatus"
+          class="mappa-geo-status"
+          aria-live="polite"
+        ></div>
       </div>
 
       <div class="mappa-card">
