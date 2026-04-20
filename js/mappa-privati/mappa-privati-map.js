@@ -105,8 +105,6 @@ export function createMappaPrivatiMap({
     map.setView(marker.getLatLng(), 14, {
       animate: true
     });
-
-    marker.openPopup();
   }
 
   function clearSelection() {
