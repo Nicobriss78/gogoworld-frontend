@@ -227,6 +227,8 @@ function setUserLocation(position, { accuracy = null, showCircle = true } = {}) 
 function setViewCenter(position, zoom = 13) {
   if (!map || !position) return;
 
+  suppressViewportChanged = true;
+
   map.setView([position.lat, position.lng], zoom, {
     animate: true
   });
