@@ -78,6 +78,7 @@ bindUi();
   function bindUi() {
   
     elements.infoBtn?.addEventListener("click", handleOpenDetail);
+elements.locateBtn?.addEventListener("click", handleLocateMe);
     elements.drawerContent?.addEventListener("click", handleDrawerActions);
   }
 
