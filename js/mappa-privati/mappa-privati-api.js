@@ -138,7 +138,45 @@ export function createMappaPrivatiApi({ fetchImpl } = {}) {
       };
     }
   }
+function buildPrivateMapEventsQuery(options = {}) {
+  const params = new URLSearchParams();
 
+  const lat = Number(options.lat);
+  const lng = Number(options.lng);
+  const radius = Number(options.radius);
+
+  const north = Number(options.north);
+  const south = Number(options.south);
+  const east = Number(options.east);
+  const west = Number(options.west);
+
+  const hasRadiusGeo =
+    Number.isFinite(lat) &&
+    Number.isFinite(lng) &&
+    Number.isFinite(radius);
+
+  const hasBoundsGeo =
+    Number.isFinite(north) &&
+    Number.isFinite(south) &&
+    Number.isFinite(east) &&
+    Number.isFinite(west);
+
+  if (hasBoundsGeo) {
+    params.set("north", String(north));
+    params.set("south", String(south));
+    params.set("east", String(east));
+    params.set("west", String(west));
+    return params;
+  }
+
+  if (hasRadiusGeo) {
+    params.set("lat", String(lat));
+    params.set("lng", String(lng));
+    params.set("radius", String(radius));
+  }
+
+  return params;
+}
   /* ===============================
      NORMALIZZAZIONE EVENTI
      =============================== */
