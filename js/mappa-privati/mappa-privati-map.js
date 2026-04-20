@@ -233,6 +233,26 @@ function setViewCenter(position, zoom = 13) {
     animate: true
   });
 }
+  function handleMoveEnd() {
+    if (!map) return;
+
+    if (suppressViewportChanged) {
+      suppressViewportChanged = false;
+      userGestureActive = false;
+      return;
+    }
+
+    const center = map.getCenter();
+
+    onViewportChanged?.({
+      lat: center.lat,
+      lng: center.lng,
+      zoom: map.getZoom(),
+      source: userGestureActive ? "user" : "programmatic"
+    });
+
+    userGestureActive = false;
+  }
   function refreshLayout() {
     if (!map) return;
 
