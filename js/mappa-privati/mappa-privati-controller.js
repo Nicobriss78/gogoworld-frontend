@@ -251,13 +251,11 @@ elements.locateBtn?.removeEventListener("click", handleLocateMe);
   }
 
   function handleOpenDetail() {
-    const selectedEvent = getSelectedEvent();
-    if (!selectedEvent) return;
+  const selectedEvent = getSelectedEvent();
+  if (!selectedEvent?.id) return;
 
-    renderDetailCard(selectedEvent);
-    drawer.open();
-    state.setDrawerOpen(true);
-  }
+  handleOpenFullDetail(selectedEvent.id);
+}
 
   function handleCloseDetail() {
     drawer.close();
