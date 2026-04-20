@@ -205,12 +205,7 @@ function setUserLocation(position, { accuracy = null, showCircle = true } = {}) 
     suppressViewportChanged = true;
     map.fitBounds(bounds, { padding: [40, 40] });
   }
-  function fitBounds() {
-    if (!clusterGroup || clusterGroup.getLayers().length === 0) return;
 
-    const bounds = clusterGroup.getBounds();
-    map.fitBounds(bounds, { padding: [30, 30] });
-  }
   function getViewportBounds() {
   if (!map) return null;
 
