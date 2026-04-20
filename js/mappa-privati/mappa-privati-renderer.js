@@ -91,8 +91,8 @@ export function createMappaPrivatiRenderer() {
   }
 
   function renderChatHeader(title = "") {
-    return title ? `Chat • ${title}` : "Chat evento";
-  }
+  return title || "Chat evento";
+}
 
   function renderChatMessages(messages = [], currentUserId = null) {
     if (!Array.isArray(messages) || messages.length === 0) {
