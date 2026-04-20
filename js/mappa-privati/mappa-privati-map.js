@@ -37,7 +37,7 @@ export function createMappaPrivatiMap({
     map.on("moveend", handleMoveEnd);
   }
 
-  function setEvents(events = []) {
+  function setEvents(events = [], options = {}) {
     if (!clusterGroup) return;
 
     clusterGroup.clearLayers();
