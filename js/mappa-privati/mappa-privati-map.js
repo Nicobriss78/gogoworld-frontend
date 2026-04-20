@@ -112,10 +112,6 @@ export function createMappaPrivatiMap({
       resetMarkerStyle(selectedMarker);
       selectedMarker = null;
     }
-
-    if (map) {
-  map.closePopup();
-}
   }
 function setUserLocation(position, { accuracy = null, showCircle = true } = {}) {
     if (!map || !position) return;
