@@ -84,6 +84,7 @@ elements.locateBtn?.addEventListener("click", handleLocateMe);
 
   function unbindUi() {
     elements.infoBtn?.removeEventListener("click", handleOpenDetail);
+elements.locateBtn?.removeEventListener("click", handleLocateMe);
     elements.drawerContent?.removeEventListener("click", handleDrawerActions);
   }
 
