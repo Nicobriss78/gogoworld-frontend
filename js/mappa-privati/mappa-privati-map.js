@@ -272,6 +272,10 @@ function setUserLocation(position, { accuracy = null, showCircle = true } = {}) 
     focusEvent,
     clearSelection,
     refreshLayout,
+    setUserLocation,
+    clearUserLocation,
+    panToPosition,
+    fitUserAndEvents,
     destroy
   };
 }
