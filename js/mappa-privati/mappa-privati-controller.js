@@ -86,18 +86,16 @@ bindUi();
   }
 
   function bindUi() {
-  
     elements.infoBtn?.addEventListener("click", handleOpenDetail);
-elements.locateBtn?.addEventListener("click", handleLocateMe);
     elements.drawerContent?.addEventListener("click", handleDrawerActions);
+    elements.locateBtn?.addEventListener("click", handleLocateMe);
   }
 
   function unbindUi() {
     elements.infoBtn?.removeEventListener("click", handleOpenDetail);
-elements.locateBtn?.removeEventListener("click", handleLocateMe);
     elements.drawerContent?.removeEventListener("click", handleDrawerActions);
+    elements.locateBtn?.removeEventListener("click", handleLocateMe);
   }
-
   function handleDrawerActions(event) {
     const action = event.target?.closest?.("[data-action]")?.dataset?.action;
     if (!action) return;
