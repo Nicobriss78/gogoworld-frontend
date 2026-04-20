@@ -422,6 +422,8 @@ function getDomElements() {
     chatInput: document.getElementById("mappaChatInput"),
     chatSend: document.getElementById("mappaChatSend"),
 
-    infoBtn: document.getElementById("mappaChatInfoBtn")
+    infoBtn: document.getElementById("mappaChatInfoBtn"),
+locateBtn: document.getElementById("mappaLocateBtn"),
+geoStatus: document.getElementById("mappaGeoStatus")
   };
 }
