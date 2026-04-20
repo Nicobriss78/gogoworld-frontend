@@ -268,6 +268,7 @@ function setCurrentUserId(userId) {
     resetChatState,
     setCurrentUserId,
     setReturnContext,
-    clearReturnContext
+    clearReturnContext,
+    setGeoState
   };
 }
