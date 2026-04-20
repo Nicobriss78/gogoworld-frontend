@@ -1,6 +1,7 @@
 export function createMappaPrivatiMap({
   mapElementId,
-  onSelectEvent
+  onSelectEvent,
+  onViewportChanged
 }) {
   let map = null;
   let clusterGroup = null;
