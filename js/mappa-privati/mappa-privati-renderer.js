@@ -37,10 +37,10 @@ export function createMappaPrivatiRenderer() {
             type="button"
             class="gw-icon-btn"
             data-action="open-full-detail"
-            aria-label="Apri dettaglio completo evento"
-            title="Dettaglio completo"
+            aria-label="Vai all’evento"
+            title="Vai all’evento"
           >
-            <span aria-hidden="true">+</span>
+            <span aria-hidden="true">→</span>
           </button>
 
           <button
