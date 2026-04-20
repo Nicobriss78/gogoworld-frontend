@@ -27,6 +27,8 @@ const state = createMappaPrivatiState();
     return;
   }
 
+  let geoWatchActive = false;
+
   const drawer = createMappaPrivatiDrawer({
     overlayEl: elements.drawerOverlay,
     drawerEl: elements.drawer,
