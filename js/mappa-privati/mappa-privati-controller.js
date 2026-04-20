@@ -40,7 +40,8 @@ const state = createMappaPrivatiState();
 
   const map = createMappaPrivatiMap({
     mapElementId: "mappaMap",
-    onSelectEvent: handleMapEventSelect
+    onSelectEvent: handleMapEventSelect,
+    onViewportChanged: handleViewportChanged
   });
 
   const chat = createMappaPrivatiChat({
