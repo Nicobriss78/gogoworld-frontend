@@ -205,9 +205,13 @@ if (currentEventId !== requestEventId) return;
      =============================== */
 
   function toggleInfoButton(enabled) {
-    if (!elements.infoBtn) return;
-    elements.infoBtn.disabled = !enabled;
-  }
+  if (!elements.infoBtn) return;
+
+  elements.infoBtn.disabled = !enabled;
+  elements.infoBtn.textContent = "Vai all’evento";
+  elements.infoBtn.setAttribute("aria-label", "Vai all’evento");
+  elements.infoBtn.setAttribute("title", "Vai all’evento");
+}
 
   /* ===============================
      RESET
