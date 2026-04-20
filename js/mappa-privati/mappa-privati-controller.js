@@ -797,17 +797,17 @@ function handleGeoWatchUpdate(position) {
   });
 });
 document.addEventListener("visibilitychange", () => {
-  const mode = state.getState().geo?.mode;
-
-  if (document.visibilityState === "visible") {
-    if (mode === "near_me" || mode === "follow_me") {
-      ensureGeoWatchStarted();
-    }
-  } else {
+  if (document.visibilityState !== "visible") {
     stopGeoWatchTracking();
+    return;
   }
 
-  if (document.visibilityState !== "visible") return;
+  if (
+    (state.getState().geo?.mode || "explore") === "near_me" ||
+    (state.getState().geo?.mode || "explore") === GEO_FOLLOW_MODE
+  ) {
+    ensureGeoWatchStarted();
+  }
 
   window.requestAnimationFrame(() => {
     map.refreshLayout();
