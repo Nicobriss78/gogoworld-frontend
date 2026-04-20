@@ -193,6 +193,26 @@ function setUserLocation(position, { accuracy = null, showCircle = true } = {}) 
     const bounds = clusterGroup.getBounds();
     map.fitBounds(bounds, { padding: [30, 30] });
   }
+  function getViewportBounds() {
+  if (!map) return null;
+
+  const bounds = map.getBounds();
+
+  return {
+    north: bounds.getNorth(),
+    south: bounds.getSouth(),
+    east: bounds.getEast(),
+    west: bounds.getWest()
+  };
+}
+
+function setViewCenter(position, zoom = 13) {
+  if (!map || !position) return;
+
+  map.setView([position.lat, position.lng], zoom, {
+    animate: true
+  });
+}
   function refreshLayout() {
     if (!map) return;
 
