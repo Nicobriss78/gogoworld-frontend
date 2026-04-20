@@ -494,6 +494,16 @@ function handleGeoWatchUpdate(position) {
   });
 });
 document.addEventListener("visibilitychange", () => {
+  const mode = state.getState().geo?.mode;
+
+  if (document.visibilityState === "visible") {
+    if (mode === "near_me" || mode === "follow_me") {
+      ensureGeoWatchStarted();
+    }
+  } else {
+    stopGeoWatchTracking();
+  }
+
   if (document.visibilityState !== "visible") return;
 
   window.requestAnimationFrame(() => {
