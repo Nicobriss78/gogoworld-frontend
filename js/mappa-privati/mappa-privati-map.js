@@ -202,6 +202,7 @@ function setUserLocation(position, { accuracy = null, showCircle = true } = {}) 
       bounds.extend([position.lat, position.lng]);
     }
 
+    suppressViewportChanged = true;
     map.fitBounds(bounds, { padding: [40, 40] });
   }
   function fitBounds() {
