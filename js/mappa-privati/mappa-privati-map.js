@@ -76,8 +76,8 @@ export function createMappaPrivatiMap({
     if (!marker) return;
 
     marker.setStyle({
-      radius: 11,
-      weight: 2
+      radius: 15,
+    weight: 3
     });
 
     selectedMarker = marker;
