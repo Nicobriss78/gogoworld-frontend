@@ -58,7 +58,9 @@ export function createMappaPrivatiMap({
       markersById.set(ev.id, marker);
     });
 
-    fitUserAndEvents();
+    if (options.fitBounds === true) {
+      fitUserAndEvents();
+    }
   }
 
   function createMarker(ev) {
