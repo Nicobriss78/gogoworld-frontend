@@ -222,6 +222,8 @@ export function createMappaPrivatiState() {
 
   return state;
 }
+
+function setCurrentUserId(userId) {
   state = {
     ...state,
     currentUserId: userId != null ? String(userId) : null
