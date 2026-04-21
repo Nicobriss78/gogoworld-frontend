@@ -793,9 +793,12 @@ bindUi();
      =============================== */
 
   window.addEventListener("pageshow", () => {
+    logLayout("pageshow");
+    scheduleAuditSequence("pageshow");
     scheduleMapRefresh();
   });
-document.addEventListener("visibilitychange", () => {
+
+  document.addEventListener("visibilitychange", () => {
   if (document.visibilityState !== "visible") {
     stopGeoWatchTracking();
     return;
