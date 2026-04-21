@@ -65,41 +65,14 @@ bindUi();
   chat.showIdle();
   syncLocateBtnMode(state.getState().geo?.mode || "explore");
 
-  const viewportEl = document.getElementById("mappaMapViewport");
-  const mapHostEl = document.getElementById("mappaMap");
-
-  const debugResizeObserver = new ResizeObserver((entries) => {
-    for (const entry of entries) {
-      const box = entry.contentRect;
-      console.log("[MAP_PRIVATE] resize", {
-        targetId: entry.target?.id || "",
-        width: Math.round(box.width),
-        height: Math.round(box.height),
-        ts: Date.now()
-      });
-    }
-  });
-
-  if (viewportEl) debugResizeObserver.observe(viewportEl);
-  if (mapHostEl) debugResizeObserver.observe(mapHostEl);
-
   window.gwMappaPrivatiUnlockPrivateEvent = handleUnlockPrivateEventRequest;
-
-  scheduleAuditSequence("after-mount-before-load");
 
   await loadEvents({
     fitBounds: true
   });
-
-  scheduleAuditSequence("after-loadEvents");
-
   await handleReturnContext();
 
-  scheduleAuditSequence("after-handleReturnContext");
-
-  setTimeout(() => {
-    map.refreshLayout();
-  }, 600);
+  scheduleMapRefresh();
 
   /* ===============================
      DOM
@@ -119,73 +92,6 @@ bindUi();
       window.setTimeout(() => {
         map.refreshLayout();
       }, 320);
-    });
-  }
-
-  function getLayoutSnapshot() {
-    const body = document.body;
-    const main = document.querySelector(".mappa-main");
-    const section = document.getElementById("mappaMapSection");
-    const viewport = document.getElementById("mappaMapViewport");
-    const mapEl = document.getElementById("mappaMap");
-    const topbar = document.getElementById("sharedTopbarMount");
-    const bottomnav = document.getElementById("sharedBottomnavMount");
-    const drawer = document.getElementById("mappaDetailDrawer");
-
-    const rectOf = (el) => {
-      if (!el) return null;
-      const r = el.getBoundingClientRect();
-      return {
-        w: Math.round(r.width),
-        h: Math.round(r.height),
-        top: Math.round(r.top),
-        left: Math.round(r.left)
-      };
-    };
-
-    return {
-      ts: Date.now(),
-      pathname: window.location.pathname,
-      search: window.location.search,
-      bodyClass: body?.className || "",
-      body: rectOf(body),
-      main: rectOf(main),
-      section: rectOf(section),
-      viewport: rectOf(viewport),
-      map: rectOf(mapEl),
-      topbar: rectOf(topbar),
-      bottomnav: rectOf(bottomnav),
-      drawerHidden: drawer?.hidden,
-      drawerClass: drawer?.className || "",
-      visibility: document.visibilityState
-    };
-  }
-
-  function logLayout(tag) {
-    console.log(`[MAP_PRIVATE] ${tag}`, getLayoutSnapshot());
-  }
-
-  function scheduleAuditSequence(tag) {
-    logLayout(`${tag}:t0`);
-
-    window.requestAnimationFrame(() => {
-      logLayout(`${tag}:raf`);
-
-      window.setTimeout(() => {
-        logLayout(`${tag}:80ms`);
-      }, 80);
-
-      window.setTimeout(() => {
-        logLayout(`${tag}:180ms`);
-      }, 180);
-
-      window.setTimeout(() => {
-        logLayout(`${tag}:350ms`);
-      }, 350);
-
-      window.setTimeout(() => {
-        logLayout(`${tag}:550ms`);
-      }, 550);
     });
   }
 
@@ -712,8 +618,6 @@ bindUi();
 
   async function handleReturnContext() {
     const stored = readReturnContext();
-    console.log("[MAP_PRIVATE] handleReturnContext:stored", stored);
-
     if (!stored?.returnEventId) return;
     if (stored.fromView !== "map-private-v2") return;
 
@@ -737,23 +641,18 @@ bindUi();
 
     state.setSelectedEvent(event);
     map.focusEvent(event.id);
-    logLayout("after-focusEvent");
-    scheduleAuditSequence("after-focusEvent");
     scheduleMapRefresh();
 
     await chat.openForEvent(event);
-    logLayout("after-chat-open");
-    scheduleAuditSequence("after-chat-open");
     scheduleMapRefresh();
 
     if (stored.returnDrawerOpen) {
       renderDetailCard(event);
       drawer.open();
       state.setDrawerOpen(true);
-      logLayout("after-drawer-open");
-      scheduleAuditSequence("after-drawer-open");
       scheduleMapRefresh();
     }
+
     clearReturnContextStorage();
     state.clearReturnContext();
   }
@@ -796,12 +695,9 @@ bindUi();
      =============================== */
 
   window.addEventListener("pageshow", () => {
-    logLayout("pageshow");
-    scheduleAuditSequence("pageshow");
     scheduleMapRefresh();
   });
-
-  document.addEventListener("visibilitychange", () => {
+document.addEventListener("visibilitychange", () => {
   if (document.visibilityState !== "visible") {
     stopGeoWatchTracking();
     return;
@@ -814,8 +710,6 @@ bindUi();
     ensureGeoWatchStarted();
   }
 
-  logLayout("visibilitychange-visible");
-  scheduleAuditSequence("visibilitychange-visible");
   scheduleMapRefresh();
 });
   window.addEventListener("pagehide", (event) => {
@@ -856,4 +750,4 @@ function getDomElements() {
     locateBtnLabel: document.getElementById("mappaLocateBtnLabel"),
     geoStatus: document.getElementById("mappaGeoStatus")
   };
-}
+      }
