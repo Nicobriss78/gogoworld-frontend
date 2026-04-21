@@ -645,16 +645,13 @@ bindUi();
 
     state.setSelectedEvent(event);
     map.focusEvent(event.id);
-    scheduleMapRefresh();
 
     await chat.openForEvent(event);
-    scheduleMapRefresh();
 
     if (stored.returnDrawerOpen) {
       renderDetailCard(event);
       drawer.open();
       state.setDrawerOpen(true);
-      scheduleMapRefresh();
     }
 
     clearReturnContextStorage();
