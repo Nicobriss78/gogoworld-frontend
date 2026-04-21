@@ -61,6 +61,12 @@ export function createMappaPrivatiMap({
     if (options.fitBounds === true) {
       fitBounds();
     }
+
+    if (map) {
+      window.setTimeout(() => {
+        map.invalidateSize();
+      }, 0);
+    }
   }
 
   function createMarker(ev) {
