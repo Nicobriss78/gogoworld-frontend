@@ -56,7 +56,23 @@
   --home-page-pad-x: var(--mappa-page-pad-x);
   --home-bottomnav-h: var(--mappa-bottomnav-h);
 }
+.mappa-page--private {
+  --mappa-private-accent: #8E3B5D;
+  --mappa-private-accent-hover: #742F4C;
+  --mappa-private-accent-soft: #F7EAF0;
+  --mappa-private-accent-border: #E6C7D3;
+  --mappa-private-surface-soft: #FCF7F9;
 
+  --mappa-accent: var(--mappa-private-accent);
+  --mappa-accent-hover: var(--mappa-private-accent-hover);
+  --mappa-accent-soft: var(--mappa-private-accent-soft);
+  --mappa-accent-border: var(--mappa-private-accent-border);
+
+  --home-accent: var(--mappa-accent);
+  --home-accent-hover: var(--mappa-accent-hover);
+  --home-accent-soft: var(--mappa-accent-soft);
+  --home-accent-border: var(--mappa-accent-border);
+}
 /* ===== SHELL ===== */
 
 body.mappa-page {
