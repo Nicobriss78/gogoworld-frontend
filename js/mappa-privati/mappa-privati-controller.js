@@ -85,11 +85,17 @@ bindUi();
 
   window.gwMappaPrivatiUnlockPrivateEvent = handleUnlockPrivateEventRequest;
 
+  scheduleAuditSequence("after-mount-before-load");
+
   await loadEvents({
     fitBounds: true
   });
+
+  scheduleAuditSequence("after-loadEvents");
+
   await handleReturnContext();
 
+  scheduleAuditSequence("after-handleReturnContext");
   scheduleMapRefresh();
 
   /* ===============================
