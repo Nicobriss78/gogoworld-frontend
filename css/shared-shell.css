@@ -186,7 +186,7 @@
 ========================= */
 
 .home-bottomnav {
-  position: fixed;
+  position: static;
   left: 0;
   right: 0;
   bottom: 0;
