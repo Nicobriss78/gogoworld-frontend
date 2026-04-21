@@ -81,6 +81,20 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     return state.getState().selectedEvent;
   }
 
+  function scheduleMapRefresh() {
+    window.requestAnimationFrame(() => {
+      map.refreshLayout();
+
+      window.setTimeout(() => {
+        map.refreshLayout();
+      }, 120);
+
+      window.setTimeout(() => {
+        map.refreshLayout();
+      }, 320);
+    });
+  }
+
   function bindUi() {
     elements.infoBtn?.addEventListener("click", handleOpenEventPage);
     elements.drawerContent?.addEventListener("click", handleDrawerActions);
