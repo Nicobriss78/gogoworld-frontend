@@ -219,7 +219,10 @@ export function createMappaPrivatiState() {
           : currentGeo.geoError
     }
   };
-    
+
+  return state;
+}
+
 function setCurrentUserId(userId) {
   state = {
     ...state,
