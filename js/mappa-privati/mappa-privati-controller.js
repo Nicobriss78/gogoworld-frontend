@@ -811,6 +811,8 @@ bindUi();
     ensureGeoWatchStarted();
   }
 
+  logLayout("visibilitychange-visible");
+  scheduleAuditSequence("visibilitychange-visible");
   scheduleMapRefresh();
 });
   window.addEventListener("pagehide", (event) => {
