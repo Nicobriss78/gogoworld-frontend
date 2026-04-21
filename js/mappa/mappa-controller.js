@@ -80,11 +80,17 @@ let geoWatchActive = false;
 
   if (viewportEl) debugResizeObserver.observe(viewportEl);
   if (mapHostEl) debugResizeObserver.observe(mapHostEl);
+  scheduleAuditSequence("after-mount-before-load");
+
   await loadEvents({
     fitBounds: true
   });
+
+  scheduleAuditSequence("after-loadEvents");
+
   await handleReturnContext();
 
+  scheduleAuditSequence("after-handleReturnContext");
   scheduleMapRefresh();
 
   /* ===============================
