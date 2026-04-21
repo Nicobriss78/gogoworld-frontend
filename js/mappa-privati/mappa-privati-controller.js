@@ -296,7 +296,11 @@ bindUi();
         fitBounds: false
       });
 
-      map.fitUserAndEvents(normalized);
+      map.fitUserAndEvents(normalized, {
+      padding: [40, 40],
+      maxZoom: 15,
+      zoom: 15
+      });
 
       ensureGeoWatchStarted();
 
