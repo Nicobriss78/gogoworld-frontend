@@ -622,6 +622,8 @@ function handleOpenFullChat(eventId) {
 
   async function handleReturnContext() {
     const stored = readReturnContext();
+    console.log("[MAP_PUBLIC] handleReturnContext:stored", stored);
+
     if (!stored?.returnEventId) return;
     if (stored.fromView !== "map-v2") return;
 
