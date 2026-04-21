@@ -1,4 +1,4 @@
-export function createMappaPrivatiMap({
+export function createMappaMap({
   mapElementId,
   onSelectEvent,
   onViewportChanged
@@ -10,7 +10,7 @@ export function createMappaPrivatiMap({
   let suppressViewportChanged = false;
   let userGestureActive = false;
   let userLocationMarker = null;
-  let userAccuracyCircle = null;
+  let userLocationCircle = null;
 
   function mount() {
     if (map) return;
@@ -59,7 +59,7 @@ export function createMappaPrivatiMap({
     });
 
     if (options.fitBounds === true) {
-      fitUserAndEvents();
+      fitBounds();
     }
   }
 
@@ -70,8 +70,8 @@ export function createMappaPrivatiMap({
     radius: 12,
     color,
     fillColor: color,
-    fillOpacity: 0.9,
-    weight: 1
+    fillOpacity: 0.95,
+    weight: 2
   });
 
   marker._gwEventMeta = {
@@ -92,7 +92,7 @@ export function createMappaPrivatiMap({
 
     marker.setStyle({
       radius: 15,
-    weight: 3
+      weight: 3
     });
 
     selectedMarker = marker;
@@ -106,8 +106,8 @@ export function createMappaPrivatiMap({
     radius: 12,
     color,
     fillColor: color,
-    fillOpacity: 0.9,
-    weight: 1
+    fillOpacity: 0.95,
+    weight: 2
   });
 }
 
@@ -127,107 +127,52 @@ export function createMappaPrivatiMap({
       resetMarkerStyle(selectedMarker);
       selectedMarker = null;
     }
+
+    if (map) {
+  map.closePopup();
+}
   }
-function setUserLocation(position, { accuracy = null, showCircle = true } = {}) {
-    if (!map || !position) return;
-
-    const lat = Number(position.lat);
-    const lng = Number(position.lng);
-
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-
-    if (!userLocationMarker) {
-      userLocationMarker = L.circleMarker([lat, lng], {
-        radius: 6,
-        color: "#ef4444",
-        fillColor: "#ef4444",
-        fillOpacity: 1,
-        weight: 2
-      }).addTo(map);
-    } else {
-      userLocationMarker.setLatLng([lat, lng]);
-    }
-
-    if (showCircle && Number.isFinite(accuracy)) {
-      if (!userAccuracyCircle) {
-        userAccuracyCircle = L.circle([lat, lng], {
-          radius: accuracy,
-          color: "#ef4444",
-          fillColor: "#ef4444",
-          fillOpacity: 0.08,
-          weight: 1
-        }).addTo(map);
-      } else {
-        userAccuracyCircle.setLatLng([lat, lng]);
-        userAccuracyCircle.setRadius(accuracy);
-      }
-    }
-  }
-
-  function clearUserLocation() {
-    if (userLocationMarker) {
-      map.removeLayer(userLocationMarker);
-      userLocationMarker = null;
-    }
-
-    if (userAccuracyCircle) {
-      map.removeLayer(userAccuracyCircle);
-      userAccuracyCircle = null;
-    }
-  }
-
-  function panToPosition(position) {
-    if (!map || !position) return;
-
-    suppressViewportChanged = true;
-
-    map.panTo([position.lat, position.lng], {
-      animate: true
-    });
-  }
-
-  function fitUserAndEvents(position) {
+function fitUserAndEvents(position, options = {}) {
     if (!map) return;
 
-    if (!clusterGroup || clusterGroup.getLayers().length === 0) {
-      if (position) {
-        map.setView([position.lat, position.lng], 14);
-      }
+    const lat = Number(position?.lat);
+    const lng = Number(position?.lng);
+    const hasUserPosition = Number.isFinite(lat) && Number.isFinite(lng);
+    const hasEventMarkers =
+      clusterGroup && clusterGroup.getLayers().length > 0;
+
+    if (!hasUserPosition && !hasEventMarkers) return;
+
+    if (!hasEventMarkers && hasUserPosition) {
+      suppressViewportChanged = true;
+      map.setView([lat, lng], Number(options.zoom || 15), {
+        animate: true
+      });
       return;
     }
 
     const bounds = clusterGroup.getBounds();
 
-    if (position) {
-      bounds.extend([position.lat, position.lng]);
+    if (hasUserPosition) {
+      bounds.extend([lat, lng]);
     }
 
     suppressViewportChanged = true;
-    map.fitBounds(bounds, { padding: [40, 40] });
+    map.fitBounds(bounds, {
+      padding: Array.isArray(options.padding) ? options.padding : [40, 40],
+      maxZoom: Number.isFinite(Number(options.maxZoom))
+        ? Number(options.maxZoom)
+        : 15
+    });
+}
+  function fitBounds() {
+    if (!clusterGroup || clusterGroup.getLayers().length === 0) return;
+    if (!map) return;
+
+    const bounds = clusterGroup.getBounds();
+    suppressViewportChanged = true;
+    map.fitBounds(bounds, { padding: [30, 30] });
   }
-
-  function getViewportBounds() {
-  if (!map) return null;
-
-  const bounds = map.getBounds();
-
-  return {
-    north: bounds.getNorth(),
-    south: bounds.getSouth(),
-    east: bounds.getEast(),
-    west: bounds.getWest()
-  };
-}
-
-function setViewCenter(position, zoom = 13) {
-  if (!map || !position) return;
-
-  suppressViewportChanged = true;
-
-  map.setView([position.lat, position.lng], zoom, {
-    animate: true
-  });
-}
   function handleMoveEnd() {
     if (!map) return;
 
@@ -248,18 +193,123 @@ function setViewCenter(position, zoom = 13) {
 
     userGestureActive = false;
   }
+  function panToPosition(position) {
+    if (!map || !position) return;
+
+    const lat = Number(position.lat);
+    const lng = Number(position.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    suppressViewportChanged = true;
+
+    map.panTo([lat, lng], {
+      animate: true
+    });
+  }
+  function setViewCenter(position, zoom = 13) {
+    if (!map || !position) return;
+
+    const lat = Number(position.lat);
+    const lng = Number(position.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    suppressViewportChanged = true;
+
+    map.setView([lat, lng], zoom, {
+      animate: true
+    });
+  }
+  function setUserLocation(position, options = {}) {
+    if (!map || !position) return;
+
+    const lat = Number(position.lat);
+    const lng = Number(position.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    const showCircle = options.showCircle !== false;
+    const accuracy =
+      Number.isFinite(Number(options.accuracy)) && Number(options.accuracy) > 0
+        ? Number(options.accuracy)
+        : 150;
+
+    if (!userLocationMarker) {
+      userLocationMarker = L.circleMarker([lat, lng], {
+        radius: 8,
+        weight: 3,
+        color: "#ffffff",
+        fillColor: "#1d9bf0",
+        fillOpacity: 1,
+        pane: "markerPane"
+      }).addTo(map);
+    } else {
+      userLocationMarker.setLatLng([lat, lng]);
+    }
+
+    if (showCircle) {
+      if (!userLocationCircle) {
+        userLocationCircle = L.circle([lat, lng], {
+          radius: accuracy,
+          weight: 1,
+          color: "#1d9bf0",
+          fillColor: "#1d9bf0",
+          fillOpacity: 0.12,
+          pane: "overlayPane"
+        }).addTo(map);
+      } else {
+        userLocationCircle.setLatLng([lat, lng]);
+        userLocationCircle.setRadius(accuracy);
+      }
+    } else if (userLocationCircle) {
+      map.removeLayer(userLocationCircle);
+      userLocationCircle = null;
+    }
+  }
+
+  function clearUserLocation() {
+    if (!map) return;
+
+    if (userLocationMarker) {
+      map.removeLayer(userLocationMarker);
+      userLocationMarker = null;
+    }
+
+    if (userLocationCircle) {
+      map.removeLayer(userLocationCircle);
+      userLocationCircle = null;
+    }
+  }
+  function getViewportBounds() {
+    if (!map) return null;
+
+    const bounds = map.getBounds();
+    if (!bounds) return null;
+
+    return {
+      north: bounds.getNorth(),
+      south: bounds.getSouth(),
+      east: bounds.getEast(),
+      west: bounds.getWest()
+    };
+  }
   function refreshLayout() {
     if (!map) return;
     map.invalidateSize();
   }
   function destroy() {
-    if (!map) return;
+    if (map) {
+      map.off();
+      map.remove();
+      map = null;
+    }
 
-    map.off("moveend", handleMoveEnd);
-    map.remove();
-    map = null;
+    clusterGroup = null;
     markersById.clear();
     selectedMarker = null;
+    userLocationMarker = null;
+    userLocationCircle = null;
   }
 
   function isValidEvent(ev) {
@@ -284,6 +334,16 @@ function setViewCenter(position, zoom = 13) {
         return "#94a3b8";
     }
   }
+
+  function createPopupHtml(ev) {
+    return `
+      <div class="mappa-popup">
+        <strong>${escapeHtml(ev.title || "")}</strong><br/>
+        ${escapeHtml(formatDate(ev.startAt))}
+      </div>
+    `;
+  }
+
   function formatDate(value) {
     if (!value) return "";
 
@@ -304,17 +364,17 @@ function setViewCenter(position, zoom = 13) {
   }
 
   return {
-  mount,
-  setEvents,
-  focusEvent,
-  clearSelection,
-  refreshLayout,
-  getViewportBounds,
-  setViewCenter,
-  setUserLocation,
-  clearUserLocation,
-  panToPosition,
-  fitUserAndEvents,
-  destroy
-};
+    mount,
+    setEvents,
+    focusEvent,
+    clearSelection,
+    setUserLocation,
+    clearUserLocation,
+    getViewportBounds,
+    refreshLayout,
+    setViewCenter,
+    panToPosition,
+    fitUserAndEvents,
+    destroy
+  };
 }
