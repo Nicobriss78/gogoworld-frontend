@@ -123,6 +123,8 @@ export function createMappaPrivatiMap({
 
     highlightMarker(eventId);
 
+    suppressViewportChanged = true;
+
     map.setView(marker.getLatLng(), 14, {
       animate: true
     });
