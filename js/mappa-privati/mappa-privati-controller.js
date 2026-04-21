@@ -65,6 +65,24 @@ bindUi();
   chat.showIdle();
   syncLocateBtnMode(state.getState().geo?.mode || "explore");
 
+  const viewportEl = document.getElementById("mappaMapViewport");
+  const mapHostEl = document.getElementById("mappaMap");
+
+  const debugResizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const box = entry.contentRect;
+      console.log("[MAP_PRIVATE] resize", {
+        targetId: entry.target?.id || "",
+        width: Math.round(box.width),
+        height: Math.round(box.height),
+        ts: Date.now()
+      });
+    }
+  });
+
+  if (viewportEl) debugResizeObserver.observe(viewportEl);
+  if (mapHostEl) debugResizeObserver.observe(mapHostEl);
+
   window.gwMappaPrivatiUnlockPrivateEvent = handleUnlockPrivateEventRequest;
 
   await loadEvents({
