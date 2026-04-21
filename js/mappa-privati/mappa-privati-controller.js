@@ -95,6 +95,73 @@ bindUi();
     });
   }
 
+  function getLayoutSnapshot() {
+    const body = document.body;
+    const main = document.querySelector(".mappa-main");
+    const section = document.getElementById("mappaMapSection");
+    const viewport = document.getElementById("mappaMapViewport");
+    const mapEl = document.getElementById("mappaMap");
+    const topbar = document.getElementById("sharedTopbarMount");
+    const bottomnav = document.getElementById("sharedBottomnavMount");
+    const drawer = document.getElementById("mappaDetailDrawer");
+
+    const rectOf = (el) => {
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return {
+        w: Math.round(r.width),
+        h: Math.round(r.height),
+        top: Math.round(r.top),
+        left: Math.round(r.left)
+      };
+    };
+
+    return {
+      ts: Date.now(),
+      pathname: window.location.pathname,
+      search: window.location.search,
+      bodyClass: body?.className || "",
+      body: rectOf(body),
+      main: rectOf(main),
+      section: rectOf(section),
+      viewport: rectOf(viewport),
+      map: rectOf(mapEl),
+      topbar: rectOf(topbar),
+      bottomnav: rectOf(bottomnav),
+      drawerHidden: drawer?.hidden,
+      drawerClass: drawer?.className || "",
+      visibility: document.visibilityState
+    };
+  }
+
+  function logLayout(tag) {
+    console.log(`[MAP_PRIVATE] ${tag}`, getLayoutSnapshot());
+  }
+
+  function scheduleAuditSequence(tag) {
+    logLayout(`${tag}:t0`);
+
+    window.requestAnimationFrame(() => {
+      logLayout(`${tag}:raf`);
+
+      window.setTimeout(() => {
+        logLayout(`${tag}:80ms`);
+      }, 80);
+
+      window.setTimeout(() => {
+        logLayout(`${tag}:180ms`);
+      }, 180);
+
+      window.setTimeout(() => {
+        logLayout(`${tag}:350ms`);
+      }, 350);
+
+      window.setTimeout(() => {
+        logLayout(`${tag}:550ms`);
+      }, 550);
+    });
+  }
+
   function bindUi() {
     elements.infoBtn?.addEventListener("click", handleOpenDetail);
     elements.drawerContent?.addEventListener("click", handleDrawerActions);
