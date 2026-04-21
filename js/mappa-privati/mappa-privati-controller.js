@@ -710,12 +710,7 @@ document.addEventListener("visibilitychange", () => {
     ensureGeoWatchStarted();
   }
 
-  window.requestAnimationFrame(() => {
-    map.refreshLayout();
-    window.setTimeout(() => {
-      map.refreshLayout();
-    }, 120);
-  });
+  scheduleMapRefresh();
 });
   window.addEventListener("pagehide", (event) => {
     if (event.persisted) return;
