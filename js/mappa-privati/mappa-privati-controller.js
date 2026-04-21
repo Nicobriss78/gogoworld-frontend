@@ -709,6 +709,8 @@ bindUi();
 
   async function handleReturnContext() {
     const stored = readReturnContext();
+    console.log("[MAP_PRIVATE] handleReturnContext:stored", stored);
+
     if (!stored?.returnEventId) return;
     if (stored.fromView !== "map-private-v2") return;
 
