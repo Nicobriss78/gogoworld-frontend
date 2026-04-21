@@ -96,7 +96,10 @@ bindUi();
   await handleReturnContext();
 
   scheduleAuditSequence("after-handleReturnContext");
-  scheduleMapRefresh();
+
+  setTimeout(() => {
+    map.refreshLayout();
+  }, 600);
 
   /* ===============================
      DOM
