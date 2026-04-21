@@ -72,11 +72,7 @@ bindUi();
   });
   await handleReturnContext();
 
-  window.requestAnimationFrame(() => {
-    window.setTimeout(() => {
-      map.refreshLayout();
-    }, 200);
-  });
+  scheduleMapRefresh();
 
   /* ===============================
      DOM
