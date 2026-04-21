@@ -734,18 +734,23 @@ bindUi();
 
     state.setSelectedEvent(event);
     map.focusEvent(event.id);
+    logLayout("after-focusEvent");
+    scheduleAuditSequence("after-focusEvent");
     scheduleMapRefresh();
 
     await chat.openForEvent(event);
+    logLayout("after-chat-open");
+    scheduleAuditSequence("after-chat-open");
     scheduleMapRefresh();
 
     if (stored.returnDrawerOpen) {
       renderDetailCard(event);
       drawer.open();
       state.setDrawerOpen(true);
+      logLayout("after-drawer-open");
+      scheduleAuditSequence("after-drawer-open");
       scheduleMapRefresh();
     }
-
     clearReturnContextStorage();
     state.clearReturnContext();
   }
