@@ -72,7 +72,9 @@ bindUi();
   });
   await handleReturnContext();
 
-  scheduleMapRefresh();
+  setTimeout(() => {
+    map.refreshLayout();
+  }, 600);
 
   /* ===============================
      DOM
