@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
 const state = createMappaPrivatiState();
+  initPageLifecycleDebug("MAP_PRIVATE_LIFECYCLE");
   const api = createMappaPrivatiApi();
   const renderer = createMappaPrivatiRenderer();
   const DEFAULT_GEO_RADIUS = 30000;
