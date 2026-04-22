@@ -378,4 +378,4 @@ function fitUserAndEvents(position, options = {}) {
     fitUserAndEvents,
     destroy
   };
-                       }
+}
