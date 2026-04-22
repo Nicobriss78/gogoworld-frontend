@@ -296,30 +296,7 @@ function fitUserAndEvents(position, options = {}) {
   }
   function refreshLayout() {
     if (!map) return;
-
-    map.invalidateSize(false);
-
-    window.requestAnimationFrame(() => {
-      if (!map) return;
-
-      map.invalidateSize(false);
-
-      window.setTimeout(() => {
-        if (!map) return;
-
-        map.invalidateSize(false);
-
-        if (clusterGroup && typeof clusterGroup.refreshClusters === "function") {
-          clusterGroup.refreshClusters();
-        }
-
-        map.eachLayer((layer) => {
-          if (typeof layer.redraw === "function") {
-            layer.redraw();
-          }
-        });
-      }, 120);
-    });
+    map.invalidateSize();
   }
   function destroy() {
     if (map) {
