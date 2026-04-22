@@ -627,37 +627,45 @@ bindUi();
     if (!stored?.returnEventId) return;
     if (stored.fromView !== "map-private-v2") return;
 
-    state.setReturnContext({
-      returnEventId: stored.returnEventId,
-      returnDrawerOpen: Boolean(stored.returnDrawerOpen)
-    });
+    isRestoringReturnContext = true;
 
-    let event =
-      state.getState().eventsById.get(stored.returnEventId) || null;
+    try {
+      state.setReturnContext({
+        returnEventId: stored.returnEventId,
+        returnDrawerOpen: Boolean(stored.returnDrawerOpen)
+      });
 
-    if (!event) {
-      event = await api.fetchEventDetail(stored.returnEventId);
-    }
+      let event =
+        state.getState().eventsById.get(stored.returnEventId) || null;
 
-    if (!event?.id) {
+      if (!event) {
+        event = await api.fetchEventDetail(stored.returnEventId);
+      }
+
+      if (!event?.id) {
+        clearReturnContextStorage();
+        state.clearReturnContext();
+        return;
+      }
+
+      state.setSelectedEvent(event);
+      map.focusEvent(event.id);
+
+      await chat.openForEvent(event);
+
+      if (stored.returnDrawerOpen) {
+        renderDetailCard(event);
+        drawer.open();
+        state.setDrawerOpen(true);
+      }
+
       clearReturnContextStorage();
       state.clearReturnContext();
-      return;
+    } finally {
+      window.setTimeout(() => {
+        isRestoringReturnContext = false;
+      }, 400);
     }
-
-    state.setSelectedEvent(event);
-    map.focusEvent(event.id);
-
-    await chat.openForEvent(event);
-
-    if (stored.returnDrawerOpen) {
-      renderDetailCard(event);
-      drawer.open();
-      state.setDrawerOpen(true);
-    }
-
-    clearReturnContextStorage();
-    state.clearReturnContext();
   }
 
   function saveReturnContext({ returnEventId, returnDrawerOpen }) {
