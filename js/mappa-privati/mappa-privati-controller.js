@@ -362,6 +362,7 @@ bindUi();
 
   async function handleViewportChanged(viewport) {
     if (!viewport) return;
+    if (isRestoringReturnContext) return;
 
     const currentGeo = state.getState().geo || {};
     const nextCenter = {
