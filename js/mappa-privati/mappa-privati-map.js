@@ -297,8 +297,7 @@ function fitUserAndEvents(position, options = {}) {
     };
   }
   function refreshLayout() {
-    if (!map) return;
-    map.invalidateSize();
+    refreshLeafletLayout(map, clusterGroup);
   }
   function destroy() {
     if (map) {
