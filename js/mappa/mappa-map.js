@@ -1,3 +1,5 @@
+import { refreshLeafletLayout } from "/js/shared/leaflet-blink-compat.js";
+
 export function createMappaMap({
   mapElementId,
   onSelectEvent,
