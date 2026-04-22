@@ -38,6 +38,7 @@ export function createMappaPrivatiMap({
   }
 
   function setEvents(events = [], options = {}) {
+  function setEvents(events = [], options = {}) {
     if (!clusterGroup) return;
 
     clusterGroup.clearLayers();
@@ -60,12 +61,6 @@ export function createMappaPrivatiMap({
 
     if (options.fitBounds === true) {
       fitBounds();
-    }
-
-    if (map) {
-      window.setTimeout(() => {
-        map.invalidateSize();
-      }, 0);
     }
   }
 
