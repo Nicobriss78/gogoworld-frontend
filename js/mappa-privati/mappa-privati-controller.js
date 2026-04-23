@@ -433,7 +433,7 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
         ? { lat, lng, radius }
         : {};
 
-      const events = await api.fetchPublicMapEvents(fetchOptions);
+      const events = await api.fetchPrivateMapEvents(fetchOptions);
 
       const shouldFitBounds = options.fitBounds === true;
 
