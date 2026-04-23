@@ -26,7 +26,10 @@ async function init() {
   if (!elements.mapEl) {
     return;
   }
-let geoWatchActive = false;
+
+  let geoWatchActive = false;
+  let isRestoringFromReturn = false;
+
   const drawer = createMappaDrawer({
     overlayEl: elements.drawerOverlay,
     drawerEl: elements.drawer,
