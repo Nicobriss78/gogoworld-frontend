@@ -62,10 +62,17 @@ let geoWatchActive = false;
   chat.mount();
   chat.showIdle();
 syncLocateBtnMode(state.getState().geo?.mode || "explore");
+  const hasReturnContext = hasPendingReturnContext();
+
   await loadEvents({
-    fitBounds: true
+    fitBounds: !hasReturnContext
   });
-  await handleReturnContext();
+
+  if (hasReturnContext) {
+    await handleReturnContext();
+  }
+
+  scheduleMapRefresh();
 
   scheduleMapRefresh();
 
