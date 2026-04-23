@@ -672,6 +672,10 @@ async function handleUnlockPrivateEventRequest() {
 
     clearReturnContextStorage();
     state.clearReturnContext();
+
+    window.setTimeout(() => {
+      isRestoringFromReturn = false;
+    }, 500);
   }
 
   function saveReturnContext({ returnEventId, returnDrawerOpen }) {
