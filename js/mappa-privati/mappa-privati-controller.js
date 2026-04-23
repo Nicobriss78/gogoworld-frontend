@@ -609,6 +609,11 @@ async function handleUnlockPrivateEventRequest() {
       state.getState().eventsById.get(stored.returnEventId) || null;
 
     if (!event) {
+      await loadEvents({ fitBounds: false });
+      event = state.getState().eventsById.get(stored.returnEventId) || null;
+    }
+
+    if (!event) {
       event = await api.fetchEventDetail(stored.returnEventId);
     }
 
