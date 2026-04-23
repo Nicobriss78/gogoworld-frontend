@@ -113,7 +113,7 @@ export function createMappaApi({ fetchImpl } = {}) {
 }
 function buildPrivateMapEventsQuery(options = {}) {
     const params = new URLSearchParams();
-    params.set("visibility", "public");
+    params.set("visibility", "private");
 
     const lat = Number(options.lat);
     const lng = Number(options.lng);
