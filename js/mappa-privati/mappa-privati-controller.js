@@ -573,10 +573,10 @@ function handleOpenFullChat(eventId) {
   function saveReturnContext({ returnEventId, returnDrawerOpen }) {
     try {
       sessionStorage.setItem(
-        "gw:mappa-v2:return-context",
+        "gw:mappa-privati-v2:return-context",
         JSON.stringify({
-          fromView: "map-v2",
-          rootReturnTo: "/pages/mappa-v2.html",
+          fromView: "map-private-v2",
+          rootReturnTo: "/pages/mappa-privati-v2.html",
           returnEventId,
           returnDrawerOpen: Boolean(returnDrawerOpen)
         })
