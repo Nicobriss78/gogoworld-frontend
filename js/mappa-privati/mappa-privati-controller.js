@@ -520,7 +520,7 @@ function handleOpenFullChat(eventId) {
 
   window.location.href =
     `/pages/evento-v2.html?id=${encodeURIComponent(eventId)}` +
-    `&fromView=map-private-v2` +
+    `&fromView=map-v2` +
     `&rootReturnTo=${encodeURIComponent("/pages/mappa-privati-v2.html")}` +
     `&returnEventId=${encodeURIComponent(eventId)}`;
 }
