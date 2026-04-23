@@ -501,7 +501,7 @@ function handleOpenFullChat(eventId) {
     const params = new URLSearchParams();
     params.set("tab", "events");
     params.set("eventId", String(eventId).trim());
-    params.set("rootReturnTo", "/pages/mappa-v2.html");
+    params.set("rootReturnTo", "/pages/mappa-privati-v2.html");
 
     window.location.href = `/pages/messages-v2.html?${params.toString()}`;
 }
