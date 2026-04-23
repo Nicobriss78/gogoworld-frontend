@@ -357,6 +357,7 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
 
   async function handleViewportChanged(viewport) {
     if (!viewport) return;
+    if (isRestoringFromReturn) return;
 
     const currentGeo = state.getState().geo || {};
     const nextCenter = {
