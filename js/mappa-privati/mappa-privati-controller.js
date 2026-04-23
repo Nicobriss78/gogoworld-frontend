@@ -648,6 +648,11 @@ async function handleUnlockPrivateEventRequest() {
     if (!event?.id) {
       clearReturnContextStorage();
       state.clearReturnContext();
+
+      window.setTimeout(() => {
+        isRestoringFromReturn = false;
+      }, 500);
+
       return;
     }
 
