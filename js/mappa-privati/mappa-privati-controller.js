@@ -357,6 +357,8 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     if (!viewport) return;
     if (isRestoringFromReturn) return;
 
+    const selectedEvent = state.getState().selectedEvent;
+    if (selectedEvent?.id) return;
     const currentGeo = state.getState().geo || {};
     const nextCenter = {
       lat: Number(viewport.lat),
