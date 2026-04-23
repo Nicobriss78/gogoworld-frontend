@@ -43,7 +43,32 @@ export function createMappaApi({ fetchImpl } = {}) {
     return null;
   }
 }
+async function unlockPrivateEventByCode(code) {
+    const cleanCode = String(code || "").trim();
 
+    if (!cleanCode) {
+      throw new Error("PRIVATE_EVENT_CODE_REQUIRED");
+    }
+
+    try {
+      const res = await apiPost(`/events/private/unlock`, { code: cleanCode });
+
+      if (!res.ok) {
+        const error = new Error("PRIVATE_EVENT_UNLOCK_ERROR");
+        error.response = res;
+        throw error;
+      }
+
+      return res;
+    } catch (error) {
+      if (error?.response) {
+        throw error;
+      }
+
+      const fallback = new Error("PRIVATE_EVENT_UNLOCK_ERROR");
+      throw fallback;
+    }
+}
   /* ===============================
      CHAT
      =============================== */
