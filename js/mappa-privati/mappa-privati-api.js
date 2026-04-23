@@ -111,7 +111,7 @@ export function createMappaApi({ fetchImpl } = {}) {
     // silenzioso
   }
 }
-function buildPublicMapEventsQuery(options = {}) {
+function buildPrivateMapEventsQuery(options = {}) {
     const params = new URLSearchParams();
     params.set("visibility", "public");
 
