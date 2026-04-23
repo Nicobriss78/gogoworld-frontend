@@ -8,10 +8,10 @@ export function createMappaApi({ fetchImpl } = {}) {
      EVENTI PUBBLICI (MAPPA)
      =============================== */
 
-  async function fetchPublicMapEvents(options = {}) {
+  async function fetchPrivateMapEvents(options = {}) {
     try {
-      const query = buildPublicMapEventsQuery(options);
-      const res = await apiGet(`/events?${query.toString()}`);
+      const query = buildPrivateMapEventsQuery(options);
+      const res = await apiGet(`/events/private?${query.toString()}`);
 
       if (!res.ok) return [];
 
