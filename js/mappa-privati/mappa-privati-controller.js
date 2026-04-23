@@ -626,6 +626,8 @@ async function handleUnlockPrivateEventRequest() {
     if (!stored?.returnEventId) return;
     if (stored.fromView !== "map-private-v2") return;
 
+    isRestoringFromReturn = true;
+
     state.setReturnContext({
       returnEventId: stored.returnEventId,
       returnDrawerOpen: Boolean(stored.returnDrawerOpen)
