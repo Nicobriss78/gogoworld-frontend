@@ -77,8 +77,6 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
 
   scheduleMapRefresh();
 
-  scheduleMapRefresh();
-
   /* ===============================
      DOM
      =============================== */
