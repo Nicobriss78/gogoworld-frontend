@@ -694,6 +694,7 @@ document.addEventListener("visibilitychange", () => {
   window.addEventListener("pagehide", (event) => {
     if (event.persisted) return;
 
+    delete window.gwMappaPrivatiUnlockPrivateEvent;
     stopGeoWatchTracking();
     unbindUi();
     chat.destroy();
