@@ -597,7 +597,7 @@ function handleOpenFullChat(eventId) {
 
   function clearReturnContextStorage() {
     try {
-      sessionStorage.removeItem("gw:mappa-v2:return-context");
+      sessionStorage.removeItem("gw:mappa-privati-v2:return-context");
     } catch {
       // silenzioso
     }
