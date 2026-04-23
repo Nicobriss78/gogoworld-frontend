@@ -255,8 +255,9 @@ function buildPrivateMapEventsQuery(options = {}) {
      =============================== */
 
   return {
-    fetchPublicMapEvents,
+    fetchPrivateMapEvents,
     fetchEventDetail,
+    unlockPrivateEventByCode,
     openEventRoom,
     fetchRoomMessages,
     sendRoomMessage,
