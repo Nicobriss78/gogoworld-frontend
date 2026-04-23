@@ -30,19 +30,16 @@ export function createMappaApi({ fetchImpl } = {}) {
      =============================== */
 
   async function fetchEventDetail(eventId) {
-  if (!eventId) return null;
+    if (!eventId) return null;
 
-  try {
-    const res = await apiGet(`/events/${eventId}`);
-    if (!res.ok) return null;
-
-    const ev = normalizeEventForMap(res.data);
-
-    return ev?.id ? ev : null;
-  } catch {
-    return null;
+    try {
+      const privateEvents = await fetchPrivateMapEvents({});
+      const match = privateEvents.find((ev) => String(ev?.id || "") === String(eventId));
+      return match || null;
+    } catch {
+      return null;
+    }
   }
-}
 async function unlockPrivateEventByCode(code) {
     const cleanCode = String(code || "").trim();
 
