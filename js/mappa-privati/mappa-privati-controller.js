@@ -524,7 +524,73 @@ function handleOpenFullChat(eventId) {
     `&rootReturnTo=${encodeURIComponent("/pages/mappa-privati-v2.html")}` +
     `&returnEventId=${encodeURIComponent(eventId)}`;
 }
+async function handleUnlockPrivateEventRequest() {
+    const code = window.prompt("Inserisci il codice dell'evento privato:");
+    if (!code) return;
 
+    try {
+      await api.unlockPrivateEventByCode(code);
+
+      const currentGeo = state.getState().geo || {};
+      const bounds = map.getViewportBounds();
+
+      if (
+        bounds &&
+        Number.isFinite(Number(bounds.north)) &&
+        Number.isFinite(Number(bounds.south)) &&
+        Number.isFinite(Number(bounds.east)) &&
+        Number.isFinite(Number(bounds.west))
+      ) {
+        await loadEvents({
+          bounds,
+          fitBounds: false
+        });
+      } else if (
+        Number.isFinite(Number(currentGeo.mapCenter?.lat)) &&
+        Number.isFinite(Number(currentGeo.mapCenter?.lng))
+      ) {
+        await loadEvents({
+          lat: Number(currentGeo.mapCenter.lat),
+          lng: Number(currentGeo.mapCenter.lng),
+          radius: Number.isFinite(Number(currentGeo.radiusMeters))
+            ? Number(currentGeo.radiusMeters)
+            : DEFAULT_GEO_RADIUS,
+          fitBounds: false
+        });
+      } else {
+        await loadEvents({
+          fitBounds: true
+        });
+      }
+
+      scheduleMapRefresh();
+      window.alert("Evento privato sbloccato correttamente.");
+    } catch (error) {
+      const status =
+        Number(error?.response?.status) ||
+        Number(error?.response?.statusCode) ||
+        0;
+
+      if (status === 404) {
+        window.alert("Codice non valido o evento non disponibile.");
+        return;
+      }
+
+      if (status === 403) {
+        window.alert("Non sei autorizzato a sbloccare questo evento.");
+        return;
+      }
+
+      if (status === 429) {
+        window.alert("Troppi tentativi. Attendi un momento e riprova.");
+        return;
+      }
+
+      window.alert("Errore durante lo sblocco dell'evento privato.");
+    }
+  }
+
+  window.gwMappaPrivatiUnlockPrivateEvent = handleUnlockPrivateEventRequest;
   /* ===============================
      RETURN CONTEXT
      =============================== */
