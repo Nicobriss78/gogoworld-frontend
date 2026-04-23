@@ -379,6 +379,21 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
       fitBounds: false
     });
   }
+  function hasPendingReturnContext() {
+    try {
+      const raw = sessionStorage.getItem("gw:mappa-privati-v2:return-context");
+      if (!raw) return false;
+
+      const parsed = JSON.parse(raw);
+      return Boolean(
+        parsed &&
+        parsed.fromView === "map-private-v2" &&
+        parsed.returnEventId
+      );
+    } catch {
+      return false;
+    }
+  }
   /* ===============================
      LOAD EVENTI PUBBLICI
      =============================== */
