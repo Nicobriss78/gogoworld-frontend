@@ -655,5 +655,5 @@ function getDomElements() {
     locateBtn: document.getElementById("mappaLocateBtn"),
     locateBtnLabel: document.getElementById("mappaLocateBtnLabel"),
     geoStatus: document.getElementById("mappaGeoStatus")
-  };
+    };
   }
