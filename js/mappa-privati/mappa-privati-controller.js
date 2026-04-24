@@ -4,13 +4,7 @@ import { createMappaRenderer } from "/js/mappa-privati/mappa-privati-renderer.js
 import { createMappaMap } from "/js/mappa-privati/mappa-privati-map.js";
 import { createMappaChat } from "/js/mappa-privati/mappa-privati-chat.js";
 import { createMappaDrawer } from "/js/mappa-privati/mappa-privati-drawer.js";
-import {
-  requestUserPosition,
-  startUserPositionWatch,
-  stopUserPositionWatch,
-  normalizePosition,
-  getDistanceMeters
-} from "/js/mappa/mappa-geo.js";
+
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
