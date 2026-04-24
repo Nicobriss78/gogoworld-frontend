@@ -91,8 +91,7 @@ async function init() {
   function bindUi() {
     elements.infoBtn?.addEventListener("click", handleOpenEventPage);
     elements.drawerContent?.addEventListener("click", handleDrawerActions);
-    elements.locateBtn?.addEventListener("click", handleLocateMe);
-  }
+elements.unlockBtn?.addEventListener("click", handleUnlockPrivateEventRequest);  }
 
   function unbindUi() {
     elements.infoBtn?.removeEventListener("click", handleOpenEventPage);
