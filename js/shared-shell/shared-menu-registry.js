@@ -29,13 +29,6 @@ const MENU_REGISTRY = [
     type: "action",
     actionId: "change-role",
   },
-  {
-    menuItemId: "private-unlock",
-    label: "Sblocca evento privato",
-    type: "special",
-    actionId: "private-unlock",
-    requiredCapability: "privateUnlock",
-  },
 ];
 
 export function getMenuItems() {
