@@ -615,19 +615,9 @@ async function handleUnlockPrivateEventRequest() {
     scheduleMapRefresh();
   });
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState !== "visible") {
-    stopGeoWatchTracking();
-    return;
+  if (document.visibilityState === "visible") {
+    scheduleMapRefresh();
   }
-
-  if (
-    (state.getState().geo?.mode || "explore") === "near_me" ||
-    (state.getState().geo?.mode || "explore") === GEO_FOLLOW_MODE
-  ) {
-    ensureGeoWatchStarted();
-  }
-
-  scheduleMapRefresh();
 });
   window.addEventListener("pagehide", (event) => {
     if (event.persisted) return;
