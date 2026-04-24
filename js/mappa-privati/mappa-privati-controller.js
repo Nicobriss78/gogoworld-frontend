@@ -96,8 +96,7 @@ elements.unlockBtn?.addEventListener("click", handleUnlockPrivateEventRequest); 
   function unbindUi() {
     elements.infoBtn?.removeEventListener("click", handleOpenEventPage);
     elements.drawerContent?.removeEventListener("click", handleDrawerActions);
-    elements.locateBtn?.removeEventListener("click", handleLocateMe);
-  }
+elements.unlockBtn?.removeEventListener("click", handleUnlockPrivateEventRequest);  }
   function handleDrawerActions(event) {
     const action = event.target?.closest?.("[data-action]")?.dataset?.action;
     if (!action) return;
