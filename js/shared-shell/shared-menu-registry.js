@@ -29,6 +29,13 @@ const MENU_REGISTRY = [
     type: "action",
     actionId: "change-role",
   },
+  {
+    menuItemId: "logout",
+    label: "Logout",
+    type: "action",
+    actionId: "logout",
+    tone: "danger",
+  },
 ];
 
 export function getMenuItems() {
