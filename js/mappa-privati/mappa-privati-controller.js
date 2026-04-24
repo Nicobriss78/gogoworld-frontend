@@ -481,37 +481,9 @@ async function handleUnlockPrivateEventRequest() {
     try {
       await api.unlockPrivateEventByCode(code);
 
-      const currentGeo = state.getState().geo || {};
-      const bounds = map.getViewportBounds();
-
-      if (
-        bounds &&
-        Number.isFinite(Number(bounds.north)) &&
-        Number.isFinite(Number(bounds.south)) &&
-        Number.isFinite(Number(bounds.east)) &&
-        Number.isFinite(Number(bounds.west))
-      ) {
-        await loadEvents({
-          bounds,
-          fitBounds: false
-        });
-      } else if (
-        Number.isFinite(Number(currentGeo.mapCenter?.lat)) &&
-        Number.isFinite(Number(currentGeo.mapCenter?.lng))
-      ) {
-        await loadEvents({
-          lat: Number(currentGeo.mapCenter.lat),
-          lng: Number(currentGeo.mapCenter.lng),
-          radius: Number.isFinite(Number(currentGeo.radiusMeters))
-            ? Number(currentGeo.radiusMeters)
-            : DEFAULT_GEO_RADIUS,
-          fitBounds: false
-        });
-      } else {
-        await loadEvents({
-          fitBounds: true
-        });
-      }
+      await loadEvents({
+  fitBounds: true
+});
 
       scheduleMapRefresh();
       window.alert("Evento privato sbloccato correttamente.");
