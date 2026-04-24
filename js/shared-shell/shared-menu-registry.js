@@ -36,13 +36,6 @@ const MENU_REGISTRY = [
     actionId: "private-unlock",
     requiredCapability: "privateUnlock",
   },
-  {
-    menuItemId: "logout",
-    label: "Logout",
-    type: "action",
-    actionId: "logout",
-    tone: "danger",
-  },
 ];
 
 export function getMenuItems() {
