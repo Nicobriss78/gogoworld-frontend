@@ -11,10 +11,7 @@ async function init() {
   const state = createMappaState();
   const api = createMappaApi();
   const renderer = createMappaRenderer();
-  const DEFAULT_GEO_RADIUS = 30000;
-  const GEO_FOLLOW_MODE = "follow_me";
-  const GEO_MIN_MOVE_METERS = 5;
-  const GEO_MAX_NOISY_ACCURACY = 120;
+
   const elements = getDomElements();
 
   if (!elements.mapEl) {
