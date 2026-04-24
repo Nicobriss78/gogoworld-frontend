@@ -623,7 +623,7 @@ document.addEventListener("visibilitychange", () => {
     if (event.persisted) return;
 
     delete window.gwMappaPrivatiUnlockPrivateEvent;
-    stopGeoWatchTracking();
+
     unbindUi();
     chat.destroy();
     drawer.destroy();
