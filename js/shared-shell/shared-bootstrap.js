@@ -224,26 +224,12 @@ export function initSharedShell() {
     }
   }
 
-  async function handleContextAction(actionId, context = {}) {
-    if (actionId === "private-unlock" && context.currentViewId === "private-map") {
-      const handler = window.gwMappaPrivatiUnlockPrivateEvent;
-
-      if (typeof handler === "function") {
-        return handler();
-      }
-
-      console.warn("private-unlock handler missing on private-map");
-      return {
-        status: "missing-handler",
-        actionId,
-      };
-    }
-
-    return {
-      status: "not-handled",
-      actionId,
-    };
-  }
+  async function handleContextAction(actionId) {
+  return {
+    status: "not-handled",
+    actionId,
+  };
+}
 
   function navigateTo(viewId) {
     const map = {
