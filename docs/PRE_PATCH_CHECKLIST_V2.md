@@ -24,6 +24,8 @@ Se MAPPA PRIVATI:
 - uso bounds? → NO [ ]
 - dataset cambia al pan? → NO [ ]
 
+[ ] Sto modificando MAPPA PRIVATI?
+    → Verificato rispetto regola PRIVATE_MAP_NO_GEO_DISCOVERY
 ---
 
 ## LIFECYCLE
