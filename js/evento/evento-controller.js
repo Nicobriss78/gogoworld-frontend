@@ -190,6 +190,8 @@ function mapCheckInReasonToMessage(reasonCode) {
   switch (code) {
     case "ALREADY_CHECKED_IN":
       return "Check-in già effettuato, complimenti e grazie per la tua partecipazione!";
+    case "INVALID_EVENT_ID":
+      return "Evento non valido. Torna alla mappa e riapri l’evento.";
     case "EVENT_NOT_ACTIVE":
       return "Il check-in è disponibile solo mentre l'evento è in corso.";
     case "EVENT_HAS_NO_LOCATION":
