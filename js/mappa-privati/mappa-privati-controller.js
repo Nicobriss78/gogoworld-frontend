@@ -18,7 +18,6 @@ async function init() {
     return;
   }
 
-  let geoWatchActive = false;
   let isRestoringFromReturn = false;
 
   const drawer = createMappaDrawer({
