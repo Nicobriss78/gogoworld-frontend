@@ -383,50 +383,7 @@ elements.unlockBtn?.removeEventListener("click", handleUnlockPrivateEventRequest
         mapError: ""
       });
 
-      const currentGeo = state.getState().geo || {};
-
-      const lat =
-        Number.isFinite(Number(options.lat))
-          ? Number(options.lat)
-          : Number.isFinite(Number(currentGeo.mapCenter?.lat))
-          ? Number(currentGeo.mapCenter.lat)
-          : null;
-
-      const lng =
-        Number.isFinite(Number(options.lng))
-          ? Number(options.lng)
-          : Number.isFinite(Number(currentGeo.mapCenter?.lng))
-          ? Number(currentGeo.mapCenter.lng)
-          : null;
-
-      const radius =
-        Number.isFinite(Number(options.radius))
-          ? Number(options.radius)
-          : Number.isFinite(Number(currentGeo.radiusMeters))
-          ? Number(currentGeo.radiusMeters)
-          : DEFAULT_GEO_RADIUS;
-
-      const bounds =
-        options.bounds &&
-        Number.isFinite(Number(options.bounds.north)) &&
-        Number.isFinite(Number(options.bounds.south)) &&
-        Number.isFinite(Number(options.bounds.east)) &&
-        Number.isFinite(Number(options.bounds.west))
-          ? {
-              north: Number(options.bounds.north),
-              south: Number(options.bounds.south),
-              east: Number(options.bounds.east),
-              west: Number(options.bounds.west)
-            }
-          : null;
-
-      const fetchOptions = bounds
-        ? bounds
-        : Number.isFinite(lat) && Number.isFinite(lng)
-        ? { lat, lng, radius }
-        : {};
-
-      const events = await api.fetchPrivateMapEvents(fetchOptions);
+      const events = await api.fetchPrivateMapEvents();
 
       const shouldFitBounds = options.fitBounds === true;
 
