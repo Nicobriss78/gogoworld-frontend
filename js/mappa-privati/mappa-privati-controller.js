@@ -341,32 +341,22 @@ elements.unlockBtn?.removeEventListener("click", handleUnlockPrivateEventRequest
   }
 
   async function handleViewportChanged(viewport) {
-    if (!viewport) return;
-    if (isRestoringFromReturn) return;
+  if (!viewport) return;
+  if (isRestoringFromReturn) return;
 
-    const nextCenter = {
-      lat: Number(viewport.lat),
-      lng: Number(viewport.lng)
-    };
+  const nextCenter = {
+    lat: Number(viewport.lat),
+    lng: Number(viewport.lng)
+  };
 
-    if (!Number.isFinite(nextCenter.lat) || !Number.isFinite(nextCenter.lng)) {
-      return;
-    }
-
-    if (viewport.source !== "user") {
-      state.setGeoState({
-        mapCenter: nextCenter
-      });
-      return;
-    }
-
-    state.setGeoState({
-      mapCenter: nextCenter,
-      mode: "explore"
-    });
-    syncLocateBtnMode("explore");
-    stopGeoWatchTracking();
+  if (!Number.isFinite(nextCenter.lat) || !Number.isFinite(nextCenter.lng)) {
+    return;
   }
+
+  state.setGeoState({
+    mapCenter: nextCenter
+  });
+}
   function hasPendingReturnContext() {
     try {
       const raw = sessionStorage.getItem("gw:mappa-privati-v2:return-context");
