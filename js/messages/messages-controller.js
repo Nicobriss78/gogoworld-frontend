@@ -578,3 +578,5 @@ window.addEventListener("DOMContentLoaded", () => {
     renderMessagesErrorState("Impossibile inizializzare la pagina messaggi.");
   });
 });
+document.addEventListener("visibilitychange", handleMessagesVisibilityChange);
+window.addEventListener("pagehide", stopMessagesPolling);
