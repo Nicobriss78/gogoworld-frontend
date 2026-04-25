@@ -74,6 +74,21 @@ function bindAuthorProfileNavigation() {
     window.location.href = url;
   });
 }
+function focusLastRoomMessage() {
+  const container = document.getElementById("roomsMessages");
+  if (!container) return;
+
+  const lastMessage = container.lastElementChild;
+  if (!lastMessage) return;
+
+  requestAnimationFrame(() => {
+    lastMessage.scrollIntoView({
+      block: "start",
+      inline: "nearest",
+      behavior: "auto",
+    });
+  });
+}
 async function loadRoomMeta() {
   if (!state.eventId) return;
 
