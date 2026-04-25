@@ -324,6 +324,7 @@ async function openDmThreadByUserId(userId) {
     setMessagesCurrentMessages(messages);
 
     renderCurrentThreadView();
+    focusLatestThreadMessage();
     await api.dm.markRead(userId);
     startMessagesPolling();
     resetMessagesError();
