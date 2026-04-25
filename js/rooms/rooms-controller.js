@@ -180,7 +180,7 @@ function startRoomsPolling() {
   if (!state.roomId || roomsPollingTimer || document.hidden) return;
 
   roomsPollingTimer = window.setInterval(() => {
-    loadMessages();
+    loadMessages({ afterLatest: true });
   }, ROOMS_POLLING_INTERVAL_MS);
 }
 
