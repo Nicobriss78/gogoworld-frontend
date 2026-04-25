@@ -251,6 +251,7 @@ async function openEventThreadByEventId(eventId) {
 
     renderCurrentThreadView();
     await api.events.markRead(meta.roomId);
+    startMessagesPolling();
     resetMessagesError();
   } catch (error) {
     console.error(error);
