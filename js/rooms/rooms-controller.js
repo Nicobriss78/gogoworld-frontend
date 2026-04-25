@@ -18,6 +18,7 @@ const ROOMS_POLLING_INTERVAL_MS = 3000;
 
 let roomsPollingTimer = null;
 let isLoadingMessages = false;
+let lastRoomsMessagesSignature = "";
 function getQueryParams() {
   const params = new URLSearchParams(window.location.search);
   return {
