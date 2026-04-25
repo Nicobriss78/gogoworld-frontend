@@ -362,34 +362,41 @@ async function refreshCurrentThread() {
   isRefreshingThread = true;
 
   try {
+    const currentMessages = Array.isArray(state.currentMessages)
+      ? state.currentMessages
+      : [];
+
+    const after = getLatestMessageCreatedAt(currentMessages);
     let messages = [];
 
     if (isDm) {
-      messages = await api.dm.getMessages(state.activeUserId);
+      messages = await api.dm.getMessages(state.activeUserId, { after });
     } else if (isEvent) {
-      messages = await api.events.getMessages(state.activeRoomId);
+      messages = await api.events.getMessages(state.activeRoomId, { after });
     }
 
-    if (!hasMessagesDelta(messages)) return;
+    if (!Array.isArray(messages) || !messages.length) return;
 
-    lastMessagesSignature = getMessagesSignature(messages);
+    const nextMessages = [...currentMessages, ...messages];
 
-    setMessagesCurrentMessages(messages);
+    lastMessagesSignature = getMessagesSignature(nextMessages);
+
+    setMessagesCurrentMessages(nextMessages);
     renderCurrentThreadView();
 
-    // ❗ NO focus se stai scrivendo
     if (!isMessagesComposerActive()) {
       focusLatestThreadMessage();
     }
-const latestMessageKey = getLatestMessageKey(messages);
 
-    if (latestMessageKey) {
+    const latestMessageCreatedAt = getLatestMessageCreatedAt(nextMessages);
+
+    if (latestMessageCreatedAt) {
       if (isDm) {
-        api.dm.markRead(state.activeUserId, latestMessageKey).catch((error) => {
+        api.dm.markRead(state.activeUserId, latestMessageCreatedAt).catch((error) => {
           console.error(error);
         });
       } else if (isEvent) {
-        api.events.markRead(state.activeRoomId, latestMessageKey).catch((error) => {
+        api.events.markRead(state.activeRoomId, latestMessageCreatedAt).catch((error) => {
           console.error(error);
         });
       }
