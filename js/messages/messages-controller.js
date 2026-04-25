@@ -65,7 +65,17 @@ function syncBaseUi() {
   renderMessagesTabState(state.activeTab);
   renderMessagesViewMode(state.viewMode);
 }
+function getMessagesSignature(messages) {
+  return (messages || [])
+    .map((m) => m?._id || m?.createdAt || "")
+    .join("|");
+}
 
+function isMessagesComposerActive() {
+  return Boolean(
+    dom.composerInput && document.activeElement === dom.composerInput
+  );
+}
 function renderCurrentListView() {
   const state = getMessagesState();
 
