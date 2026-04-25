@@ -475,7 +475,11 @@ async function handleComposerSubmit(event) {
       await api.events.sendMessage(state.activeRoomId, text);
       if (dom.composerInput) dom.composerInput.value = "";
       await refreshCurrentThread();
-      await loadEventThreads();
+
+      loadEventThreads().catch((error) => {
+        console.error(error);
+      });
+
       return;
     }
   } catch (error) {
