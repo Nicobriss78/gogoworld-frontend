@@ -55,8 +55,12 @@ CSS:
 
 ## PROSSIMO STEP
 
-➡ Trilli (Fase 3)
-
+1. Chat Reactivity — polling intelligente
+2. Cross-browser mobile hardening
+3. Trilli (Fase 3)
+4. Ristrutturazione Organizzatore V2
+5. Ristrutturazione Admin V2
+6. PWA definitiva
 ---
 
 ## REGOLA
