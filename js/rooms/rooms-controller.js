@@ -120,14 +120,33 @@ async function loadRoomMeta() {
   updateHeader(state);
 }
 
-async function loadMessages() {
+async function loadMessages(options = {}) {
   if (!state.roomId || isLoadingMessages) return;
 
   isLoadingMessages = true;
 
   try {
-    const response = await listRoomMessages(state.roomId, { limit: 50 });
-    const nextMessages = response?.data || response || [];
+    const currentMessages = Array.isArray(state.messages)
+      ? state.messages
+      : [];
+
+    const after = options.afterLatest
+      ? getLatestRoomMessageCreatedAt(currentMessages)
+      : "";
+
+    const requestOptions = after
+      ? { after, limit: 20 }
+      : { limit: 50 };
+
+    const response = await listRoomMessages(state.roomId, requestOptions);
+    const messages = response?.data || response || [];
+
+    if (!Array.isArray(messages) || !messages.length) return;
+
+    const nextMessages = after
+      ? [...messages, ...currentMessages]
+      : messages;
+
     const nextSignature = getRoomsMessagesSignature(nextMessages);
 
     if (nextSignature === lastRoomsMessagesSignature) return;
@@ -141,12 +160,11 @@ async function loadMessages() {
       focusLatestRoomMessage();
     }
 
-    if (state.messages.length) {
-  const lastMessage = state.messages[state.messages.length - 1];
-  if (lastMessage?.createdAt) {
-    await markRoomRead(state.roomId, lastMessage.createdAt);
-  }
-}
+    const latestMessageCreatedAt = getLatestRoomMessageCreatedAt(state.messages);
+
+    if (latestMessageCreatedAt) {
+      await markRoomRead(state.roomId, latestMessageCreatedAt);
+    }
   } finally {
     isLoadingMessages = false;
   }
