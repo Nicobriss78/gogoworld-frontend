@@ -70,7 +70,17 @@ function getMessagesSignature(messages) {
     .map((m) => m?._id || m?.createdAt || "")
     .join("|");
 }
+function getLatestMessageKey(messages) {
+  const safeMessages = Array.isArray(messages) ? messages : [];
+  const latest = safeMessages[safeMessages.length - 1];
 
+  return latest?.id || latest?._id || latest?.createdAt || "";
+}
+
+function hasMessagesDelta(nextMessages) {
+  const nextSignature = getMessagesSignature(nextMessages);
+  return Boolean(nextSignature && nextSignature !== lastMessagesSignature);
+}
 function isMessagesComposerActive() {
   return Boolean(
     dom.composerInput && document.activeElement === dom.composerInput
