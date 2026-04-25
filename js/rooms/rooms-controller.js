@@ -137,11 +137,11 @@ async function loadMessages() {
     }
 
     if (state.messages.length) {
-      const lastMessage = state.messages[state.messages.length - 1];
-      if (lastMessage?._id) {
-        await markRoomRead(state.roomId, lastMessage._id);
-      }
-    }
+  const lastMessage = state.messages[state.messages.length - 1];
+  if (lastMessage?.createdAt) {
+    await markRoomRead(state.roomId, lastMessage.createdAt);
+  }
+}
   } finally {
     isLoadingMessages = false;
   }
