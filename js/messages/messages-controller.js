@@ -308,6 +308,7 @@ async function openDmThreadByUserId(userId) {
 
     renderCurrentThreadView();
     await api.dm.markRead(userId);
+    startMessagesPolling();
     resetMessagesError();
   } catch (error) {
     console.error(error);
