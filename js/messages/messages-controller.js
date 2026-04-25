@@ -395,6 +395,9 @@ function handleMessagesVisibilityChange() {
   startMessagesPolling();
 }
 async function handleTabChange(tab) {
+  stopMessagesPolling();
+  lastMessagesSignature = "";
+
   resetMessagesViewState();
   setMessagesActiveTab(tab);
 
