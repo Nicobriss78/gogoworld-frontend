@@ -67,7 +67,7 @@ function syncBaseUi() {
 }
 function getMessagesSignature(messages) {
   return (messages || [])
-    .map((m) => m?._id || m?.createdAt || "")
+    .map((m) => m?.id || m?._id || m?.createdAt || "")
     .join("|");
 }
 function getLatestMessageCreatedAt(messages) {
