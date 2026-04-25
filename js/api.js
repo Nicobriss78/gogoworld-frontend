@@ -306,10 +306,21 @@ export async function openOrJoinDM(
 export async function getEventRoomMeta(eventId, token) {
   return await apiGet(`/rooms/event/${eventId}`, token ?? getToken());
 }
-export async function listRoomMessages(roomId, params={}, token) {
+export async function listRoomMessages(roomId, params = {}, token) {
   const q = [];
-  if (params.before) q.push(`before=${encodeURIComponent(params.before)}`);
-  if (params.limit) q.push(`limit=${encodeURIComponent(params.limit)}`);
+
+  if (params.before) {
+    q.push(`before=${encodeURIComponent(params.before)}`);
+  }
+
+  if (params.after) {
+    q.push(`after=${encodeURIComponent(params.after)}`);
+  }
+
+  if (params.limit) {
+    q.push(`limit=${encodeURIComponent(params.limit)}`);
+  }
+
   const qs = q.length ? `?${q.join("&")}` : "";
   return await apiGet(`/rooms/${roomId}/messages${qs}`, token ?? getToken());
 }
