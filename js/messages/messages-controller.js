@@ -199,7 +199,10 @@ async function loadEventThreads() {
     const threads = await api.events.listThreads();
     setMessagesEventThreads(threads);
     resetMessagesError();
-    renderCurrentListView();
+
+    if (getMessagesState().viewMode === "list") {
+      renderCurrentListView();
+    }
   } catch (error) {
     console.error(error);
     setMessagesError("Impossibile caricare le chat evento.");
