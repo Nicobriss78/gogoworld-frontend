@@ -279,7 +279,8 @@ async function openEventThreadByRoomId(roomId) {
 
 async function openDmThreadByUserId(userId) {
   if (!userId) return;
-
+  stopMessagesPolling();
+  lastMessagesSignature = "";
   setMessagesLoading(true);
   setMessagesViewMode("thread");
   syncBaseUi();
