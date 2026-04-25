@@ -53,20 +53,36 @@ CSS:
 
 ---
 
-## 🎯 STEP ATTUALE — CHAT REACTIVITY
+## ✅ STEP 2 — CHAT REACTIVITY COMPLETATO
 
-Contesto:
-- sistema stabile
-- check-in completato
-- MAPPA PRIVATI corretta
-- chat non reattive
+Risultato raggiunto:
+- ROOMS reattiva
+- MESSAGES reattiva
+- polling intelligente
+- delta backend reale
+- UX mobile stabile
+- nessun WebSocket/SSE introdotto
+
+Stato:
+le chat sono production-ready in modalità pseudo-realtime.
+
+## 🎯 PROSSIMO STEP — CROSS-BROWSER HARDENING
 
 Obiettivo:
-→ polling intelligente
+stabilizzare layout e comportamento mobile su:
+- Chrome Android
+- Samsung Internet
+- Firefox mobile
+- WebView
+- Safari/iOS dove applicabile
 
-Ambito:
-- rooms
-- messages-v2
+Aree critiche:
+- viewport mobile
+- tastiera virtuale
+- `100vh` / `100dvh` / `100svh`
+- composer chat
+- scroll container
+- topbar/bottomnav
 
 ---
 
