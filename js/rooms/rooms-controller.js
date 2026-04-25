@@ -77,7 +77,7 @@ function bindAuthorProfileNavigation() {
 }
 function getRoomsMessagesSignature(messages) {
   return (messages || [])
-    .map((message) => message?._id || message?.createdAt || "")
+    .map((message) => message?.id || message?._id || message?.createdAt || "")
     .join("|");
 }
 function getLatestRoomMessageCreatedAt(messages) {
