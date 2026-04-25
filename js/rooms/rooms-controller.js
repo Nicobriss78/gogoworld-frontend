@@ -111,6 +111,7 @@ async function loadMessages() {
     const response = await listRoomMessages(state.roomId, { limit: 50 });
     state.messages = response?.data || response || [];
     renderMessages(state);
+    focusLastRoomMessage();
 
     if (state.messages.length) {
       const lastMessage = state.messages[state.messages.length - 1];
