@@ -390,21 +390,7 @@ async function refreshCurrentThread() {
 
     if (!isMessagesComposerActive()) {
       focusLatestThreadMessage();
-    }
-
-    const latestMessageCreatedAt = getLatestMessageCreatedAt(nextMessages);
-
-    if (latestMessageCreatedAt) {
-      if (isDm) {
-        api.dm.markRead(state.activeUserId, latestMessageCreatedAt).catch((error) => {
-          console.error(error);
-        });
-      } else if (isEvent) {
-        api.events.markRead(state.activeRoomId, latestMessageCreatedAt).catch((error) => {
-          console.error(error);
-        });
-      }
-    }
+    }   
   } finally {
     isRefreshingThread = false;
   }
