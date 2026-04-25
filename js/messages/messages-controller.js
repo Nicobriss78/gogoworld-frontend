@@ -369,10 +369,14 @@ async function refreshCurrentThread() {
     const after = getLatestMessageCreatedAt(currentMessages);
     let messages = [];
 
+    const deltaOptions = after
+      ? { after, limit: 20 }
+      : {};
+
     if (isDm) {
-      messages = await api.dm.getMessages(state.activeUserId, { after });
+      messages = await api.dm.getMessages(state.activeUserId, deltaOptions);
     } else if (isEvent) {
-      messages = await api.events.getMessages(state.activeRoomId, { after });
+      messages = await api.events.getMessages(state.activeRoomId, deltaOptions);
     }
 
     if (!Array.isArray(messages) || !messages.length) return;
