@@ -70,11 +70,11 @@ function getMessagesSignature(messages) {
     .map((m) => m?._id || m?.createdAt || "")
     .join("|");
 }
-function getLatestMessageKey(messages) {
+function getLatestMessageCreatedAt(messages) {
   const safeMessages = Array.isArray(messages) ? messages : [];
   const latest = safeMessages[safeMessages.length - 1];
 
-  return latest?.id || latest?._id || latest?.createdAt || "";
+  return latest?.createdAt || "";
 }
 
 function hasMessagesDelta(nextMessages) {
