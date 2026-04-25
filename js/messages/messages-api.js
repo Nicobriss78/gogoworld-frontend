@@ -191,10 +191,17 @@ export function createMessagesApi() {
         return normalizeEventRoomMeta(res.data);
       },
 
-      async getMessages(roomId) {
+      async getMessages(roomId, options = {}) {
         if (!roomId) return [];
 
-        const res = await apiGet(`/rooms/${encodeURIComponent(String(roomId))}/messages`);
+        const query = new URLSearchParams();
+
+        if (options.after) {
+          query.set("after", options.after);
+        }
+
+        const qs = query.toString() ? `?${query.toString()}` : "";
+        const res = await apiGet(`/rooms/${encodeURIComponent(String(roomId))}/messages${qs}`);
         if (!res?.ok) return [];
 
         const rows = Array.isArray(res.data) ? res.data : [];
