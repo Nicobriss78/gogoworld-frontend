@@ -113,22 +113,32 @@ Pan:
 
 ---
 
-# 💬 STATO ATTUALE CHAT (V2)
+## 💬 STATO ATTUALE CHAT V2
 
-Backend:
-- API OK
-- struttura stabile
-- NO realtime
+Le chat V2 sono ora reattive tramite polling intelligente.
 
-Frontend:
-- invio OK
-- render OK
-- refresh manuale
-- NO polling continuo
-- NO aggiornamento live
+### ROOMS
+- polling attivo
+- delta backend tramite `after`
+- merge incrementale dei nuovi messaggi
+- focus corretto sul messaggio più recente
+- composer stabile su mobile
+- `markRead` coerente con `createdAt`
 
-➡️ chat funzionanti ma NON reattive
+### MESSAGES
+- polling attivo solo sul thread corrente
+- stop/reset su cambio thread, tab nascosto e pagehide
+- delta backend tramite `after`
+- merge incrementale dei nuovi messaggi
+- lista thread aggiornata in background
+- composer non bloccante
+- focus corretto sull’ultimo messaggio
 
+### Policy realtime
+WebSocket e SSE restano esclusi in questa fase.
+
+Strategia attuale:
+polling intelligente + delta backend.
 ---
 
 ## 🚫 REALTIME POLICY (ATTUALE)
