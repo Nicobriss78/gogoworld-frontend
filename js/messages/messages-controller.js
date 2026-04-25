@@ -381,7 +381,19 @@ async function refreshCurrentThread() {
     if (!isMessagesComposerActive()) {
       focusLatestThreadMessage();
     }
+const latestMessageKey = getLatestMessageKey(messages);
 
+    if (latestMessageKey) {
+      if (isDm) {
+        api.dm.markRead(state.activeUserId, latestMessageKey).catch((error) => {
+          console.error(error);
+        });
+      } else if (isEvent) {
+        api.events.markRead(state.activeRoomId, latestMessageKey).catch((error) => {
+          console.error(error);
+        });
+      }
+    }
   } finally {
     isRefreshingThread = false;
   }
