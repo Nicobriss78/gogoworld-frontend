@@ -122,9 +122,19 @@ async function loadMessages() {
 
   try {
     const response = await listRoomMessages(state.roomId, { limit: 50 });
-    state.messages = response?.data || response || [];
+    const nextMessages = response?.data || response || [];
+    const nextSignature = getRoomsMessagesSignature(nextMessages);
+
+    if (nextSignature === lastRoomsMessagesSignature) return;
+
+    lastRoomsMessagesSignature = nextSignature;
+    state.messages = nextMessages;
+
     renderMessages(state);
-    focusLatestRoomMessage();
+
+    if (!isRoomsComposerActive()) {
+      focusLatestRoomMessage();
+    }
 
     if (state.messages.length) {
       const lastMessage = state.messages[state.messages.length - 1];
