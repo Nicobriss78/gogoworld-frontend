@@ -414,6 +414,9 @@ async function handleTabChange(tab) {
 }
 
 function handleThreadBack() {
+  stopMessagesPolling();
+  lastMessagesSignature = "";
+
   resetMessagesViewState();
   syncBaseUi();
   renderCurrentListView();
