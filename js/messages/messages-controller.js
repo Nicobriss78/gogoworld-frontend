@@ -76,6 +76,14 @@ function isMessagesComposerActive() {
     dom.composerInput && document.activeElement === dom.composerInput
   );
 }
+function focusLatestThreadMessage() {
+  const container = document.getElementById("messagesThreadMessages");
+  if (!container) return;
+
+  requestAnimationFrame(() => {
+    container.scrollTop = container.scrollHeight;
+  });
+}
 function renderCurrentListView() {
   const state = getMessagesState();
 
