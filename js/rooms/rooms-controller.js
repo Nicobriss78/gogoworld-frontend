@@ -107,7 +107,32 @@ async function loadMessages() {
     isLoadingMessages = false;
   }
 }
+function stopRoomsPolling() {
+  if (!roomsPollingTimer) return;
 
+  clearInterval(roomsPollingTimer);
+  roomsPollingTimer = null;
+}
+
+function startRoomsPolling() {
+  if (!state.roomId || roomsPollingTimer || document.hidden) return;
+
+  roomsPollingTimer = window.setInterval(() => {
+    loadMessages();
+  }, ROOMS_POLLING_INTERVAL_MS);
+}
+
+function handleRoomsVisibilityChange() {
+  if (document.hidden) {
+    stopRoomsPolling();
+    return;
+  }
+
+  if (state.roomId) {
+    loadMessages();
+    startRoomsPolling();
+  }
+}
 async function openRoomFromEvent() {
   if (!state.eventId || state.roomId) return;
 
