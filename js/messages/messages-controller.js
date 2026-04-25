@@ -229,7 +229,8 @@ async function loadDmThreads() {
 
 async function openEventThreadByEventId(eventId) {
   if (!eventId) return;
-
+  stopMessagesPolling();
+  lastMessagesSignature = "";
   setMessagesLoading(true);
   setMessagesViewMode("thread");
   syncBaseUi();
