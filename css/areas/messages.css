@@ -334,6 +334,7 @@ html {
 
 .messages-thread-header {
   display: grid;
+  flex: 0 0 auto;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--gw-space-sm, 10px);
