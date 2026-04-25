@@ -88,17 +88,23 @@ async function loadRoomMeta() {
 }
 
 async function loadMessages() {
-  if (!state.roomId) return;
+  if (!state.roomId || isLoadingMessages) return;
 
-  const response = await listRoomMessages(state.roomId, { limit: 50 });
-  state.messages = response?.data || response || [];
-  renderMessages(state);
+  isLoadingMessages = true;
 
-  if (state.messages.length) {
-    const lastMessage = state.messages[state.messages.length - 1];
-    if (lastMessage?._id) {
-      await markRoomRead(state.roomId, lastMessage._id);
+  try {
+    const response = await listRoomMessages(state.roomId, { limit: 50 });
+    state.messages = response?.data || response || [];
+    renderMessages(state);
+
+    if (state.messages.length) {
+      const lastMessage = state.messages[state.messages.length - 1];
+      if (lastMessage?._id) {
+        await markRoomRead(state.roomId, lastMessage._id);
+      }
     }
+  } finally {
+    isLoadingMessages = false;
   }
 }
 
