@@ -200,6 +200,10 @@ export function createMessagesApi() {
           query.set("after", options.after);
         }
 
+        if (options.limit) {
+          query.set("limit", String(options.limit));
+        }
+
         const qs = query.toString() ? `?${query.toString()}` : "";
         const res = await apiGet(`/rooms/${encodeURIComponent(String(roomId))}/messages${qs}`);
         if (!res?.ok) return [];
