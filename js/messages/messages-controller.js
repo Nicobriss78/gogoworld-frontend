@@ -369,12 +369,7 @@ async function refreshCurrentThread() {
 
     // ❗ NO focus se stai scrivendo
     if (!isMessagesComposerActive()) {
-      const container = document.getElementById("messagesThreadMessages");
-      if (container) {
-        requestAnimationFrame(() => {
-          container.scrollTop = 0;
-        });
-      }
+      focusLatestThreadMessage();
     }
 
   } finally {
