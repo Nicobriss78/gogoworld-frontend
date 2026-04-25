@@ -265,6 +265,7 @@ async function openEventThreadByEventId(eventId) {
     setMessagesCurrentMessages(messages);
 
     renderCurrentThreadView();
+    focusLatestThreadMessage();
     await api.events.markRead(meta.roomId);
     startMessagesPolling();
     resetMessagesError();
