@@ -74,15 +74,17 @@ function bindAuthorProfileNavigation() {
     window.location.href = url;
   });
 }
-function focusLastRoomMessage() {
+function focusLatestRoomMessage() {
   const container = document.getElementById("roomsMessages");
   if (!container) return;
 
-  const lastMessage = container.lastElementChild;
-  if (!lastMessage) return;
-
   requestAnimationFrame(() => {
-    lastMessage.scrollIntoView({
+    container.scrollTop = 0;
+
+    const latestMessage = container.firstElementChild;
+    if (!latestMessage) return;
+
+    latestMessage.scrollIntoView({
       block: "start",
       inline: "nearest",
       behavior: "auto",
