@@ -36,10 +36,13 @@ Post patch:
 
 ## ⚠️ STATO SISTEMA
 
-- chat NON realtime
-- polling da implementare
-- WebSocket NON consentiti
-
+- Area Partecipante V2 stabile
+- Check-in completato
+- MAPPA PRIVATI conforme a PRIVATE_MAP_NO_GEO_DISCOVERY
+- Chat ROOMS e MESSAGES reattive con polling intelligente
+- Delta backend attivo tramite `after`
+- WebSocket/SSE NON introdotti
+- Prossimo step: cross-browser hardening
 ---
 
 ## 3. Regole aggiornamento
