@@ -123,6 +123,7 @@ html {
 
 .messages-view {
   min-height: 0;
+  overflow: hidden;
 }
 .messages-view[hidden] {
   display: none !important;
