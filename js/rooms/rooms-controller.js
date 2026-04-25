@@ -242,7 +242,7 @@ async function init() {
 
     await postRoomMessage(state.roomId, text);
     input.value = "";
-    await loadMessages();
+    await loadMessages({ afterLatest: true });
   });
 }
 
