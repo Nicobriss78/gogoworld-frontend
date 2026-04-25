@@ -158,10 +158,14 @@ async function init() {
 
   if (state.roomId) {
     await loadMessages();
+    startRoomsPolling();
   } else {
     state.messages = [];
     renderMessages(state);
   }
+
+  document.addEventListener("visibilitychange", handleRoomsVisibilityChange);
+  window.addEventListener("pagehide", stopRoomsPolling);
 
   const composer = document.getElementById("roomsComposer");
   const input = document.getElementById("roomsInput");
