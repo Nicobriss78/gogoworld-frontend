@@ -41,7 +41,11 @@ import {
 
 const api = createMessagesApi();
 const dom = getMessagesDom();
+const MESSAGES_POLLING_INTERVAL_MS = 3000;
 
+let messagesPollingTimer = null;
+let isRefreshingThread = false;
+let lastMessagesSignature = "";
 function getQueryParams() {
   const params = new URLSearchParams(window.location.search);
   const rawTab = String(params.get("tab") || "").trim().toLowerCase();
