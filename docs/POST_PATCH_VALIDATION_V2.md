@@ -36,7 +36,8 @@ PRIVATI:
  - Nessun uso di lat/lng/radius/bounds nelle API
  - Nessun reload eventi su pan/zoom
  - Dataset stabile dopo movimento mappa [ ]
- - Bottone principale = Sblocca evento [ ]  - Nessuna duplicazione nel menu hamburger [ ]
+- Bottone principale = Sblocca evento [ ]
+- Nessuna duplicazione nel menu hamburger [ ]
 ---
 
 ## SICUREZZA
