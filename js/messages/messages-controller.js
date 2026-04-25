@@ -363,7 +363,35 @@ async function refreshCurrentThread() {
     isRefreshingThread = false;
   }
 }
+function stopMessagesPolling() {
+  if (!messagesPollingTimer) return;
+  clearInterval(messagesPollingTimer);
+  messagesPollingTimer = null;
+}
 
+function startMessagesPolling() {
+  const state = getMessagesState();
+
+  const hasThread =
+    (state.activeThreadType === "dm" && state.activeUserId) ||
+    (state.activeThreadType === "event" && state.activeRoomId);
+
+  if (!hasThread || messagesPollingTimer || document.hidden) return;
+
+  messagesPollingTimer = window.setInterval(() => {
+    refreshCurrentThread();
+  }, MESSAGES_POLLING_INTERVAL_MS);
+}
+
+function handleMessagesVisibilityChange() {
+  if (document.hidden) {
+    stopMessagesPolling();
+    return;
+  }
+
+  refreshCurrentThread();
+  startMessagesPolling();
+}
 async function handleTabChange(tab) {
   resetMessagesViewState();
   setMessagesActiveTab(tab);
