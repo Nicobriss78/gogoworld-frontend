@@ -322,17 +322,45 @@ async function openDmThreadByUserId(userId) {
 async function refreshCurrentThread() {
   const state = getMessagesState();
 
-  if (state.activeThreadType === "dm" && state.activeUserId) {
-    const messages = await api.dm.getMessages(state.activeUserId);
-    setMessagesCurrentMessages(messages);
-    renderCurrentThreadView();
-    return;
-  }
+  if (isRefreshingThread) return;
 
-  if (state.activeThreadType === "event" && state.activeRoomId) {
-    const messages = await api.events.getMessages(state.activeRoomId);
+  const isDm = state.activeThreadType === "dm" && state.activeUserId;
+  const isEvent = state.activeThreadType === "event" && state.activeRoomId;
+
+  if (!isDm && !isEvent) return;
+
+  isRefreshingThread = true;
+
+  try {
+    let messages = [];
+
+    if (isDm) {
+      messages = await api.dm.getMessages(state.activeUserId);
+    } else if (isEvent) {
+      messages = await api.events.getMessages(state.activeRoomId);
+    }
+
+    const nextSignature = getMessagesSignature(messages);
+
+    if (nextSignature === lastMessagesSignature) return;
+
+    lastMessagesSignature = nextSignature;
+
     setMessagesCurrentMessages(messages);
     renderCurrentThreadView();
+
+    // ❗ NO focus se stai scrivendo
+    if (!isMessagesComposerActive()) {
+      const container = document.getElementById("messagesThreadMessages");
+      if (container) {
+        requestAnimationFrame(() => {
+          container.scrollTop = 0;
+        });
+      }
+    }
+
+  } finally {
+    isRefreshingThread = false;
   }
 }
 
