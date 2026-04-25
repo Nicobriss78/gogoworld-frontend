@@ -463,7 +463,11 @@ async function handleComposerSubmit(event) {
       await api.dm.sendMessage(state.activeUserId, text);
       if (dom.composerInput) dom.composerInput.value = "";
       await refreshCurrentThread();
-      await loadDmThreads();
+
+      loadDmThreads().catch((error) => {
+        console.error(error);
+      });
+
       return;
     }
 
