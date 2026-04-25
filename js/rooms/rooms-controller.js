@@ -80,7 +80,12 @@ function getRoomsMessagesSignature(messages) {
     .map((message) => message?._id || message?.createdAt || "")
     .join("|");
 }
+function getLatestRoomMessageCreatedAt(messages) {
+  const safeMessages = Array.isArray(messages) ? messages : [];
+  const latest = safeMessages[0];
 
+  return latest?.createdAt || "";
+}
 function isRoomsComposerActive() {
   const input = document.getElementById("roomsInput");
   return Boolean(input && document.activeElement === input);
