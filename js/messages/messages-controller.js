@@ -370,11 +370,9 @@ async function refreshCurrentThread() {
       messages = await api.events.getMessages(state.activeRoomId);
     }
 
-    const nextSignature = getMessagesSignature(messages);
+    if (!hasMessagesDelta(messages)) return;
 
-    if (nextSignature === lastMessagesSignature) return;
-
-    lastMessagesSignature = nextSignature;
+    lastMessagesSignature = getMessagesSignature(messages);
 
     setMessagesCurrentMessages(messages);
     renderCurrentThreadView();
