@@ -191,7 +191,7 @@ function handleRoomsVisibilityChange() {
   }
 
   if (state.roomId) {
-    loadMessages();
+    loadMessages({ afterLatest: true });
     startRoomsPolling();
   }
 }
