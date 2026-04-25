@@ -257,10 +257,17 @@ export function createMessagesApi() {
           .filter(Boolean);
       },
 
-      async getMessages(userId) {
+      async getMessages(userId, options = {}) {
         if (!userId) return [];
 
-        const res = await apiGet(`/dm/threads/${encodeURIComponent(String(userId))}/messages`);
+        const query = new URLSearchParams();
+
+        if (options.after) {
+          query.set("after", options.after);
+        }
+
+        const qs = query.toString() ? `?${query.toString()}` : "";
+        const res = await apiGet(`/dm/threads/${encodeURIComponent(String(userId))}/messages${qs}`);
         if (!res?.ok) return [];
 
         const rows = Array.isArray(res.data) ? res.data : [];
