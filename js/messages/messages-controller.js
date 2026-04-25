@@ -220,7 +220,10 @@ async function loadDmThreads() {
     const threads = await api.dm.listThreads();
     setMessagesDmThreads(threads);
     resetMessagesError();
-    renderCurrentListView();
+
+    if (getMessagesState().viewMode === "list") {
+      renderCurrentListView();
+    }
   } catch (error) {
     console.error(error);
     setMessagesError("Impossibile caricare i messaggi privati.");
