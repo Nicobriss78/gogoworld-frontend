@@ -75,6 +75,16 @@ function bindAuthorProfileNavigation() {
     window.location.href = url;
   });
 }
+function getRoomsMessagesSignature(messages) {
+  return (messages || [])
+    .map((message) => message?._id || message?.createdAt || "")
+    .join("|");
+}
+
+function isRoomsComposerActive() {
+  const input = document.getElementById("roomsInput");
+  return Boolean(input && document.activeElement === input);
+}
 function focusLatestRoomMessage() {
   const container = document.getElementById("roomsMessages");
   if (!container) return;
