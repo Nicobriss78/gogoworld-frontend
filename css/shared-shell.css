@@ -108,11 +108,11 @@
 
 .shared-menu-panel {
   position: fixed;
-  top: 150px;
+  top: calc(var(--gw-topbar-h, 104px) + 12px);
   right: 16px;
   z-index: 990;
   width: min(280px, calc(100vw - 32px));
-  max-height: calc(100dvh - 150px - 86px - 40px);
+  max-height: calc(100dvh - var(--gw-topbar-h, 104px) - var(--gw-bottomnav-h, 68px) - 40px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
