@@ -1,6 +1,6 @@
 .rooms-page {
-  height: 100dvh;
-  min-height: 100dvh;
+  height: var(--gw-app-viewport-h);
+  min-height: var(--gw-app-viewport-h);
   display: flex;
   flex-direction: column;
   overflow: hidden;
