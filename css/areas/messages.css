@@ -526,11 +526,12 @@ html {
 
 .messages-composer {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--gw-space-sm, 10px);
-  padding: var(--gw-space-md, 16px);
+  grid-template-columns: minmax(0, 1fr) 46px;
+  gap: 10px;
+  padding: 10px 12px;
   border-top: 1px solid var(--gw-border-soft, #e6eaf0);
   background: var(--gw-bg-card, var(--gw-surface, #ffffff));
+  align-items: center;
 }
 .messages-composer.is-disabled {
   opacity: 0.72;
