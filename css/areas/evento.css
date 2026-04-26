@@ -24,7 +24,7 @@
   --evento-space-lg: var(--gw-space-lg, 24px);
   --evento-space-xl: var(--gw-space-xl, 32px);
 
-  --evento-hero-min-height: 78svh;
+  --evento-hero-min-height: calc(var(--gw-app-viewport-h) * 0.78);
   --evento-topbar-height: 64px;
   --evento-actions-offset: -28px;
 
