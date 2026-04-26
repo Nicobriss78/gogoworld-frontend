@@ -58,13 +58,13 @@
 }
 
 .home-topbar__row--actions {
-  min-height: 72px;
-  padding-top: 10px;
-  padding-bottom: 14px;
+  min-height: var(--gw-shell-topbar-actions-h, 56px);
+  padding-top: 7px;
+  padding-bottom: 9px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 10px;
 }
 
 .home-topbar__btn {
