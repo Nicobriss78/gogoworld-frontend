@@ -33,6 +33,9 @@
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition:
     background-color 180ms ease,
