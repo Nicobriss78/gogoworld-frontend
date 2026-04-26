@@ -29,7 +29,7 @@ html, body{
 
 /* main.gw-home: colonna piena, SENZA padding di sistema (niente doppioni) */
 main.gw-home{
-  min-height: 100vh;
+  min-height: var(--gw-app-viewport-h);
   display: flex;
   flex-direction: column;
 }
