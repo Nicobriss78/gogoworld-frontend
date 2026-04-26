@@ -48,7 +48,7 @@ body.seguiti-utenti-page {
 --home-page-pad-x: 16px;
   --home-page-pad-y: 16px;
 
-  min-height: 100dvh;
+  min-height: var(--gw-app-viewport-h);
   background: var(--home-bg);
   color: var(--home-text);
   font-family: Arial, sans-serif;
