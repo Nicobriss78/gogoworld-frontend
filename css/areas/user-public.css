@@ -36,14 +36,14 @@ body {
 }
 
 body.user-public-page {
-  min-height: 100vh;
+  min-height: var(--gw-app-viewport-h);
   font-family: var(--gw-font-family, Inter, Arial, sans-serif);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 .user-public-main {
-  min-height: 100vh;
+  min-height: var(--gw-app-viewport-h);
   padding:
     calc(env(safe-area-inset-top, 0px) + var(--user-public-space-lg))
     var(--user-public-space-md)
