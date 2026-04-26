@@ -42,8 +42,8 @@ body.profilo-v2-page {
   --profilo-space-lg: 24px;
   --profilo-space-xl: 32px;
 
-  --profilo-topbar-h: 132px;
-  --profilo-bottomnav-h: 86px;
+  --profilo-topbar-h: var(--gw-topbar-h, 104px);
+  --profilo-bottomnav-h: var(--gw-bottomnav-h, 68px);
 
   --profilo-page-pad-x: 16px;
   --profilo-page-pad-y: 16px;
