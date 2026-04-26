@@ -51,13 +51,13 @@
 }
 
 .evento-page {
-  min-height: 100svh;
+  min-height: var(--gw-app-viewport-h);
   background: var(--evento-bg);
 }
 
 .evento-main {
   position: relative;
-  min-height: 100svh;
+  min-height: var(--gw-app-viewport-h);
 }
 
 /* TOPBAR IMMERSIVA */
