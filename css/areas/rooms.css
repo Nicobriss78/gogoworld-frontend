@@ -258,8 +258,8 @@
   background: var(--gw-accent, #3f7c96);
   color: #ffffff;
   font: inherit;
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
   line-height: 1;
   cursor: pointer;
   transition:
