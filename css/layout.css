@@ -12,7 +12,7 @@ html, body{
 /* App shell */
 .gw-app{
   width: 100%;
-  min-height: 100vh;
+  min-height: var(--gw-app-viewport-h);
 }
 
 /* Wrapper pagina: lascia spazio a Topbar + Bottomnav (offset unico) */
