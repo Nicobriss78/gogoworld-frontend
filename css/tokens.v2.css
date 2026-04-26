@@ -114,13 +114,17 @@
      candidati shared di area in futuro.
      ===================================================== */
 
-  --gw-topbar-h: 64px;
-  --gw-bottomnav-h: 72px;
+  --gw-topbar-h: 104px;
+  --gw-bottomnav-h: 68px;
   --gw-footer-h: 40px;
 
-  /* Variante topbar a due righe (area partecipante futura) */
-  --gw-topbar-row-h: 32px;
-  --gw-topbar-double-h: 64px;
+  /* Variante topbar a due righe — shell shared Area Partecipante V2 */
+  --gw-topbar-row-h: 48px;
+  --gw-topbar-double-h: 104px;
+  --gw-shell-topbar-identity-h: 48px;
+  --gw-shell-topbar-actions-h: 56px;
+  --gw-shell-topbar-btn: 38px;
+  --gw-shell-bottomnav-btn: 42px;
 
   /* =====================================================
      9) Z-INDEX BASE
