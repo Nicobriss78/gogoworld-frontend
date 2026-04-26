@@ -41,8 +41,8 @@ body.seguiti-utenti-page {
   --home-space-lg: 24px;
   --home-space-xl: 32px;
 
-  --home-topbar-h: 132px;
-  --home-bottomnav-h: 86px;
+  --home-topbar-h: var(--gw-topbar-h, 104px);
+  --home-bottomnav-h: var(--gw-bottomnav-h, 68px);
   --home-footer-h: 0px;
 
 --home-page-pad-x: 16px;
