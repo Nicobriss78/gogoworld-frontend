@@ -552,7 +552,17 @@ body.mappa-detail-open {
   margin-left: auto;
   text-align: right;
 }
+.mappa-msg-author {
+  margin-bottom: 3px;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--mappa-text-secondary);
+}
 
+.mappa-msg--me .mappa-msg-author {
+  color: var(--mappa-accent);
+}
 .mappa-msg-text {
   background: rgba(0,0,0,0.05);
   padding: 6px 8px;
