@@ -18,13 +18,13 @@
 }
 
 .home-topbar__row--identity {
-  min-height: 60px;
-  padding-top: 12px;
-  padding-bottom: 10px;
+  min-height: var(--gw-shell-topbar-identity-h, 48px);
+  padding-top: 8px;
+  padding-bottom: 6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--home-space-md);
+  gap: 12px;
 }
 
 .home-topbar__identity {
