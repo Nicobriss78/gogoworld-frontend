@@ -203,9 +203,9 @@
 }
 
 .home-bottomnav > .gw-iconbtn {
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
+  width: var(--gw-shell-bottomnav-btn, 42px);
+  height: var(--gw-shell-bottomnav-btn, 42px);
+  flex: 0 0 var(--gw-shell-bottomnav-btn, 42px);
   border: 1px solid var(--home-border);
   border-radius: 16px;
   background: var(--home-surface);
