@@ -42,8 +42,8 @@
 }
 
 .home-topbar__role {
-  font-size: 13px;
-  line-height: 1.2;
+  font-size: 12px;
+  line-height: 1.15;
   font-weight: 600;
   color: var(--home-text-muted);
 }
