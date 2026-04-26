@@ -27,14 +27,6 @@ html {
   overflow: hidden;
   padding: var(--gw-space-md, 16px);
 }
-
-@supports (height: 100dvh) {
-  .messages-v2-page {
-    height: 100dvh;
-    min-height: 100dvh;
-  }
-}
-
 .messages-header {
   display: flex;
   align-items: flex-start;
