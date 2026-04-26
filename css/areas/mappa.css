@@ -574,28 +574,60 @@ body.mappa-detail-open {
 /* COMPOSER */
 
 .mappa-chat-composer {
-  display: flex;
-  gap: 8px;
-  padding: 8px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px;
+  gap: 10px;
+  padding: 10px 12px;
   border-top: 1px solid var(--mappa-border);
+  background: var(--mappa-surface);
+  align-items: center;
 }
 
 #mappaChatInput {
-  flex: 1;
-  border-radius: var(--mappa-radius-btn);
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
   border: 1px solid var(--mappa-border);
-  padding: 8px;
-  background: var(--mappa-surface);
+  border-radius: 999px;
+  padding: 0 16px;
+  background: var(--mappa-bg);
   color: var(--mappa-text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+}
+
+#mappaChatInput:focus {
+  outline: none;
+  border-color: var(--mappa-accent-border);
+  box-shadow: 0 0 0 3px var(--mappa-accent-soft);
+  background: var(--mappa-surface);
 }
 
 #mappaChatSend {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  min-height: 46px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
   background: var(--mappa-accent);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 800;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#mappaChatSend:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 /* ===== MICRO UX ===== */
