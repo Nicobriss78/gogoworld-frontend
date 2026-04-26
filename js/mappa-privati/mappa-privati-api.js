@@ -201,15 +201,43 @@ function buildPrivateMapEventsQuery() {
      =============================== */
 
   function normalizeMessage(msg) {
-    if (!msg) return null;
+  if (!msg) return null;
 
-    return {
-      id: msg._id || msg.id,
-      text: msg.text || "",
-      userId: msg.userId || msg.user || null,
-      createdAt: msg.createdAt || msg.date || null
-    };
-  }
+  const author =
+    msg.author && typeof msg.author === "object"
+      ? msg.author
+      : null;
+
+  const userObject =
+    msg.user && typeof msg.user === "object"
+      ? msg.user
+      : null;
+
+  const userId =
+    msg.userId ||
+    author?._id ||
+    author?.id ||
+    userObject?._id ||
+    userObject?.id ||
+    (typeof msg.user === "string" ? msg.user : null);
+
+  const userName =
+    msg.userName ||
+    msg.authorName ||
+    author?.nickname ||
+    author?.name ||
+    userObject?.nickname ||
+    userObject?.name ||
+    "Utente";
+
+  return {
+    id: msg._id || msg.id,
+    text: msg.text || "",
+    userId: userId ? String(userId) : null,
+    userName,
+    createdAt: msg.createdAt || msg.date || null
+  };
+}
 
 
   /* ===============================
