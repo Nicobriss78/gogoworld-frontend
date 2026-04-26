@@ -32,8 +32,8 @@
   --mappa-space-lg: 24px;
   --mappa-space-xl: 32px;
 
-  --mappa-topbar-h: 132px;
-  --mappa-bottomnav-h: 86px;
+  --mappa-topbar-h: var(--gw-topbar-h, 104px);
+  --mappa-bottomnav-h: var(--gw-bottomnav-h, 68px);
   --mappa-page-pad-x: 16px;
   --mappa-page-pad-y: 16px;
 
