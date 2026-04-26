@@ -109,10 +109,12 @@
   --gw-page-pad-y: 12px;
 
   /* =====================================================
-     8) BAR ALTEZZE GLOBALI
-     Questi restano globali perché topbar/bottomnav sono
-     candidati shared di area in futuro.
+     8) VIEWPORT / BARRE SHARED GLOBALI
+     Unica fonte autorevole per altezza viewport applicativa,
+     topbar e bottomnav dell’Area Partecipante V2.
      ===================================================== */
+
+  --gw-app-viewport-h: 100vh;
 
   --gw-topbar-h: 104px;
   --gw-bottomnav-h: 68px;
