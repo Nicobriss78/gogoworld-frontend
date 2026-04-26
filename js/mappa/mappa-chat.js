@@ -7,7 +7,12 @@ export function createMappaChat({
   let pollingTimer = null;
   let currentRoomId = null;
   let currentEventId = null;
+const MAPPA_CHAT_PREVIEW_LIMIT = 5;
 
+function getPreviewMessages(messages = []) {
+  if (!Array.isArray(messages)) return [];
+  return messages.slice(-MAPPA_CHAT_PREVIEW_LIMIT);
+}
   function mount() {
     elements.sendBtnEl.addEventListener("click", handleSend);
 
