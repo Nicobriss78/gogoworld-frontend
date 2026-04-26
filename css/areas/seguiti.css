@@ -34,8 +34,8 @@ body.seguiti-page {
   --seguiti-space-lg: 24px;
   --seguiti-space-xl: 32px;
 
-  --seguiti-topbar-h: 132px;
-  --seguiti-bottomnav-h: 86px;
+  --seguiti-topbar-h: var(--gw-topbar-h, 104px);
+  --seguiti-bottomnav-h: var(--gw-bottomnav-h, 68px);
 
   --seguiti-page-pad-x: 16px;
   --seguiti-page-pad-y: 16px;
