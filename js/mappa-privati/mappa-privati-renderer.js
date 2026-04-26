@@ -108,12 +108,15 @@ export function createMappaRenderer() {
       .map((msg) => {
         const isMine = currentUserId && msg.userId === currentUserId;
 
-        return `
-          <div class="mappa-msg ${isMine ? "mappa-msg--me" : ""}">
-            <div class="mappa-msg-text">${escapeHtml(msg.text || "")}</div>
-            <div class="mappa-msg-time">${escapeHtml(formatTime(msg.createdAt))}</div>
-          </div>
-        `;
+        const authorName = isMine ? "Tu" : (msg.userName || "Utente");
+
+return `
+  <div class="mappa-msg ${isMine ? "mappa-msg--me" : ""}">
+    <div class="mappa-msg-author">${escapeHtml(authorName)}</div>
+    <div class="mappa-msg-text">${escapeHtml(msg.text || "")}</div>
+    <div class="mappa-msg-time">${escapeHtml(formatTime(msg.createdAt))}</div>
+  </div>
+`;
       })
       .join("");
   }
