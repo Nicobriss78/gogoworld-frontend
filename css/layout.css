@@ -20,7 +20,7 @@ html, body{
   padding-top: calc(var(--gw-topbar-h) + env(safe-area-inset-top));
   padding-bottom: calc(var(--gw-bottomnav-h) + env(safe-area-inset-bottom) + 2px);
   box-sizing: border-box;
-  min-height: 100vh;
+  min-height: var(--gw-app-viewport-h);
 
   /* Tema scuro SOLO nell’area app */
   background: var(--gw-bg);
