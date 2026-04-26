@@ -51,7 +51,7 @@ body.seguiti-utenti-page {
   min-height: var(--gw-app-viewport-h);
   background: var(--home-bg);
   color: var(--home-text);
-  font-family: Arial, sans-serif;
+  font-family: var(--gw-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   line-height: 1.35;
   display: flex;
   flex-direction: column;
