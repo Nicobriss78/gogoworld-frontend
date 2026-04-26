@@ -60,7 +60,7 @@
 /* ===== SHELL ===== */
 
 body.mappa-page {
-  min-height: 100dvh;
+  min-height: var(--gw-app-viewport-h);
   background: var(--mappa-bg);
   color: var(--mappa-text);
   font-family: Inter, Arial, Helvetica, sans-serif;
