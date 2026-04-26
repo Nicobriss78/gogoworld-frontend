@@ -889,8 +889,8 @@ body.seguiti-page button {
   body.seguiti-page {
     --seguiti-page-pad-x: 14px;
     --seguiti-page-pad-y: 14px;
-    --seguiti-topbar-h: 132px;
-    --seguiti-bottomnav-h: 86px;
+    --seguiti-topbar-h: var(--gw-topbar-h, 104px);
+    --seguiti-bottomnav-h: var(--gw-bottomnav-h, 68px);
     --seguiti-card-width: 100%;
     --seguiti-card-min-width: 100%;
     --seguiti-card-thumb-h: 156px;
