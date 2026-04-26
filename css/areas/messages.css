@@ -569,15 +569,22 @@ html {
 }
 
 .messages-composer__send {
-  min-width: 84px;
-  min-height: 44px;
-  padding: 0 var(--gw-space-md, 16px);
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  min-height: 46px;
+  padding: 0;
   border: 0;
-  border-radius: var(--gw-radius-btn, 10px);
+  border-radius: 999px;
   background: var(--gw-accent, #2f80ed);
   color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font: inherit;
-  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 800;
   cursor: pointer;
   transition:
     background-color 180ms ease,
