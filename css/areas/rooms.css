@@ -248,11 +248,13 @@
 
 .rooms-composer button,
 .rooms-send-btn {
-  flex: 0 0 auto;
-  min-height: 44px;
-  padding: 0 16px;
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  min-height: 46px;
+  padding: 0;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 999px;
   background: var(--gw-accent, #3f7c96);
   color: #ffffff;
   font: inherit;
