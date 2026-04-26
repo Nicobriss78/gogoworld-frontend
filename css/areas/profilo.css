@@ -603,8 +603,8 @@ body.profilo-v2-page .gw-iconbtn {
   body.profilo-v2-page {
     --profilo-page-pad-x: 14px;
     --profilo-page-pad-y: 14px;
-    --profilo-topbar-h: 132px;
-    --profilo-bottomnav-h: 86px;
+    --profilo-topbar-h: var(--gw-topbar-h, 104px);
+    --profilo-bottomnav-h: var(--gw-bottomnav-h, 68px);
   }
 
 }
