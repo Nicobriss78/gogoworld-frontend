@@ -293,8 +293,8 @@ body.seguiti-page button {
 
 .seguiti-organizer-section {
   flex: 0 0 auto;
-  height: calc(100dvh - var(--seguiti-topbar-h) - var(--seguiti-bottomnav-h));
-  min-height: calc(100dvh - var(--seguiti-topbar-h) - var(--seguiti-bottomnav-h));
+  height: calc(var(--gw-app-viewport-h) - var(--seguiti-topbar-h) - var(--seguiti-bottomnav-h));
+  min-height: calc(var(--gw-app-viewport-h) - var(--seguiti-topbar-h) - var(--seguiti-bottomnav-h));
   padding: var(--seguiti-page-pad-y) 0;
   display: flex;
   flex-direction: column;
