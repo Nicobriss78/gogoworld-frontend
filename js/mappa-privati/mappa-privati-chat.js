@@ -117,7 +117,7 @@ if (currentEventId !== requestEventId) return;
 
     elements.chatMessages.innerHTML =
     renderer.renderChatMessages(
-    messages,
+    getPreviewMessages(messages),
     state.getState().currentUserId
   );
 
