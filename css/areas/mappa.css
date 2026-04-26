@@ -95,7 +95,7 @@ body.mappa-page button {
 .mappa-main {
   flex: 1 1 auto;
   min-height: 0;
-  height: calc(100dvh - var(--mappa-topbar-h) - var(--mappa-bottomnav-h));
+  height: calc(var(--gw-app-viewport-h) - var(--mappa-topbar-h) - var(--mappa-bottomnav-h));
   width: 100%;
   margin: 0;
   padding:
