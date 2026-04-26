@@ -1,5 +1,5 @@
 .cerca-utenti-v2-page {
-  min-height: 100vh;
+  min-height: var(--gw-app-viewport-h);
   background: var(--gw-bg-main, var(--gw-bg, #f4f6f8));
   color: var(--gw-text-primary, var(--gw-text, #1c2430));
 }
