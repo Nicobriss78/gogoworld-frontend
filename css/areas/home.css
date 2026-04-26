@@ -755,8 +755,8 @@ body.home-page > main {
   body.home-page {
     --home-page-pad-x: 14px;
     --home-page-pad-y: 14px;
-    --home-topbar-h: 132px;
-    --home-bottomnav-h: 86px;
+    --home-topbar-h: var(--gw-topbar-h, 104px);
+    --home-bottomnav-h: var(--gw-bottomnav-h, 68px);
     --home-card-width: 100%;
     --home-card-min-width: 100%;
     --home-card-thumb-h: 156px;
