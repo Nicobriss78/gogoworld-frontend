@@ -160,5 +160,11 @@
      (solo questi, niente legacy vecchia)
      ===================================================== */
 
-  --gw-muted: var(--gw-text-secondary);
+ --gw-muted: var(--gw-text-secondary);
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --gw-app-viewport-h: 100dvh;
+  }
 }
