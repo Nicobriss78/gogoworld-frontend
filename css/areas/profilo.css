@@ -115,7 +115,7 @@ body.profilo-v2-page .gw-iconbtn {
 
 .profilo-main {
   flex: 1 1 auto;
-  min-height: calc(100dvh - var(--profilo-topbar-h) - var(--profilo-bottomnav-h));
+  min-height: calc(var(--gw-app-viewport-h) - var(--profilo-topbar-h) - var(--profilo-bottomnav-h));
   padding:
   var(--profilo-page-pad-y)
   var(--profilo-page-pad-x)
