@@ -83,7 +83,7 @@
      6) TYPOGRAPHY
      ===================================================== */
 
-  --gw-font-family: Arial, sans-serif;
+  --gw-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   --gw-font-size-xs: 11px;
   --gw-font-size-sm: 13px;
