@@ -3,10 +3,8 @@ html {
 }
 
 .messages-v2-page {
-  height: 100vh;
-  height: 100svh;
-  min-height: 100vh;
-  min-height: 100svh;
+  height: var(--gw-app-viewport-h);
+  min-height: var(--gw-app-viewport-h);
   margin: 0;
   overflow: hidden;
   background: var(--gw-bg-main, var(--gw-bg, #f4f6f8));
