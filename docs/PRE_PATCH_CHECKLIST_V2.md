@@ -37,9 +37,32 @@ Se MAPPA PRIVATI:
 ## UI
 - Topbar mount presente? [ ]
 - Bottom nav fixed? [ ]
+- Le proporzioni shared sono rispettate? [ ]
+- Nessun font locale hardcoded? [ ]
+- Nessun `100vh` / `100dvh` / `100svh` diretto nei CSS V2? [ ]
+- Uso corretto di `--gw-app-viewport-h`? [ ]
 
 ---
 
+## COMPOSER CHAT V2
+- Sto modificando un composer V2? [ ]
+- Uso input pill + bottone invio circolare? [ ]
+- La label è solo accessibile (`sr-only`) e non visibile? [ ]
+- Evito `gw-btn-primary` dentro composer? [ ]
+- Evito bottone testuale largo “Invia”? [ ]
+---
+
+
+## CHAT PREVIEW MAPPA
+Se sto modificando MAPPA / MAPPA PRIVATI:
+
+- La chat è solo preview? [ ]
+- Massimo 5 messaggi? [ ]
+- Nome autore visibile? [ ]
+- Nessun avatar autore? [ ]
+- Ordine messaggi: vecchi sopra, nuovi sotto? [ ]
+- La chat completa resta separata? [ ]
+  
 ## SICUREZZA
 - Nessuna logica sensibile lato client? [ ]
 - Nessun bypass backend? [ ]
