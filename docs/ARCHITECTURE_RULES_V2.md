@@ -164,6 +164,9 @@ Regole:
 - nessuno storico completo nella preview
 
 La chat completa resta accessibile dalla pagina evento / rooms dedicate.
+
+---
+
 ## 🚫 REALTIME POLICY (ATTUALE)
 
 VIETATO:
