@@ -95,13 +95,13 @@ function focusLatestRoomMessage() {
   if (!container) return;
 
   requestAnimationFrame(() => {
-    container.scrollTop = 0;
+    container.scrollTop = container.scrollHeight;
 
-    const latestMessage = container.firstElementChild;
+    const latestMessage = container.lastElementChild;
     if (!latestMessage) return;
 
     latestMessage.scrollIntoView({
-      block: "start",
+      block: "end",
       inline: "nearest",
       behavior: "auto",
     });
