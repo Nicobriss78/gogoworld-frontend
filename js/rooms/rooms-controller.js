@@ -82,7 +82,7 @@ function getRoomsMessagesSignature(messages) {
 }
 function getLatestRoomMessageCreatedAt(messages) {
   const safeMessages = Array.isArray(messages) ? messages : [];
-  const latest = safeMessages[0];
+  const latest = safeMessages[safeMessages.length - 1];
 
   return latest?.createdAt || "";
 }
