@@ -144,9 +144,14 @@ async function loadMessages(options = {}) {
     if (!Array.isArray(messages) || !messages.length) return;
 
     const nextMessages = after
-      ? [...messages, ...currentMessages]
-      : messages;
+  ? [...currentMessages, ...messages]
+  : messages;
+nextMessages.sort((a, b) => {
+  const aTime = new Date(a?.createdAt || 0).getTime();
+  const bTime = new Date(b?.createdAt || 0).getTime();
 
+  return (Number.isNaN(aTime) ? 0 : aTime) - (Number.isNaN(bTime) ? 0 : bTime);
+});
     const nextSignature = getRoomsMessagesSignature(nextMessages);
 
     if (nextSignature === lastRoomsMessagesSignature) return;
