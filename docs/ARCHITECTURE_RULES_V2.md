@@ -137,7 +137,7 @@ Le chat V2 sono ora reattive tramite polling intelligente.
 - lista thread aggiornata in background
 - composer non bloccante
 - focus corretto sull’ultimo messaggio
-- 
+  
 ### Ordinamento messaggi
 Tutte le chat V2 devono visualizzare i messaggi in ordine cronologico crescente:
 
@@ -149,7 +149,7 @@ WebSocket e SSE restano esclusi in questa fase.
 
 Strategia attuale:
 polling intelligente + delta backend.
----
+
 ### Preview chat MAPPA / MAPPA PRIVATI
 
 Le chat presenti in MAPPA V2 e MAPPA PRIVATI V2 sono anteprime, non chat complete.
