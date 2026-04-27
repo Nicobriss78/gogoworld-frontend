@@ -285,9 +285,9 @@ export function createMessagesApi() {
 
         const rows = Array.isArray(res.data) ? res.data : [];
         return rows
-          .map(normalizeDmMessage)
-          .filter(Boolean)
-          .reverse();
+  .map(normalizeDmMessage)
+  .filter(Boolean)
+  .sort(compareMessagesByCreatedAtAsc);
       },
 
       async sendMessage(userId, text) {
