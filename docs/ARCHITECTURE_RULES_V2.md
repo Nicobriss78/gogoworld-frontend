@@ -119,7 +119,11 @@ Pan:
 
 ## 💬 STATO ATTUALE CHAT V2
 
-Le chat V2 sono ora reattive tramite polling intelligente.
+Le chat V2 sono ora reattive tramite 
+polling intelligente.
+
+---
+
 
 ### ROOMS
 - polling attivo
@@ -129,6 +133,9 @@ Le chat V2 sono ora reattive tramite polling intelligente.
 - composer stabile su mobile
 - `markRead` coerente con `createdAt`
 
+---
+
+
 ### MESSAGES
 - polling attivo solo sul thread corrente
 - stop/reset su cambio thread, tab nascosto e pagehide
@@ -137,6 +144,9 @@ Le chat V2 sono ora reattive tramite polling intelligente.
 - lista thread aggiornata in background
 - composer non bloccante
 - focus corretto sull’ultimo messaggio
+
+---
+
   
 ### Ordinamento messaggi
 Tutte le chat V2 devono visualizzare i messaggi in ordine cronologico crescente:
@@ -152,6 +162,8 @@ WebSocket e SSE restano esclusi in questa fase.
 
 Strategia attuale:
 polling intelligente + delta backend.
+
+---
 
 ### Preview chat MAPPA / MAPPA PRIVATI
 
@@ -206,6 +218,7 @@ Tutta l’Area Partecipante V2 e le pagine di secondo livello V2 devono usare il
 --gw-app-viewport-h
 
 ---
+
 # 🔤 FONT SYSTEM V2
 
 Nessuna area V2 deve definire font locali hardcoded.
@@ -215,6 +228,9 @@ Vietato:
 ```css
 font-family: Arial, sans-serif;
 font-family: Inter, Arial, Helvetica, sans-serif;
+
+---
+
 
 # 💬 COMPOSER CHAT V2
 
@@ -230,6 +246,9 @@ Schema UI:
 
 ```txt
 [input messaggio] [send icon]
+
+---
+
 
 # 🏁 CONCLUSIONE
 
