@@ -9,9 +9,17 @@ export function createMappaChat({
   let currentEventId = null;
 const MAPPA_CHAT_PREVIEW_LIMIT = 5;
 
+function getMessageTime(message) {
+  const time = new Date(message?.createdAt || 0).getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
 function getPreviewMessages(messages = []) {
   if (!Array.isArray(messages)) return [];
-  return messages.slice(-MAPPA_CHAT_PREVIEW_LIMIT);
+
+  return [...messages]
+    .sort((a, b) => getMessageTime(a) - getMessageTime(b))
+    .slice(-MAPPA_CHAT_PREVIEW_LIMIT);
 }
   function mount() {
     elements.sendBtnEl.addEventListener("click", handleSend);
