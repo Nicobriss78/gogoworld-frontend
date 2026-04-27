@@ -5,7 +5,12 @@ function normalizeDate(value) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
+function compareMessagesByCreatedAtAsc(a, b) {
+  const aTime = new Date(a?.createdAt || 0).getTime();
+  const bTime = new Date(b?.createdAt || 0).getTime();
 
+  return (Number.isNaN(aTime) ? 0 : aTime) - (Number.isNaN(bTime) ? 0 : bTime);
+}
 function computeEventThreadStatus(activeUntil) {
   const until = activeUntil ? new Date(activeUntil) : null;
   if (!until || Number.isNaN(until.getTime())) {
