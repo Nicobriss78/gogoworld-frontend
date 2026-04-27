@@ -213,7 +213,6 @@ Bottom nav:
 
 Tutta l’Area Partecipante V2 e le pagine di secondo livello V2 devono usare il token unico:
 
-```css
 --gw-app-viewport-h
 
 ---
@@ -224,7 +223,6 @@ Nessuna area V2 deve definire font locali hardcoded.
 
 Vietato:
 
-```css
 font-family: Arial, sans-serif;
 font-family: Inter, Arial, Helvetica, sans-serif;
 
@@ -243,7 +241,7 @@ Tutti i composer chat V2 devono seguire lo standard unico:
 
 Schema UI:
 
-```txt
+
 [input messaggio] [send icon]
 
 ---
