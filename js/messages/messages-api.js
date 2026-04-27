@@ -215,9 +215,9 @@ export function createMessagesApi() {
 
         const rows = Array.isArray(res.data) ? res.data : [];
         return rows
-          .map(normalizeEventMessage)
-          .filter(Boolean)
-          .reverse();
+  .map(normalizeEventMessage)
+  .filter(Boolean)
+  .sort(compareMessagesByCreatedAtAsc);
       },
 
       async sendMessage(roomId, text) {
