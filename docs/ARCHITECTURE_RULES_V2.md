@@ -137,14 +137,33 @@ Le chat V2 sono ora reattive tramite polling intelligente.
 - lista thread aggiornata in background
 - composer non bloccante
 - focus corretto sull’ultimo messaggio
+- 
+### Ordinamento messaggi
+Tutte le chat V2 devono visualizzare i messaggi in ordine cronologico crescente:
 
+```txt
+vecchi sopra
+nuovi sotto
 ### Policy realtime
 WebSocket e SSE restano esclusi in questa fase.
 
 Strategia attuale:
 polling intelligente + delta backend.
 ---
+### Preview chat MAPPA / MAPPA PRIVATI
 
+Le chat presenti in MAPPA V2 e MAPPA PRIVATI V2 sono anteprime, non chat complete.
+
+Regole:
+
+- massimo 5 messaggi visualizzati
+- solo ultimi messaggi recenti
+- ordinamento cronologico crescente: vecchi sopra, nuovi sotto
+- visualizzazione del nome autore
+- nessun avatar autore
+- nessuno storico completo nella preview
+
+La chat completa resta accessibile dalla pagina evento / rooms dedicate.
 ## 🚫 REALTIME POLICY (ATTUALE)
 
 VIETATO:
@@ -179,6 +198,33 @@ Tutta l’Area Partecipante V2 e le pagine di secondo livello V2 devono usare il
 
 ```css
 --gw-app-viewport-h
+
+# 🔤 FONT SYSTEM V2
+
+Nessuna area V2 deve definire font locali hardcoded.
+
+Vietato:
+
+```css
+font-family: Arial, sans-serif;
+font-family: Inter, Arial, Helvetica, sans-serif;
+
+# 💬 COMPOSER CHAT V2
+
+Tutti i composer chat V2 devono seguire lo standard unico:
+
+- input pill
+- bottone invio circolare compatto
+- label non visibile, solo accessibilità tramite `sr-only`
+- nessun bottone testuale “Invia” largo
+- nessun uso di classi generiche legacy come `gw-btn-primary`
+
+Schema UI:
+
+```txt
+[input messaggio] [send icon]
+
 # 🏁 CONCLUSIONE
+
 
 Questo file è vincolante.
