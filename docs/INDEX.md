@@ -39,10 +39,19 @@ Post patch:
 - Area Partecipante V2 stabile
 - Check-in completato
 - MAPPA PRIVATI conforme a PRIVATE_MAP_NO_GEO_DISCOVERY
+- Sblocco evento privato tramite pulsante diretto nella scheda MAPPA PRIVATI
+- Cross-browser hardening completato per Area Partecipante V2
+- Viewport V2 centralizzato tramite `--gw-app-viewport-h`
+- Font V2 centralizzato tramite `--gw-font-family`
+- Composer chat V2 uniformati
+- Chat preview MAPPA / MAPPA PRIVATI limitata a massimo 5 messaggi
+- Nome autore visibile nelle preview chat mappa
+- Chat V2 ordinate cronologicamente: vecchi sopra, nuovi sotto
 - Chat ROOMS e MESSAGES reattive con polling intelligente
 - Delta backend attivo tramite `after`
 - WebSocket/SSE NON introdotti
-- Prossimo step: cross-browser hardening
+- PWA rimandata a dopo rifondazione Organizzatore/Admin
+- Prossimo step: test cross-browser reali / avvio prossima fase roadmap
 ---
 
 ## 3. Regole aggiornamento
@@ -59,6 +68,8 @@ Aggiornare quando:
 - KNOWN_BUGS
 - ROADMAP
 - DOMAIN_RULES
+- CROSS_BROWSER_TEST_PLAN
+- PWA_PLAN_POST_ORGANIZER_ADMIN
 
 ---
 
