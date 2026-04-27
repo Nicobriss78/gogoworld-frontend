@@ -82,12 +82,16 @@ Regole obbligatorie:
 Lo sblocco eventi privati deve avvenire tramite:
 
 - UN SOLO entry point
-- posizione: hamburger menu (MAPPA PRIVATI)
+- posizione: pulsante diretto nella scheda MAPPA PRIVATI V2
+- elemento UI principale della pagina: `mappaUnlockBtn`
 
 È vietato:
-- duplicare il trigger
-- accessi alternativi
-- varianti UI
+- duplicare il trigger nel menu hamburger
+- mantenere accessi alternativi
+- creare varianti UI concorrenti
+
+Nota storica:
+in una fase precedente lo sblocco era previsto nel menu hamburger; la regola è stata aggiornata perché lo sblocco è stato spostato direttamente nella scheda MAPPA PRIVATI V2.
 
 ---
 
@@ -169,6 +173,12 @@ Bottom nav:
 
 ---
 
+# 📐 VIEWPORT SYSTEM V2
+
+Tutta l’Area Partecipante V2 e le pagine di secondo livello V2 devono usare il token unico:
+
+```css
+--gw-app-viewport-h
 # 🏁 CONCLUSIONE
 
 Questo file è vincolante.
