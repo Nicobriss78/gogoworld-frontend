@@ -144,6 +144,9 @@ Tutte le chat V2 devono visualizzare i messaggi in ordine cronologico crescente:
 ```txt
 vecchi sopra
 nuovi sotto
+
+---
+
 ### Policy realtime
 WebSocket e SSE restano esclusi in questa fase.
 
