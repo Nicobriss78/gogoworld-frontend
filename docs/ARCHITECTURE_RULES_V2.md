@@ -205,6 +205,7 @@ Tutta l’Area Partecipante V2 e le pagine di secondo livello V2 devono usare il
 ```css
 --gw-app-viewport-h
 
+---
 # 🔤 FONT SYSTEM V2
 
 Nessuna area V2 deve definire font locali hardcoded.
