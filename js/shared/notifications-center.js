@@ -78,13 +78,6 @@ export async function openNotificationsCenter() {
   document.documentElement.classList.add("gw-notifications-open");
 
   await refreshNotifications();
-
-  try {
-    await markAllNotificationsRead();
-    clearNotificationsBadge();
-  } catch (err) {
-    console.warn("[notifications-center] mark all read failed", err);
-  }
 }
 
 export function closeNotificationsCenter() {
