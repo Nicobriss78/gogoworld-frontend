@@ -188,12 +188,15 @@ function handleRootClick(event) {
 
   const item = event.target.closest("[data-notification-id]");
   if (item) {
-    const id = item.dataset.notificationId;
-    const notification = notificationsCache.find((n) => String(n._id) === String(id));
-    if (notification) {
-      void handleNotificationClick(notification);
-    }
+  const id = item.dataset.notificationId;
+  const notification = notificationsCache.find(
+    (n) => String(n._id) === String(id)
+  );
+
+  if (notification) {
+    void handleNotificationClick(notification, item);
   }
+ }
 }
 
 function handleKeydown(event) {
