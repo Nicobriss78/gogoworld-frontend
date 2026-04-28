@@ -179,7 +179,9 @@ const notificationsButton = document.querySelector(
       }
 
       if (event.action === "notifications") {
-        window.alert("Centro notifiche disponibile a breve.");
+        if (notificationsCenter) {
+          notificationsCenter.toggle();
+        }
         return;
       }
     }
