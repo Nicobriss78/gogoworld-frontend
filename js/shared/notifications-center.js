@@ -270,8 +270,18 @@ async function handleNotificationClick(notification, element) {
 
   try {
     if (id && !notification.isRead) {
-      await markNotificationRead(id);
-    }
+  await markNotificationRead(id);
+
+  // 🔹 aggiorno stato locale (senza reload)
+  notification.isRead = true;
+
+  // 🔹 aggiorno badge (conteggio non lette)
+  const unreadCount = notificationsCache.filter(
+    (n) => !n.isRead
+  ).length;
+
+  setNotificationsBadgeCount(unreadCount);
+}
   } catch (err) {
     console.warn("[notifications-center] mark read failed", err);
   }
