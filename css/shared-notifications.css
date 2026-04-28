@@ -180,7 +180,7 @@
   cursor: pointer;
   transition:
     background 180ms ease,
-    transform 180ms ease;
+    transform 120ms ease;
 }
 
 .gw-notifications__item:hover,
