@@ -121,7 +121,13 @@ export function initSharedShell() {
     shellContext,
     onEvent: handleEvent,
   });
+const notificationsButton = document.querySelector(
+    '[data-action="notifications"]'
+  );
 
+  notificationsCenter = initNotificationsCenter({
+    button: notificationsButton,
+  });
   mountMenu({
     mountPoint: document.getElementById("sharedMenuMount"),
     shellContext,
