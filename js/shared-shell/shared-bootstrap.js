@@ -12,7 +12,7 @@ import { executeAction } from "./shared-actions.js";
 import { mountTopbar } from "./shared-topbar.js";
 import { mountMenu, setMenuOpen } from "./shared-menu.js";
 import { mountBottomnav } from "./shared-bottomnav.js";
-
+import { initNotificationsCenter } from "../shared/notifications-center.js";
 const SHARED_ICON_SPRITE_ID = "shared-v2-icon-sprite";
 
 const SHARED_ICON_SPRITE_MARKUP = `
