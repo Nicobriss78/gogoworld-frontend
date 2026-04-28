@@ -142,6 +142,10 @@
   font-weight: 700;
   padding: 7px 11px;
   cursor: pointer;
+  transition:
+    background 140ms ease,
+    color 140ms ease,
+    transform 120ms ease;
 }
 
 .gw-notifications__tab.is-active {
