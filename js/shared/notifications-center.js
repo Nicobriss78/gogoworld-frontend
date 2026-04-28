@@ -224,8 +224,8 @@ function renderNotifications() {
   if (!items.length) {
     listEl.innerHTML = `
       <div class="gw-notifications__empty">
-        <h3>Nessuna notifica</h3>
-        <p>Quando ci saranno aggiornamenti importanti, li troverai qui.</p>
+        <h3>Nessuna notifica 👀</h3>
+        <p>Quando succederà qualcosa di interessante, lo troverai qui.</p>
       </div>
     `;
     setStatus("");
