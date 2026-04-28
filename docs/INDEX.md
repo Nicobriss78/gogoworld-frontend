@@ -50,8 +50,40 @@ Post patch:
 - Chat ROOMS e MESSAGES reattive con polling intelligente
 - Delta backend attivo tramite `after`
 - WebSocket/SSE NON introdotti
-- PWA rimandata a dopo rifondazione Organizzatore/Admin
-- Prossimo step: test cross-browser reali / avvio prossima fase roadmap
+
+## 🔔 CENTRO NOTIFICHE V2 (NUOVO)
+
+- Sistema notifiche in-app completamente implementato
+- Backend basato su notificationModel + notificationController + notificationRoutes
+- Frontend integrato nella topbar tramite pannello overlay
+- Badge notifiche con conteggio dinamico e animazione pulse
+- Lettura notifiche granulare (solo su click, NON globale)
+- Notifiche attive:
+  - dm_message
+  - room_message
+  - follow
+  - follow_new_event (solo eventi pubblici)
+- Eventi privati esclusi dalle notifiche follower
+- Separazione architetturale:
+  - createNotification → notifiche in-app
+  - notify → sistema esterno (email/push futuro)
+
+## 🔮 TRILLI (PREVISTI, NON IMPLEMENTATI)
+
+- I trilli NON fanno parte del sistema notifiche attuale
+- Trillo = avviso live/urgente/contestuale
+- Notifica = archivio/storico
+- In futuro:
+  - trillo → toast/banner live + eventuale notifica persistente
+- Struttura frontend già predisposta per categorie future (Trilli / Promo)
+
+## 📌 PROSSIMO STEP
+
+- Progettazione sistema Trilli (backend + frontend)
+- Rifondazione Area Organizzatore V2
+- Rifondazione Area Admin V2
+- Eliminazione completa legacy frontend Partecipante
+- PWA post Organizzatore/Admin
 ---
 
 ## 3. Regole aggiornamento
