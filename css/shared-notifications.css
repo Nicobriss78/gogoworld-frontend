@@ -187,6 +187,12 @@
 .gw-notifications__item:focus {
   outline: none;
   background: var(--gw-accent-soft, rgba(46, 139, 192, 0.08));
+  transform: scale(1.01);
+}
+
+.gw-notifications__item.is-pressed {
+  transform: scale(0.97);
+  background: var(--gw-accent-soft, rgba(46, 139, 192, 0.12));
 }
 
 .gw-notifications__item.is-unread {
