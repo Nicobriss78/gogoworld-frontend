@@ -264,9 +264,13 @@ function renderNotificationItem(notification) {
   `;
 }
 
-async function handleNotificationClick(notification) {
+async function handleNotificationClick(notification, element) {
   const id = notification._id;
   const link = resolveNotificationLink(notification);
+
+  if (element) {
+    element.classList.add("is-pressed");
+  }
 
   try {
     if (id && !notification.isRead) {
@@ -276,11 +280,12 @@ async function handleNotificationClick(notification) {
     console.warn("[notifications-center] mark read failed", err);
   }
 
-  closeNotificationsCenter();
-
-  if (link) {
-    window.location.href = link;
-  }
+  setTimeout(() => {
+    closeNotificationsCenter();
+    if (link) {
+      window.location.href = link;
+    }
+  }, 120);
 }
 
 function matchesCategory(notification, category) {
