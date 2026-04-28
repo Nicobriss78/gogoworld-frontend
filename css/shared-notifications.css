@@ -147,7 +147,9 @@
     color 140ms ease,
     transform 120ms ease;
 }
-
+.gw-notifications__tab:hover {
+  transform: translateY(-1px);
+}
 .gw-notifications__tab.is-active {
   border-color: var(--gw-accent-border, rgba(46, 139, 192, 0.25));
   background: var(--gw-accent-soft, rgba(46, 139, 192, 0.08));
