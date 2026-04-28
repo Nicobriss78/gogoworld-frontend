@@ -65,6 +65,7 @@ CHAT:
 ---
 
 ## STATO
+## STATO
 
 - Area Partecipante V2 stabile
 - Mappa pubblica OK
@@ -79,6 +80,47 @@ CHAT:
 - Chat NON realtime
 - Polling intelligente attivo
 - WebSocket/SSE non introdotti
+
+## 🔔 CENTRO NOTIFICHE V2 — COMPLETATO
+
+- Sistema notifiche in-app completamente implementato
+- Integrazione tramite shared-topbar + shared-bootstrap
+- Pannello notifiche overlay (desktop dropdown + mobile slide)
+- Badge notifiche con conteggio dinamico
+- Lettura notifiche:
+  - apertura pannello → NON segna tutto letto
+  - click singolo → segna solo quella notifica
+- Aggiornamento badge in tempo reale
+- Micro-UX completata (animazioni, tempo umano, hover, press)
+- Eventi privati esclusi dalle notifiche follower
+
+## 🔒 DECISIONI ARCHITETTURALI
+
+- Notifiche in-app separate da sistema esterno
+- Nessuna logica notifiche dentro topbar
+- Nessun uso di file legacy notifiche
+- Sistema notifiche completamente V2
+
+## 🔮 TRILLI
+
+- NON implementati in questa fase
+- Previsti architetturalmente
+- Distinzione obbligatoria:
+  - Notifica = storico
+  - Trillo = live event
+- Integrazione futura con:
+  - toast live
+  - notifiche persistenti
+  - geo-targeting
+  - sistema crediti/free/pro
+
+## 📌 PROSSIMO STEP
+
+1. Progettazione Trilli
+2. Area Organizzatore V2
+3. Area Admin V2
+4. Eliminazione completa legacy frontend
+5. PWA
 
 ---
 
