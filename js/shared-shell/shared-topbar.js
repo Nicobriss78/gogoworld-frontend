@@ -59,6 +59,8 @@ export function mountTopbar({ mountPoint, onEvent }) {
           data-action="notifications"
           aria-label="Notifiche"
           title="Notifiche"
+          aria-expanded="false"
+          aria-controls="gwNotificationsPanel"
         >
           <svg class="gw-icon" aria-hidden="true">
             <use href="#gw-icon-bell"></use>
