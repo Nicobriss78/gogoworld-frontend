@@ -257,10 +257,10 @@ body.mappa-page button {
 
 #mappaMap {
   position: absolute;
-  top: -25%;
-  left: -25%;
-  width: 150%;
-  height: 150%;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
   transform-origin: center center;
 }
 
