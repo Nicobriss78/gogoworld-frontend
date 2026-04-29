@@ -264,7 +264,8 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     geoWatchActive = false;
   }
   function handleFollowMeToggle() {
-  const currentMode = state.getState().geo?.mode || "explore";
+  const currentGeo = state.getState().geo || {};
+  const currentMode = currentGeo.mode || "explore";
 
   if (currentMode === GEO_FOLLOW_MODE) {
     stopGeoWatchTracking();
@@ -274,6 +275,7 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     });
 
     syncLocateBtnMode("explore");
+    setGeoStatus("Modalità Seguimi disattivata.", "success");
     return;
   }
 
@@ -283,9 +285,10 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
   });
 
   syncLocateBtnMode(GEO_FOLLOW_MODE);
+  setGeoStatus("Modalità Seguimi attiva. Sto seguendo i tuoi spostamenti...", "loading");
 
   ensureGeoWatchStarted();
-  }
+}
   async function handleLocateMe() {
     try {
       setLocateBtnBusy(true);
