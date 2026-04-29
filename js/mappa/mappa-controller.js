@@ -303,8 +303,6 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
         zoom: 15
       });
 
-      ensureGeoWatchStarted();
-
       setGeoStatus("Posizione rilevata. Ti mostro la tua area e gli eventi vicini.", "success");
     } catch (error) {
       const code =
