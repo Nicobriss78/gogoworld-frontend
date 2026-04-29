@@ -95,6 +95,7 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     elements.infoBtn?.addEventListener("click", handleOpenEventPage);
     elements.drawerContent?.addEventListener("click", handleDrawerActions);
     elements.locateBtn?.addEventListener("click", handleLocateMe);
+    elements.followBtn?.addEventListener("click", handleFollowMeToggle);
   }
 
   function unbindUi() {
