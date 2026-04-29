@@ -510,12 +510,18 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     elements.drawerContent.innerHTML = renderer.renderSelectedEventCard(event);
   }
 
-  function handleOpenEventPage() {
-    const selectedEvent = getSelectedEvent();
-    if (!selectedEvent?.id) return;
+  function handleOpenEventPage(event) {
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
 
-    handleOpenFullDetail(selectedEvent.id);
-  }
+  const selectedEvent =
+    state.getState().selectedEvent ||
+    state.getState().eventsById.get(state.getState().selectedEventId);
+
+  if (!selectedEvent?.id) return;
+
+  handleOpenFullDetail(selectedEvent.id);
+}
 
   function handleCloseDetail() {
     drawer.close();
