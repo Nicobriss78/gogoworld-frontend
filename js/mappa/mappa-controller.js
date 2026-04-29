@@ -642,12 +642,9 @@ document.addEventListener("visibilitychange", () => {
     return;
   }
 
-  if (
-    (state.getState().geo?.mode || "explore") === "near_me" ||
-    (state.getState().geo?.mode || "explore") === GEO_FOLLOW_MODE
-  ) {
-    ensureGeoWatchStarted();
-  }
+  if ((state.getState().geo?.mode || "explore") === GEO_FOLLOW_MODE) {
+  ensureGeoWatchStarted();
+}
 
   scheduleMapRefresh();
 });
