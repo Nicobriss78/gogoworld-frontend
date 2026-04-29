@@ -364,29 +364,28 @@ function fitUserAndEvents(position, options = {}) {
       .replaceAll(">", "&gt;");
   }
 
-  let currentBearing = 0;
+  let currentRotation = 0;
 
 function setMapRotation(deg) {
   if (!map) return;
 
-  currentBearing = Number(deg) || 0;
+  const mapEl = map.getContainer();
+  if (!mapEl) return;
 
-  const mapPane = map.getPane("mapPane");
-  if (!mapPane) return;
+  currentRotation = Number(deg) || 0;
 
-  mapPane.style.transform = `rotate(${currentBearing}deg)`;
-  mapPane.style.transformOrigin = "50% 50%";
+  mapEl.style.transform = `rotate(${currentRotation}deg)`;
+  mapEl.style.transformOrigin = "50% 50%";
 }
 
 function resetMapRotation() {
   if (!map) return;
 
-  currentBearing = 0;
+  const mapEl = map.getContainer();
+  if (!mapEl) return;
 
-  const mapPane = map.getPane("mapPane");
-  if (!mapPane) return;
-
-  mapPane.style.transform = "";
+  currentRotation = 0;
+  mapEl.style.transform = "";
 }
 
   return {
