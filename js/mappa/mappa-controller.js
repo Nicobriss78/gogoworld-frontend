@@ -179,7 +179,7 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     const currentGeo = state.getState().geo || {};
     const currentMode = String(currentGeo.mode || "explore").trim();
 
-    if (currentMode !== "near_me" && currentMode !== GEO_FOLLOW_MODE) return;
+    if (currentMode !== GEO_FOLLOW_MODE) return;
 
     const nextAccuracy = Number(position?.accuracy);
     const prevPosition = currentGeo.userPosition || null;
