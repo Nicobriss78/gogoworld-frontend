@@ -305,7 +305,7 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
 
       state.setGeoState({
         permission: "granted",
-        mode: "near_me",,
+        mode: "near_me",
         userPosition: normalized,
         mapCenter: normalized,
         accuracy: position.accuracy ?? null,
