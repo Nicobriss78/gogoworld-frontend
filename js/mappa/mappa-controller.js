@@ -266,7 +266,7 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
   function handleFollowMeToggle() {
   const currentGeo = state.getState().geo || {};
   const currentMode = currentGeo.mode || "explore";
-
+  const selectedEvent = state.getState().selectedEvent || null;
   if (currentMode === GEO_FOLLOW_MODE) {
     stopGeoWatchTracking();
 
@@ -288,6 +288,9 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
   setGeoStatus("Modalità Seguimi attiva. Sto seguendo i tuoi spostamenti...", "loading");
 
   ensureGeoWatchStarted();
+    if (selectedEvent?.id) {
+    state.setSelectedEvent(selectedEvent);
+    }
 }
   async function handleLocateMe() {
     try {
