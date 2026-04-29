@@ -653,6 +653,7 @@ function getDomElements() {
 
     infoBtn: document.getElementById("mappaChatInfoBtn"),
     locateBtn: document.getElementById("mappaLocateBtn"),
+    followBtn: document.getElementById("mappaFollowBtn"),
     locateBtnLabel: document.getElementById("mappaLocateBtnLabel"),
     geoStatus: document.getElementById("mappaGeoStatus")
     };
