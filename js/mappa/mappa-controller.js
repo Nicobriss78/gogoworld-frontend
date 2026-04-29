@@ -284,8 +284,7 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
         lastUpdate: position.timestamp ?? Date.now(),
         geoError: ""
       });
-      syncLocateBtnMode(GEO_FOLLOW_MODE);
-
+      syncLocateBtnMode("near_me");
       map.setUserLocation(normalized, {
         accuracy: position.accuracy ?? null,
         showCircle: true
