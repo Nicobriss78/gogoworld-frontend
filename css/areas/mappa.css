@@ -257,11 +257,10 @@ body.mappa-page button {
 
 #mappaMap {
   position: absolute;
-  top: -100%;
-  left: -100%;
-  width: 300%;
-  height: 300%;
-  transform-origin: center center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /* ===== FIX LAYER LEAFLET VS MENU ===== */
