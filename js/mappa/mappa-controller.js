@@ -59,6 +59,12 @@ let geoWatchActive = false;
  bindUi();
   drawer.mount();
   map.mount();
+
+  window.gwMappaDebug = {
+    rotate: (deg) => map.setMapRotation(deg),
+    resetRotation: () => map.resetMapRotation()
+  };
+
   chat.mount();
   chat.showIdle();
 syncLocateBtnMode(state.getState().geo?.mode || "explore");
