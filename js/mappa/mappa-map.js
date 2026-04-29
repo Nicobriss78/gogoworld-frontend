@@ -364,6 +364,30 @@ function fitUserAndEvents(position, options = {}) {
       .replaceAll(">", "&gt;");
   }
 
+  let currentRotation = 0;
+
+  function setMapRotation(deg) {
+    if (!map) return;
+
+    const mapEl = map.getContainer();
+    if (!mapEl) return;
+
+    currentRotation = Number(deg) || 0;
+
+    mapEl.style.transform = `rotate(${currentRotation}deg)`;
+    mapEl.style.transformOrigin = "50% 50%";
+  }
+
+  function resetMapRotation() {
+    if (!map) return;
+
+    const mapEl = map.getContainer();
+    if (!mapEl) return;
+
+    currentRotation = 0;
+    mapEl.style.transform = "";
+  }
+
   return {
     mount,
     setEvents,
@@ -376,6 +400,8 @@ function fitUserAndEvents(position, options = {}) {
     setViewCenter,
     panToPosition,
     fitUserAndEvents,
+    setMapRotation,
+    resetMapRotation,
     destroy
   };
 }
