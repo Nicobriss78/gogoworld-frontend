@@ -159,11 +159,16 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     }
   }
   function syncLocateBtnMode(mode) {
-    if (!elements.locateBtn) return;
-
+  if (elements.locateBtn) {
     elements.locateBtn.dataset.state =
-      mode === "near_me" || mode === GEO_FOLLOW_MODE ? "active" : "idle";
+      mode === "near_me" ? "active" : "idle";
   }
+
+  if (elements.followBtn) {
+    elements.followBtn.dataset.state =
+      mode === GEO_FOLLOW_MODE ? "active" : "idle";
+  }
+}
 /* ===============================
      GEO
      =============================== */
