@@ -257,6 +257,29 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     stopUserPositionWatch();
     geoWatchActive = false;
   }
+  function handleFollowMeToggle() {
+  const currentMode = state.getState().geo?.mode || "explore";
+
+  if (currentMode === GEO_FOLLOW_MODE) {
+    stopGeoWatchTracking();
+
+    state.setGeoState({
+      mode: "explore"
+    });
+
+    syncLocateBtnMode("explore");
+    return;
+  }
+
+  state.setGeoState({
+    mode: GEO_FOLLOW_MODE,
+    geoError: ""
+  });
+
+  syncLocateBtnMode(GEO_FOLLOW_MODE);
+
+  ensureGeoWatchStarted();
+  }
   async function handleLocateMe() {
     try {
       setLocateBtnBusy(true);
