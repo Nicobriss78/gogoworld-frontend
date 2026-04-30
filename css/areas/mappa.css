@@ -271,6 +271,39 @@ body.mappa-page button {
   transform-origin: center center;
   will-change: transform;
 }
+/* ===== USER POSITION MARKER ===== */
+.mappa-user-marker {
+  width: 26px;
+  height: 26px;
+  position: relative;
+}
+
+.mappa-user-marker--dot {
+  border: 3px solid #ffffff;
+  border-radius: 999px;
+  background: #1d9bf0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+}
+
+.mappa-user-marker--arrow {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 24px solid #1d9bf0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.32));
+}
+
+.mappa-user-marker--arrow::after {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 7px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #ffffff;
+}
 /* ===== FIX LAYER LEAFLET VS MENU ===== */
 
 #mappaMap .leaflet-control,
