@@ -240,7 +240,26 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
   map.panToPosition(normalized);
 }
   }
+function calculateBearing(from, to) {
+  const lat1 = (Number(from?.lat) * Math.PI) / 180;
+  const lat2 = (Number(to?.lat) * Math.PI) / 180;
+  const deltaLng = ((Number(to?.lng) - Number(from?.lng)) * Math.PI) / 180;
 
+  if (
+    !Number.isFinite(lat1) ||
+    !Number.isFinite(lat2) ||
+    !Number.isFinite(deltaLng)
+  ) {
+    return 0;
+  }
+
+  const y = Math.sin(deltaLng) * Math.cos(lat2);
+  const x =
+    Math.cos(lat1) * Math.sin(lat2) -
+    Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLng);
+
+  return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
+}
   function handleGeoWatchError(error) {
     const code =
       error && typeof error.code === "string"
