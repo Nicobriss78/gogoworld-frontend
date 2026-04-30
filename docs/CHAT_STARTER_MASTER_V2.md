@@ -65,11 +65,23 @@ CHAT:
 ---
 
 ## STATO
-## STATO
 
 - Area Partecipante V2 stabile
-- Mappa pubblica OK
-- Mappa privata stabilizzata
+- - MAPPA PUBBLICA V2 completata:
+  - geolocalizzazione (Vicino a me)
+  - tracking continuo (Seguimi)
+  - rotazione dinamica basata su bearing
+  - smoothing angolare (no rotazioni spurie)
+  - distinzione UX:
+    - pallino → posizione
+    - freccia → direzione (solo con movimento reale)
+  - reset coerente su interazione utente
+  - centratura utente indipendente dagli eventi
+  - caricamento eventi per raggio (default 20km)
+
+- MAPPA PRIVATI V2 stabilizzata:
+  - conforme a PRIVATE_MAP_NO_GEO_DISCOVERY
+  - dataset stabile non legato a geolocalizzazione
 - MAPPA PRIVATI conforme a PRIVATE_MAP_NO_GEO_DISCOVERY
 - Sblocco evento privato tramite pulsante diretto in scheda
 - UI shared compatta e coerente
