@@ -367,7 +367,7 @@ function calculateBearing(from, to) {
         fitBounds: false
       });
 
-      map.setViewCenter(normalized, 15);
+      map.setViewCenter(normalized, 12);
 
       setGeoStatus("Posizione rilevata. Ti mostro la tua area e gli eventi vicini.", "success");
     } catch (error) {
