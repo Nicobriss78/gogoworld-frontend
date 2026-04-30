@@ -262,6 +262,25 @@ function calculateBearing(from, to) {
 
   return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
 }
+  let lastBearing = null;
+
+function normalizeBearingDelta(newBearing) {
+  if (lastBearing === null) {
+    lastBearing = newBearing;
+    return newBearing;
+  }
+
+  let delta = newBearing - lastBearing;
+
+  // shortest path (-180 / +180)
+  delta = ((delta + 540) % 360) - 180;
+
+  const smoothed = lastBearing + delta;
+
+  lastBearing = smoothed;
+
+  return smoothed;
+}
   function handleGeoWatchError(error) {
     const code =
       error && typeof error.code === "string"
