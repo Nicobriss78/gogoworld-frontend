@@ -31,6 +31,43 @@ Questo documento definisce le regole INVIO-LABILI del progetto GoGoWorld.life.
 - discovery geografica
 - reload su viewport consentito
 
+### GEO UX RULES (VINCOLANTI)
+
+Vicino a me:
+- Deve sempre centrare l’utente
+- NON deve usare fitBounds con eventi
+- Il raggio eventi NON deve influenzare lo zoom
+- Gli eventi sono contesto, non driver della viewport
+
+Seguimi:
+- Attiva tracking continuo (watchPosition)
+- Attiva rotazione mappa basata su bearing reale
+- Deve usare smoothing angolare (no rotazioni >180°)
+- Deve ignorare rumore GPS (accuracy + distanza minima)
+- Deve disattivarsi automaticamente su:
+  - drag mappa
+  - zoom manuale
+
+Rotazione mappa:
+- Deve essere fluida (requestAnimationFrame)
+- Deve usare shortest path angolare (-180 / +180)
+- NON deve usare plugin Leaflet invasivi
+- È implementata via wrapper DOM (compromesso accettato)
+
+Puntatore utente:
+- Pallino → posizione
+- Freccia → direzione (solo con movimento affidabile)
+- NON mostrare freccia con GPS instabile
+
+Zoom vs raggio:
+- Zoom mappa e raggio eventi sono indipendenti
+- Il raggio determina il dataset, NON la viewport
+
+Architettura:
+- La logica GEO è nel controller
+- Il rendering è isolato in createMappaMap
+- La mappa è sostituibile (Leaflet → MapLibre)
+
 ## MAPPA PRIVATI
 - dataset autorizzato
 - dataset stabile
