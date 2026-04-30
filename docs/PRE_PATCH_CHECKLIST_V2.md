@@ -27,7 +27,22 @@ Se MAPPA PRIVATI:
 [ ] Sto modificando MAPPA PRIVATI?
     → Verificato rispetto regola PRIVATE_MAP_NO_GEO_DISCOVERY
 ---
+## MAPPA AVANZATA (NUOVO)
 
+Se sto lavorando su MAPPA PUBBLICA:
+
+- Sto modificando logica GEO (Vicino a me / Seguimi)? [ ]
+- Sto rispettando distinzione:
+  - Vicino a me = centratura utente [ ]
+  - Seguimi = tracking + rotazione [ ]
+- Sto evitando fitBounds in Vicino a me? [ ]
+- Sto mantenendo separazione tra:
+  - controller (logica) [ ]
+  - map (rendering) [ ]
+- Sto evitando uso diretto di transform su container Leaflet? [ ]
+- Sto rispettando smoothing angolare (no rotazioni >180°)? [ ]
+- Sto evitando uso di plugin Leaflet invasivi? [ ]
+---
 ## LIFECYCLE
 - Evito doppio bootstrap? [ ]
 - Evito load duplicati? [ ]
