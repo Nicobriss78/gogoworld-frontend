@@ -365,17 +365,46 @@ function fitUserAndEvents(position, options = {}) {
   }
 
   let currentRotation = 0;
+let targetRotation = 0;
+let rotationFrame = null;
+
+function applyRotation(deg) {
+  const rotateEl = document.getElementById("mappaMapRotate");
+  if (!rotateEl) return;
+
+  rotateEl.style.transform = `rotate(${deg}deg)`;
+}
+
+function animateRotation() {
+  const diff = targetRotation - currentRotation;
+
+  if (Math.abs(diff) < 0.1) {
+    currentRotation = targetRotation;
+    applyRotation(currentRotation);
+    rotationFrame = null;
+    return;
+  }
+
+  currentRotation += diff * 0.08; // smoothing fluido
+  applyRotation(currentRotation);
+
+  rotationFrame = requestAnimationFrame(animateRotation);
+}
 
 function setMapRotation(deg) {
-  if (!map) return;
+  targetRotation = Number(deg) || 0;
 
-  const mapEl = map.getContainer();
-  if (!mapEl) return;
+  if (!rotationFrame) {
+    rotationFrame = requestAnimationFrame(animateRotation);
+  }
+}
 
-  currentRotation = Number(deg) || 0;
+function resetMapRotation() {
+  targetRotation = 0;
 
-  mapEl.style.transform = `rotate(${currentRotation}deg)`;
-  mapEl.style.transformOrigin = "50% 50%";
+  if (!rotationFrame) {
+    rotationFrame = requestAnimationFrame(animateRotation);
+  }
 }
 
 function resetMapRotation() {
