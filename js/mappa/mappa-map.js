@@ -237,18 +237,33 @@ function fitUserAndEvents(position, options = {}) {
         ? Number(options.accuracy)
         : 150;
 
-    if (!userLocationMarker) {
-      userLocationMarker = L.circleMarker([lat, lng], {
-        radius: 8,
-        weight: 3,
-        color: "#ffffff",
-        fillColor: "#1d9bf0",
-        fillOpacity: 1,
-        pane: "markerPane"
-      }).addTo(map);
-    } else {
-      userLocationMarker.setLatLng([lat, lng]);
-    }
+    const markerMode = options.mode === "arrow" ? "arrow" : "dot";
+const bearing = Number.isFinite(Number(options.bearing))
+  ? Number(options.bearing)
+  : 0;
+
+const markerHtml =
+  markerMode === "arrow"
+    ? `<div class="mappa-user-marker mappa-user-marker--arrow" style="transform: rotate(${bearing}deg);"></div>`
+    : `<div class="mappa-user-marker mappa-user-marker--dot"></div>`;
+
+const icon = L.divIcon({
+  className: "",
+  html: markerHtml,
+  iconSize: markerMode === "arrow" ? [26, 26] : [26, 26],
+  iconAnchor: [13, 13]
+});
+
+if (!userLocationMarker) {
+  userLocationMarker = L.marker([lat, lng], {
+    icon,
+    pane: "markerPane",
+    interactive: false
+  }).addTo(map);
+} else {
+  userLocationMarker.setLatLng([lat, lng]);
+  userLocationMarker.setIcon(icon);
+}
 
     if (showCircle) {
       if (!userLocationCircle) {
