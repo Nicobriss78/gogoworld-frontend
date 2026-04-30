@@ -225,11 +225,20 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     });
 
     if (
-      currentMode === GEO_FOLLOW_MODE &&
-      (!prevPosition || !Number.isFinite(movedMeters) || movedMeters >= GEO_MIN_MOVE_METERS)
-    ) {
-      map.panToPosition(normalized);
-    }
+  currentMode === GEO_FOLLOW_MODE &&
+  (!prevPosition || !Number.isFinite(movedMeters) || movedMeters >= GEO_MIN_MOVE_METERS)
+) {
+  if (
+    prevPosition &&
+    Number.isFinite(movedMeters) &&
+    movedMeters >= GEO_MIN_MOVE_METERS
+  ) {
+    const bearing = calculateBearing(prevPosition, normalized);
+    map.setMapRotation(bearing);
+  }
+
+  map.panToPosition(normalized);
+}
   }
 
   function handleGeoWatchError(error) {
