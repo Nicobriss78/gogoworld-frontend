@@ -407,15 +407,7 @@ function resetMapRotation() {
   }
 }
 
-function resetMapRotation() {
-  if (!map) return;
 
-  const mapEl = map.getContainer();
-  if (!mapEl) return;
-
-  currentRotation = 0;
-  mapEl.style.transform = "";
-}
 
   return {
     mount,
