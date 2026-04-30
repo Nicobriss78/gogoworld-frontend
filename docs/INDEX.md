@@ -37,6 +37,14 @@ Post patch:
 ## ⚠️ STATO SISTEMA
 
 - Area Partecipante V2 stabile
+- MAPPA PUBBLICA V2 completata:
+  - geolocalizzazione (Vicino a me)
+  - tracking continuo (Seguimi)
+  - rotazione dinamica basata su bearing
+  - smoothing angolare (no rotazioni spurie)
+  - UX navigatore (pallino / freccia)
+  - centratura utente indipendente dagli eventi
+  - caricamento eventi per raggio (default 20km)
 - Check-in completato
 - MAPPA PRIVATI conforme a PRIVATE_MAP_NO_GEO_DISCOVERY
 - Sblocco evento privato tramite pulsante diretto nella scheda MAPPA PRIVATI
