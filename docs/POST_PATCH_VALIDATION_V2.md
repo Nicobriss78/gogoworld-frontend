@@ -65,7 +65,29 @@ PRIVATI:
 - Nessuna duplicazione nel menu hamburger [ ]
 - Nessun trigger alternativo di sblocco [ ]
 ---
+### MAPPA PUBBLICA — VALIDAZIONE AVANZATA
 
+- Vicino a me centra sempre l’utente? [ ]
+- Zoom coerente indipendente dal raggio? [ ]
+- Gli eventi NON spostano la viewport? [ ]
+
+- Seguimi attivo:
+  - tracking fluido? [ ]
+  - pan coerente? [ ]
+  - rotazione fluida? [ ]
+
+- Rotazione:
+  - nessun giro completo anomalo? [ ]
+  - smoothing corretto? [ ]
+
+- Puntatore utente:
+  - pallino da fermo? [ ]
+  - freccia solo con movimento reale? [ ]
+
+- Interazione utente:
+  - drag disattiva Seguimi? [ ]
+  - reset rotazione corretto? [ ]
+---
 ## SICUREZZA
 - Nessuna regressione sicurezza? [ ]
 
