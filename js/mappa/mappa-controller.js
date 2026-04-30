@@ -466,6 +466,7 @@ function normalizeBearingDelta(newBearing) {
     syncLocateBtnMode("explore");
 stopGeoWatchTracking();
 map.resetMapRotation();
+setGeoStatus("Modalità Seguimi disattivata. Puoi esplorare la mappa manualmente.", "success");
 
 const bounds = map.getViewportBounds();
 
