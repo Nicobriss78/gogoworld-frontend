@@ -262,7 +262,15 @@ body.mappa-page button {
   width: 100%;
   height: 100%;
 }
-
+.mappa-rotate {
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  width: 140%;
+  height: 140%;
+  transform-origin: center center;
+  will-change: transform;
+}
 /* ===== FIX LAYER LEAFLET VS MENU ===== */
 
 #mappaMap .leaflet-control,
