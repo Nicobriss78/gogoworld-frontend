@@ -264,10 +264,10 @@ body.mappa-page button {
 }
 .mappa-rotate {
   position: absolute;
-  top: -60%;
-  left: -60%;
-  width: 220%;
-  height: 220%;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
   transform-origin: center center;
   will-change: transform;
 }
