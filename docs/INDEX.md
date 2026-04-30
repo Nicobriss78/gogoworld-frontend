@@ -87,6 +87,7 @@ Post patch:
 
 ## 📌 PROSSIMO STEP
 
+- Fase 2: Ricerca eventi + discovery (MAPPA V2)
 - Progettazione sistema Trilli (backend + frontend)
 - Rifondazione Area Organizzatore V2
 - Rifondazione Area Admin V2
