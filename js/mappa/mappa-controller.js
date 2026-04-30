@@ -438,9 +438,10 @@ function calculateBearing(from, to) {
       mode: "explore"
     });
     syncLocateBtnMode("explore");
-    stopGeoWatchTracking();
+stopGeoWatchTracking();
+map.resetMapRotation();
 
-    const bounds = map.getViewportBounds();
+const bounds = map.getViewportBounds();
 
     await loadEvents({
       bounds,
