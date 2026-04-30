@@ -234,7 +234,9 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     movedMeters >= GEO_MIN_MOVE_METERS
   ) {
     const bearing = calculateBearing(prevPosition, normalized);
-map.setMapRotation(-bearing);
+
+const smoothBearing = normalizeBearingDelta(bearing);
+map.setMapRotation(-smoothBearing);
   }
 
   map.panToPosition(normalized);
