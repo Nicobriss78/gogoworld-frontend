@@ -302,11 +302,12 @@ function calculateBearing(from, to) {
   const currentMode = currentGeo.mode || "explore";
   const selectedEvent = state.getState().selectedEvent || null;
   if (currentMode === GEO_FOLLOW_MODE) {
-    stopGeoWatchTracking();
+  stopGeoWatchTracking();
+  map.resetMapRotation();
 
-    state.setGeoState({
-      mode: "explore"
-    });
+  state.setGeoState({
+    mode: "explore"
+  });
 
     syncLocateBtnMode("explore");
     setGeoStatus("Modalità Seguimi disattivata.", "success");
