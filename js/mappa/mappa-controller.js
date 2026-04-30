@@ -220,9 +220,10 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     });
 
     map.setUserLocation(normalized, {
-      accuracy: position.accuracy ?? null,
-      showCircle: true
-    });
+  accuracy: position.accuracy ?? null,
+  showCircle: true,
+  mode: "dot"
+});
 
     if (
   currentMode === GEO_FOLLOW_MODE &&
@@ -236,6 +237,14 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     const bearing = calculateBearing(prevPosition, normalized);
 
 const smoothBearing = normalizeBearingDelta(bearing);
+
+map.setUserLocation(normalized, {
+  accuracy: position.accuracy ?? null,
+  showCircle: true,
+  mode: "arrow",
+  bearing: smoothBearing
+});
+
 map.setMapRotation(-smoothBearing);
   }
 
