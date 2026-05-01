@@ -351,6 +351,8 @@ function resetFilters() {
     setCurrentUserId,
     setSearchQuery,
     clearSearch,
+    setFilters,
+    resetFilters,
     setReturnContext,
     clearReturnContext
   };
