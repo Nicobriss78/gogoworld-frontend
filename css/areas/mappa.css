@@ -278,7 +278,9 @@ body.mappa-page button {
 }
 
 .mappa-search__submit:hover,
-.mappa-search__clear:hover {
+.mappa-search__clear:hover,
+.mappa-search__filters:hover,
+.mappa-search__filters[aria-expanded="true"] {
   border-color: var(--mappa-accent);
   background: var(--mappa-accent-soft);
   color: var(--mappa-accent-hover);
