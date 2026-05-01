@@ -517,7 +517,7 @@ function normalizeBearingDelta(newBearing) {
     if (!Number.isFinite(nextCenter.lat) || !Number.isFinite(nextCenter.lng)) {
       return;
     }
-
+clearActiveEventSelection();
     if (viewport.source !== "user") {
       state.setGeoState({
         mapCenter: nextCenter
