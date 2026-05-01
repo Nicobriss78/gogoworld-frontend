@@ -142,6 +142,7 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
       return;
     }
 
+    clearActiveEventSelection();
     state.setSearchQuery(query);
 
     if (elements.searchClear) {
