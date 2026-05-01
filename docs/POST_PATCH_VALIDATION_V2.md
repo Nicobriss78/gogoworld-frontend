@@ -44,6 +44,10 @@ MAPPA / MAPPA PRIVATI:
 - Flusso principale OK? [ ]
 - Ritorno da pagina OK? [ ]
 - Stato coerente? [ ]
+- Stato search coerente? [ ]
+- Stato filters coerente? [ ]
+- Stato geo coerente? [ ]
+- Stato chat/selectedEvent coerente? [ ]
 
 ---
 
@@ -51,6 +55,23 @@ MAPPA / MAPPA PRIVATI:
 
 PUBBLICA:
 - reload corretto [ ]
+- Ricerca eventi funzionante tramite `q`? [ ]
+- Ricerca e GEO restano separate? [ ]
+- Filtri funzionanti:
+  - category server-side? [ ]
+  - isFree server-side? [ ]
+  - period/dateStart/dateEnd server-side? [ ]
+  - status client-side? [ ]
+- Tasto Filtri apre/chiude pannello correttamente? [ ]
+- Contatore Filtri aggiornato? [ ]
+- Reset filtri coerente? [ ]
+- Ricerca/filtri NON aprono automaticamente la chat? [ ]
+- Tap marker apre la chat? [ ]
+- Tasto Chiudi evento resetta selezione/chat? [ ]
+- Vicino a me / Seguimi / pan resettano selezione evento? [ ]
+- Header mappa compatto su due righe:
+  - `[Seguimi] Eventi [Vicino a me]` [ ]
+  - `[Box ricerca] [Cerca] [Filtri]` [ ]
 
 PRIVATI:
 - marker stabile [ ]
