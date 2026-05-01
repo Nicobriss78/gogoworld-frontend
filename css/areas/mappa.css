@@ -121,11 +121,29 @@ body.mappa-page button {
 .mappa-header {
   padding: 0;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--mappa-space-md);
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
 }
+
+.mappa-controls-row {
+  width: 100%;
+  display: grid;
+  align-items: center;
+  gap: 8px;
+}
+
+.mappa-controls-row--primary {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+.mappa-controls-row--primary .mappa-locate-btn:first-child {
+  justify-self: start;
+}
+
+.mappa-controls-row--primary .mappa-locate-btn:last-child {
+  justify-self: end;
+}
+
 .mappa-title {
   font-size: 17px;
   line-height: 1.15;
