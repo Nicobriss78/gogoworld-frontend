@@ -396,6 +396,7 @@ function normalizeBearingDelta(newBearing) {
   const currentGeo = state.getState().geo || {};
   const currentMode = currentGeo.mode || "explore";
   const selectedEvent = state.getState().selectedEvent || null;
+    clearActiveEventSelection();
   if (currentMode === GEO_FOLLOW_MODE) {
   stopGeoWatchTracking();
   map.resetMapRotation();
