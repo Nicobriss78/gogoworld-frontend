@@ -76,6 +76,43 @@
           Seguimi
           </span>
         </button>
+        <form
+          id="mappaSearchForm"
+          class="mappa-search"
+          role="search"
+          aria-label="Cerca eventi sulla mappa"
+        >
+          <label for="mappaSearchInput" class="sr-only">Cerca eventi</label>
+
+          <input
+            id="mappaSearchInput"
+            class="mappa-search__input"
+            type="search"
+            maxlength="80"
+            placeholder="Cerca eventi, città, luogo..."
+            autocomplete="off"
+          />
+
+          <button
+            id="mappaSearchSubmit"
+            class="mappa-search__submit"
+            type="submit"
+            aria-label="Cerca eventi"
+          >
+            Cerca
+          </button>
+
+          <button
+            id="mappaSearchClear"
+            class="mappa-search__clear"
+            type="button"
+            hidden
+            aria-label="Cancella ricerca"
+          >
+            ×
+          </button>
+        </form>
+
         <div
           id="mappaGeoStatus"
           class="mappa-geo-status"
