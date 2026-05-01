@@ -821,6 +821,7 @@ function getDomElements() {
     chatSend: document.getElementById("mappaChatSend"),
 
     infoBtn: document.getElementById("mappaChatInfoBtn"),
+    clearEventBtn: document.getElementById("mappaChatClearBtn"),
     locateBtn: document.getElementById("mappaLocateBtn"),
     followBtn: document.getElementById("mappaFollowBtn"),
     searchForm: document.getElementById("mappaSearchForm"),
