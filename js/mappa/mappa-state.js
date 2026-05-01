@@ -300,6 +300,8 @@ function clearSearch() {
     setChatState,
     resetChatState,
     setCurrentUserId,
+    setSearchQuery,
+    clearSearch,
     setReturnContext,
     clearReturnContext
   };
