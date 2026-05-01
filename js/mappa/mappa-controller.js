@@ -746,7 +746,61 @@ const bounds = map.getViewportBounds();
       );
     }
   }
+function buildPeriodQuery(period = "all") {
+    const now = new Date();
+    const start = new Date(now);
+    start.setHours(0, 0, 0, 0);
 
+    switch (period) {
+      case "today": {
+        const end = new Date(start);
+        end.setDate(start.getDate() + 1);
+
+        return {
+          dateStart: start.toISOString(),
+          dateEnd: end.toISOString()
+        };
+      }
+
+      case "weekend": {
+        const day = start.getDay();
+        const daysUntilSaturday = (6 - day + 7) % 7;
+        const saturday = new Date(start);
+        saturday.setDate(start.getDate() + daysUntilSaturday);
+
+        const monday = new Date(saturday);
+        monday.setDate(saturday.getDate() + 2);
+
+        return {
+          dateStart: saturday.toISOString(),
+          dateEnd: monday.toISOString()
+        };
+      }
+
+      case "7days": {
+        const end = new Date(start);
+        end.setDate(start.getDate() + 7);
+
+        return {
+          dateStart: start.toISOString(),
+          dateEnd: end.toISOString()
+        };
+      }
+
+      case "30days": {
+        const end = new Date(start);
+        end.setDate(start.getDate() + 30);
+
+        return {
+          dateStart: start.toISOString(),
+          dateEnd: end.toISOString()
+        };
+      }
+
+      default:
+        return {};
+    }
+}
   /* ===============================
      SELEZIONE EVENTO DA MAPPA
      =============================== */
