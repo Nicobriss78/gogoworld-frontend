@@ -181,6 +181,113 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
       fitBounds: true
     });
   }
+  function handleFiltersToggle(event) {
+    event?.preventDefault?.();
+
+    const currentFilters = state.getState().filters || {};
+    const nextOpen = !Boolean(currentFilters.isOpen);
+
+    state.setFilters({
+      isOpen: nextOpen
+    });
+
+    if (elements.filtersPanel) {
+      elements.filtersPanel.hidden = !nextOpen;
+    }
+
+    if (elements.filtersToggle) {
+      elements.filtersToggle.setAttribute("aria-expanded", String(nextOpen));
+    }
+  }
+
+  async function handleFiltersApply(event) {
+    event?.preventDefault?.();
+
+    clearActiveEventSelection();
+
+    state.setFilters({
+      category: String(elements.filterCategory?.value || ""),
+      period: String(elements.filterPeriod?.value || "all"),
+      status: String(elements.filterStatus?.value || "all"),
+      isFree: String(elements.filterIsFree?.value || ""),
+      isOpen: false
+    });
+
+    if (elements.filtersPanel) {
+      elements.filtersPanel.hidden = true;
+    }
+
+    syncFiltersToggleLabel();
+
+    const searchQuery = String(state.getState().search?.query || "").trim();
+
+    setGeoStatus(buildActiveFiltersMessage(), "success");
+
+    await loadEvents({
+      q: searchQuery,
+      fitBounds: true
+    });
+  }
+
+  async function handleFiltersReset(event) {
+    event?.preventDefault?.();
+
+    clearActiveEventSelection();
+    state.resetFilters();
+
+    if (elements.filterCategory) elements.filterCategory.value = "";
+    if (elements.filterPeriod) elements.filterPeriod.value = "all";
+    if (elements.filterStatus) elements.filterStatus.value = "all";
+    if (elements.filterIsFree) elements.filterIsFree.value = "";
+
+    if (elements.filtersPanel) {
+      elements.filtersPanel.hidden = true;
+    }
+
+    syncFiltersToggleLabel();
+
+    const searchQuery = String(state.getState().search?.query || "").trim();
+
+    setGeoStatus(
+      searchQuery ? `Filtri rimossi. Ricerca attiva: ${searchQuery}` : "Filtri rimossi.",
+      "success"
+    );
+
+    await loadEvents({
+      q: searchQuery,
+      fitBounds: true
+    });
+  }
+
+  function syncFiltersToggleLabel() {
+    const filters = state.getState().filters || {};
+    const activeCount = Number(filters.activeCount || 0);
+
+    if (elements.filtersToggle) {
+      elements.filtersToggle.textContent =
+        activeCount > 0 ? `Filtri (${activeCount})` : "Filtri";
+      elements.filtersToggle.setAttribute(
+        "aria-expanded",
+        String(Boolean(filters.isOpen))
+      );
+    }
+  }
+
+  function buildActiveFiltersMessage() {
+    const filters = state.getState().filters || {};
+    const count = Number(filters.activeCount || 0);
+    const searchQuery = String(state.getState().search?.query || "").trim();
+
+    if (searchQuery && count > 0) {
+      return `Ricerca attiva: ${searchQuery} · ${count} filtri`;
+    }
+
+    if (count > 0) {
+      return `${count} filtri attivi`;
+    }
+
+    return searchQuery ? `Ricerca attiva: ${searchQuery}` : "Filtri applicati";
+  }
   function handleDrawerActions(event) {
     const action = event.target?.closest?.("[data-action]")?.dataset?.action;
     if (!action) return;
