@@ -153,8 +153,8 @@ body.mappa-page button {
 }
 .mappa-locate-btn {
   flex: 0 0 auto;
-  min-height: 42px;
-  padding: 0 14px;
+  min-height: 38px;
+  padding: 0 12px;
   border: 1px solid var(--mappa-accent-border);
   border-radius: 12px;
   background: var(--mappa-surface);
