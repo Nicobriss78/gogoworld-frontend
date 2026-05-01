@@ -31,6 +31,35 @@ Leggere sempre:
 
 MAPPA PUBBLICA:
 - dinamica
+- multi-modale:
+  - explore (geo)
+  - search (intent)
+  - filters (affinamento)
+
+- separazione obbligatoria:
+  - search ≠ geo ≠ filters
+
+- ricerca eventi:
+  - basata su `q`
+  - NON deve influenzare la viewport
+  - NON deve aprire automaticamente la chat
+
+- filtri:
+  - category (server)
+  - isFree (server)
+  - period → dateStart/dateEnd (server)
+  - status (client)
+  - pannello UI dedicato
+  - contatore filtri attivi
+
+- gestione evento selezionato:
+  - apertura chat SOLO su tap marker
+  - mai da ricerca o filtri
+  - reset automatico su:
+    - Vicino a me
+    - Seguimi
+    - pan/zoom
+  - chiusura manuale sempre disponibile
 
 MAPPA PRIVATI:
 - dataset stabile
@@ -67,7 +96,7 @@ CHAT:
 ## STATO
 
 - Area Partecipante V2 stabile
-- - MAPPA PUBBLICA V2 completata:
+- MAPPA PUBBLICA V2 completata:
   - geolocalizzazione (Vicino a me)
   - tracking continuo (Seguimi)
   - rotazione dinamica basata su bearing
@@ -78,6 +107,33 @@ CHAT:
   - reset coerente su interazione utente
   - centratura utente indipendente dagli eventi
   - caricamento eventi per raggio (default 20km)
+
+  - ricerca eventi (`q`) integrata
+  - ricerca precisa (campi controllati)
+  - separazione completa:
+    - search
+    - geo
+    - filters
+
+  - sistema filtri completo:
+    - category (server)
+    - isFree (server)
+    - period → dateStart/dateEnd (server)
+    - status (client)
+    - pannello UI
+    - contatore attivo
+    - reset filtri
+
+  - gestione selezione evento:
+    - chat NON auto-aperta da ricerca/filtri
+    - apertura SOLO su tap marker
+    - reset automatico su cambio modalità
+    - chiusura manuale evento
+
+  - UX header mappa:
+    - layout a due righe
+    - `[Seguimi] Eventi [Vicino a me]`
+    - `[Ricerca] [Cerca] [Filtri]`
 
 - MAPPA PRIVATI V2 stabilizzata:
   - conforme a PRIVATE_MAP_NO_GEO_DISCOVERY
@@ -115,16 +171,32 @@ CHAT:
 
 ## 🔮 TRILLI
 
-- NON implementati in questa fase
-- Previsti architetturalmente
-- Distinzione obbligatoria:
-  - Notifica = storico
-  - Trillo = live event
-- Integrazione futura con:
-  - toast live
-  - notifiche persistenti
-  - geo-targeting
-  - sistema crediti/free/pro
+- Sistema definito tramite Specifica Tecnica V1
+- NON implementato in questa fase
+
+Definizione:
+- Trillo = avviso live geolocalizzato legato a evento
+- Notifica = archivio persistente
+
+Distinzione obbligatoria:
+- Trillo → live (toast / alert / push futuro)
+- Notifica → storico (centro notifiche)
+
+Vincoli attuali:
+- nessuna UI Trilli in Area Partecipante
+- nessuna implementazione in legacy Organizzatore/Admin
+- nessun invio trilli lato client
+
+Integrazione futura:
+- geo-targeting utenti
+- check-in (source: "trill")
+- sistema crediti (free / pro)
+- promo QR e redemption
+- moderazione admin
+
+I Trilli saranno sviluppati dopo:
+1. rifondazione Area Organizzatore V2
+2. rifondazione Area Admin V2
 
 ## 📌 PROSSIMO STEP
 
@@ -188,11 +260,12 @@ Organizzatore e Admin verranno allineati quando saranno rifondati.
 
 1. Chat Reactivity
 2. Cross-browser hardening
-3. Trilli / geolocalizzazione / promo QR
-4. Organizzatore V2
-5. Admin V2
-6. Eliminazione residui legacy frontend
-7. PWA
+3. Sistema Trilli (post rifondazione Organizer/Admin)
+4. Promo QR e redemption
+5. Organizzatore V2
+6. Admin V2
+7. Eliminazione residui legacy frontend
+8. PWA
 
 Nota:
 la PWA è rimandata a dopo la rifondazione delle aree Organizzatore e Admin.
