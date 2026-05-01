@@ -133,18 +133,19 @@ body.mappa-page button {
 }
 
 .mappa-controls-row--primary {
-  grid-template-columns: minmax(132px, 1fr) auto minmax(132px, 1fr);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.mappa-controls-row--primary .mappa-locate-btn:first-child {
-  justify-self: start;
-}
-
-.mappa-controls-row--primary .mappa-locate-btn:last-child {
-  justify-self: end;
-}
 .mappa-controls-row--primary .mappa-title {
-  justify-self: center;
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+.mappa-controls-row--primary .mappa-locate-btn {
+  flex: 0 0 auto;
 }
 .mappa-title {
   font-size: 18px;
