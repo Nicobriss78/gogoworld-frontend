@@ -115,6 +115,12 @@ function buildPublicMapEventsQuery(options = {}) {
     const params = new URLSearchParams();
     params.set("visibility", "public");
 
+    const rawSearch = String(options.q || "").trim();
+
+    if (rawSearch) {
+      params.set("q", rawSearch.slice(0, 80));
+    }
+
     const lat = Number(options.lat);
     const lng = Number(options.lng);
     const radius = Number(options.radius);
