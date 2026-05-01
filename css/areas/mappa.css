@@ -143,7 +143,9 @@ body.mappa-page button {
 .mappa-controls-row--primary .mappa-locate-btn:last-child {
   justify-self: end;
 }
-
+.mappa-controls-row--primary .mappa-title {
+  justify-self: center;
+}
 .mappa-title {
   font-size: 18px;
   line-height: 1.15;
