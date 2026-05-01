@@ -296,6 +296,78 @@ body.mappa-page button {
   display: none;
 }
 
+.mappa-filters-panel {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--mappa-border);
+  border-radius: 14px;
+  background: var(--mappa-surface);
+  box-shadow: var(--mappa-shadow-main);
+}
+
+.mappa-filters-panel[hidden] {
+  display: none;
+}
+
+.mappa-filters-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.mappa-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--mappa-text-secondary);
+}
+
+.mappa-filter-field select {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--mappa-border);
+  border-radius: 12px;
+  background: var(--mappa-bg);
+  color: var(--mappa-text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.mappa-filter-field select:focus {
+  outline: none;
+  border-color: var(--mappa-accent-border);
+  box-shadow: 0 0 0 3px var(--mappa-accent-soft);
+  background: var(--mappa-surface);
+}
+
+.mappa-filters-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mappa-filters-actions button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--mappa-accent-border);
+  border-radius: 12px;
+  background: var(--mappa-surface);
+  color: var(--mappa-accent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mappa-filters-actions button:hover {
+  border-color: var(--mappa-accent);
+  background: var(--mappa-accent-soft);
+  color: var(--mappa-accent-hover);
+}
+
 .mappa-geo-status {
   width: 100%;
   margin-top: 6px;
