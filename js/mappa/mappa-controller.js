@@ -105,6 +105,9 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     elements.followBtn?.addEventListener("click", handleFollowMeToggle);
     elements.searchForm?.addEventListener("submit", handleSearchSubmit);
     elements.searchClear?.addEventListener("click", handleSearchClear);
+    elements.filtersToggle?.addEventListener("click", handleFiltersToggle);
+    elements.filtersApply?.addEventListener("click", handleFiltersApply);
+    elements.filtersReset?.addEventListener("click", handleFiltersReset);
   }
 
   function unbindUi() {
