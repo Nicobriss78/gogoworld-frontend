@@ -802,6 +802,9 @@ function getDomElements() {
     infoBtn: document.getElementById("mappaChatInfoBtn"),
     locateBtn: document.getElementById("mappaLocateBtn"),
     followBtn: document.getElementById("mappaFollowBtn"),
+    searchForm: document.getElementById("mappaSearchForm"),
+    searchInput: document.getElementById("mappaSearchInput"),
+    searchClear: document.getElementById("mappaSearchClear"),
     locateBtnLabel: document.getElementById("mappaLocateBtnLabel"),
     geoStatus: document.getElementById("mappaGeoStatus")
     };
