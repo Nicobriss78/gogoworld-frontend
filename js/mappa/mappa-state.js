@@ -269,7 +269,47 @@ function clearSearch() {
 
   return state;
 }
+function setFilters(partial = {}) {
+  const current = state.filters || {};
 
+  const next = {
+    ...current,
+    ...partial
+  };
+
+  const activeCount = [
+    next.category,
+    next.period !== "all" ? next.period : "",
+    next.status !== "all" ? next.status : "",
+    next.isFree
+  ].filter(Boolean).length;
+
+  state = {
+    ...state,
+    filters: {
+      ...next,
+      activeCount
+    }
+  };
+
+  return state;
+}
+
+function resetFilters() {
+  state = {
+    ...state,
+    filters: {
+      category: "",
+      period: "all",
+      status: "all",
+      isFree: "",
+      isOpen: false,
+      activeCount: 0
+    }
+  };
+
+  return state;
+}
   function setReturnContext(partial = {}) {
     state = {
       ...state,
