@@ -31,6 +31,46 @@ Questo documento definisce le regole INVIO-LABILI del progetto GoGoWorld.life.
 - discovery geografica
 - reload su viewport consentito
 
+### SEARCH / FILTERS RULES (VINCOLANTI)
+
+Contesto:
+La MAPPA PUBBLICA V2 è multi-modale e gestisce tre livelli distinti.
+
+Definizione:
+- Search = intenzione utente
+- Geo = posizione utente
+- Filters = affinamento dataset
+
+Regole obbligatorie:
+
+1. SEPARAZIONE ASSOLUTA
+- search, geo e filters NON devono interferire tra loro
+- la ricerca NON deve modificare la viewport
+- la geolocalizzazione NON deve sovrascrivere una ricerca attiva
+
+2. SEARCH
+- basata su parametro `q`
+- NON deve attivare automaticamente:
+  - chat evento
+  - selezione evento
+- deve aggiornare SOLO il dataset
+
+3. FILTERS
+- possono modificare dataset
+- NON devono:
+  - aprire chat
+  - mantenere selezioni evento attive
+- devono essere combinabili con search
+
+4. GEO
+- Vicino a me → centratura utente
+- Seguimi → tracking continuo
+- NON devono mantenere selezione evento attiva
+
+5. DATASET PRIORITY
+- search attivo → prevale su geo
+- filters → sempre applicati sopra dataset corrente
+
 ### GEO UX RULES (VINCOLANTI)
 
 Vicino a me:
@@ -67,6 +107,40 @@ Architettura:
 - La logica GEO è nel controller
 - Il rendering è isolato in createMappaMap
 - La mappa è sostituibile (Leaflet → MapLibre)
+
+### EVENT SELECTION RULES (VINCOLANTI)
+
+Contesto:
+La selezione evento è uno stato secondario rispetto alla mappa.
+
+Regole obbligatorie:
+
+1. ATTIVAZIONE
+- la selezione evento può avvenire SOLO tramite:
+  - tap su marker
+  - interazione esplicita utente
+
+2. DIVIETO AUTO-OPEN
+- è vietato aprire automaticamente la chat evento da:
+  - ricerca
+  - filtri
+  - load dataset
+
+3. RESET OBBLIGATORIO
+La selezione evento deve essere resettata su:
+- attivazione Vicino a me
+- attivazione Seguimi
+- pan/zoom manuale mappa
+- nuova ricerca
+- applicazione filtri
+
+4. CHIUSURA MANUALE
+- deve sempre esistere un'azione esplicita per chiudere l’evento selezionato
+
+5. GERARCHIA
+- mappa = livello primario
+- evento selezionato = livello secondario
+- chat = livello terziario
 
 ## MAPPA PRIVATI
 - dataset autorizzato
@@ -282,7 +356,56 @@ Schema UI:
 [input messaggio] [send icon]
 
 ---
+# 🔔 TRILLI — REGOLE ARCHITETTURALI (VINCOLANTI)
 
+Contesto:
+I Trilli sono una feature futura core del sistema.
+
+Definizione:
+- Trillo = evento live geolocalizzato
+- Notifica = archivio persistente
+
+Regole obbligatorie:
+
+1. SEPARAZIONE SISTEMI
+- Trilli NON fanno parte del sistema notifiche base
+- Trilli possono GENERARE notifiche, ma non sono notifiche
+
+2. DIVIETO FRONTEND
+- è vietato implementare logica trilli lato client
+- è vietato:
+  - invio trilli da frontend partecipante
+  - calcolo target utenti lato client
+
+3. SERVER AUTHORITY
+- tutta la logica trilli deve essere:
+  - server-side
+  - validata
+  - auditabile
+
+4. PRIVACY
+- è vietato esporre:
+  - posizione utenti
+  - distanza precisa
+  - identità utenti target
+
+5. INTEGRAZIONE FUTURA
+- trilli → toast/banner live
+- trilli → notifiche persistenti
+- trilli → check-in (source: "trill")
+- trilli → promo QR
+
+6. VINCOLO TEMPORALE
+- trilli validi solo su eventi con:
+  - dateStart
+  - dateEnd
+- nessun fallback per eventi senza dateEnd
+
+7. IMPLEMENTAZIONE
+- vietato inserire trilli nel legacy
+- sviluppo solo dopo:
+  - Organizer V2
+  - Admin V2
 
 # 🏁 CONCLUSIONE
 
