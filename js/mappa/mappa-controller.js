@@ -118,6 +118,9 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     elements.followBtn?.removeEventListener("click", handleFollowMeToggle);
     elements.searchForm?.removeEventListener("submit", handleSearchSubmit);
     elements.searchClear?.removeEventListener("click", handleSearchClear);
+    elements.filtersToggle?.removeEventListener("click", handleFiltersToggle);
+    elements.filtersApply?.removeEventListener("click", handleFiltersApply);
+    elements.filtersReset?.removeEventListener("click", handleFiltersReset);
   }
   function clearActiveEventSelection() {
     drawer.close();
