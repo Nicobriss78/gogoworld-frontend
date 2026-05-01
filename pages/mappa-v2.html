@@ -122,7 +122,67 @@
             Filtri
           </button>
         </form>
+<section
+          id="mappaFiltersPanel"
+          class="mappa-filters-panel"
+          hidden
+          aria-label="Filtri eventi"
+        >
+          <div class="mappa-filters-grid">
+            <label class="mappa-filter-field">
+              <span>Categoria</span>
+              <select id="mappaFilterCategory">
+                <option value="">Tutte</option>
+                <option value="musica">Musica</option>
+                <option value="sport">Sport</option>
+                <option value="food">Food</option>
+                <option value="arte">Arte</option>
+                <option value="business">Business</option>
+                <option value="altro">Altro</option>
+              </select>
+            </label>
 
+            <label class="mappa-filter-field">
+              <span>Periodo</span>
+              <select id="mappaFilterPeriod">
+                <option value="all">Tutti</option>
+                <option value="today">Oggi</option>
+                <option value="weekend">Weekend</option>
+                <option value="7days">Prossimi 7 giorni</option>
+                <option value="30days">Prossimi 30 giorni</option>
+              </select>
+            </label>
+
+            <label class="mappa-filter-field">
+              <span>Stato</span>
+              <select id="mappaFilterStatus">
+                <option value="all">Tutti</option>
+                <option value="ongoing">In corso</option>
+                <option value="imminent">Imminenti</option>
+                <option value="future">In arrivo</option>
+              </select>
+            </label>
+
+            <label class="mappa-filter-field">
+              <span>Prezzo</span>
+              <select id="mappaFilterIsFree">
+                <option value="">Tutti</option>
+                <option value="true">Gratis</option>
+                <option value="false">A pagamento</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="mappa-filters-actions">
+            <button id="mappaFiltersApply" type="button">
+              Applica filtri
+            </button>
+
+            <button id="mappaFiltersReset" type="button">
+              Reset
+            </button>
+          </div>
+</section>
         <div
           id="mappaGeoStatus"
           class="mappa-geo-status"
