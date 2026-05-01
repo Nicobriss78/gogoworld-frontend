@@ -114,6 +114,47 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     elements.searchForm?.removeEventListener("submit", handleSearchSubmit);
     elements.searchClear?.removeEventListener("click", handleSearchClear);
   }
+  async function handleSearchSubmit(event) {
+    event?.preventDefault?.();
+
+    const query = String(elements.searchInput?.value || "").trim();
+
+    if (!query) {
+      await handleSearchClear();
+      return;
+    }
+
+    state.setSearchQuery(query);
+
+    if (elements.searchClear) {
+      elements.searchClear.hidden = false;
+    }
+
+    setGeoStatus(`Ricerca attiva: ${query}`, "success");
+
+    await loadEvents({
+      q: query,
+      fitBounds: true
+    });
+  }
+
+  async function handleSearchClear() {
+    state.clearSearch();
+
+    if (elements.searchInput) {
+      elements.searchInput.value = "";
+    }
+
+    if (elements.searchClear) {
+      elements.searchClear.hidden = true;
+    }
+
+    setGeoStatus("Ricerca cancellata. Torno alla mappa esplorabile.", "success");
+
+    await loadEvents({
+      fitBounds: true
+    });
+  }
   function handleDrawerActions(event) {
     const action = event.target?.closest?.("[data-action]")?.dataset?.action;
     if (!action) return;
