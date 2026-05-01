@@ -24,6 +24,11 @@ export function createMappaState() {
 
       currentUserId: null,
 
+      search: {
+        query: "",
+        isActive: false
+      },
+
       geo: {
         permission: "unknown",
         mode: "explore",
