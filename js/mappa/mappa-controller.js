@@ -629,7 +629,9 @@ const bounds = map.getViewportBounds();
     if (!event?.id) return;
 
     state.setSelectedEvent(event);
-
+if (elements.clearEventBtn) {
+      elements.clearEventBtn.hidden = false;
+}
     if (state.getState().drawerOpen) {
       renderDetailCard(event);
     }
