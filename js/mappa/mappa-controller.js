@@ -111,6 +111,8 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     elements.drawerContent?.removeEventListener("click", handleDrawerActions);
     elements.locateBtn?.removeEventListener("click", handleLocateMe);
     elements.followBtn?.removeEventListener("click", handleFollowMeToggle);
+    elements.searchForm?.removeEventListener("submit", handleSearchSubmit);
+    elements.searchClear?.removeEventListener("click", handleSearchClear);
   }
   function handleDrawerActions(event) {
     const action = event.target?.closest?.("[data-action]")?.dataset?.action;
