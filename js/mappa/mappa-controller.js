@@ -523,14 +523,18 @@ const bounds = map.getViewportBounds();
             }
           : null;
 
-      const fetchOptions = bounds
+      const searchState = state.getState().search || {};
+      const searchQuery = String(options.q || searchState.query || "").trim();
+
+      const fetchOptions = searchQuery
+        ? { q: searchQuery }
+        : bounds
         ? bounds
         : Number.isFinite(lat) && Number.isFinite(lng)
         ? { lat, lng, radius }
         : {};
 
       const events = await api.fetchPublicMapEvents(fetchOptions);
-
       const shouldFitBounds = options.fitBounds === true;
 
       state.setEvents(events);
