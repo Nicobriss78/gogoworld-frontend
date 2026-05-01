@@ -116,6 +116,22 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
     elements.searchForm?.removeEventListener("submit", handleSearchSubmit);
     elements.searchClear?.removeEventListener("click", handleSearchClear);
   }
+  function clearActiveEventSelection() {
+    drawer.close();
+    state.clearSelectedEvent();
+    state.resetChatState();
+    chat.showIdle();
+
+    if (elements.clearEventBtn) {
+      elements.clearEventBtn.hidden = true;
+    }
+  }
+
+  function handleClearSelectedEvent(event) {
+    event?.preventDefault?.();
+    clearActiveEventSelection();
+    setGeoStatus("Evento selezionato chiuso. Puoi esplorare la mappa.", "success");
+  }
   async function handleSearchSubmit(event) {
     event?.preventDefault?.();
 
