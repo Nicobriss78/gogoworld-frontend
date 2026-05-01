@@ -217,6 +217,82 @@ body.mappa-page button {
   fill: #ef4444;
 }
 
+/* ===== RICERCA EVENTI ===== */
+
+.mappa-search {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.mappa-search .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.mappa-search__input {
+  min-width: 0;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--mappa-border);
+  border-radius: 12px;
+  background: var(--mappa-surface);
+  color: var(--mappa-text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+  box-shadow: 0 3px 10px rgba(16, 24, 40, 0.04);
+}
+
+.mappa-search__input:focus {
+  outline: none;
+  border-color: var(--mappa-accent-border);
+  box-shadow: 0 0 0 3px var(--mappa-accent-soft);
+}
+
+.mappa-search__submit,
+.mappa-search__clear {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--mappa-accent-border);
+  border-radius: 12px;
+  background: var(--mappa-surface);
+  color: var(--mappa-accent);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(16, 24, 40, 0.04);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mappa-search__submit:hover,
+.mappa-search__clear:hover {
+  border-color: var(--mappa-accent);
+  background: var(--mappa-accent-soft);
+  color: var(--mappa-accent-hover);
+}
+
+.mappa-search__clear {
+  min-width: 42px;
+  padding: 0;
+  font-size: 20px;
+}
+
+.mappa-search__clear[hidden] {
+  display: none;
+}
+
 .mappa-geo-status {
   width: 100%;
   margin-top: 6px;
