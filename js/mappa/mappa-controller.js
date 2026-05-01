@@ -419,9 +419,6 @@ function normalizeBearingDelta(newBearing) {
   setGeoStatus("Modalità Seguimi attiva. Sto seguendo i tuoi spostamenti...", "loading");
 
   ensureGeoWatchStarted();
-    if (selectedEvent?.id) {
-    state.setSelectedEvent(selectedEvent);
-    }
 }
   async function handleLocateMe() {
     try {
