@@ -37,47 +37,48 @@
     <!-- BLOCCO MAPPA -->
     <section id="mappaMapSection" class="mappa-section" aria-labelledby="mappaTitle">
       <div class="mappa-header">
-        <h1 id="mappaTitle" class="mappa-title">Mappa eventi</h1>
-
-        <button
-          id="mappaLocateBtn"
-          type="button"
-          class="mappa-locate-btn"
-          data-state="idle"
-          aria-label="Trova eventi vicino a me"
-          title="Vicino a me"
-        >
-          <span class="mappa-locate-btn__icon" aria-hidden="true">
-            <svg
-              class="mappa-target-icon"
-              viewBox="0 0 24 24"
-              focusable="false"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="9" class="mappa-target-icon__outer"></circle>
-              <circle cx="12" cy="12" r="5.5" class="mappa-target-icon__middle"></circle>
-              <circle cx="12" cy="12" r="2.5" class="mappa-target-icon__inner"></circle>
-            </svg>
-          </span>
-
-          <span id="mappaLocateBtnLabel" class="mappa-locate-btn__label">
-            Vicino a me
-          </span>
-        </button>
-        <button
-          id="mappaFollowBtn"
-          type="button"
-          class="mappa-locate-btn"
-          data-state="idle"
-          aria-label="Segui i miei spostamenti"
-          title="Seguimi"
+        <div class="mappa-controls-row mappa-controls-row--primary">
+          <button
+            id="mappaFollowBtn"
+            type="button"
+            class="mappa-locate-btn"
+            data-state="idle"
+            aria-label="Segui i miei spostamenti"
+            title="Seguimi"
           >
-          <span class="mappa-locate-btn__label">
-          Seguimi
-          </span>
-        </button>
-        <form
-          id="mappaSearchForm"
+            <span class="mappa-locate-btn__label">
+              Seguimi
+            </span>
+          </button>
+
+          <h1 id="mappaTitle" class="mappa-title">Eventi</h1>
+
+          <button
+            id="mappaLocateBtn"
+            type="button"
+            class="mappa-locate-btn"
+            data-state="idle"
+            aria-label="Trova eventi vicino a me"
+            title="Vicino a me"
+          >
+            <span class="mappa-locate-btn__icon" aria-hidden="true">
+              <svg
+                class="mappa-target-icon"
+                viewBox="0 0 24 24"
+                focusable="false"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="9" class="mappa-target-icon__outer"></circle>
+                <circle cx="12" cy="12" r="5.5" class="mappa-target-icon__middle"></circle>
+                <circle cx="12" cy="12" r="2.5" class="mappa-target-icon__inner"></circle>
+              </svg>
+            </span>
+
+            <span id="mappaLocateBtnLabel" class="mappa-locate-btn__label">
+              Vicino a me
+            </span>
+          </button>
+        </div>
           class="mappa-search"
           role="search"
           aria-label="Cerca eventi sulla mappa"
