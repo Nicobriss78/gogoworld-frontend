@@ -121,6 +121,27 @@ function buildPublicMapEventsQuery(options = {}) {
       params.set("q", rawSearch.slice(0, 80));
     }
 
+    const category = String(options.category || "").trim();
+    const isFree = String(options.isFree || "").trim();
+    const dateStart = String(options.dateStart || "").trim();
+    const dateEnd = String(options.dateEnd || "").trim();
+
+    if (category) {
+      params.set("category", category);
+    }
+
+    if (isFree === "true" || isFree === "false") {
+      params.set("isFree", isFree);
+    }
+
+    if (dateStart) {
+      params.set("dateStart", dateStart);
+    }
+
+    if (dateEnd) {
+      params.set("dateEnd", dateEnd);
+    }
+
     const lat = Number(options.lat);
     const lng = Number(options.lng);
     const radius = Number(options.radius);
