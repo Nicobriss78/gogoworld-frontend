@@ -1008,6 +1008,14 @@ function getDomElements() {
     searchForm: document.getElementById("mappaSearchForm"),
     searchInput: document.getElementById("mappaSearchInput"),
     searchClear: document.getElementById("mappaSearchClear"),
+    filtersToggle: document.getElementById("mappaFiltersToggle"),
+    filtersPanel: document.getElementById("mappaFiltersPanel"),
+    filterCategory: document.getElementById("mappaFilterCategory"),
+    filterPeriod: document.getElementById("mappaFilterPeriod"),
+    filterStatus: document.getElementById("mappaFilterStatus"),
+    filterIsFree: document.getElementById("mappaFilterIsFree"),
+    filtersApply: document.getElementById("mappaFiltersApply"),
+    filtersReset: document.getElementById("mappaFiltersReset"),
     locateBtnLabel: document.getElementById("mappaLocateBtnLabel"),
     geoStatus: document.getElementById("mappaGeoStatus")
     };
