@@ -234,6 +234,33 @@ function setCurrentUserId(userId) {
 
   return state;
 }
+
+function setSearchQuery(query) {
+  const cleanQuery = String(query || "").trim();
+
+  state = {
+    ...state,
+    search: {
+      query: cleanQuery,
+      isActive: Boolean(cleanQuery)
+    }
+  };
+
+  return state;
+}
+
+function clearSearch() {
+  state = {
+    ...state,
+    search: {
+      query: "",
+      isActive: false
+    }
+  };
+
+  return state;
+}
+
   function setReturnContext(partial = {}) {
     state = {
       ...state,
