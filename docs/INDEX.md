@@ -45,7 +45,33 @@ Post patch:
   - UX navigatore (pallino / freccia)
   - centratura utente indipendente dagli eventi
   - caricamento eventi per raggio (default 20km)
-- Check-in completato
+
+  - ricerca eventi (q) integrata
+  - ricerca precisa (title, location, category, ecc.)
+  - separazione search / geo / filters
+  - sistema filtri:
+    - category (server)
+    - isFree (server)
+    - period → dateStart/dateEnd (server)
+    - status (client)
+  - pannello filtri UI integrato
+  - contatore filtri attivi
+  - reset filtri
+  - UX mappa multi-modale:
+    - explore (geo)
+    - search (intent)
+    - filters (affinamento)
+
+  - gestione selezione evento:
+    - chat NON auto-aperta da ricerca/filtri
+    - apertura solo su tap marker
+    - reset automatico su cambio modalità
+    - chiusura manuale evento selezionato
+
+  - header mappa ottimizzato:
+    - layout a due righe
+    - `[Seguimi] Eventi [Vicino a me]`
+    - `[Ricerca] [Cerca] [Filtri]`
 - MAPPA PRIVATI conforme a PRIVATE_MAP_NO_GEO_DISCOVERY
 - Sblocco evento privato tramite pulsante diretto nella scheda MAPPA PRIVATI
 - Cross-browser hardening completato per Area Partecipante V2
@@ -76,19 +102,39 @@ Post patch:
   - createNotification → notifiche in-app
   - notify → sistema esterno (email/push futuro)
 
-## 🔮 TRILLI (PREVISTI, NON IMPLEMENTATI)
+## 🔮 TRILLI (PROGETTATI — NON IMPLEMENTATI)
 
-- I trilli NON fanno parte del sistema notifiche attuale
-- Trillo = avviso live/urgente/contestuale
-- Notifica = archivio/storico
-- In futuro:
-  - trillo → toast/banner live + eventuale notifica persistente
-- Struttura frontend già predisposta per categorie future (Trilli / Promo)
+- Sistema Trilli definito a livello di Specifica Tecnica V1
+- Trillo = avviso live geolocalizzato e temporaneo legato a evento
+- Distinzione architetturale obbligatoria:
+  - Trillo = livello live (toast / alert / push)
+  - Notifica = archivio persistente
+
+- Integrazione futura prevista con:
+  - geo-targeting utenti
+  - Centro Notifiche V2 (archivio)
+  - check-in (source: "trill")
+  - sistema crediti (free / pro / promo)
+  - promo QR e redemption
+
+- Vincoli attuali:
+  - nessuna UI Trilli in Area Partecipante
+  - nessuna implementazione in legacy Organizzatore/Admin
+  - backend da implementare in step successivo
+
+- I Trilli saranno sviluppati dopo:
+  - rifondazione Area Organizzatore V2
+  - rifondazione Area Admin V2
 
 ## 📌 PROSSIMO STEP
 
-- Fase 2: Ricerca eventi + discovery (MAPPA V2)
-- Progettazione sistema Trilli (backend + frontend)
+- Fase 2: Ricerca eventi + filtri + UX MAPPA V2 (COMPLETATA)
+- Specifica Tecnica Trilli V1 (COMPLETATA)
+- Preparazione backend Trilli (step successivo)
+- Rifondazione Area Organizzatore V2
+- Rifondazione Area Admin V2
+- Eliminazione completa legacy frontend Partecipante
+- PWA post Organizzatore/Admin
 - Rifondazione Area Organizzatore V2
 - Rifondazione Area Admin V2
 - Eliminazione completa legacy frontend Partecipante
