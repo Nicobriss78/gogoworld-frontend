@@ -701,17 +701,31 @@ const bounds = map.getViewportBounds();
           : null;
 
       const searchState = state.getState().search || {};
+      const filtersState = state.getState().filters || {};
       const searchQuery = String(options.q || searchState.query || "").trim();
+      const activeStatus = String(filtersState.status || "all");
 
-      const fetchOptions = searchQuery
-        ? { q: searchQuery }
-        : bounds
-        ? bounds
-        : Number.isFinite(lat) && Number.isFinite(lng)
-        ? { lat, lng, radius }
-        : {};
+      const fetchOptions = {
+        ...(searchQuery ? { q: searchQuery } : {}),
+        ...(filtersState.category ? { category: filtersState.category } : {}),
+        ...(filtersState.isFree ? { isFree: filtersState.isFree } : {}),
+        ...buildPeriodQuery(filtersState.period),
+        ...(
+          searchQuery
+            ? {}
+            : bounds
+            ? bounds
+            : Number.isFinite(lat) && Number.isFinite(lng)
+            ? { lat, lng, radius }
+            : {}
+        )
+      };
 
-      const events = await api.fetchPublicMapEvents(fetchOptions);
+      const rawEvents = await api.fetchPublicMapEvents(fetchOptions);
+      const events =
+        activeStatus && activeStatus !== "all"
+          ? rawEvents.filter((event) => event?.status === activeStatus)
+          : rawEvents;
       const shouldFitBounds = options.fitBounds === true;
 
       state.setEvents(events);
