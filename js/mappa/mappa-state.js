@@ -29,6 +29,15 @@ export function createMappaState() {
         isActive: false
       },
 
+      filters: {
+        category: "",
+        period: "all",
+        status: "all",
+        isFree: "",
+        isOpen: false,
+        activeCount: 0
+      },
+
       geo: {
         permission: "unknown",
         mode: "explore",
