@@ -109,6 +109,20 @@ PRIVATI:
   - drag disattiva Seguimi? [ ]
   - reset rotazione corretto? [ ]
 ---
+
+## TRILLI — VALIDAZIONE FUTURA
+
+- Nessuna UI Trilli inserita nel legacy Organizzatore/Admin? [ ]
+- Nessuna gestione attiva Trilli dentro MAPPA V2? [ ]
+- Distinzione rispettata:
+  - Trillo = live [ ]
+  - Notifica = archivio/storico [ ]
+- Nessuna esposizione posizione precisa utenti? [ ]
+- Nessun invio trillo lato client? [ ]
+- Nessuna monetizzazione/crediti hardcoded lato frontend? [ ]
+
+---
+
 ## SICUREZZA
 - Nessuna regressione sicurezza? [ ]
 
