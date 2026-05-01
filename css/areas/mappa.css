@@ -133,7 +133,7 @@ body.mappa-page button {
 }
 
 .mappa-controls-row--primary {
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: minmax(132px, 1fr) auto minmax(132px, 1fr);
 }
 
 .mappa-controls-row--primary .mappa-locate-btn:first-child {
