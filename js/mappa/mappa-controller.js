@@ -424,6 +424,7 @@ function normalizeBearingDelta(newBearing) {
 }
   async function handleLocateMe() {
     try {
+      clearActiveEventSelection();
       setLocateBtnBusy(true);
       setGeoStatus("Sto cercando la tua posizione...", "loading");
       state.setGeoState({
