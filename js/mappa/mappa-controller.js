@@ -158,6 +158,7 @@ syncLocateBtnMode(state.getState().geo?.mode || "explore");
   }
 
   async function handleSearchClear() {
+    clearActiveEventSelection();
     state.clearSearch();
 
     if (elements.searchInput) {
