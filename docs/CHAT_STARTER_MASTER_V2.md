@@ -149,6 +149,13 @@ CHAT:
 - Polling intelligente attivo
 - WebSocket/SSE non introdotti
 
+### Sistema Trilli
+
+- Backend completato e verificato
+- Notifiche integrate
+- Moderazione attiva
+- Test reale eseguito con successo
+
 ## 🔔 CENTRO NOTIFICHE V2 — COMPLETATO
 
 - Sistema notifiche in-app completamente implementato
@@ -169,42 +176,74 @@ CHAT:
 - Nessun uso di file legacy notifiche
 - Sistema notifiche completamente V2
 
-## 🔮 TRILLI
+## 🔔 TRILLI — BACKEND COMPLETATO
 
-- Sistema definito tramite Specifica Tecnica V1
-- NON implementato in questa fase
+Stato attuale:
 
-Definizione:
-- Trillo = avviso live geolocalizzato legato a evento
-- Notifica = archivio persistente
+- Backend completamente implementato
+- Notifiche integrate
+- Moderazione admin attiva
+- Test reale API eseguito (console browser)
 
-Distinzione obbligatoria:
-- Trillo → live (toast / alert / push futuro)
-- Notifica → storico (centro notifiche)
+### Stato tecnico
 
-Vincoli attuali:
-- nessuna UI Trilli in Area Partecipante
-- nessuna implementazione in legacy Organizzatore/Admin
-- nessun invio trilli lato client
+- T1 — Backend base ✅
+- T2 — Integrazione notifiche ✅
+- T3 — Moderazione admin ✅
+- T3.5 — Test reale completato ✅
 
-Integrazione futura:
-- geo-targeting utenti
-- check-in (source: "trill")
+### Funzionamento
+
+- Creazione draft Trilli (`POST /api/trills`)
+- Invio notifiche (`POST /api/trills/:id/send`)
+- Creazione Notification (type: "trill")
+- Creazione TrillDelivery
+- Aggiornamento metriche:
+  - recipientCount
+  - deliveredCount
+
+### Moderazione
+
+- Admin può bloccare un Trillo
+- Trillo bloccato NON è inviabile
+
+### Targeting (stato attuale)
+
+- `interested_not_checked_in`
+  → utenti partecipanti senza check-in
+
+- `nearby`
+  → fallback utenti participant (NON geolocalizzato reale)
+
+- `both`
+  → combinazione dei due
+
+⚠️ Nota:
+Il targeting geolocalizzato reale NON è ancora implementato.
+
+### Vincoli attuali
+
+- Nessuna UI Trilli
+- Nessuna integrazione frontend
+- Nessuna implementazione nel legacy
+
+### Integrazione futura
+
+- UI Organizer V2
+- UI Partecipante (toast/banner live)
+- geo-targeting reale utenti
+- promo QR
 - sistema crediti (free / pro)
-- promo QR e redemption
-- moderazione admin
-
-I Trilli saranno sviluppati dopo:
-1. rifondazione Area Organizzatore V2
-2. rifondazione Area Admin V2
 
 ## 📌 PROSSIMO STEP
 
-1. Progettazione Trilli
-2. Area Organizzatore V2
-3. Area Admin V2
-4. Eliminazione completa legacy frontend
-5. PWA
+1. Rifondazione completa Area Organizzatore V2
+2. Rifondazione Area Admin V2
+3. Integrazione UI Trilli (solo su V2, no legacy)
+4. Implementazione geo-targeting reale utenti
+5. Promo QR e redemption
+6. Eliminazione completa legacy frontend
+7. PWA
 
 ---
 
@@ -258,17 +297,16 @@ Organizzatore e Admin verranno allineati quando saranno rifondati.
 
 ## ROADMAP
 
-1. Chat Reactivity
-2. Cross-browser hardening
-3. Sistema Trilli (post rifondazione Organizer/Admin)
-4. Promo QR e redemption
-5. Organizzatore V2
-6. Admin V2
-7. Eliminazione residui legacy frontend
-8. PWA
-
-Nota:
-la PWA è rimandata a dopo la rifondazione delle aree Organizzatore e Admin.
+1. Chat Reactivity ✅
+2. Cross-browser hardening ✅
+3. Sistema Trilli (backend completato) ✅
+4. Rifondazione Organizzatore V2
+5. Rifondazione Admin V2
+6. UI Trilli
+7. Geo targeting reale
+8. Promo QR
+9. Eliminazione legacy frontend
+10. PWA
 
 ---
 
