@@ -102,41 +102,84 @@ Post patch:
   - createNotification → notifiche in-app
   - notify → sistema esterno (email/push futuro)
 
-## 🔮 TRILLI (PROGETTATI — NON IMPLEMENTATI)
+## 🔔 TRILLI (BACKEND V1 IMPLEMENTATO E TESTATO)
 
-- Sistema Trilli definito a livello di Specifica Tecnica V1
-- Trillo = avviso live geolocalizzato e temporaneo legato a evento
-- Distinzione architetturale obbligatoria:
-  - Trillo = livello live (toast / alert / push)
-  - Notifica = archivio persistente
+- Sistema Trilli implementato completamente lato backend
+- Test reale eseguito tramite console browser
 
-- Integrazione futura prevista con:
-  - geo-targeting utenti
-  - Centro Notifiche V2 (archivio)
-  - check-in (source: "trill")
-  - sistema crediti (free / pro / promo)
-  - promo QR e redemption
+### Stato
 
-- Vincoli attuali:
-  - nessuna UI Trilli in Area Partecipante
-  - nessuna implementazione in legacy Organizzatore/Admin
-  - backend da implementare in step successivo
+- T1 — Backend base ✅
+- T2 — Integrazione notifiche ✅
+- T3 — Moderazione admin ✅
+- T3.5 — Test reale API ✅
 
-- I Trilli saranno sviluppati dopo:
-  - rifondazione Area Organizzatore V2
-  - rifondazione Area Admin V2
+### Endpoint disponibili
+
+- `POST /api/trills` → crea draft
+- `POST /api/trills/:id/send` → invia notifiche
+- `GET /api/trills/mine` → lista trilli organizer
+- `GET /api/trills/event/:eventId` → lista per evento
+- `GET /api/trills/admin` → lista admin
+- `PATCH /api/trills/admin/:id/block` → blocco trillo
+
+### Funzionamento
+
+- Creazione draft con validazioni complete:
+  - evento esistente
+  - organizer autorizzato
+  - evento approvato
+  - finestra temporale (2h prima → fine evento)
+
+- Invio:
+  - creazione Notification (type: "trill")
+  - creazione TrillDelivery
+  - aggiornamento metriche
+
+- Moderazione:
+  - blocco admin
+  - trillo bloccato non inviabile
+
+### Targeting (stato attuale)
+
+- `interested_not_checked_in`
+  → utenti partecipanti senza check-in
+
+- `nearby`
+  → fallback utenti participant (NON geolocalizzato reale)
+
+- `both`
+  → combinazione dei due
+
+⚠️ Nota:
+Il targeting geolocalizzato reale NON è ancora implementato.
+Sarà introdotto in una fase successiva con posizione utenti persistente.
+
+### Architettura
+
+- backend-first (nessuna UI necessaria)
+- completamente indipendente dal frontend
+- isolato dal legacy
+- testabile via API
+
+### Vincoli attuali
+
+- nessuna UI Trilli (né Partecipante né Organizzatore)
+- nessuna integrazione frontend attiva
+- nessun QR / promo attivo
+
+### Dipendenze future
+
+- rifondazione Area Organizzatore V2
+- rifondazione Area Admin V2
+- geo-targeting reale utenti
 
 ## 📌 PROSSIMO STEP
 
-- Fase 2: Ricerca eventi + filtri + UX MAPPA V2 (COMPLETATA)
-- Specifica Tecnica Trilli V1 (COMPLETATA)
-- Preparazione backend Trilli (step successivo)
-- Rifondazione Area Organizzatore V2
+- Sistema Trilli backend COMPLETATO e verificato
+- Rifondazione completa Area Organizzatore V2 (prossima fase)
 - Rifondazione Area Admin V2
-- Eliminazione completa legacy frontend Partecipante
-- PWA post Organizzatore/Admin
-- Rifondazione Area Organizzatore V2
-- Rifondazione Area Admin V2
+- Implementazione geo-targeting reale utenti (fase successiva)
 - Eliminazione completa legacy frontend Partecipante
 - PWA post Organizzatore/Admin
 ---
