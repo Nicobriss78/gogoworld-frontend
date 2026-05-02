@@ -22,7 +22,17 @@ Questo documento definisce le regole INVIO-LABILI del progetto GoGoWorld.life.
 - Stato > UI
 - Dataset coerente
 - Lifecycle controllato
+## 📌 BACKEND-FIRST (ESTENSIONE)
 
+Le nuove feature devono essere sviluppate:
+
+- prima backend
+- poi test API reale
+- solo dopo frontend
+
+È vietato partire dal frontend.
+
+Il sistema Trilli è il caso di riferimento.
 ---
 
 # ⚠️ MAPPA PUBBLICA vs MAPPA PRIVATI
@@ -359,53 +369,122 @@ Schema UI:
 # 🔔 TRILLI — REGOLE ARCHITETTURALI (VINCOLANTI)
 
 Contesto:
-I Trilli sono una feature futura core del sistema.
+Il sistema Trilli è una feature core del sistema GoGoWorld.life.
+
+Stato attuale:
+- Backend COMPLETAMENTE IMPLEMENTATO
+- Notifiche integrate
+- Moderazione admin attiva
+- Test reale API completato
 
 Definizione:
-- Trillo = evento live geolocalizzato
+- Trillo = evento live contestuale e temporaneo
 - Notifica = archivio persistente
 
-Regole obbligatorie:
+---
 
-1. SEPARAZIONE SISTEMI
+## 1. SEPARAZIONE SISTEMI
+
 - Trilli NON fanno parte del sistema notifiche base
 - Trilli possono GENERARE notifiche, ma non sono notifiche
+- Notification = storage
+- Trill = trigger/evento live
 
-2. DIVIETO FRONTEND
-- è vietato implementare logica trilli lato client
-- è vietato:
-  - invio trilli da frontend partecipante
-  - calcolo target utenti lato client
+---
 
-3. SERVER AUTHORITY
-- tutta la logica trilli deve essere:
-  - server-side
-  - validata
-  - auditabile
+## 2. SERVER AUTHORITY (OBBLIGATORIO)
 
-4. PRIVACY
-- è vietato esporre:
-  - posizione utenti
-  - distanza precisa
-  - identità utenti target
+Tutta la logica Trilli deve essere:
 
-5. INTEGRAZIONE FUTURA
-- trilli → toast/banner live
-- trilli → notifiche persistenti
-- trilli → check-in (source: "trill")
-- trilli → promo QR
+- server-side
+- validata
+- auditabile
 
-6. VINCOLO TEMPORALE
-- trilli validi solo su eventi con:
-  - dateStart
-  - dateEnd
-- nessun fallback per eventi senza dateEnd
+È vietato:
 
-7. IMPLEMENTAZIONE
-- vietato inserire trilli nel legacy
-- sviluppo solo dopo:
-  - Organizer V2
-  - Admin V2
+- calcolo target lato client
+- invio Trilli dal frontend partecipante
+- qualsiasi logica decisionale lato UI
+
+---
+
+## 3. BACKEND-FIRST (REGOLA UFFICIALE)
+
+Le feature devono seguire questo ordine:
+
+1. Backend completo
+2. Test reale API
+3. Solo dopo → integrazione frontend
+
+Il sistema Trilli è il riferimento ufficiale di questo approccio.
+
+---
+
+## 4. PRIVACY
+
+È vietato esporre:
+
+- posizione utenti
+- distanza precisa
+- identità utenti target
+
+---
+
+## 5. TARGETING (STATO ATTUALE)
+
+Attualmente:
+
+- `interested_not_checked_in`
+  → utenti partecipanti senza check-in
+
+- `nearby`
+  → fallback utenti participant (NON geolocalizzato reale)
+
+- `both`
+  → combinazione dei due
+
+⚠️ Il targeting geolocalizzato reale NON è ancora implementato.
+
+---
+
+## 6. VINCOLO TEMPORALE
+
+I Trilli sono validi solo se:
+
+- evento approvato
+- evento con `dateStart` e `dateEnd`
+- finestra:
+  - da 2 ore prima di `dateStart`
+  - fino a `dateEnd`
+
+---
+
+## 7. MODERAZIONE
+
+- Admin può bloccare un Trillo
+- Trillo bloccato NON è inviabile
+- Stato `blocked` ha priorità assoluta
+
+---
+
+## 8. INTEGRAZIONE FUTURA
+
+I Trilli verranno integrati con:
+
+- UI Organizer V2
+- UI Partecipante (toast/banner live)
+- geo-targeting reale utenti
+- promo QR
+- sistema crediti (free / pro / promo)
+
+---
+
+## 9. VINCOLO FRONTEND
+
+- Nessuna UI Trilli deve essere implementata nel legacy
+- Integrazione solo dopo:
+  - rifondazione Organizer V2
+  - rifondazione Admin V2
 
 # 🏁 CONCLUSIONE
 
