@@ -51,6 +51,14 @@ MAPPA / MAPPA PRIVATI:
 
 ---
 
+## BACKEND FEATURES (VALIDAZIONE)
+
+- La feature funziona senza frontend? [ ]
+- I test API sono stati eseguiti realmente? [ ]
+- Le risposte backend sono coerenti con lo stato atteso? [ ]
+- Nessuna dipendenza implicita dal frontend? [ ]
+---
+
 ## MAPPA
 
 PUBBLICA:
@@ -110,16 +118,39 @@ PRIVATI:
   - reset rotazione corretto? [ ]
 ---
 
-## TRILLI — VALIDAZIONE FUTURA
+## TRILLI — VALIDAZIONE BACKEND
 
-- Nessuna UI Trilli inserita nel legacy Organizzatore/Admin? [ ]
-- Nessuna gestione attiva Trilli dentro MAPPA V2? [ ]
-- Distinzione rispettata:
-  - Trillo = live [ ]
-  - Notifica = archivio/storico [ ]
-- Nessuna esposizione posizione precisa utenti? [ ]
-- Nessun invio trillo lato client? [ ]
-- Nessuna monetizzazione/crediti hardcoded lato frontend? [ ]
+- Creazione draft funzionante (`POST /api/trills`)? [ ]
+- Invio funzionante (`POST /api/trills/:id/send`)? [ ]
+- Stato Trillo aggiornato correttamente (`draft → sent`)? [ ]
+
+- Notification create correttamente (type: "trill")? [ ]
+- TrillDelivery create correttamente? [ ]
+- Metriche aggiornate:
+  - recipientCount coerente? [ ]
+  - deliveredCount coerente? [ ]
+
+- Validazioni attive:
+  - evento esistente? [ ]
+  - evento approvato? [ ]
+  - finestra temporale rispettata? [ ]
+  - permessi organizer/admin rispettati? [ ]
+
+- Moderazione:
+  - admin può bloccare? [ ]
+  - trillo bloccato NON inviabile? [ ]
+
+- Targeting:
+  - interested_not_checked_in corretto? [ ]
+  - nearby (fallback) funzionante? [ ]
+  - both coerente? [ ]
+
+- Nessuna esposizione:
+  - posizione utenti [ ]
+  - distanza reale [ ]
+  - identità utenti target [ ]
+
+- Feature testata via API reale (console / curl)? [ ]
 
 ---
 
