@@ -94,16 +94,27 @@ Se sto modificando MAPPA / MAPPA PRIVATI:
 
 ---
 
-## TRILLI (PREPARAZIONE)
+## TRILLI (BACKEND ATTIVO)
 
-- Sto introducendo logica trilli? [ ]
-- Sto evitando di inserirla nel legacy? [ ]
-- Sto evitando UI trilli in Area Partecipante? [ ]
+- Sto modificando il sistema Trilli esistente? [ ]
+- Sto rispettando architettura backend-first? [ ]
+- Sto evitando qualsiasi logica trilli lato client? [ ]
+- Sto evitando integrazione con frontend legacy? [ ]
+
 - Sto mantenendo separazione:
-  - Trillo = live [ ]
+  - Trillo = evento live [ ]
   - Notifica = archivio [ ]
-- Sto evitando invio diretto lato client? [ ]
-- Tutta la logica resta server-side? [ ]
+
+- Sto rispettando:
+  - validazioni backend (evento, finestra temporale, approval) [ ]
+  - targeting server-side [ ]
+  - moderazione admin [ ]
+
+- Sto evitando:
+  - invio trilli dal client [ ]
+  - calcolo target lato frontend [ ]
+
+- Sto verificando che la feature sia testabile via API? [ ]
   
 ---
 
@@ -115,6 +126,15 @@ Se sto modificando MAPPA / MAPPA PRIVATI:
 
 ## TEST
 - Ho definito test prima della patch? [ ]
+
+---
+
+## TEST API (OBBLIGATORIO PER BACKEND-FEATURE)
+
+- La feature è testabile via API senza frontend? [ ]
+- Ho eseguito test reale (console / curl)? [ ]
+- Ho verificato output reale (non teorico)? [ ]
+- Ho validato edge cases (errori, blocchi, permessi)? [ ]
 
 ---
 
