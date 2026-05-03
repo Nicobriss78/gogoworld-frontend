@@ -1,0 +1,13 @@
+.org-dashboard-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.org-dashboard-container h1 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.org-dashboard-container p {
+  color: #666;
+}
