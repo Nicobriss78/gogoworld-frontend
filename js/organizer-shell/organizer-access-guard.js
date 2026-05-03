@@ -1,13 +1,17 @@
-import { organizerState } from "./organizer-state.js";
-import { loadIdentity } from "./organizer-identity.js";
+import { organizerState } from "./organizer-state.js?v=2";
+import { loadIdentity } from "./organizer-identity.js?v=2";
 
-function renderAccessDenied(message) {
+function renderAccessDenied() {
   document.body.innerHTML = `
     <main style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;font-family:Arial,sans-serif;background:#f5f7fb;">
       <section style="max-width:420px;background:#fff;border-radius:18px;padding:24px;box-shadow:0 12px 30px rgba(15,23,42,.12);">
         <h1 style="margin:0 0 12px;font-size:24px;">Accesso non autorizzato</h1>
-        <p style="margin:0 0 18px;line-height:1.5;color:#475569;">${message}</p>
-        <a href="/pages/home-v2.html" style="display:inline-block;text-decoration:none;font-weight:700;color:#0f6bff;">Torna all’area Partecipante</a>
+        <p style="margin:0 0 18px;line-height:1.5;color:#475569;">
+          Il tuo profilo non è abilitato all’accesso come organizzatore.
+        </p>
+        <a href="/index.html" style="display:inline-block;text-decoration:none;font-weight:700;color:#0f6bff;">
+          Torna alla schermata iniziale
+        </a>
       </section>
     </main>
   `;
@@ -23,7 +27,7 @@ export async function checkAccess() {
       reason: "missing-token",
     };
 
-    window.location.href = "/";
+    window.location.href = "/index.html";
     return { allowed: false };
   }
 
@@ -37,7 +41,7 @@ export async function checkAccess() {
     };
 
     localStorage.removeItem("token");
-    window.location.href = "/";
+    window.location.href = "/index.html";
     return { allowed: false };
   }
 
@@ -51,7 +55,7 @@ export async function checkAccess() {
     role === "organizer" ||
     sessionRole === "organizzatore" ||
     sessionRole === "organizer" ||
-    canOrganize;
+    canOrganize === true;
 
   organizerState.access = {
     checked: true,
@@ -60,10 +64,10 @@ export async function checkAccess() {
   };
 
   if (!allowed) {
-    renderAccessDenied("Il tuo profilo non è abilitato all’accesso come organizzatore.");
+    renderAccessDenied();
     return { allowed: false };
   }
 
   return { allowed: true, user };
 }
-  
+    
