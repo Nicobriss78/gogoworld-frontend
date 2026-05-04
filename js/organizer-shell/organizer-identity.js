@@ -1,4 +1,4 @@
-import { organizerState } from "./organizer-state.js";
+import { organizerState } from "./organizer-state.js?v=3";
 
 const API_BASE = window.API_BASE || "https://gogoworld-api.onrender.com/api";
 
