@@ -148,8 +148,14 @@ export function renderEventAccess(state) {
 
     <section class="org-access-card">
       <h2>Utenti autorizzati / invitati</h2>
-      ${renderUserList(
-        access.allowedUsers || access.invitedUsers || access.users,
+      renderUserList(
+  access.allowedUsers || access.invitedUsers || access.users,
+  "Nessun utente autorizzato trovato.",
+  "Banna",
+  "ban-user",
+  true,
+  state
+)
         "Nessun utente autorizzato trovato.",
         "Banna",
         "ban-user",
