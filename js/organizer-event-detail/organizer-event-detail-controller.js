@@ -55,12 +55,23 @@ function bindEventDetailActions(eventId) {
     if (action === "open-room") {
       try {
         const payload = await openOrJoinEventRoom(eventId);
-        const roomId = payload?.room?._id || payload?.room?.id || payload?.roomId;
 
-        if (!roomId) {
-          alert("Room aperta, ma ID room non ricevuto.");
-          return;
-        }
+const roomId =
+  payload?.data?.roomId ||
+  payload?.room?._id ||
+  payload?.room?.id ||
+  payload?.room?.roomId ||
+  payload?.roomId ||
+  payload?.data?._id ||
+  payload?.data?.id ||
+  payload?._id ||
+  payload?.id;
+
+if (!roomId) {
+  console.error("[OrganizerEventDetail] room payload without id", payload);
+  alert("Room aperta, ma ID room non ricevuto.");
+  return;
+}
 
         window.location.href = `/pages/messages-v2.html?roomId=${roomId}&rootReturnTo=organizer`;
       } catch (error) {
