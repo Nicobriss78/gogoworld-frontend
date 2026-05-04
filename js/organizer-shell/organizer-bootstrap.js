@@ -1,6 +1,6 @@
-import { renderTopbar } from "./organizer-topbar.js?v=6";
-import { renderBottomnav } from "./organizer-bottomnav.js?v=6";
-import { checkAccess } from "./organizer-access-guard.js?v=6";
+import { renderTopbar } from "./organizer-topbar.js?v=7";
+import { renderBottomnav } from "./organizer-bottomnav.js?v=7";
+import { checkAccess } from "./organizer-access-guard.js?v=7";
 
 async function initCurrentView() {
   const path = window.location.pathname;
