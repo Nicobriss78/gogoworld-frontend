@@ -57,6 +57,7 @@ function collectFormData(form) {
     venueName: String(data.get("venueName") || "").trim(),
     city: String(data.get("city") || "").trim(),
     region: String(data.get("region") || "").trim(),
+    country: String(data.get("country") || "Italia").trim(),
     dateStart: String(data.get("dateStart") || ""),
     dateEnd: String(data.get("dateEnd") || ""),
     isPrivate: Boolean(data.get("isPrivate")),
