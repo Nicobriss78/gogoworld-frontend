@@ -69,14 +69,6 @@ function renderUserList(
 </div>
 
               ${
-                isAdmin
-                  ? `<span class="org-access-badge">Admin</span>`
-                  : isOrganizer
-                  ? `<span class="org-access-badge">Organizzatore</span>`
-                  : ""
-              }
-
-              ${
                 canBan
                   ? `
                     <div class="org-access-actions" style="margin-top:10px;">
