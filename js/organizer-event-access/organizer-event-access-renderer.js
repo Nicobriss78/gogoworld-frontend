@@ -165,7 +165,8 @@ export function renderEventAccess(state) {
         "Nessun utente bannato.",
         "Reinserisci",
         "unban-user",
-        false
+        false,
+        state
       )}
     </section>
 
