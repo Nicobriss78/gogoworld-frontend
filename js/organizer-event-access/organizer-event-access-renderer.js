@@ -56,7 +56,17 @@ function renderUserList(
           return `
             <article class="org-access-user">
               <strong>${label}</strong>
-              ${email ? `<span class="org-access-muted">${email}</span>` : ""}
+              <div class="org-access-meta">
+  ${email ? `<span class="org-access-muted">${email}</span>` : ""}
+
+  ${
+    role === "admin"
+      ? `<span class="org-access-badge">Admin</span>`
+      : isOrganizer
+      ? `<span class="org-access-badge">Organizzatore</span>`
+      : ""
+  }
+</div>
 
               ${
                 isAdmin
