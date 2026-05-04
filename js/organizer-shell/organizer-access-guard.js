@@ -1,5 +1,5 @@
-import { organizerState } from "./organizer-state.js?v=2";
-import { loadIdentity } from "./organizer-identity.js?v=2";
+import { organizerState } from "./organizer-state.js?v=3";
+import { loadIdentity } from "./organizer-identity.js?v=3";
 
 function renderAccessDenied() {
   document.body.innerHTML = `
@@ -70,4 +70,3 @@ export async function checkAccess() {
 
   return { allowed: true, user };
 }
-    
