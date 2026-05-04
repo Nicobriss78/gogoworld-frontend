@@ -34,6 +34,7 @@ function mapBackendEventToForm(event) {
     venueName: event.venueName || "",
     city: event.city || "",
     region: event.region || "",
+    country: event.country || "Italia",
     dateStart: toLocalInputValue(event.dateStart),
     dateEnd: toLocalInputValue(event.dateEnd),
     visibility: event.visibility || "public",
