@@ -168,6 +168,8 @@ function bindFormEvents() {
     domEvent.preventDefault();
 
     const formEvent = collectFormData(form);
+    eventFormState.event = formEvent;
+
     const errors = validateEventForm(formEvent);
 
     if (errors.length) {
