@@ -1,5 +1,5 @@
 import { fetchOrganizerEvents } from "./organizer-events-api.js?v=4";
-import { renderEventsPage } from "./organizer-events-renderer.js?v=4";
+import { renderEventsPage, renderEventsList } from "./organizer-events-renderer.js?v=4";
 import { eventsState } from "./organizer-events-state.js?v=4";
 import { handleDeleteEvent } from "./organizer-events-actions.js?v=4";
 
@@ -28,7 +28,7 @@ function bindEvents() {
     if (!key) return;
 
     eventsState.filters[key] = target.value;
-    renderEventsPage(eventsState);
+    renderEventsList(eventsState);
   });
 
   document.addEventListener("change", (event) => {
@@ -38,7 +38,7 @@ function bindEvents() {
     if (!key) return;
 
     eventsState.filters[key] = target.value;
-    renderEventsPage(eventsState);
+    renderEventsList(eventsState);
   });
 
   document.addEventListener("click", async (event) => {
