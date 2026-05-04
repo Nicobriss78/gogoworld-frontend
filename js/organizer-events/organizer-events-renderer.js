@@ -1,4 +1,4 @@
-import { applyEventFilters } from "./organizer-events-filters.js?v=4";
+import { applyEventFilters } from "./organizer-events-filters.js?v=5";
 
 function formatDate(value) {
   if (!value) return "Data non disponibile";
@@ -58,6 +58,8 @@ function renderEventCard(event) {
 function renderToolbar(filters) {
   return `
     <div class="org-events-toolbar">
+      <a href="/pages/organizer-event-create-v2.html">Crea nuovo evento</a>
+
       <input
         type="search"
         placeholder="Cerca per titolo, città o regione"
