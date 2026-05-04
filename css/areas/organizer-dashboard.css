@@ -11,3 +11,33 @@
 .org-dashboard-container p {
   color: #666;
 }
+.org-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.org-dashboard-stat {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.org-dashboard-stat strong {
+  display: block;
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.org-dashboard-stat span {
+  color: #64748b;
+}
+
+.org-dashboard-summary {
+  margin-top: 18px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px;
+}
