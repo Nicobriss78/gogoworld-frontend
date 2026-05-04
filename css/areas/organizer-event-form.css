@@ -1,0 +1,92 @@
+.org-event-form-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: 90px;
+}
+
+.org-event-form-container h1 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.org-event-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.org-event-field {
+  display: grid;
+  gap: 6px;
+}
+
+.org-event-field label {
+  font-weight: 700;
+}
+
+.org-event-field input,
+.org-event-field textarea,
+.org-event-field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d8dee8;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 15px;
+}
+
+.org-event-field textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.org-event-row {
+  display: grid;
+  gap: 12px;
+}
+
+.org-event-box {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.org-event-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.org-event-actions button,
+.org-event-actions a {
+  border: 1px solid #d8dee8;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.org-event-actions button.primary {
+  background: #111827;
+  color: #ffffff;
+}
+
+.org-event-error {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #991b1b;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.org-event-success {
+  background: #ecfdf3;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  border-radius: 12px;
+  padding: 12px;
+}
