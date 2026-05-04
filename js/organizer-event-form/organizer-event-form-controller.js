@@ -79,6 +79,7 @@ function buildPayload(event) {
     venueName: normalized.venueName,
     city: normalized.city,
     region: normalized.region,
+    country: normalized.country || "Italia",
     dateStart: new Date(normalized.dateStart).toISOString(),
     dateEnd: new Date(normalized.dateEnd).toISOString(),
     visibility: normalized.visibility,
