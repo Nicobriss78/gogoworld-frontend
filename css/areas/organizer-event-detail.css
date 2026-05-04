@@ -1,69 +1,53 @@
-.org-header {
-  padding: 12px;
-  border-bottom: 1px solid #eee;
-  font-size: 14px;
+.org-event-detail-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: 90px;
 }
 
-#org-event-detail-root {
-  padding: 16px;
-}
-
-.org-event-card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-.org-title {
-  font-size: 22px;
-  font-weight: bold;
+.org-event-detail-container h1 {
+  font-size: 24px;
   margin-bottom: 8px;
 }
 
-.org-meta {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 6px;
+.org-event-detail-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
-.org-actions {
+.org-event-detail-card h2 {
+  margin-top: 0;
+}
+
+.org-event-detail-card p {
+  margin: 8px 0;
+  color: #475569;
+}
+
+.org-event-detail-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
 }
 
-.org-btn {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background: #fff;
+.org-event-detail-actions a,
+.org-event-detail-actions button {
+  border: 1px solid #d8dee8;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-decoration: none;
+  font-weight: 700;
 }
 
-.org-btn-danger {
-  border-color: red;
-  color: red;
-}
-
-.org-loading {
-  text-align: center;
-  margin-top: 40px;
-}
-
-.org-error {
-  color: red;
-  text-align: center;
-}
-
-.org-bottomnav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  border-top: 1px solid #eee;
-  background: #fff;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px;
+.org-event-detail-error {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #991b1b;
+  border-radius: 12px;
+  padding: 12px;
 }
