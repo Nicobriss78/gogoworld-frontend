@@ -21,8 +21,17 @@ function normalizeList(value) {
   return Array.isArray(value) ? value : [];
 }
 
-function renderUserList(users, emptyText, actionLabel, actionName, danger = false) {
+function renderUserList(
+  users,
+  emptyText,
+  actionLabel,
+  actionName,
+  danger = false,
+  state = {}
+) {
   const list = normalizeList(users);
+  const currentUserId = state.currentUserId;
+  const organizerId = state.event?.organizer?._id || state.event?.organizer;
 
   if (!list.length) {
     return `<p class="org-access-muted">${emptyText}</p>`;
@@ -35,13 +44,30 @@ function renderUserList(users, emptyText, actionLabel, actionName, danger = fals
           const userId = getUserId(user);
           const label = getUserLabel(user);
           const email = getUserEmail(user);
+          const role = user?.role;
+
+          // 🔒 LOGICA BLOCCO BAN
+          const isOrganizer = userId && String(userId) === String(organizerId);
+          const isAdmin = role === "admin";
+          const isSelf = userId && String(userId) === String(currentUserId);
+
+          const canBan = userId && actionName && !isOrganizer && !isAdmin && !isSelf;
 
           return `
             <article class="org-access-user">
               <strong>${label}</strong>
               ${email ? `<span class="org-access-muted">${email}</span>` : ""}
+
               ${
-                userId && actionName
+                isAdmin
+                  ? `<span class="org-access-badge">Admin</span>`
+                  : isOrganizer
+                  ? `<span class="org-access-badge">Organizzatore</span>`
+                  : ""
+              }
+
+              ${
+                canBan
                   ? `
                     <div class="org-access-actions" style="margin-top:10px;">
                       <button
