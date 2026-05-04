@@ -3,31 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Evento Organizer V2</title>
 
-  <link rel="stylesheet" href="/css/base.css" />
+  <title>Dettaglio Evento Organizer V2</title>
+
+  <link rel="stylesheet" href="/css/tokens.v2.css" />
+  <link rel="stylesheet" href="/css/icons-v2.css" />
+  <link rel="stylesheet" href="/css/shared-shell.css" />
+
+  <link rel="stylesheet" href="/css/organizer-shell.css" />
   <link rel="stylesheet" href="/css/areas/organizer-event-detail.css" />
 </head>
-<body>
 
-<header class="org-header">
-  <div>GoGoWorld Organizer</div>
-  <div id="org-user"></div>
-</header>
+<body class="organizer-shell">
+  <header id="organizer-topbar"></header>
 
-<main id="org-event-detail-root">
-  <div class="org-loading">Caricamento evento...</div>
-</main>
+  <main id="organizer-view">
+    <section class="org-event-detail-container" data-org-event-detail-root>
+      <h1>Dettaglio evento</h1>
+      <p>Caricamento evento...</p>
+    </section>
+  </main>
 
-<nav class="org-bottomnav">
-  <a href="/pages/organizer-dashboard-v2.html">Dashboard</a>
-  <a href="/pages/organizer-events-v2.html">Eventi</a>
-  <a href="#">Mappa</a>
-  <a href="#">Trilli</a>
-  <a href="#">Promo</a>
-</nav>
+  <nav id="organizer-bottomnav"></nav>
 
-<script type="module" src="/js/organizer-event-detail/organizer-event-detail-controller.js"></script>
-
+  <script type="module" src="/js/organizer-shell/organizer-bootstrap.js?v=6"></script>
 </body>
 </html>
