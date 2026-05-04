@@ -17,6 +17,24 @@ function getEventId(event) {
   return event?._id || event?.id || "";
 }
 
+function canEditEvent(event) {
+  return event?.approvalStatus !== "blocked";
+}
+
+function renderModeration(event) {
+  const reason = event?.moderation?.reason || "";
+  const notes = event?.moderation?.notes || "";
+
+  if (!reason && !notes) {
+    return `<p>Nessuna nota di moderazione.</p>`;
+  }
+
+  return `
+    ${reason ? `<p><strong>Motivo:</strong> ${reason}</p>` : ""}
+    ${notes ? `<p><strong>Note:</strong> ${notes}</p>` : ""}
+  `;
+}
+
 export function renderEventDetail(state) {
   const root = document.querySelector("[data-org-event-detail-root]");
   if (!root) return;
@@ -41,6 +59,8 @@ export function renderEventDetail(state) {
   const event = state.event;
   const eventId = getEventId(event);
   const participants = Array.isArray(event.participants) ? event.participants.length : 0;
+  const isPrivate = Boolean(event.isPrivate || event.visibility === "private");
+  const editable = canEditEvent(event);
 
   root.innerHTML = `
     <h1>${event.title || "Evento senza titolo"}</h1>
@@ -50,7 +70,7 @@ export function renderEventDetail(state) {
       <h2>Dati evento</h2>
       <p><strong>Stato approvazione:</strong> ${event.approvalStatus || "pending"}</p>
       <p><strong>Visibilità:</strong> ${event.visibility || "public"}</p>
-      <p><strong>Privato:</strong> ${event.isPrivate ? "Sì" : "No"}</p>
+      <p><strong>Privato:</strong> ${isPrivate ? "Sì" : "No"}</p>
       <p><strong>Codice accesso:</strong> ${event.accessCode || "N/D"}</p>
       <p><strong>Città:</strong> ${event.city || "N/D"}</p>
       <p><strong>Regione:</strong> ${event.region || "N/D"}</p>
@@ -65,9 +85,45 @@ export function renderEventDetail(state) {
       <p>${event.description || "Nessuna descrizione."}</p>
     </section>
 
-    <section class="org-event-detail-actions">
-      <a href="/pages/organizer-event-edit-v2.html?id=${eventId}">Modifica</a>
-      <a href="/pages/organizer-events-v2.html">Torna agli eventi</a>
+    <section class="org-event-detail-card">
+      <h2>Moderazione</h2>
+      ${renderModeration(event)}
+    </section>
+
+    <section class="org-event-detail-card">
+      <h2>Azioni operative</h2>
+
+      <div class="org-event-detail-actions">
+        ${
+          editable
+            ? `<a href="/pages/organizer-event-edit-v2.html?id=${eventId}">Modifica</a>`
+            : `<button type="button" disabled>Modifica bloccata</button>`
+        }
+
+        ${
+          isPrivate
+            ? `<a href="/pages/organizer-event-access-v2.html?id=${eventId}">Accessi privati</a>`
+            : `<button type="button" disabled>Accessi privati</button>`
+        }
+
+        <button type="button" data-action="open-room" data-event-id="${eventId}">
+          Apri room
+        </button>
+
+        <a href="/pages/organizer-trill-create-v2.html?eventId=${eventId}">
+          Crea trillo
+        </a>
+
+        <a href="/pages/organizer-promo-create-v2.html?eventId=${eventId}">
+          Crea promo
+        </a>
+
+        <button type="button" class="danger" data-action="delete-event" data-event-id="${eventId}">
+          Elimina evento
+        </button>
+
+        <a href="/pages/organizer-events-v2.html">Torna agli eventi</a>
+      </div>
     </section>
   `;
 }
