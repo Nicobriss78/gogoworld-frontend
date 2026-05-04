@@ -14,6 +14,7 @@ export const eventFormState = {
     venueName: "",
     city: "",
     region: "",
+    country: "Italia",
     dateStart: "",
     dateEnd: "",
     visibility: "public",
