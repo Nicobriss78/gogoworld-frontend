@@ -21,15 +21,26 @@ async function fetchJson(path) {
 }
 
 export async function fetchDashboardData() {
-  const [eventsPayload, promosPayload, trillsPayload] = await Promise.all([
+  const [eventsPayload, promosPayload, trillsPayload] = await Promise.allSettled([
     fetchJson("/events/mine/list"),
     fetchJson("/banners/mine"),
     fetchJson("/trills/mine"),
   ]);
 
-  return {
-    events: Array.isArray(eventsPayload?.events) ? eventsPayload.events : [],
-    promos: Array.isArray(promosPayload?.data) ? promosPayload.data : [],
-    trills: Array.isArray(trillsPayload?.trills) ? trillsPayload.trills : [],
-  };
+  const events =
+    eventsPayload.status === "fulfilled" && Array.isArray(eventsPayload.value?.events)
+      ? eventsPayload.value.events
+      : [];
+
+  const promos =
+    promosPayload.status === "fulfilled" && Array.isArray(promosPayload.value?.data)
+      ? promosPayload.value.data
+      : [];
+
+  const trills =
+    trillsPayload.status === "fulfilled" && Array.isArray(trillsPayload.value?.trills)
+      ? trillsPayload.value.trills
+      : [];
+
+  return { events, promos, trills };
 }
