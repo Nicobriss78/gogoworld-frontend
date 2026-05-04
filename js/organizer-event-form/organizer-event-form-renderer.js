@@ -68,6 +68,11 @@ export function renderEventForm(state) {
             <label for="region">Regione</label>
             <input id="region" name="region" type="text" value="${event.region || ""}" />
           </div>
+
+          <div class="org-event-field">
+            <label for="country">Paese *</label>
+            <input id="country" name="country" type="text" value="${event.country || "Italia"}" required />
+          </div>
         </div>
       </section>
 
