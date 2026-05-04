@@ -1,0 +1,99 @@
+.org-event-access-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: 90px;
+}
+
+.org-event-access-container h1 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.org-access-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.org-access-card h2 {
+  margin-top: 0;
+}
+
+.org-access-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.org-access-form input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d8dee8;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 15px;
+}
+
+.org-access-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.org-access-actions button,
+.org-access-actions a {
+  border: 1px solid #d8dee8;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.org-access-actions button.danger {
+  color: #b42318;
+  border-color: #f3b5b0;
+}
+
+.org-access-user-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.org-access-user {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+  background: #ffffff;
+}
+
+.org-access-user strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.org-access-muted {
+  color: #64748b;
+}
+
+.org-access-error {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #991b1b;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.org-access-success {
+  background: #ecfdf3;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 12px;
+}
