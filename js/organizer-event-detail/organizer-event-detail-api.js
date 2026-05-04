@@ -11,6 +11,7 @@ async function fetchJson(path, options = {}) {
     ...options,
     headers: {
       Authorization: `Bearer ${token}`,
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
       ...(options.headers || {}),
     },
   });
@@ -24,4 +25,23 @@ async function fetchJson(path, options = {}) {
 
 export async function fetchEventById(eventId) {
   return fetchJson(`/events/${eventId}`);
+}
+
+export async function deleteOrganizerEvent(eventId) {
+  return fetchJson(`/events/${eventId}`, {
+    method: "DELETE",
+  });
+}
+
+export async function openOrJoinEventRoom(eventId) {
+  return fetchJson(`/rooms/event/${eventId}/open-or-join`, {
+    method: "POST",
+  });
+}
+
+export async function unlockEventRoom(eventId, accessCode) {
+  return fetchJson(`/rooms/event/${eventId}/unlock`, {
+    method: "POST",
+    body: JSON.stringify({ accessCode }),
+  });
 }
