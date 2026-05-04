@@ -82,6 +82,17 @@ function renderToolbar(filters) {
   `;
 }
 
+export function renderEventsList(state) {
+  const listRoot = document.querySelector("[data-org-events-list]");
+  if (!listRoot) return;
+
+  const filteredEvents = applyEventFilters(state.events, state.filters);
+
+  listRoot.innerHTML = filteredEvents.length
+    ? `<section class="org-events-list">${filteredEvents.map(renderEventCard).join("")}</section>`
+    : `<section class="org-event-empty">Nessun evento trovato.</section>`;
+}
+
 export function renderEventsPage(state) {
   const root = document.querySelector("[data-org-events-root]");
   if (!root) return;
@@ -105,18 +116,14 @@ export function renderEventsPage(state) {
     return;
   }
 
-  const filteredEvents = applyEventFilters(state.events, state.filters);
-
   root.innerHTML = `
     <h1>Eventi Organizer V2</h1>
     <p>Lista reale degli eventi dell’organizzatore.</p>
 
     ${renderToolbar(state.filters)}
 
-    ${
-      filteredEvents.length
-        ? `<section class="org-events-list">${filteredEvents.map(renderEventCard).join("")}</section>`
-        : `<section class="org-event-empty">Nessun evento trovato.</section>`
-    }
+    <div data-org-events-list></div>
   `;
+
+  renderEventsList(state);
 }
