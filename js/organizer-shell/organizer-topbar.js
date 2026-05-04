@@ -1,4 +1,4 @@
-import { getOrganizerUser } from "./organizer-identity.js";
+import { getOrganizerUser } from "./organizer-identity.js?v=3";
 
 export function renderTopbar() {
   const el = document.getElementById("organizer-topbar");
