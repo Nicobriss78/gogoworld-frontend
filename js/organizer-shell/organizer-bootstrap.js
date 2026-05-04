@@ -5,8 +5,14 @@ import { checkAccess } from "./organizer-access-guard.js?v=6";
 async function initCurrentView() {
   const path = window.location.pathname;
 
+  if (path.includes("organizer-event-access-v2")) {
+    const module = await import("../organizer-event-access/organizer-event-access-controller.js?v=7");
+    await module.initEventAccess();
+    return;
+  }
+
   if (path.includes("organizer-event-detail-v2")) {
-    const module = await import("../organizer-event-detail/organizer-event-detail-controller.js?v=6");
+    const module = await import("../organizer-event-detail/organizer-event-detail-controller.js?v=7");
     await module.initEventDetail();
     return;
   }
