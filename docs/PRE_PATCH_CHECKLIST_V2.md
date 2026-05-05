@@ -118,10 +118,60 @@ Se sto modificando MAPPA / MAPPA PRIVATI:
   
 ---
 
+## TRILLI (FRONTEND ORGANIZER V2)
+
+- Sto lavorando su UI Organizer Trilli? [ ]
+
+### IDENTIFICAZIONE
+
+- Ogni trillo ha un id valido? [ ]
+- Sto usando fallback corretto?
+  - `t._id || t.id` [ ]
+- Sto evitando:
+  - id undefined [ ]
+  - id null [ ]
+
+- Il `data-id` nel DOM è presente? [ ]
+- Il click handler riceve l’id corretto? [ ]
+
+### AZIONI
+
+- Il bottone Invia:
+  - è renderizzato solo per `draft`? [ ]
+  - è nascosto per altri stati? [ ]
+
+- Sto evitando:
+  - doppio click invio [ ]
+  - invio multiplo [ ]
+
+- Il bottone:
+  - va in loading durante richiesta? [ ]
+  - viene disabilitato? [ ]
+
+### API
+
+- L’endpoint è corretto?
+  - `/api/trills/:id/send` [ ]
+
+- Sto verificando:
+  - URL reale generato (no undefined)? [ ]
+  - response backend reale? [ ]
+
+### UX
+
+- Conferma invio presente? [ ]
+- Gestione errore visibile? [ ]
+- Stato aggiornato dopo invio? [ ]
+
+### DEBUG (OBBLIGATORIO)
+
+- Ho controllato la console? [ ]
+- Ho verificato Network tab? [ ]
+- L’errore backend è chiaro? [ ]
 ## SICUREZZA
 - Nessuna logica sensibile lato client? [ ]
 - Nessun bypass backend? [ ]
-
+- Nessun id dinamico non validato? [ ]
 ---
 
 ## TEST
