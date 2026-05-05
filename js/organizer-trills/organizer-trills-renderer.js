@@ -23,7 +23,7 @@ export function renderOrganizerTrills(state) {
               <div class="org-trill-title">${t.message}</div>
 
               <div class="org-trill-meta">
-                Evento: ${t.event?.title || "N/D"}<br/>
+                Evento: ${t.event?.title || t.eventId?.title || "N/D"}<br/>
                 Stato: ${t.status}
               </div>
 
