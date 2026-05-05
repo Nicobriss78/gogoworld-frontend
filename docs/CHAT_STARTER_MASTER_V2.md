@@ -176,14 +176,59 @@ CHAT:
 - Nessun uso di file legacy notifiche
 - Sistema notifiche completamente V2
 
-## 🔔 TRILLI — BACKEND COMPLETATO
+## 🔔 TRILLI — BACKEND + ORGANIZER V2 BASE COMPLETATI
 
 Stato attuale:
 
 - Backend completamente implementato
 - Notifiche integrate
 - Moderazione admin attiva
-- Test reale API eseguito (console browser)
+- Test reale API eseguito
+- UI Organizer V2 base implementata e funzionante
+
+### Stato tecnico
+
+- T1 — Backend base ✅
+- T2 — Integrazione notifiche ✅
+- T3 — Moderazione admin ✅
+- T3.5 — Test reale API completato ✅
+- T4 — UI Organizer V2 base completata ✅
+
+### Funzionamento
+
+- Creazione draft Trilli (`POST /api/trills`)
+- Lista Trilli Organizer (`GET /api/trills/mine`)
+- Invio Trilli (`POST /api/trills/:id/send`)
+- Stato aggiornato (`draft → sent`)
+- Rendering UI Organizer V2 completo
+
+### Moderazione
+
+- Admin può bloccare un Trillo
+- Trillo bloccato NON è inviabile
+
+### Targeting (stato attuale)
+
+- `interested_not_checked_in`
+- `nearby` (fallback NON geolocalizzato reale)
+- `both`
+
+⚠️ Nota:
+Il targeting geolocalizzato reale NON è ancora implementato.
+
+### Vincoli attuali
+
+- Nessuna UI Trilli nel legacy
+- UI Trilli attiva SOLO in Organizer V2
+- Nessuna esposizione dati sensibili utenti
+
+### Integrazione futura
+
+- UI Partecipante (toast/banner live)
+- geo-targeting reale utenti
+- promo QR
+- sistema crediti (free / pro / boost)
+- analytics Trilli
 
 ### Stato tecnico
 
@@ -297,17 +342,18 @@ Organizzatore e Admin verranno allineati quando saranno rifondati.
 
 ## ROADMAP
 
-1. Chat Reactivity ✅
-2. Cross-browser hardening ✅
-3. Sistema Trilli (backend completato) ✅
-4. Rifondazione Organizzatore V2
-5. Rifondazione Admin V2
-6. UI Trilli
-7. Geo targeting reale
-8. Promo QR
-9. Eliminazione legacy frontend
-10. PWA
-
+1. Chat Reactivity ✅  
+2. Cross-browser hardening ✅  
+3. Sistema Trilli backend ✅  
+4. UI Organizer Trilli base ✅  
+5. Hardening UX Trilli Organizer  
+6. Rifondazione Organizzatore V2 (completamento)  
+7. Rifondazione Admin V2  
+8. UI Trilli Partecipante  
+9. Geo targeting reale  
+10. Promo QR  
+11. Eliminazione legacy frontend  
+12. PWA
 ---
 
 ## REGOLA
