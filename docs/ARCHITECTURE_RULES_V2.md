@@ -376,6 +376,11 @@ Stato attuale:
 - Notifiche integrate
 - Moderazione admin attiva
 - Test reale API completato
+- UI Organizer V2 base implementata e testata
+- Creazione bozza Trillo da dettaglio evento funzionante
+- Lista Trilli Organizer funzionante
+- Invio Trillo da Organizer V2 funzionante
+- Stato Trillo aggiornato correttamente (`draft → sent`)
 
 Definizione:
 - Trillo = evento live contestuale e temporaneo
@@ -481,10 +486,18 @@ I Trilli verranno integrati con:
 
 ## 9. VINCOLO FRONTEND
 
-- Nessuna UI Trilli deve essere implementata nel legacy
-- Integrazione solo dopo:
-  - rifondazione Organizer V2
-  - rifondazione Admin V2
+- Nessuna UI Trilli deve essere implementata nel legacy.
+- La UI Trilli deve vivere solo nella nuova Area Organizer V2 e, in futuro, nelle aree V2 coerenti.
+- È vietato creare varianti legacy o doppioni paralleli.
+- Il frontend Organizer V2 può:
+  - creare draft Trillo tramite backend
+  - mostrare lista Trilli dell’organizzatore
+  - inviare Trilli tramite endpoint backend autorizzato
+- Il frontend Organizer V2 NON deve:
+  - calcolare target utenti
+  - decidere destinatari
+  - bypassare validazioni temporali
+  - esporre identità o posizione utenti target
 
 # 🏁 CONCLUSIONE
 
