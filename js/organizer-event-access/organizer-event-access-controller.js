@@ -101,7 +101,28 @@ function bindAccessActions() {
     const userId = target?.dataset?.userId;
 
     if (!action) return;
+    if (action === "rotate-code") {
+      const confirmed = window.confirm(
+        "Vuoi rigenerare il codice accesso? Gli utenti già autorizzati resteranno dentro."
+      );
 
+      if (!confirmed) return;
+
+      try {
+        await rotatePrivateEventAccessCode(organizerEventAccessState.eventId);
+        organizerEventAccessState.success = "Codice accesso rigenerato correttamente.";
+        await loadAccess();
+      } catch (error) {
+        console.error("[OrganizerEventAccess] rotate code failed", error);
+        organizerEventAccessState.error =
+          error.message || "Errore durante la rigenerazione del codice.";
+        renderEventAccess(organizerEventAccessState);
+      }
+
+      return;
+    }
+
+    if (!userId) return;
     if (action === "ban-user") {
       const confirmed = window.confirm("Vuoi davvero bannare questo utente dall’evento privato?");
       if (!confirmed) return;
