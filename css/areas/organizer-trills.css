@@ -27,12 +27,14 @@
   gap: 10px;
 }
 
-button.primary {
-  background: var(--gw-primary);
-  color: white;
+.org-trill-actions button.primary {
+  background: var(--gw-accent, #1877F2);
+  color: #ffffff;
   border: none;
   padding: 8px 14px;
   border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 button.danger {
