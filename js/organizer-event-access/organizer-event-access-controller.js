@@ -100,7 +100,7 @@ function bindAccessActions() {
     const action = target?.dataset?.action;
     const userId = target?.dataset?.userId;
 
-    if (!action || !userId) return;
+    if (!action) return;
 
     if (action === "ban-user") {
       const confirmed = window.confirm("Vuoi davvero bannare questo utente dall’evento privato?");
