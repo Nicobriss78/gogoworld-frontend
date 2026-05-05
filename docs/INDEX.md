@@ -102,10 +102,65 @@ Post patch:
   - createNotification → notifiche in-app
   - notify → sistema esterno (email/push futuro)
 
-## 🔔 TRILLI (BACKEND V1 IMPLEMENTATO E TESTATO)
+## 🔔 TRILLI — STATO ATTUALE (BACKEND + ORGANIZER V2)
 
 - Sistema Trilli implementato completamente lato backend
-- Test reale eseguito tramite console browser
+- UI Organizer V2 base implementata e funzionante
+
+### Stato
+
+- T1 — Backend base ✅
+- T2 — Integrazione notifiche ✅
+- T3 — Moderazione admin ✅
+- T3.5 — Test reale API ✅
+- T4 — UI Organizer V2 base ✅
+
+### Funzionalità attive
+
+- Creazione draft Trillo (`POST /api/trills`)
+- Lista Trilli Organizer (`GET /api/trills/mine`)
+- Invio Trillo (`POST /api/trills/:id/send`)
+- Stato aggiornato (`draft → sent`)
+- Rendering lista Trilli lato Organizer V2
+
+### Endpoint disponibili
+
+- `POST /api/trills`
+- `POST /api/trills/:id/send`
+- `GET /api/trills/mine`
+- `GET /api/trills/event/:eventId`
+- `GET /api/trills/admin`
+- `PATCH /api/trills/admin/:id/block`
+
+### Architettura
+
+- backend-first rispettato
+- integrazione frontend limitata a Organizer V2
+- nessuna dipendenza dal legacy
+- sistema testato end-to-end (UI + API)
+
+### Targeting (stato attuale)
+
+- `interested_not_checked_in`
+- `nearby` (fallback, NON geolocalizzato reale)
+- `both`
+
+⚠️ Nota:
+Il targeting geolocalizzato reale NON è ancora implementato.
+
+### Vincoli attuali
+
+- Nessuna UI Trilli nel legacy
+- UI Trilli attiva SOLO in Organizer V2
+- Nessuna esposizione dati sensibili utenti
+
+### Dipendenze future
+
+- UI Partecipante (toast/banner live)
+- geo-targeting reale utenti
+- promo QR
+- sistema crediti (free / pro / boost)
+- analytics Trilli
 
 ### Stato
 
