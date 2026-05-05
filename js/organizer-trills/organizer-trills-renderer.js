@@ -1,3 +1,26 @@
+function normalizeStatus(status) {
+  return String(status || "").toLowerCase().trim();
+}
+
+function mapStatusLabel(status) {
+  const normalized = normalizeStatus(status);
+
+  if (normalized === "draft") return "Bozza";
+  if (normalized === "scheduled") return "Programmato";
+  if (normalized === "sent") return "Inviato";
+  if (normalized === "blocked") return "Bloccato";
+  if (normalized === "cancelled") return "Annullato";
+  if (normalized === "expired") return "Scaduto";
+  if (normalized === "failed") return "Fallito";
+
+  return status || "N/D";
+}
+
+function canSendTrill(status) {
+  const normalized = normalizeStatus(status);
+  return normalized === "draft" || normalized === "scheduled";
+}
+
 export function renderOrganizerTrills(state) {
   const root = document.querySelector("[data-org-trills-root]");
   if (!root) return;
@@ -18,21 +41,21 @@ export function renderOrganizerTrills(state) {
     <div class="org-trills-list">
       ${
         state.trills.length
-          ? state.trills.map(t => `
+          ? state.trills.map((t) => `
             <article class="org-trill-card">
               <div class="org-trill-title">${t.message}</div>
 
               <div class="org-trill-meta">
                 Evento: ${t.event?.title || t.eventId?.title || "N/D"}<br/>
-                Stato: ${t.status}
+                Stato: ${mapStatusLabel(t.status)}
               </div>
 
               <div class="org-trill-actions">
                 ${
-  ["draft", "scheduled"].includes(t.status)
-    ? `<button data-action="send" data-id="${t._id}" class="primary">Invia</button>`
-    : `<span>Inviato</span>`
-}
+                  canSendTrill(t.status)
+                    ? `<button type="button" data-action="send" data-id="${t._id}" class="primary">Invia</button>`
+                    : `<span>${mapStatusLabel(t.status)}</span>`
+                }
               </div>
             </article>
           `).join("")
