@@ -29,10 +29,10 @@ export function renderOrganizerTrills(state) {
 
               <div class="org-trill-actions">
                 ${
-                  t.status !== "sent"
-                    ? `<button data-action="send" data-id="${t._id}" class="primary">Invia</button>`
-                    : `<span>Inviato</span>`
-                }
+  ["draft", "scheduled"].includes(t.status)
+    ? `<button data-action="send" data-id="${t._id}" class="primary">Invia</button>`
+    : `<span>Inviato</span>`
+}
               </div>
             </article>
           `).join("")
