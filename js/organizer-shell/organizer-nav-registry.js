@@ -18,11 +18,11 @@ export const organizerNav = [
     enabled: false,
   },
   {
-    id: "trills",
-    label: "Trilli",
-    href: "#",
-    enabled: false,
-  },
+  id: "trills",
+  label: "Trilli",
+  href: "/pages/organizer-trills-v2.html",
+  enabled: true,
+},
   {
     id: "promos",
     label: "Promo",
