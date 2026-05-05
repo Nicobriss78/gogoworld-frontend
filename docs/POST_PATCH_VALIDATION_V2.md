@@ -153,10 +153,62 @@ PRIVATI:
 - Feature testata via API reale (console / curl)? [ ]
 
 ---
+---
 
+## TRILLI — VALIDAZIONE FRONTEND (ORGANIZER V2)
+
+### IDENTIFICAZIONE
+
+- Ogni trillo ha id valido nel DOM? [ ]
+- Nessun `undefined` negli endpoint? [ ]
+- Uso fallback id corretto (`_id || id`)? [ ]
+
+### RENDERING
+
+- Bottone "Invia" visibile SOLO per stato `draft`? [ ]
+- Bottone nascosto per stati:
+  - sent [ ]
+  - blocked [ ]
+  - cancelled [ ]
+  - expired [ ]
+- Nessun rendering incoerente? [ ]
+
+### AZIONE INVIO
+
+- Click su "Invia" attiva:
+  - conferma utente? [ ]
+  - chiamata API corretta? [ ]
+- Endpoint generato corretto:
+  - `/api/trills/:id/send` [ ]
+- Nessun `/undefined/send`? [ ]
+
+### STATO
+
+- Stato aggiornato dopo invio:
+  - draft → sent [ ]
+- UI aggiornata senza reload completo? [ ]
+- Bottone rimosso dopo invio? [ ]
+
+### UX
+
+- Bottone disabilitato durante invio? [ ]
+- Nessun doppio click possibile? [ ]
+- Feedback utente:
+  - successo visibile [ ]
+  - errore visibile [ ]
+
+### DEBUG (OBBLIGATORIO)
+
+- Console verificata? [ ]
+- Network verificato? [ ]
+- Response backend corretta? [ ]
+
+
+---
+  
 ## SICUREZZA
 - Nessuna regressione sicurezza? [ ]
-
+- Nessun endpoint costruito con parametri undefined/null? [ ]
 ---
 
 ## CROSS TEST
