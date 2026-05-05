@@ -48,3 +48,8 @@ export async function unbanUserFromPrivateEvent(eventId, userId) {
     body: JSON.stringify({ userId }),
   });
 }
+export async function rotatePrivateEventAccessCode(eventId) {
+  return fetchJson(`/events/${eventId}/access/rotate-code`, {
+    method: "POST",
+  });
+}
