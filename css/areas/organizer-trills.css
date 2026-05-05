@@ -1,0 +1,41 @@
+.org-trills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.org-trill-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.org-trill-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.org-trill-meta {
+  font-size: 13px;
+  color: var(--gw-text-secondary);
+  margin-bottom: 10px;
+}
+
+.org-trill-actions {
+  display: flex;
+  gap: 10px;
+}
+
+button.primary {
+  background: var(--gw-primary);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+}
+
+button.danger {
+  background: #e74c3c;
+  color: white;
+}
