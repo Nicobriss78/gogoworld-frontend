@@ -53,7 +53,7 @@ export function renderOrganizerTrills(state) {
               <div class="org-trill-actions">
                 ${
                   canSendTrill(t.status)
-                    ? `<button type="button" data-action="send" data-id="${t._id}" class="primary">Invia</button>`
+                    ? `<button type="button" data-action="send" data-id="${t._id || t.id}" class="primary">Invia</button>`
                     : `<span>${mapStatusLabel(t.status)}</span>`
                 }
               </div>
