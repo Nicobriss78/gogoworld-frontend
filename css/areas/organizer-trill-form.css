@@ -1,0 +1,96 @@
+.org-trill-form-page {
+  padding: 18px;
+}
+
+.org-trill-form-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.org-trill-form-card h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+
+.org-trill-form-card p {
+  margin: 0 0 12px;
+}
+
+.org-trill-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.org-trill-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.org-trill-field label {
+  font-weight: 600;
+}
+
+.org-trill-field input,
+.org-trill-field select,
+.org-trill-field textarea {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 12px;
+  padding: 12px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.org-trill-field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.org-trill-muted {
+  color: var(--gw-text-secondary, #667085);
+  font-size: 14px;
+}
+
+.org-trill-error {
+  background: #fff1f1;
+  color: #a40000;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.org-trill-success {
+  background: #effaf2;
+  color: #166534;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.org-trill-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.org-trill-actions button,
+.org-trill-actions a {
+  border: none;
+  border-radius: 12px;
+  padding: 11px 14px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.org-trill-actions button {
+  background: var(--gw-primary, #1677ff);
+  color: #fff;
+}
+
+.org-trill-actions a {
+  background: rgba(0, 0, 0, 0.06);
+  color: inherit;
+}
