@@ -126,8 +126,13 @@ export function renderEventAccess(state) {
     <section class="org-access-card">
       <h2>Codice accesso</h2>
       <p><strong>${event?.accessCode || "N/D"}</strong></p>
+      <div class="org-access-actions">
+        <button type="button" data-action="rotate-code">
+          Rigenera codice
+        </button>
+      </div>
       <p class="org-access-muted">
-        La rotazione/modifica avanzata del codice sarà gestita in uno step successivo.
+        Gli utenti già autorizzati resteranno dentro. Il vecchio codice non funzionerà più.
       </p>
     </section>
 
