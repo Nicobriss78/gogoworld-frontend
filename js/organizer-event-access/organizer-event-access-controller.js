@@ -2,6 +2,7 @@ import {
   banUserFromPrivateEvent,
   fetchEventAccess,
   inviteUserToPrivateEvent,
+  rotatePrivateEventAccessCode,
   unbanUserFromPrivateEvent,
 } from "./organizer-event-access-api.js?v=7";
 import { renderEventAccess } from "./organizer-event-access-renderer.js?v=7";
