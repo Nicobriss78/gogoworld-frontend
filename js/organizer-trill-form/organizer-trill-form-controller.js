@@ -64,6 +64,8 @@ function bindForm() {
 
     event.preventDefault();
 
+    if (organizerTrillFormState.saving) return;
+
     const formData = new FormData(form);
 
     const payload = {
