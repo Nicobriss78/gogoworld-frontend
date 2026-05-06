@@ -1,3 +1,12 @@
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 function checked(value) {
   return value ? "checked" : "";
 }
@@ -6,48 +15,54 @@ function selected(current, value) {
   return current === value ? "selected" : "";
 }
 
+function getModeTitle(mode) {
+  return mode === "edit" ? "Modifica evento" : "Crea evento";
+}
+
 export function renderEventForm(state) {
   const root = document.querySelector("[data-org-event-form-root]");
   if (!root) return;
 
+  const title = escapeHtml(getModeTitle(state.mode));
+
   if (state.loading) {
     root.innerHTML = `
-      <h1>${state.mode === "edit" ? "Modifica evento" : "Crea evento"}</h1>
+      <h1>${title}</h1>
       <p>Caricamento...</p>
     `;
     return;
   }
 
-  const event = state.event;
+  const event = state.event || {};
 
   root.innerHTML = `
-    <h1>${state.mode === "edit" ? "Modifica evento" : "Crea evento"}</h1>
+    <h1>${title}</h1>
     <p>Form evento V2 minimale, pronto per evoluzione avanzata.</p>
 
-    ${state.error ? `<section class="org-event-error">${state.error}</section>` : ""}
-    ${state.success ? `<section class="org-event-success">${state.success}</section>` : ""}
+    ${state.error ? `<section class="org-event-error">${escapeHtml(state.error)}</section>` : ""}
+    ${state.success ? `<section class="org-event-success">${escapeHtml(state.success)}</section>` : ""}
 
     <form class="org-event-form" data-org-event-form>
       <section class="org-event-box">
         <div class="org-event-field">
           <label for="title">Titolo *</label>
-          <input id="title" name="title" type="text" value="${event.title || ""}" required />
+          <input id="title" name="title" type="text" value="${escapeHtml(event.title || "")}" required />
         </div>
 
         <div class="org-event-field">
           <label for="description">Descrizione *</label>
-          <textarea id="description" name="description" required>${event.description || ""}</textarea>
+          <textarea id="description" name="description" required>${escapeHtml(event.description || "")}</textarea>
         </div>
 
         <div class="org-event-row">
           <div class="org-event-field">
             <label for="category">Categoria</label>
-            <input id="category" name="category" type="text" value="${event.category || ""}" />
+            <input id="category" name="category" type="text" value="${escapeHtml(event.category || "")}" />
           </div>
 
           <div class="org-event-field">
             <label for="type">Tipo</label>
-            <input id="type" name="type" type="text" value="${event.type || ""}" />
+            <input id="type" name="type" type="text" value="${escapeHtml(event.type || "")}" />
           </div>
         </div>
       </section>
@@ -55,23 +70,23 @@ export function renderEventForm(state) {
       <section class="org-event-box">
         <div class="org-event-field">
           <label for="venueName">Nome luogo</label>
-          <input id="venueName" name="venueName" type="text" value="${event.venueName || ""}" />
+          <input id="venueName" name="venueName" type="text" value="${escapeHtml(event.venueName || "")}" />
         </div>
 
         <div class="org-event-row">
           <div class="org-event-field">
             <label for="city">Città</label>
-            <input id="city" name="city" type="text" value="${event.city || ""}" />
+            <input id="city" name="city" type="text" value="${escapeHtml(event.city || "")}" />
           </div>
 
           <div class="org-event-field">
             <label for="region">Regione</label>
-            <input id="region" name="region" type="text" value="${event.region || ""}" />
+            <input id="region" name="region" type="text" value="${escapeHtml(event.region || "")}" />
           </div>
 
           <div class="org-event-field">
             <label for="country">Paese *</label>
-            <input id="country" name="country" type="text" value="${event.country || "Italia"}" required />
+            <input id="country" name="country" type="text" value="${escapeHtml(event.country || "Italia")}" required />
           </div>
         </div>
       </section>
@@ -79,12 +94,12 @@ export function renderEventForm(state) {
       <section class="org-event-box">
         <div class="org-event-field">
           <label for="dateStart">Data inizio *</label>
-          <input id="dateStart" name="dateStart" type="datetime-local" value="${event.dateStart || ""}" required />
+          <input id="dateStart" name="dateStart" type="datetime-local" value="${escapeHtml(event.dateStart || "")}" required />
         </div>
 
         <div class="org-event-field">
           <label for="dateEnd">Data fine * — suggerita automaticamente ma modificabile</label>
-          <input id="dateEnd" name="dateEnd" type="datetime-local" value="${event.dateEnd || ""}" required />
+          <input id="dateEnd" name="dateEnd" type="datetime-local" value="${escapeHtml(event.dateEnd || "")}" required />
         </div>
       </section>
 
@@ -98,7 +113,7 @@ export function renderEventForm(state) {
 
         <div class="org-event-field" data-private-code-field>
           <label for="accessCode">Codice evento privato</label>
-          <input id="accessCode" name="accessCode" type="text" value="${event.accessCode || ""}" />
+          <input id="accessCode" name="accessCode" type="text" value="${escapeHtml(event.accessCode || "")}" />
           <button type="button" data-action="generate-access-code">Genera codice</button>
         </div>
       </section>
@@ -113,7 +128,7 @@ export function renderEventForm(state) {
 
         <div class="org-event-field">
           <label for="price">Prezzo</label>
-          <input id="price" name="price" type="number" min="0" step="0.01" value="${event.price || ""}" />
+          <input id="price" name="price" type="number" min="0" step="0.01" value="${escapeHtml(event.price || "")}" />
         </div>
 
         <div class="org-event-field">
