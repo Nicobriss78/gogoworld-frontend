@@ -16,8 +16,14 @@
   </main>
 
   <script type="module">
+    import { checkAccess } from "/js/organizer-shell/organizer-access-guard.js?v=7";
     import { initOrganizerTrillForm } from "/js/organizer-trill-form/organizer-trill-form-controller.js";
-    initOrganizerTrillForm();
+
+    const accessResult = await checkAccess();
+
+    if (accessResult.allowed) {
+      await initOrganizerTrillForm();
+    }
   </script>
 </body>
 </html>
