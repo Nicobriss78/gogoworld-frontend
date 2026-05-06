@@ -1,8 +1,17 @@
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 function renderStat(label, value) {
   return `
     <article class="org-dashboard-stat">
-      <strong>${value}</strong>
-      <span>${label}</span>
+      <strong>${escapeHtml(value)}</strong>
+      <span>${escapeHtml(label)}</span>
     </article>
   `;
 }
@@ -23,30 +32,32 @@ export function renderDashboard(state) {
     root.innerHTML = `
       <h1>Dashboard Organizer V2</h1>
       <p>Errore nel caricamento dei dati.</p>
-      <pre>${state.error}</pre>
+      <pre>${escapeHtml(state.error)}</pre>
     `;
     return;
   }
+
+  const stats = state.stats || {};
 
   root.innerHTML = `
     <h1>Dashboard Organizer V2</h1>
     <p>Dati reali caricati dal backend.</p>
 
     <section class="org-dashboard-grid">
-      ${renderStat("Eventi totali", state.stats.totalEvents)}
-      ${renderStat("Eventi approvati", state.stats.approvedEvents)}
-      ${renderStat("Eventi in revisione", state.stats.pendingEvents)}
-      ${renderStat("Eventi respinti", state.stats.rejectedEvents)}
-      ${renderStat("Eventi bloccati", state.stats.blockedEvents)}
-      ${renderStat("Partecipanti totali", state.stats.totalParticipants)}
-      ${renderStat("Media partecipanti", state.stats.averageParticipants)}
-      ${renderStat("Promozioni", state.stats.promoCount)}
-      ${renderStat("Trilli", state.stats.trillCount)}
+      ${renderStat("Eventi totali", stats.totalEvents)}
+      ${renderStat("Eventi approvati", stats.approvedEvents)}
+      ${renderStat("Eventi in revisione", stats.pendingEvents)}
+      ${renderStat("Eventi respinti", stats.rejectedEvents)}
+      ${renderStat("Eventi bloccati", stats.blockedEvents)}
+      ${renderStat("Partecipanti totali", stats.totalParticipants)}
+      ${renderStat("Media partecipanti", stats.averageParticipants)}
+      ${renderStat("Promozioni", stats.promoCount)}
+      ${renderStat("Trilli", stats.trillCount)}
     </section>
 
     <section class="org-dashboard-summary">
       <h2>Top evento</h2>
-      <p>${state.stats.topEventTitle}</p>
+      <p>${escapeHtml(stats.topEventTitle || "N/D")}</p>
     </section>
   `;
 }
