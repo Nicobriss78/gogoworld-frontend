@@ -1,5 +1,18 @@
 import { applyEventFilters } from "./organizer-events-filters.js?v=5";
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function encodeUrlValue(value) {
+  return encodeURIComponent(String(value ?? "").trim());
+}
+
 function formatDate(value) {
   if (!value) return "Data non disponibile";
 
@@ -19,35 +32,37 @@ function formatDate(value) {
 }
 
 function getEventId(event) {
-  return event?._id || event?.id || "";
+  return String(event?._id || event?.id || "").trim();
 }
 
 function renderEventCard(event) {
   const eventId = getEventId(event);
-  const title = event.title || "Evento senza titolo";
-  const status = event.approvalStatus || "pending";
-  const visibility = event.visibility || "public";
-  const city = event.city || "Città non indicata";
+  const encodedEventId = encodeUrlValue(eventId);
+
+  const title = escapeHtml(event.title || "Evento senza titolo");
+  const status = escapeHtml(event.approvalStatus || "pending");
+  const visibility = escapeHtml(event.visibility || "public");
+  const city = escapeHtml(event.city || "Città non indicata");
   const participants = Array.isArray(event.participants) ? event.participants.length : 0;
   const privacy = event.isPrivate ? "Privato" : "Pubblico";
 
   return `
-    <article class="org-event-card" data-event-id="${eventId}">
+    <article class="org-event-card" data-event-id="${escapeHtml(eventId)}">
       <h2>${title}</h2>
 
       <div class="org-event-meta">
         <span>Stato: ${status}</span>
-        <span>Visibilità: ${visibility} · ${privacy}</span>
+        <span>Visibilità: ${visibility} · ${escapeHtml(privacy)}</span>
         <span>Luogo: ${city}</span>
-        <span>Inizio: ${formatDate(event.dateStart)}</span>
-        <span>Fine: ${formatDate(event.dateEnd)}</span>
+        <span>Inizio: ${escapeHtml(formatDate(event.dateStart))}</span>
+        <span>Fine: ${escapeHtml(formatDate(event.dateEnd))}</span>
         <span>Partecipanti: ${participants}</span>
       </div>
 
       <div class="org-event-actions">
-        <a href="/pages/organizer-event-detail-v2.html?id=${eventId}">Apri</a>
-        <a href="/pages/organizer-event-edit-v2.html?id=${eventId}">Modifica</a>
-        <button type="button" class="danger" data-action="delete-event" data-event-id="${eventId}">
+        <a href="/pages/organizer-event-detail-v2.html?id=${encodedEventId}">Apri</a>
+        <a href="/pages/organizer-event-edit-v2.html?id=${encodedEventId}">Modifica</a>
+        <button type="button" class="danger" data-action="delete-event" data-event-id="${escapeHtml(eventId)}">
           Elimina
         </button>
       </div>
@@ -56,6 +71,8 @@ function renderEventCard(event) {
 }
 
 function renderToolbar(filters) {
+  const query = escapeHtml(filters.query || "");
+
   return `
     <div class="org-events-toolbar">
       <a href="/pages/organizer-event-create-v2.html">Crea nuovo evento</a>
@@ -63,7 +80,7 @@ function renderToolbar(filters) {
       <input
         type="search"
         placeholder="Cerca per titolo, città o regione"
-        value="${filters.query || ""}"
+        value="${query}"
         data-events-filter="query"
       />
 
@@ -112,7 +129,7 @@ export function renderEventsPage(state) {
       <h1>Eventi Organizer V2</h1>
       <section class="org-event-error">
         <p>Errore nel caricamento degli eventi.</p>
-        <pre>${state.error}</pre>
+        <pre>${escapeHtml(state.error)}</pre>
       </section>
     `;
     return;
