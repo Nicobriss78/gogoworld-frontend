@@ -1,3 +1,16 @@
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function encodeUrlValue(value) {
+  return encodeURIComponent(String(value ?? "").trim());
+}
+
 function getEventTitle(event) {
   return event?.title || "Evento";
 }
@@ -5,6 +18,13 @@ function getEventTitle(event) {
 export function renderOrganizerTrillForm(state) {
   const root = document.querySelector("[data-org-trill-form-root]");
   if (!root) return;
+
+  const eventId = String(state.eventId || "").trim();
+  const safeEventId = escapeHtml(eventId);
+  const encodedEventId = encodeUrlValue(eventId);
+  const safeEventTitle = escapeHtml(getEventTitle(state.event));
+  const safeError = escapeHtml(state.error);
+  const safeSuccess = escapeHtml(state.success);
 
   if (state.loading) {
     root.innerHTML = `
@@ -23,7 +43,7 @@ export function renderOrganizerTrillForm(state) {
       <section class="org-trill-form-page">
         <div class="org-trill-form-card">
           <h1>Crea trillo</h1>
-          <section class="org-trill-error">${state.error}</section>
+          <section class="org-trill-error">${safeError}</section>
           <div class="org-trill-actions" style="margin-top: 14px;">
             <a href="/pages/organizer-events-v2.html">Torna agli eventi</a>
           </div>
@@ -38,23 +58,23 @@ export function renderOrganizerTrillForm(state) {
       <div class="org-trill-form-card">
         <h1>Crea trillo</h1>
         <p class="org-trill-muted">
-          Evento: <strong>${getEventTitle(state.event)}</strong>
+          Evento: <strong>${safeEventTitle}</strong>
         </p>
 
         ${
           state.error
-            ? `<section class="org-trill-error">${state.error}</section>`
+            ? `<section class="org-trill-error">${safeError}</section>`
             : ""
         }
 
         ${
           state.success
-            ? `<section class="org-trill-success">${state.success}</section>`
+            ? `<section class="org-trill-success">${safeSuccess}</section>`
             : ""
         }
 
         <form class="org-trill-form" data-org-trill-form>
-          <input type="hidden" name="eventId" value="${state.eventId}" />
+          <input type="hidden" name="eventId" value="${safeEventId}" />
 
           <div class="org-trill-field">
             <label for="trill-message">Messaggio</label>
@@ -92,7 +112,7 @@ export function renderOrganizerTrillForm(state) {
             <button type="submit" ${state.saving ? "disabled" : ""}>
               ${state.saving ? "Creazione..." : "Crea bozza trillo"}
             </button>
-            <a href="/pages/organizer-event-detail-v2.html?id=${state.eventId}">
+            <a href="/pages/organizer-event-detail-v2.html?id=${encodedEventId}">
               Torna al dettaglio evento
             </a>
           </div>
