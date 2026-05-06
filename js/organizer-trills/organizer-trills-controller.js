@@ -4,6 +4,7 @@ import { organizerTrillsState } from "./organizer-trills-state.js";
 
 async function load() {
   organizerTrillsState.loading = true;
+  organizerTrillsState.error = null;
   renderOrganizerTrills(organizerTrillsState);
 
   try {
@@ -17,21 +18,54 @@ async function load() {
   }
 }
 
+function getTrillIdFromButton(btn) {
+  return String(btn?.dataset?.id || "").trim();
+}
+
 function bind() {
   document.addEventListener("click", async (e) => {
-    const btn = e.target.closest("[data-action='send']");
-    if (!btn) return;
+    const requestBtn = e.target.closest("[data-action='request-send']");
+    if (requestBtn) {
+      const id = getTrillIdFromButton(requestBtn);
+      if (!id) return;
 
-    const id = btn.dataset.id;
+      organizerTrillsState.confirmSendId = id;
+      organizerTrillsState.actionError = null;
+      organizerTrillsState.actionMessage = null;
+      renderOrganizerTrills(organizerTrillsState);
+      return;
+    }
 
-    const confirmed = confirm("Inviare questo trill?");
-    if (!confirmed) return;
+    const cancelBtn = e.target.closest("[data-action='cancel-send']");
+    if (cancelBtn) {
+      organizerTrillsState.confirmSendId = null;
+      organizerTrillsState.actionError = null;
+      renderOrganizerTrills(organizerTrillsState);
+      return;
+    }
+
+    const confirmBtn = e.target.closest("[data-action='confirm-send']");
+    if (!confirmBtn) return;
+
+    const id = getTrillIdFromButton(confirmBtn);
+    if (!id || organizerTrillsState.sendingId) return;
+
+    organizerTrillsState.sendingId = id;
+    organizerTrillsState.actionError = null;
+    organizerTrillsState.actionMessage = null;
+    renderOrganizerTrills(organizerTrillsState);
 
     try {
       await sendTrill(id);
+
+      organizerTrillsState.confirmSendId = null;
+      organizerTrillsState.actionMessage = "Trillo inviato correttamente.";
       await load();
     } catch (err) {
-      alert("Errore invio trill");
+      organizerTrillsState.actionError = err.message || "Errore durante l’invio del trillo.";
+    } finally {
+      organizerTrillsState.sendingId = null;
+      renderOrganizerTrills(organizerTrillsState);
     }
   });
 }
