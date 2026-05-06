@@ -35,7 +35,31 @@ function getEventId(event) {
   return String(event?._id || event?.id || "").trim();
 }
 
-function renderEventCard(event) {
+function renderDeleteAction(eventId, state) {
+  const safeEventId = escapeHtml(eventId);
+  const isConfirming = state.confirmDeleteId === eventId;
+  const isDeleting = state.deletingId === eventId;
+
+  if (isConfirming) {
+    return `
+      <span>Confermi eliminazione?</span>
+      <button type="button" class="danger" data-action="confirm-delete-event" data-event-id="${safeEventId}" ${isDeleting ? "disabled" : ""}>
+        ${isDeleting ? "Eliminazione..." : "Conferma"}
+      </button>
+      <button type="button" data-action="cancel-delete-event" data-event-id="${safeEventId}" ${isDeleting ? "disabled" : ""}>
+        Annulla
+      </button>
+    `;
+  }
+
+  return `
+    <button type="button" class="danger" data-action="request-delete-event" data-event-id="${safeEventId}" ${state.deletingId ? "disabled" : ""}>
+      Elimina
+    </button>
+  `;
+}
+
+function renderEventCard(event, state) {
   const eventId = getEventId(event);
   const encodedEventId = encodeUrlValue(eventId);
 
@@ -62,9 +86,7 @@ function renderEventCard(event) {
       <div class="org-event-actions">
         <a href="/pages/organizer-event-detail-v2.html?id=${encodedEventId}">Apri</a>
         <a href="/pages/organizer-event-edit-v2.html?id=${encodedEventId}">Modifica</a>
-        <button type="button" class="danger" data-action="delete-event" data-event-id="${escapeHtml(eventId)}">
-          Elimina
-        </button>
+        ${renderDeleteAction(eventId, state)}
       </div>
     </article>
   `;
@@ -107,9 +129,15 @@ export function renderEventsList(state) {
 
   const filteredEvents = applyEventFilters(state.events, state.filters);
 
-  listRoot.innerHTML = filteredEvents.length
-    ? `<section class="org-events-list">${filteredEvents.map(renderEventCard).join("")}</section>`
-    : `<section class="org-event-empty">Nessun evento trovato.</section>`;
+  listRoot.innerHTML = `
+    ${state.actionMessage ? `<section class="org-event-success">${escapeHtml(state.actionMessage)}</section>` : ""}
+    ${state.actionError ? `<section class="org-event-error">${escapeHtml(state.actionError)}</section>` : ""}
+    ${
+      filteredEvents.length
+        ? `<section class="org-events-list">${filteredEvents.map((event) => renderEventCard(event, state)).join("")}</section>`
+        : `<section class="org-event-empty">Nessun evento trovato.</section>`
+    }
+  `;
 }
 
 export function renderEventsPage(state) {
