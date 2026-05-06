@@ -1,3 +1,16 @@
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function encodeUrlValue(value) {
+  return encodeURIComponent(String(value ?? "").trim());
+}
+
 function formatDate(value) {
   if (!value) return "Data non disponibile";
 
@@ -14,7 +27,7 @@ function formatDate(value) {
 }
 
 function getEventId(event) {
-  return event?._id || event?.id || "";
+  return String(event?._id || event?.id || "").trim();
 }
 
 function canEditEvent(event) {
@@ -30,8 +43,8 @@ function renderModeration(event) {
   }
 
   return `
-    ${reason ? `<p><strong>Motivo:</strong> ${reason}</p>` : ""}
-    ${notes ? `<p><strong>Note:</strong> ${notes}</p>` : ""}
+    ${reason ? `<p><strong>Motivo:</strong> ${escapeHtml(reason)}</p>` : ""}
+    ${notes ? `<p><strong>Note:</strong> ${escapeHtml(notes)}</p>` : ""}
   `;
 }
 
@@ -50,39 +63,40 @@ export function renderEventDetail(state) {
   if (state.error) {
     root.innerHTML = `
       <h1>Dettaglio evento</h1>
-      <section class="org-event-detail-error">${state.error}</section>
+      <section class="org-event-detail-error">${escapeHtml(state.error)}</section>
       <p><a href="/pages/organizer-events-v2.html">Torna agli eventi</a></p>
     `;
     return;
   }
 
-  const event = state.event;
+  const event = state.event || {};
   const eventId = getEventId(event);
+  const encodedEventId = encodeUrlValue(eventId);
   const participants = Array.isArray(event.participants) ? event.participants.length : 0;
   const isPrivate = Boolean(event.isPrivate || event.visibility === "private");
   const editable = canEditEvent(event);
 
   root.innerHTML = `
-    <h1>${event.title || "Evento senza titolo"}</h1>
+    <h1>${escapeHtml(event.title || "Evento senza titolo")}</h1>
     <p>Hub operativo evento Organizer V2.</p>
 
     <section class="org-event-detail-card">
       <h2>Dati evento</h2>
-      <p><strong>Stato approvazione:</strong> ${event.approvalStatus || "pending"}</p>
-      <p><strong>Visibilità:</strong> ${event.visibility || "public"}</p>
+      <p><strong>Stato approvazione:</strong> ${escapeHtml(event.approvalStatus || "pending")}</p>
+      <p><strong>Visibilità:</strong> ${escapeHtml(event.visibility || "public")}</p>
       <p><strong>Privato:</strong> ${isPrivate ? "Sì" : "No"}</p>
-      <p><strong>Codice accesso:</strong> ${event.accessCode || "N/D"}</p>
-      <p><strong>Città:</strong> ${event.city || "N/D"}</p>
-      <p><strong>Regione:</strong> ${event.region || "N/D"}</p>
-      <p><strong>Paese:</strong> ${event.country || "N/D"}</p>
-      <p><strong>Inizio:</strong> ${formatDate(event.dateStart)}</p>
-      <p><strong>Fine:</strong> ${formatDate(event.dateEnd)}</p>
+      <p><strong>Codice accesso:</strong> ${escapeHtml(event.accessCode || "N/D")}</p>
+      <p><strong>Città:</strong> ${escapeHtml(event.city || "N/D")}</p>
+      <p><strong>Regione:</strong> ${escapeHtml(event.region || "N/D")}</p>
+      <p><strong>Paese:</strong> ${escapeHtml(event.country || "N/D")}</p>
+      <p><strong>Inizio:</strong> ${escapeHtml(formatDate(event.dateStart))}</p>
+      <p><strong>Fine:</strong> ${escapeHtml(formatDate(event.dateEnd))}</p>
       <p><strong>Partecipanti:</strong> ${participants}</p>
     </section>
 
     <section class="org-event-detail-card">
       <h2>Descrizione</h2>
-      <p>${event.description || "Nessuna descrizione."}</p>
+      <p>${escapeHtml(event.description || "Nessuna descrizione.")}</p>
     </section>
 
     <section class="org-event-detail-card">
@@ -95,30 +109,34 @@ export function renderEventDetail(state) {
 
       <div class="org-event-detail-actions">
         ${
-          editable
-            ? `<a href="/pages/organizer-event-edit-v2.html?id=${eventId}">Modifica</a>`
+          editable && eventId
+            ? `<a href="/pages/organizer-event-edit-v2.html?id=${encodedEventId}">Modifica</a>`
             : `<button type="button" disabled>Modifica bloccata</button>`
         }
 
         ${
-          isPrivate
-            ? `<a href="/pages/organizer-event-access-v2.html?id=${eventId}">Accessi privati</a>`
+          isPrivate && eventId
+            ? `<a href="/pages/organizer-event-access-v2.html?id=${encodedEventId}">Accessi privati</a>`
             : `<button type="button" disabled>Accessi privati</button>`
         }
 
-        <button type="button" data-action="open-room" data-event-id="${eventId}">
+        <button type="button" data-action="open-room" data-event-id="${escapeHtml(eventId)}" ${eventId ? "" : "disabled"}>
           Apri room
         </button>
 
-        <a href="/pages/organizer-trill-create-v2.html?eventId=${eventId}">
-          Crea trillo
-        </a>
+        ${
+          eventId
+            ? `<a href="/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}">Crea trillo</a>`
+            : `<button type="button" disabled>Crea trillo</button>`
+        }
 
-        <a href="/pages/organizer-promo-create-v2.html?eventId=${eventId}">
-          Crea promo
-        </a>
+        ${
+          eventId
+            ? `<a href="/pages/organizer-promo-create-v2.html?eventId=${encodedEventId}">Crea promo</a>`
+            : `<button type="button" disabled>Crea promo</button>`
+        }
 
-        <button type="button" class="danger" data-action="delete-event" data-event-id="${eventId}">
+        <button type="button" class="danger" data-action="delete-event" data-event-id="${escapeHtml(eventId)}" ${eventId ? "" : "disabled"}>
           Elimina evento
         </button>
 
