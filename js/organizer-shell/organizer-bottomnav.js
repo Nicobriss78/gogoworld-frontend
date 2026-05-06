@@ -4,6 +4,8 @@ function getCurrentViewId() {
   const path = window.location.pathname;
 
   if (path.includes("organizer-events-v2")) return "events";
+  if (path.includes("organizer-trills-v2")) return "trills";
+
   return "dashboard";
 }
 
