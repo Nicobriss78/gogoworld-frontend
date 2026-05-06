@@ -96,6 +96,7 @@ function bindForm() {
       renderOrganizerTrillForm(organizerTrillFormState);
     } finally {
       organizerTrillFormState.saving = false;
+      renderOrganizerTrillForm(organizerTrillFormState);
     }
   });
 }
