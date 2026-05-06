@@ -20,6 +20,10 @@ async function loadEvents() {
   }
 }
 
+function getEventIdFromButton(button) {
+  return String(button?.dataset?.eventId || "").trim();
+}
+
 function bindEvents() {
   document.addEventListener("input", (event) => {
     const target = event.target;
@@ -45,19 +49,51 @@ function bindEvents() {
     const target = event.target;
     const action = target?.dataset?.action;
 
-    if (action !== "delete-event") return;
+    if (!action) return;
 
-    const eventId = target.dataset.eventId;
+    if (action === "request-delete-event") {
+      const eventId = getEventIdFromButton(target);
+      if (!eventId) return;
+
+      eventsState.confirmDeleteId = eventId;
+      eventsState.actionError = null;
+      eventsState.actionMessage = null;
+      renderEventsList(eventsState);
+      return;
+    }
+
+    if (action === "cancel-delete-event") {
+      eventsState.confirmDeleteId = null;
+      eventsState.actionError = null;
+      renderEventsList(eventsState);
+      return;
+    }
+
+    if (action !== "confirm-delete-event") return;
+
+    const eventId = getEventIdFromButton(target);
+    if (!eventId || eventsState.deletingId) return;
+
+    eventsState.deletingId = eventId;
+    eventsState.actionError = null;
+    eventsState.actionMessage = null;
+    renderEventsList(eventsState);
 
     try {
       const deleted = await handleDeleteEvent(eventId);
 
       if (deleted) {
+        eventsState.confirmDeleteId = null;
+        eventsState.actionMessage = "Evento eliminato correttamente.";
         await loadEvents();
       }
     } catch (error) {
       console.error("[OrganizerEvents] delete failed", error);
-      alert("Errore durante l’eliminazione dell’evento.");
+      eventsState.actionError = error.message || "Errore durante l’eliminazione dell’evento.";
+      renderEventsPage(eventsState);
+    } finally {
+      eventsState.deletingId = null;
+      renderEventsList(eventsState);
     }
   });
 }
