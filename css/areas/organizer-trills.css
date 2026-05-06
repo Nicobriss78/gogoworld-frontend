@@ -24,17 +24,50 @@
 
 .org-trill-actions {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
-.org-trill-actions button.primary {
-  background: var(--gw-accent, #1877F2);
-  color: #ffffff;
+.org-trill-actions button.primary,
+.org-trill-actions button.secondary {
   border: none;
   padding: 8px 14px;
   border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
+}
+
+.org-trill-actions button.primary {
+  background: var(--gw-accent, #1877F2);
+  color: #ffffff;
+}
+
+.org-trill-actions button.secondary {
+  background: #eef1f5;
+  color: var(--gw-text-main, #1f2937);
+}
+
+.org-trill-actions button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.org-trill-confirm-text {
+  font-size: 13px;
+  color: var(--gw-text-secondary);
+}
+
+.org-trill-success {
+  font-size: 14px;
+  font-weight: 700;
+  color: #15803d;
+}
+
+.org-trill-error {
+  font-size: 14px;
+  font-weight: 700;
+  color: #b91c1c;
 }
 
 button.danger {
