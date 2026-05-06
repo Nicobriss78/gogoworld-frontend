@@ -29,6 +29,12 @@ async function initCurrentView() {
     return;
   }
 
+  if (path.includes("organizer-trills-v2")) {
+    const module = await import("../organizer-trills/organizer-trills-controller.js?v=8");
+    await module.initOrganizerTrills();
+    return;
+  }
+
   const module = await import("../organizer-dashboard/organizer-dashboard-controller.js?v=6");
   await module.initDashboard();
 }
