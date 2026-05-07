@@ -11,4 +11,9 @@ export const organizerEventAccessState = {
     invitedUsers: [],
     revokedUsers: [],
   },
+  confirmRotateCode: false,
+  rotatingCode: false,
+  confirmBanUserId: null,
+  banningUserId: null,
+  unbanningUserId: null,
 };
