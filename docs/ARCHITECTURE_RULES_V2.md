@@ -14,7 +14,7 @@ Questo documento definisce le regole INVIO-LABILI del progetto GoGoWorld.life.
 - V2 indipendente dal legacy
 - Sicurezza sempre prioritaria
 - Metodo: Analisi → Test → Isolamento → Fix
-
+- Nessun `alert()` / `confirm()` nelle aree V2 hardenizzate
 ---
 
 # 🧠 PRINCIPI ARCHITETTURALI
@@ -22,6 +22,55 @@ Questo documento definisce le regole INVIO-LABILI del progetto GoGoWorld.life.
 - Stato > UI
 - Dataset coerente
 - Lifecycle controllato
+
+## 🧭 GERARCHIA PAGINE V2 (VINCOLANTE)
+
+Le pagine V2 devono essere divise in:
+
+### Primo livello
+Pagine principali area.
+
+Devono usare:
+- shell area
+- topbar
+- bottomnav
+- bootstrap area
+- registry/nav ufficiali
+
+Esempi:
+- Home V2
+- Mappa V2
+- Organizer Dashboard V2
+- Organizer Events V2
+- Organizer Trills V2
+
+### Secondo livello
+Pagine immersive / operative.
+
+NON devono usare:
+- bottomnav
+- bootstrap shell completo
+
+Devono usare:
+- `checkAccess()` diretto
+- controller dedicato
+- struttura autonoma
+- back contestuale
+
+Esempi:
+- evento-v2
+- messages-v2
+- organizer-event-detail-v2
+- organizer-event-access-v2
+- organizer-event-create-v2
+- organizer-event-edit-v2
+- organizer-trill-create-v2
+
+Questa regola è vincolante per:
+- Partecipante V2
+- Organizer V2
+- futura Admin V2
+  
 ## 📌 BACKEND-FIRST (ESTENSIONE)
 
 Le nuove feature devono essere sviluppate:
@@ -498,6 +547,46 @@ I Trilli verranno integrati con:
   - decidere destinatari
   - bypassare validazioni temporali
   - esporre identità o posizione utenti target
+
+### Stato Organizer V2 attuale
+
+Organizer V2 attualmente include:
+
+Primo livello:
+- organizer-dashboard-v2
+- organizer-events-v2
+- organizer-trills-v2
+
+Secondo livello:
+- organizer-event-create-v2
+- organizer-event-edit-v2
+- organizer-event-detail-v2
+- organizer-event-access-v2
+- organizer-trill-create-v2
+
+Stato:
+- renderer hardenizzati
+- controller hardenizzati
+- loading state presenti
+- gestione azioni concorrenti presente
+- blocco doppio click presente
+- nessun `alert()` / `confirm()`
+- bootstrap Organizer pulito e limitato al primo livello
+
+## ⚠️ CRITICITÀ NOTE NON BLOCCANTI
+
+### messages-v2 / Organizer
+
+Stato:
+- apertura room Organizer funzionante
+- `rootReturnTo=organizer` NON ancora allineato
+
+Possibile effetto:
+- tasto “Torna” → 404 Netlify
+
+Criticità:
+- NON bloccante
+- da affrontare in step dedicato futuro
 
 # 🏁 CONCLUSIONE
 
