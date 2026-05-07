@@ -13,6 +13,21 @@
 - Sto modificando il file giusto? [ ]
 - Evito duplicazioni? [ ]
 - Evito logica distribuita? [ ]
+  
+---
+
+## GERARCHIA PAGINE V2
+
+- Sto lavorando su una pagina di primo livello? [ ]
+  → shell + topbar + bottomnav + bootstrap
+
+- Sto lavorando su una pagina di secondo livello? [ ]
+  → NO shell completa
+  → NO bottomnav
+  → `checkAccess()` diretto
+  → controller dedicato
+
+- Sto evitando bootstrap su pagine immersive? [ ]
 
 ---
 
@@ -24,8 +39,11 @@ Se MAPPA PRIVATI:
 - uso bounds? → NO [ ]
 - dataset cambia al pan? → NO [ ]
 
-[ ] Sto modificando MAPPA PRIVATI?
-    → Verificato rispetto regola PRIVATE_MAP_NO_GEO_DISCOVERY
+- Sto modificando MAPPA PRIVATI? [ ]→ Verificato rispetto regola 
+
+---
+    
+PRIVATE_MAP_NO_GEO_DISCOVERY
 ---
 ## MAPPA AVANZATA (NUOVO)
 - Sto modificando la ricerca eventi (q)? [ ]
@@ -58,6 +76,8 @@ Se sto lavorando su MAPPA PUBBLICA:
 ## LIFECYCLE
 - Evito doppio bootstrap? [ ]
 - Evito load duplicati? [ ]
+- Sto lasciando rami morti nei bootstrap? [ ]
+- Il bootstrap gestisce SOLO il primo livello? [ ]
 
 ---
 
@@ -120,6 +140,15 @@ Se sto modificando MAPPA / MAPPA PRIVATI:
 
 ## TRILLI (FRONTEND ORGANIZER V2)
 
+### ARCHITETTURA
+
+- `organizer-trills-v2`
+  → primo livello Organizer V2 [ ]
+
+- `organizer-trill-create-v2`
+  → secondo livello Organizer V2 [ ]
+
+- Sto evitando shell completa nelle pagine immersive? [ ]
 - Sto lavorando su UI Organizer Trilli? [ ]
 
 ### IDENTIFICAZIONE
@@ -172,6 +201,25 @@ Se sto modificando MAPPA / MAPPA PRIVATI:
 - Nessuna logica sensibile lato client? [ ]
 - Nessun bypass backend? [ ]
 - Nessun id dinamico non validato? [ ]
+- Sto evitando `alert()` / `confirm()` nelle aree V2 hardenizzate? [ ]
+- Le azioni critiche hanno loading state? [ ]
+- Le azioni critiche bloccano doppio click? [ ]
+- I renderer escapeano output dinamici? [ ]
+- I parametri URL vengono encodeati? [ ]
+---
+## HARDENING CONTROLLER
+
+- Sto gestendo azioni concorrenti? [ ]
+- Sto usando state dedicato per:
+  - loading [ ]
+  - deleting [ ]
+  - opening [ ]
+  - saving [ ]
+  - confirm action [ ]
+
+- Le conferme sono interne UI/state-driven? [ ]
+- Sto evitando dipendenza da dialog browser? [ ]
+
 ---
 
 ## TEST
