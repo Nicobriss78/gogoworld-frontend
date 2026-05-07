@@ -22,6 +22,18 @@ function selected(current, value) {
 function getModeTitle(mode) {
   return mode === "edit" ? "Modifica evento" : "Crea evento";
 }
+function renderOptions(options, currentValue) {
+  return options
+    .map((option) => {
+      const value = String(option);
+      return `
+        <option value="${escapeHtml(value)}" ${selected(currentValue, value)}>
+          ${escapeHtml(value)}
+        </option>
+      `;
+    })
+    .join("");
+}
 export function renderEventForm(state) {
   const root = document.querySelector("[data-org-event-form-root]");
   if (!root) return;
