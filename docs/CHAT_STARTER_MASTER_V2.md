@@ -176,15 +176,64 @@ CHAT:
 - Nessun uso di file legacy notifiche
 - Sistema notifiche completamente V2
 
-## 🔔 TRILLI — BACKEND + ORGANIZER V2 BASE COMPLETATI
+## 🧭 PATTERN PAGINE V2
 
-Stato attuale:
+### Primo livello
 
-- Backend completamente implementato
-- Notifiche integrate
-- Moderazione admin attiva
-- Test reale API eseguito
-- UI Organizer V2 base implementata e funzionante
+Le pagine principali V2 devono usare:
+- shell area
+- topbar
+- bottomnav
+- bootstrap area
+- registry/nav ufficiali
+
+Esempi:
+- Home V2
+- Mappa V2
+- Organizer Dashboard V2
+- Organizer Events V2
+- Organizer Trills V2
+
+### Secondo livello
+
+Le pagine immersive/operative NON devono usare:
+- bottomnav
+- bootstrap shell completo
+
+Devono usare:
+- `checkAccess()` diretto
+- controller dedicato
+- back contestuale
+- struttura autonoma
+
+Esempi:
+- evento-v2
+- messages-v2
+- organizer-event-detail-v2
+- organizer-event-access-v2
+- organizer-event-create-v2
+- organizer-event-edit-v2
+- organizer-trill-create-v2
+
+Questa regola vale per:
+- Partecipante V2
+- Organizer V2
+- futura Admin V2
+
+## 🔔 TRILLI — ORGANIZER V2 CONSOLIDATO
+
+### Stato reale attuale
+
+Backend:
+- completato
+- verificato
+- moderazione attiva
+- notifiche integrate
+
+Frontend Organizer V2:
+- implementato
+- hardenizzato
+- integrato nella Organizer Shell V2
 
 ### Stato tecnico
 
@@ -192,42 +241,52 @@ Stato attuale:
 - T2 — Integrazione notifiche ✅
 - T3 — Moderazione admin ✅
 - T3.5 — Test reale API completato ✅
-- T4 — UI Organizer V2 base completata ✅
+- T4 — Organizer UI base completata ✅
+- T4.5 — Hardening Organizer completato ✅
 
-### Funzionamento
+### Funzioni attive
 
-- Creazione draft Trilli (`POST /api/trills`)
-- Lista Trilli Organizer (`GET /api/trills/mine`)
-- Invio Trilli (`POST /api/trills/:id/send`)
+- Creazione draft Trilli
+- Lista Trilli Organizer
+- Invio Trilli
 - Stato aggiornato (`draft → sent`)
-- Rendering UI Organizer V2 completo
+- Conferma interna invio
+- Loading state
+- Blocco doppio click
+- Feedback state-driven
+- Nessun `alert()` / `confirm()`
 
-### Moderazione
+### Architettura
 
-- Admin può bloccare un Trillo
-- Trillo bloccato NON è inviabile
+`organizer-trills-v2.html`
+→ pagina di primo livello:
+- Organizer Shell
+- topbar
+- bottomnav
+- bootstrap Organizer
+
+`organizer-trill-create-v2.html`
+→ pagina di secondo livello:
+- no bottomnav
+- no Organizer Shell
+- `checkAccess()` diretto
+- controller dedicato
 
 ### Targeting (stato attuale)
 
 - `interested_not_checked_in`
-- `nearby` (fallback NON geolocalizzato reale)
+- `nearby` (fallback non geo reale)
 - `both`
 
 ⚠️ Nota:
-Il targeting geolocalizzato reale NON è ancora implementato.
-
-### Vincoli attuali
-
-- Nessuna UI Trilli nel legacy
-- UI Trilli attiva SOLO in Organizer V2
-- Nessuna esposizione dati sensibili utenti
+geo-targeting reale NON ancora implementato.
 
 ### Integrazione futura
 
-- UI Partecipante (toast/banner live)
-- geo-targeting reale utenti
+- UI Partecipante live
+- geo-targeting reale
 - promo QR
-- sistema crediti (free / pro / boost)
+- crediti / boost
 - analytics Trilli
 
 ### Stato tecnico
@@ -280,15 +339,58 @@ Il targeting geolocalizzato reale NON è ancora implementato.
 - promo QR
 - sistema crediti (free / pro)
 
-## 📌 PROSSIMO STEP
+## 📌 STATO ORGANIZER V2
 
-1. Rifondazione completa Area Organizzatore V2
-2. Rifondazione Area Admin V2
-3. Integrazione UI Trilli (solo su V2, no legacy)
-4. Implementazione geo-targeting reale utenti
-5. Promo QR e redemption
-6. Eliminazione completa legacy frontend
-7. PWA
+### Completato
+
+- Organizer Shell base
+- Dashboard Organizer V2
+- Eventi Organizer V2
+- Trilli Organizer V2
+- Distinzione primo/secondo livello
+- Registry Organizer coerenti
+- Hardening renderer Organizer
+- Hardening controller Organizer
+- Eliminazione `alert()/confirm()` Organizer
+- Gestione azioni concorrenti
+- Blocco doppio click
+- CTA Promo temporaneamente disabilitata
+- Pulizia `organizer-bootstrap.js`
+
+### Stato architetturale
+
+Organizer V2:
+- separato dal legacy
+- modulare
+- state-driven
+- shell coerente
+- controller separati
+- renderer separati
+- no monoliti
+
+### Criticità note NON bloccanti
+
+`messages-v2`
+- `rootReturnTo=organizer`
+- ritorno Organizer non ancora risolto correttamente
+- possibile 404 Netlify sul tasto “Torna”
+
+Da affrontare in step dedicato futuro.
+
+---
+
+## 📌 ROADMAP REALE
+
+1. Hardening finale Organizer V2
+2. Promozioni Organizer V2
+3. Comunicazioni Organizer V2
+4. Mappa Organizer V2
+5. Rifondazione Admin V2
+6. UI Partecipante Trilli
+7. Geo targeting reale
+8. Promo QR
+9. Eliminazione legacy frontend
+10. PWA
 
 ---
 
@@ -342,18 +444,23 @@ Organizzatore e Admin verranno allineati quando saranno rifondati.
 
 ## ROADMAP
 
-1. Chat Reactivity ✅  
-2. Cross-browser hardening ✅  
-3. Sistema Trilli backend ✅  
-4. UI Organizer Trilli base ✅  
-5. Hardening UX Trilli Organizer  
-6. Rifondazione Organizzatore V2 (completamento)  
-7. Rifondazione Admin V2  
-8. UI Trilli Partecipante  
-9. Geo targeting reale  
-10. Promo QR  
-11. Eliminazione legacy frontend  
-12. PWA
+1. Chat Reactivity ✅
+2. Cross-browser hardening Partecipante V2 ✅
+3. Backend Trilli ✅
+4. Organizer Trilli V2 ✅
+5. Organizer V2 hardening architetturale ✅
+6. Organizer V2 renderer hardening ✅
+7. Organizer V2 controller hardening ✅
+8. Rifondazione Organizer V2 (completamento)
+9. Promozioni Organizer V2
+10. Comunicazioni Organizer V2
+11. Mappa Organizer V2
+12. Rifondazione Admin V2
+13. UI Partecipante Trilli
+14. Geo targeting reale
+15. Promo QR
+16. Eliminazione legacy frontend
+17. PWA
 ---
 
 ## REGOLA
