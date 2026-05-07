@@ -102,10 +102,13 @@ Post patch:
   - createNotification → notifiche in-app
   - notify → sistema esterno (email/push futuro)
 
-## 🔔 TRILLI — STATO ATTUALE (BACKEND + ORGANIZER V2)
+## 🔔 TRILLI — STATO ATTUALE
 
-- Sistema Trilli implementato completamente lato backend
-- UI Organizer V2 base implementata e funzionante
+- Backend Trilli completato e verificato
+- Notifiche integrate
+- Moderazione admin attiva
+- UI Organizer V2 implementata, consolidata e hardenizzata
+- Nessuna UI Trilli nel legacy
 
 ### Stato
 
@@ -114,6 +117,7 @@ Post patch:
 - T3 — Moderazione admin ✅
 - T3.5 — Test reale API ✅
 - T4 — UI Organizer V2 base ✅
+- T4.5 — Hardening Organizer V2 ✅
 
 ### Funzionalità attive
 
@@ -121,7 +125,11 @@ Post patch:
 - Lista Trilli Organizer (`GET /api/trills/mine`)
 - Invio Trillo (`POST /api/trills/:id/send`)
 - Stato aggiornato (`draft → sent`)
-- Rendering lista Trilli lato Organizer V2
+- Conferma interna invio
+- Loading state
+- Blocco doppio click
+- Feedback successo/errore
+- Nessun `alert()` / `confirm()`
 
 ### Endpoint disponibili
 
@@ -135,108 +143,81 @@ Post patch:
 ### Architettura
 
 - backend-first rispettato
-- integrazione frontend limitata a Organizer V2
+- frontend limitato a Organizer V2
 - nessuna dipendenza dal legacy
-- sistema testato end-to-end (UI + API)
+- sistema testato end-to-end UI + API
+- `organizer-trills-v2` = primo livello
+- `organizer-trill-create-v2` = secondo livello
 
-### Targeting (stato attuale)
+### Targeting attuale
 
 - `interested_not_checked_in`
-- `nearby` (fallback, NON geolocalizzato reale)
+- `nearby` fallback non geolocalizzato reale
 - `both`
 
-⚠️ Nota:
-Il targeting geolocalizzato reale NON è ancora implementato.
-
-### Vincoli attuali
-
-- Nessuna UI Trilli nel legacy
-- UI Trilli attiva SOLO in Organizer V2
-- Nessuna esposizione dati sensibili utenti
+⚠️ Geo-targeting reale non ancora implementato.
 
 ### Dipendenze future
 
-- UI Partecipante (toast/banner live)
-- geo-targeting reale utenti
+- UI Partecipante live
+- geo-targeting reale
 - promo QR
-- sistema crediti (free / pro / boost)
+- crediti / boost
 - analytics Trilli
 
-### Stato
+## 📌 STATO ORGANIZER V2
 
-- T1 — Backend base ✅
-- T2 — Integrazione notifiche ✅
-- T3 — Moderazione admin ✅
-- T3.5 — Test reale API ✅
+### Completato
 
-### Endpoint disponibili
+- Organizer Shell base
+- Dashboard Organizer V2
+- Eventi Organizer V2
+- Trilli Organizer V2
+- Registry Organizer coerenti
+- Distinzione primo livello / secondo livello
+- Renderer hardenizzati
+- Controller hardenizzati
+- Eliminazione `alert()` / `confirm()` dai file Organizer V2
+- Azioni critiche con loading state
+- Blocco doppio click
+- CTA Promo temporaneamente disabilitata
+- `organizer-bootstrap.js` limitato al primo livello
 
-- `POST /api/trills` → crea draft
-- `POST /api/trills/:id/send` → invia notifiche
-- `GET /api/trills/mine` → lista trilli organizer
-- `GET /api/trills/event/:eventId` → lista per evento
-- `GET /api/trills/admin` → lista admin
-- `PATCH /api/trills/admin/:id/block` → blocco trillo
+### Primo livello Organizer V2
 
-### Funzionamento
+- `organizer-dashboard-v2`
+- `organizer-events-v2`
+- `organizer-trills-v2`
 
-- Creazione draft con validazioni complete:
-  - evento esistente
-  - organizer autorizzato
-  - evento approvato
-  - finestra temporale (2h prima → fine evento)
+### Secondo livello Organizer V2
 
-- Invio:
-  - creazione Notification (type: "trill")
-  - creazione TrillDelivery
-  - aggiornamento metriche
+- `organizer-event-create-v2`
+- `organizer-event-edit-v2`
+- `organizer-event-detail-v2`
+- `organizer-event-access-v2`
+- `organizer-trill-create-v2`
 
-- Moderazione:
-  - blocco admin
-  - trillo bloccato non inviabile
+### Criticità nota non bloccante
 
-### Targeting (stato attuale)
+`messages-v2`:
+- apertura room da Organizer funzionante
+- `rootReturnTo=organizer` non ancora risolto correttamente
+- possibile 404 Netlify sul tasto “Torna”
 
-- `interested_not_checked_in`
-  → utenti partecipanti senza check-in
+Da affrontare in step dedicato futuro.
 
-- `nearby`
-  → fallback utenti participant (NON geolocalizzato reale)
+## 📌 PROSSIMI STEP REALI
 
-- `both`
-  → combinazione dei due
-
-⚠️ Nota:
-Il targeting geolocalizzato reale NON è ancora implementato.
-Sarà introdotto in una fase successiva con posizione utenti persistente.
-
-### Architettura
-
-- backend-first (nessuna UI necessaria)
-- completamente indipendente dal frontend
-- isolato dal legacy
-- testabile via API
-
-### Vincoli attuali
-
-- nessuna UI Trilli (né Partecipante né Organizzatore)
-- nessuna integrazione frontend attiva
-- nessun QR / promo attivo
-
-### Dipendenze future
-
-- rifondazione Area Organizzatore V2
-- rifondazione Area Admin V2
-- geo-targeting reale utenti
-
-## 📌 PROSSIMO STEP
-
-- Sistema Trilli backend COMPLETATO e verificato
-- Rifondazione completa Area Organizzatore V2 (prossima fase)
-- Rifondazione Area Admin V2
-- Implementazione geo-targeting reale utenti (fase successiva)
-- Eliminazione completa legacy frontend Partecipante
-- PWA post Organizzatore/Admin
+1. Audit finale Organizer V2
+2. Promozioni Organizer V2
+3. Comunicazioni Organizer V2
+4. Mappa Organizer V2
+5. Rifondazione Admin V2
+6. UI Partecipante Trilli
+7. Geo targeting reale
+8. Promo QR
+9. Eliminazione legacy frontend
+10. PWA post Organizer/Admin
 ---
 
 ## 3. Regole aggiornamento
@@ -255,7 +236,8 @@ Aggiornare quando:
 - DOMAIN_RULES
 - CROSS_BROWSER_TEST_PLAN
 - PWA_PLAN_POST_ORGANIZER_ADMIN
-
+- ORGANIZER_V2_ROADMAP
+- ORGANIZER_V2_KNOWN_ISSUES
 ---
 
 ## 5. REGOLA FINALE
