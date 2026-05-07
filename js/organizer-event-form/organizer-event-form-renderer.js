@@ -76,42 +76,44 @@ const isCustomSubcategory = Boolean(
           <textarea id="description" name="description" required>${escapeHtml(event.description || "")}</textarea>
         </div>
 
+        <div class="org-event-row">
+  <div class="org-event-field">
+    <label for="category">Categoria *</label>
+    <select id="category" name="category" required>
+      <option value="">Seleziona categoria</option>
+      ${renderOptions(categoryOptions, event.category)}
+    </select>
+  </div>
+
+  <div class="org-event-field">
+    <label for="subcategory">Sottocategoria</label>
+    <select id="subcategory" name="subcategory">
+      <option value="">Seleziona sottocategoria</option>
+      ${renderOptions(subcategoryOptions, event.subcategory)}
+    </select>
+  </div>
+
+  ${
+    isCustomSubcategory
+      ? `
         <div class="org-event-field">
-  <label for="category">Categoria *</label>
-  <select id="category" name="category" required>
-    <option value="">Seleziona categoria</option>
-    ${renderOptions(categoryOptions, event.category)}
-  </select>
-</div>
-
-<div class="org-event-field">
-  <label for="subcategory">Sottocategoria</label>
-  <select id="subcategory" name="subcategory">
-    <option value="">Seleziona sottocategoria</option>
-    ${renderOptions(subcategoryOptions, event.subcategory)}
-  </select>
-</div>
-
-${
-  isCustomSubcategory
-    ? `
-      <div class="org-event-field">
-        <label for="subcategoryCustom">Sottocategoria personalizzata</label>
-        <input
-          id="subcategoryCustom"
-          name="subcategoryCustom"
-          type="text"
-          value="${escapeHtml(event.subcategory || "")}"
-        />
-      </div>
-    `
-    : ""
-}
-          <div class="org-event-field">
-            <label for="type">Tipo</label>
-            <input id="type" name="type" type="text" value="${escapeHtml(event.type || "")}" />
-          </div>
+          <label for="subcategoryCustom">Sottocategoria personalizzata</label>
+          <input
+            id="subcategoryCustom"
+            name="subcategoryCustom"
+            type="text"
+            value="${escapeHtml(event.subcategory || "")}"
+          />
         </div>
+      `
+      : ""
+  }
+
+  <div class="org-event-field">
+    <label for="type">Tipo</label>
+    <input id="type" name="type" type="text" value="${escapeHtml(event.type || "")}" />
+  </div>
+</div>
       </section>
 
       <section class="org-event-box">
