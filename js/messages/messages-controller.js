@@ -451,16 +451,40 @@ function handleThreadBack() {
   syncBaseUi();
   renderCurrentListView();
 }
-function handlePageBack() {
-  const state = getMessagesState();
+function isSafeInternalPath(value) {
+  if (!value) return false;
+  if (!value.startsWith("/")) return false;
+  if (value.startsWith("//")) return false;
+  return true;
+}
+
+function resolveMessagesBackTarget(state) {
   const rootReturnTo = String(state.rootReturnTo || "").trim();
 
-  if (rootReturnTo) {
-    window.location.href = rootReturnTo;
-    return;
+  if (rootReturnTo === "organizer") {
+    if (state.activeEventId) {
+      const params = new URLSearchParams();
+      params.set("id", state.activeEventId);
+      return `/pages/organizer-event-detail-v2.html?${params.toString()}`;
+    }
+
+    return "/pages/organizer-events-v2.html";
   }
 
-  window.location.href = "/pages/home-v2.html";
+  if (rootReturnTo === "admin") {
+    return "/admin.html";
+  }
+
+  if (isSafeInternalPath(rootReturnTo)) {
+    return rootReturnTo;
+  }
+
+  return "/pages/home-v2.html";
+}
+
+function handlePageBack() {
+  const state = getMessagesState();
+  window.location.href = resolveMessagesBackTarget(state);
 }
 async function handleComposerSubmit(event) {
   event.preventDefault();
