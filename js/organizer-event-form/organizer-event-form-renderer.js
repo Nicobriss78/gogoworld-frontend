@@ -49,7 +49,12 @@ export function renderEventForm(state) {
   }
 
   const event = state.event || {};
-
+const categoryOptions = getCategoryOptions();
+const subcategoryOptions = getSubcategoryOptions(event.category);
+const isCustomSubcategory = Boolean(
+  event.subcategory &&
+  !subcategoryOptions.includes(event.subcategory)
+);
   root.innerHTML = `
     <h1>${title}</h1>
     <p>Form evento V2 allineato ai campi legacy/backend attualmente stabili.</p>
