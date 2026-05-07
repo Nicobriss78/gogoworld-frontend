@@ -34,6 +34,78 @@ function normalizeList(value) {
   return Array.isArray(value) ? value : [];
 }
 
+function hasPendingAction(state) {
+  return Boolean(
+    state.saving ||
+      state.rotatingCode ||
+      state.banningUserId ||
+      state.unbanningUserId
+  );
+}
+
+function renderUserAction(userId, actionLabel, actionName, danger, state) {
+  const safeUserId = escapeHtml(userId);
+  const pending = hasPendingAction(state);
+
+  if (actionName === "ban-user") {
+    const confirming = state.confirmBanUserId === userId;
+    const banning = state.banningUserId === userId;
+
+    if (confirming) {
+      return `
+        <span>Confermi ban?</span>
+        <button
+          type="button"
+          class="danger"
+          data-action="confirm-ban-user"
+          data-user-id="${safeUserId}"
+          ${banning ? "disabled" : ""}
+        >
+          ${banning ? "Ban..." : "Conferma"}
+        </button>
+        <button
+          type="button"
+          data-action="cancel-ban-user"
+          data-user-id="${safeUserId}"
+          ${banning ? "disabled" : ""}
+        >
+          Annulla
+        </button>
+      `;
+    }
+
+    return `
+      <button
+        type="button"
+        class="${danger ? "danger" : ""}"
+        data-action="request-ban-user"
+        data-user-id="${safeUserId}"
+        ${pending ? "disabled" : ""}
+      >
+        ${escapeHtml(actionLabel)}
+      </button>
+    `;
+  }
+
+  if (actionName === "unban-user") {
+    const unbanning = state.unbanningUserId === userId;
+
+    return `
+      <button
+        type="button"
+        class="${danger ? "danger" : ""}"
+        data-action="unban-user"
+        data-user-id="${safeUserId}"
+        ${pending ? "disabled" : ""}
+      >
+        ${unbanning ? "Reinserimento..." : escapeHtml(actionLabel)}
+      </button>
+    `;
+  }
+
+  return "";
+}
+
 function renderUserList(
   users,
   emptyText,
@@ -63,7 +135,7 @@ function renderUserList(
           const isAdmin = role === "admin";
           const isSelf = userId && userId === currentUserId;
 
-          const canBan = userId && actionName && !isOrganizer && !isAdmin && !isSelf;
+          const canAct = userId && actionName && !isOrganizer && !isAdmin && !isSelf;
 
           return `
             <article class="org-access-user">
@@ -82,17 +154,10 @@ function renderUserList(
               </div>
 
               ${
-                canBan
+                canAct
                   ? `
                     <div class="org-access-actions" style="margin-top:10px;">
-                      <button
-                        type="button"
-                        class="${danger ? "danger" : ""}"
-                        data-action="${escapeHtml(actionName)}"
-                        data-user-id="${escapeHtml(userId)}"
-                      >
-                        ${escapeHtml(actionLabel)}
-                      </button>
+                      ${renderUserAction(userId, actionLabel, actionName, danger, state)}
                     </div>
                   `
                   : ""
@@ -102,6 +167,26 @@ function renderUserList(
         })
         .join("")}
     </div>
+  `;
+}
+
+function renderRotateCodeAction(state) {
+  if (state.confirmRotateCode) {
+    return `
+      <span>Confermi rigenerazione codice?</span>
+      <button type="button" data-action="confirm-rotate-code" ${state.rotatingCode ? "disabled" : ""}>
+        ${state.rotatingCode ? "Rigenerazione..." : "Conferma"}
+      </button>
+      <button type="button" data-action="cancel-rotate-code" ${state.rotatingCode ? "disabled" : ""}>
+        Annulla
+      </button>
+    `;
+  }
+
+  return `
+    <button type="button" data-action="request-rotate-code" ${hasPendingAction(state) ? "disabled" : ""}>
+      Rigenera codice
+    </button>
   `;
 }
 
@@ -120,7 +205,7 @@ export function renderEventAccess(state) {
     return;
   }
 
-  if (state.error) {
+  if (state.error && !state.event) {
     root.innerHTML = `
       <h1>Accessi evento privato</h1>
       <section class="org-access-error">${escapeHtml(state.error)}</section>
@@ -142,14 +227,13 @@ export function renderEventAccess(state) {
     <p>${escapeHtml(title)}</p>
 
     ${state.success ? `<section class="org-access-success">${escapeHtml(state.success)}</section>` : ""}
+    ${state.error ? `<section class="org-access-error">${escapeHtml(state.error)}</section>` : ""}
 
     <section class="org-access-card">
       <h2>Codice accesso</h2>
       <p><strong>${escapeHtml(event?.accessCode || "N/D")}</strong></p>
       <div class="org-access-actions">
-        <button type="button" data-action="rotate-code">
-          Rigenera codice
-        </button>
+        ${renderRotateCodeAction(state)}
       </div>
       <p class="org-access-muted">
         Gli utenti già autorizzati resteranno dentro. Il vecchio codice non funzionerà più.
@@ -164,9 +248,10 @@ export function renderEventAccess(state) {
           name="email"
           placeholder="Email utente da invitare"
           required
+          ${hasPendingAction(state) ? "disabled" : ""}
         />
         <div class="org-access-actions">
-          <button type="submit" ${state.saving ? "disabled" : ""}>
+          <button type="submit" ${hasPendingAction(state) ? "disabled" : ""}>
             ${state.saving ? "Invio..." : "Invita"}
           </button>
         </div>
