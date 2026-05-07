@@ -48,7 +48,27 @@ function normalizeOptionalNumber(value) {
   const parsed = Number(raw.replace(",", "."));
   return Number.isFinite(parsed) ? parsed : undefined;
 }
+function updateSubcategoryOptions(form) {
+  const categorySelect = form.querySelector('[name="category"]');
+  const subcategorySelect = form.querySelector('[name="subcategory"]');
 
+  if (!categorySelect || !subcategorySelect) return;
+
+  const options = getSubcategoryOptions(categorySelect.value);
+
+  subcategorySelect.innerHTML = `
+    <option value="">Seleziona sottocategoria</option>
+    ${options
+      .map(
+        (option) => `
+          <option value="${option}">
+            ${option}
+          </option>
+        `
+      )
+      .join("")}
+  `;
+}
 function mapBackendEventToForm(event) {
   return {
     title: event.title || "",
