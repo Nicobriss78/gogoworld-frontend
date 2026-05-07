@@ -90,7 +90,10 @@ function collectFormData(form) {
     title: String(data.get("title") || "").trim(),
     description: String(data.get("description") || "").trim(),
     category: String(data.get("category") || "").trim(),
-    subcategory: String(data.get("subcategory") || "").trim(),
+    subcategory:
+  String(data.get("subcategory") || "").trim() === "Altro"
+    ? String(data.get("subcategoryCustom") || "").trim()
+    : String(data.get("subcategory") || "").trim(),
     type: String(data.get("type") || "").trim(),
     language: String(data.get("language") || "it").trim(),
     target: String(data.get("target") || "tutti").trim(),
