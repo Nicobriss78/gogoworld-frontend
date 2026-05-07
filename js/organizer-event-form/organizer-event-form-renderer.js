@@ -1,3 +1,7 @@
+import {
+  getCategoryOptions,
+  getSubcategoryOptions,
+} from "./event-categories.js";
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
