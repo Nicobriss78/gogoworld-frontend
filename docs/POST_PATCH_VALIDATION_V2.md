@@ -8,6 +8,23 @@
 - Nessuna duplicazione? [ ]
 
 ---
+## GERARCHIA PAGINE V2
+
+- Le pagine di primo livello usano:
+  - shell [ ]
+  - topbar [ ]
+  - bottomnav [ ]
+  - bootstrap area [ ]
+
+- Le pagine di secondo livello NON usano:
+  - shell completa [ ]
+  - bottomnav [ ]
+  - bootstrap area [ ]
+
+- Le pagine immersive usano:
+  - `checkAccess()` diretto [ ]
+  - controller dedicato [ ]
+---
 
 ## UI
 - Topbar visibile? [ ]
@@ -48,7 +65,9 @@ MAPPA / MAPPA PRIVATI:
 - Stato filters coerente? [ ]
 - Stato geo coerente? [ ]
 - Stato chat/selectedEvent coerente? [ ]
-
+- Nessun ritorno 404 nei flow V2 principali? [ ]
+- Nessun bootstrap non previsto? [ ]
+- Nessun import morto nei bootstrap? [ ]
 ---
 
 ## BACKEND FEATURES (VALIDAZIONE)
@@ -209,6 +228,12 @@ PRIVATI:
 ## SICUREZZA
 - Nessuna regressione sicurezza? [ ]
 - Nessun endpoint costruito con parametri undefined/null? [ ]
+- Nessun `alert()` / `confirm()` nelle aree V2 hardenizzate? [ ]
+- Renderer escapati correttamente? [ ]
+- Parametri URL encodeati? [ ]
+- Azioni concorrenti bloccate? [ ]
+- Doppio click bloccato? [ ]
+- Loading state presenti nelle azioni critiche? [ ]
 ---
 
 ## CROSS TEST
@@ -217,6 +242,44 @@ PRIVATI:
 - Ritorno OK [ ]
 
 ---
+## ORGANIZER V2 — VALIDAZIONE
 
+### Primo livello
+
+- organizer-dashboard-v2 OK? [ ]
+- organizer-events-v2 OK? [ ]
+- organizer-trills-v2 OK? [ ]
+
+- topbar Organizer presente? [ ]
+- bottomnav Organizer presente? [ ]
+- bootstrap Organizer corretto? [ ]
+
+### Secondo livello
+
+- organizer-event-create-v2 OK? [ ]
+- organizer-event-edit-v2 OK? [ ]
+- organizer-event-detail-v2 OK? [ ]
+- organizer-event-access-v2 OK? [ ]
+- organizer-trill-create-v2 OK? [ ]
+
+- Nessuna bottomnav presente? [ ]
+- Nessuna shell completa presente? [ ]
+- `checkAccess()` diretto funzionante? [ ]
+
+### Hardening
+
+- Nessun `alert()` / `confirm()` Organizer? [ ]
+- Conferme interne funzionanti? [ ]
+- Loading action funzionanti? [ ]
+- Azioni concorrenti bloccate? [ ]
+
+### Criticità note
+
+- `messages-v2`
+  - `rootReturnTo=organizer`
+  - verificato/stabile? [ ]
+    
+--- 
+  
 ## CHIUSURA
 Se qualcosa è strano → NON chiudere
