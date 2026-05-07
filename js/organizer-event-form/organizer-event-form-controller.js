@@ -231,7 +231,9 @@ function bindFormEvents() {
     if (!form) return;
 
     const target = domEvent.target;
-
+    if (target.name === "category") {
+  updateSubcategoryOptions(form);
+}
     if (target.name === "isPrivate" && target.checked) {
       const codeInput = form.elements.accessCode;
 
