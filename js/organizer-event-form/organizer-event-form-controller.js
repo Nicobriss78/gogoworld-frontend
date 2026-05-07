@@ -25,16 +25,49 @@ function toLocalInputValue(value) {
   return toDateTimeLocalValue(date);
 }
 
+function serializeListForInput(value) {
+  if (Array.isArray(value)) {
+    return value.filter(Boolean).join(" | ");
+  }
+
+  return String(value || "");
+}
+
+function splitPipeList(value) {
+  return String(value || "")
+    .split("|")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function normalizeOptionalNumber(value) {
+  const raw = String(value || "").trim();
+
+  if (!raw) return undefined;
+
+  const parsed = Number(raw.replace(",", "."));
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
 function mapBackendEventToForm(event) {
   return {
     title: event.title || "",
     description: event.description || "",
     category: event.category || "",
+    subcategory: event.subcategory || "",
     type: event.type || "",
+    language: event.language || "it",
+    target: event.target || "tutti",
     venueName: event.venueName || "",
+    street: event.street || "",
+    streetNumber: event.streetNumber || "",
+    postalCode: event.postalCode || "",
     city: event.city || "",
+    province: event.province || "",
     region: event.region || "",
-    country: event.country || "Italia",
+    country: event.country || "IT",
+    lat: event.lat ?? "",
+    lon: event.lon ?? "",
     dateStart: toLocalInputValue(event.dateStart),
     dateEnd: toLocalInputValue(event.dateEnd),
     visibility: event.visibility || "public",
@@ -43,6 +76,10 @@ function mapBackendEventToForm(event) {
     isFree: event.isFree !== false,
     price: event.price ?? "",
     currency: event.currency || "EUR",
+    tags: serializeListForInput(event.tags),
+    images: serializeListForInput(event.images),
+    coverImage: event.coverImage || "",
+    timezone: event.timezone || "Europe/Rome",
   };
 }
 
@@ -53,11 +90,20 @@ function collectFormData(form) {
     title: String(data.get("title") || "").trim(),
     description: String(data.get("description") || "").trim(),
     category: String(data.get("category") || "").trim(),
+    subcategory: String(data.get("subcategory") || "").trim(),
     type: String(data.get("type") || "").trim(),
+    language: String(data.get("language") || "it").trim(),
+    target: String(data.get("target") || "tutti").trim(),
     venueName: String(data.get("venueName") || "").trim(),
+    street: String(data.get("street") || "").trim(),
+    streetNumber: String(data.get("streetNumber") || "").trim(),
+    postalCode: String(data.get("postalCode") || "").trim(),
     city: String(data.get("city") || "").trim(),
+    province: String(data.get("province") || "").trim(),
     region: String(data.get("region") || "").trim(),
-    country: String(data.get("country") || "Italia").trim(),
+    country: String(data.get("country") || "IT").trim(),
+    lat: String(data.get("lat") || "").trim(),
+    lon: String(data.get("lon") || "").trim(),
     dateStart: String(data.get("dateStart") || ""),
     dateEnd: String(data.get("dateEnd") || ""),
     isPrivate: Boolean(data.get("isPrivate")),
@@ -65,21 +111,34 @@ function collectFormData(form) {
     isFree: Boolean(data.get("isFree")),
     price: String(data.get("price") || ""),
     currency: String(data.get("currency") || "EUR"),
+    tags: String(data.get("tags") || "").trim(),
+    images: String(data.get("images") || "").trim(),
+    coverImage: String(data.get("coverImage") || "").trim(),
+    timezone: String(data.get("timezone") || "Europe/Rome").trim(),
   };
 }
 
 function buildPayload(event) {
   const normalized = normalizePrivacy(event);
+  const lat = normalizeOptionalNumber(normalized.lat);
+  const lon = normalizeOptionalNumber(normalized.lon);
 
-  return {
+  const payload = {
     title: normalized.title,
     description: normalized.description,
     category: normalized.category || "generale",
+    subcategory: normalized.subcategory,
     type: normalized.type || "evento",
+    language: normalized.language || "it",
+    target: normalized.target || "tutti",
     venueName: normalized.venueName,
+    street: normalized.street,
+    streetNumber: normalized.streetNumber,
+    postalCode: normalized.postalCode,
     city: normalized.city,
+    province: normalized.province,
     region: normalized.region,
-    country: normalized.country || "Italia",
+    country: normalized.country || "IT",
     dateStart: new Date(normalized.dateStart).toISOString(),
     dateEnd: new Date(normalized.dateEnd).toISOString(),
     visibility: normalized.visibility,
@@ -88,7 +147,20 @@ function buildPayload(event) {
     isFree: normalized.isFree,
     price: normalized.isFree ? 0 : Number(normalized.price),
     currency: normalized.currency || "EUR",
+    tags: splitPipeList(normalized.tags),
+    images: splitPipeList(normalized.images),
+    coverImage: normalized.coverImage,
+    timezone: normalized.timezone || "Europe/Rome",
   };
+
+  if (lat !== undefined) payload.lat = lat;
+  if (lon !== undefined) payload.lon = lon;
+
+  if (payload.isFree) {
+    delete payload.currency;
+  }
+
+  return payload;
 }
 
 async function loadEditEvent() {
