@@ -18,7 +18,6 @@ function selected(current, value) {
 function getModeTitle(mode) {
   return mode === "edit" ? "Modifica evento" : "Crea evento";
 }
-
 export function renderEventForm(state) {
   const root = document.querySelector("[data-org-event-form-root]");
   if (!root) return;
@@ -37,13 +36,15 @@ export function renderEventForm(state) {
 
   root.innerHTML = `
     <h1>${title}</h1>
-    <p>Form evento V2 minimale, pronto per evoluzione avanzata.</p>
+    <p>Form evento V2 allineato ai campi legacy/backend attualmente stabili.</p>
 
     ${state.error ? `<section class="org-event-error">${escapeHtml(state.error)}</section>` : ""}
     ${state.success ? `<section class="org-event-success">${escapeHtml(state.success)}</section>` : ""}
 
     <form class="org-event-form" data-org-event-form>
       <section class="org-event-box">
+        <h2>Informazioni base</h2>
+
         <div class="org-event-field">
           <label for="title">Titolo *</label>
           <input id="title" name="title" type="text" value="${escapeHtml(event.title || "")}" required />
@@ -56,8 +57,13 @@ export function renderEventForm(state) {
 
         <div class="org-event-row">
           <div class="org-event-field">
-            <label for="category">Categoria</label>
-            <input id="category" name="category" type="text" value="${escapeHtml(event.category || "")}" />
+            <label for="category">Categoria *</label>
+            <input id="category" name="category" type="text" value="${escapeHtml(event.category || "")}" required />
+          </div>
+
+          <div class="org-event-field">
+            <label for="subcategory">Sottocategoria</label>
+            <input id="subcategory" name="subcategory" type="text" value="${escapeHtml(event.subcategory || "")}" />
           </div>
 
           <div class="org-event-field">
@@ -68,42 +74,25 @@ export function renderEventForm(state) {
       </section>
 
       <section class="org-event-box">
-        <div class="org-event-field">
-          <label for="venueName">Nome luogo</label>
-          <input id="venueName" name="venueName" type="text" value="${escapeHtml(event.venueName || "")}" />
-        </div>
+        <h2>Visibilità, lingua e target</h2>
 
         <div class="org-event-row">
           <div class="org-event-field">
-            <label for="city">Città</label>
-            <input id="city" name="city" type="text" value="${escapeHtml(event.city || "")}" />
+            <label for="language">Lingua *</label>
+            <input id="language" name="language" type="text" value="${escapeHtml(event.language || "it")}" required />
           </div>
 
           <div class="org-event-field">
-            <label for="region">Regione</label>
-            <input id="region" name="region" type="text" value="${escapeHtml(event.region || "")}" />
+            <label for="target">Target *</label>
+            <input id="target" name="target" type="text" value="${escapeHtml(event.target || "tutti")}" required />
           </div>
 
           <div class="org-event-field">
-            <label for="country">Paese *</label>
-            <input id="country" name="country" type="text" value="${escapeHtml(event.country || "Italia")}" required />
+            <label for="timezone">Timezone</label>
+            <input id="timezone" name="timezone" type="text" value="${escapeHtml(event.timezone || "Europe/Rome")}" />
           </div>
         </div>
-      </section>
 
-      <section class="org-event-box">
-        <div class="org-event-field">
-          <label for="dateStart">Data inizio *</label>
-          <input id="dateStart" name="dateStart" type="datetime-local" value="${escapeHtml(event.dateStart || "")}" required />
-        </div>
-
-        <div class="org-event-field">
-          <label for="dateEnd">Data fine * — suggerita automaticamente ma modificabile</label>
-          <input id="dateEnd" name="dateEnd" type="datetime-local" value="${escapeHtml(event.dateEnd || "")}" required />
-        </div>
-      </section>
-
-      <section class="org-event-box">
         <div class="org-event-field">
           <label>
             <input name="isPrivate" type="checkbox" ${checked(event.isPrivate)} />
@@ -119,6 +108,82 @@ export function renderEventForm(state) {
       </section>
 
       <section class="org-event-box">
+        <h2>Localizzazione</h2>
+
+        <div class="org-event-field">
+          <label for="venueName">Nome luogo</label>
+          <input id="venueName" name="venueName" type="text" value="${escapeHtml(event.venueName || "")}" />
+        </div>
+
+        <div class="org-event-row">
+          <div class="org-event-field">
+            <label for="street">Via</label>
+            <input id="street" name="street" type="text" value="${escapeHtml(event.street || "")}" />
+          </div>
+
+          <div class="org-event-field">
+            <label for="streetNumber">Numero civico</label>
+            <input id="streetNumber" name="streetNumber" type="text" value="${escapeHtml(event.streetNumber || "")}" />
+          </div>
+
+          <div class="org-event-field">
+            <label for="postalCode">CAP</label>
+            <input id="postalCode" name="postalCode" type="text" value="${escapeHtml(event.postalCode || "")}" />
+          </div>
+        </div>
+
+        <div class="org-event-row">
+          <div class="org-event-field">
+            <label for="city">Città *</label>
+            <input id="city" name="city" type="text" value="${escapeHtml(event.city || "")}" required />
+          </div>
+
+          <div class="org-event-field">
+            <label for="province">Provincia</label>
+            <input id="province" name="province" type="text" value="${escapeHtml(event.province || "")}" />
+          </div>
+
+          <div class="org-event-field">
+            <label for="region">Regione *</label>
+            <input id="region" name="region" type="text" value="${escapeHtml(event.region || "")}" required />
+          </div>
+
+          <div class="org-event-field">
+            <label for="country">Paese *</label>
+            <input id="country" name="country" type="text" value="${escapeHtml(event.country || "IT")}" required />
+          </div>
+        </div>
+
+        <div class="org-event-row">
+          <div class="org-event-field">
+            <label for="lat">Latitudine</label>
+            <input id="lat" name="lat" type="text" inputmode="decimal" value="${escapeHtml(event.lat ?? "")}" />
+          </div>
+
+          <div class="org-event-field">
+            <label for="lon">Longitudine</label>
+            <input id="lon" name="lon" type="text" inputmode="decimal" value="${escapeHtml(event.lon ?? "")}" />
+          </div>
+        </div>
+      </section>
+
+      <section class="org-event-box">
+        <h2>Date</h2>
+
+        <div class="org-event-field">
+          <label for="dateStart">Data inizio *</label>
+          <input id="dateStart" name="dateStart" type="datetime-local" value="${escapeHtml(event.dateStart || "")}" required />
+        </div>
+
+        <div class="org-event-field">
+          <label for="dateEnd">Data fine * — suggerita automaticamente ma modificabile</label>
+          <input id="dateEnd" name="dateEnd" type="datetime-local" value="${escapeHtml(event.dateEnd || "")}" required />
+        </div>
+      </section>
+
+      <section class="org-event-box">
+        <h2>Prezzo</h2>
+
         <div class="org-event-field">
           <label>
             <input name="isFree" type="checkbox" ${checked(event.isFree)} />
@@ -126,17 +191,40 @@ export function renderEventForm(state) {
           </label>
         </div>
 
+        <div class="org-event-row">
+          <div class="org-event-field">
+            <label for="price">Prezzo</label>
+            <input id="price" name="price" type="number" min="0" step="0.01" value="${escapeHtml(event.price || "")}" />
+          </div>
+
+          <div class="org-event-field">
+            <label for="currency">Valuta</label>
+            <select id="currency" name="currency">
+              <option value="EUR" ${selected(event.currency, "EUR")}>EUR</option>
+              <option value="USD" ${selected(event.currency, "USD")}>USD</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="org-event-box">
+        <h2>Media e tag</h2>
+
         <div class="org-event-field">
-          <label for="price">Prezzo</label>
-          <input id="price" name="price" type="number" min="0" step="0.01" value="${escapeHtml(event.price || "")}" />
+          <label for="tags">Tag</label>
+          <input id="tags" name="tags" type="text" value="${escapeHtml(event.tags || "")}" />
+          <small>Separali con il simbolo |</small>
         </div>
 
         <div class="org-event-field">
-          <label for="currency">Valuta</label>
-          <select id="currency" name="currency">
-            <option value="EUR" ${selected(event.currency, "EUR")}>EUR</option>
-            <option value="USD" ${selected(event.currency, "USD")}>USD</option>
-          </select>
+          <label for="images">Immagini</label>
+          <textarea id="images" name="images">${escapeHtml(event.images || "")}</textarea>
+          <small>Inserisci URL https separati da |</small>
+        </div>
+
+        <div class="org-event-field">
+          <label for="coverImage">Immagine di copertina</label>
+          <input id="coverImage" name="coverImage" type="url" value="${escapeHtml(event.coverImage || "")}" />
         </div>
       </section>
 
@@ -148,4 +236,8 @@ export function renderEventForm(state) {
       </div>
     </form>
   `;
-}
+                                                           }
+
+
+
+
