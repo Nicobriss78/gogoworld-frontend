@@ -109,8 +109,10 @@ function bindEventDetailActions(eventId) {
           return;
         }
 
-        window.location.href = `/pages/messages-v2.html?roomId=${encodeURIComponent(roomId)}&rootReturnTo=organizer`;
-      } catch (error) {
+const params = new URLSearchParams();
+params.set("roomId", roomId);
+params.set("rootReturnTo", `/pages/organizer-event-detail-v2.html?id=${encodeURIComponent(eventId)}`);
+window.location.href = `/pages/messages-v2.html?${params.toString()}`;      } catch (error) {
         console.error("[OrganizerEventDetail] open room failed", error);
         organizerEventDetailState.actionError = error.message || "Errore durante l’apertura della room evento.";
         organizerEventDetailState.openingRoom = false;
