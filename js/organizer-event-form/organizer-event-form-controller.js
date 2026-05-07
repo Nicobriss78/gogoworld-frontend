@@ -8,7 +8,7 @@ import { eventFormState } from "./organizer-event-form-state.js?v=5";
 import { suggestDateEnd, toDateTimeLocalValue } from "./organizer-event-duration.js?v=5";
 import { generateAccessCode, normalizePrivacy } from "./organizer-event-privacy.js?v=5";
 import { validateEventForm } from "./organizer-event-form-validation.js?v=5";
-
+import { getSubcategoryOptions } from "./event-categories.js?v=5";
 function getEventIdFromUrl() {
   return new URLSearchParams(window.location.search).get("id");
 }
