@@ -36,5 +36,6 @@ export const eventFormState = {
   images: "",
   coverImage: "",
   timezone: "Europe/Rome",
+  geocodeResults: [],
 },
 };
