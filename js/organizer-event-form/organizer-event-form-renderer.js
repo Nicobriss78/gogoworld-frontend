@@ -75,7 +75,14 @@ const isCustomSubcategory = Boolean(
           <label for="description">Descrizione *</label>
           <textarea id="description" name="description" required>${escapeHtml(event.description || "")}</textarea>
         </div>
-
+<div class="org-event-field">
+  <button type="button" data-action="search-coordinates">
+    Cerca coordinate
+  </button>
+  <small>
+    Usa nome luogo, indirizzo, città, provincia, regione e paese per suggerire latitudine e longitudine.
+  </small>
+</div>
         <div class="org-event-row">
   <div class="org-event-field">
     <label for="category">Categoria *</label>
