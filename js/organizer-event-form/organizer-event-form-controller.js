@@ -186,7 +186,82 @@ function buildPayload(event) {
 
   return payload;
 }
+function buildGeocodePayloadFromForm(form) {
+  const data = collectFormData(form);
 
+  return {
+    venueName: data.venueName,
+    street: data.street,
+    streetNumber: data.streetNumber,
+    postalCode: data.postalCode,
+    city: data.city,
+    province: data.province,
+    region: data.region,
+    country: data.country,
+  };
+}
+
+function applyGeocodeResultToForm(form, result) {
+  if (!result) return;
+
+  if (form.elements.lat) form.elements.lat.value = result.lat ?? "";
+  if (form.elements.lon) form.elements.lon.value = result.lon ?? "";
+
+  if (result.city && form.elements.city && !form.elements.city.value.trim()) {
+    form.elements.city.value = result.city;
+  }
+
+  if (result.province && form.elements.province && !form.elements.province.value.trim()) {
+    form.elements.province.value = result.province;
+  }
+
+  if (result.region && form.elements.region && !form.elements.region.value.trim()) {
+    form.elements.region.value = result.region;
+  }
+
+  if (result.country && form.elements.country && !form.elements.country.value.trim()) {
+    form.elements.country.value = result.country;
+  }
+
+  if (result.postalCode && form.elements.postalCode && !form.elements.postalCode.value.trim()) {
+    form.elements.postalCode.value = result.postalCode;
+  }
+}
+
+async function handleSearchCoordinates(form, button) {
+  if (button.disabled) return;
+
+  button.disabled = true;
+  button.textContent = "Ricerca coordinate...";
+
+  eventFormState.error = null;
+  eventFormState.success = null;
+
+  try {
+    const payload = buildGeocodePayloadFromForm(form);
+    const result = await searchEventCoordinates(payload);
+    const firstResult = Array.isArray(result.results) ? result.results[0] : null;
+
+    if (!firstResult) {
+      eventFormState.error = "Nessuna coordinata trovata per questo luogo.";
+      renderEventForm(eventFormState);
+      return;
+    }
+
+    applyGeocodeResultToForm(form, firstResult);
+
+    eventFormState.event = collectFormData(form);
+    eventFormState.success = "Coordinate trovate e compilate.";
+    renderEventForm(eventFormState);
+  } catch (error) {
+    console.error("[OrganizerEventForm] geocode failed", error);
+    eventFormState.error = error.message || "Errore durante la ricerca coordinate.";
+    renderEventForm(eventFormState);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Cerca coordinate";
+  }
+}
 async function loadEditEvent() {
   eventFormState.loading = true;
   eventFormState.error = null;
