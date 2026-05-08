@@ -331,7 +331,7 @@ function bindFormEvents() {
   });
 
   document.addEventListener("click", (domEvent) => {
-  const target = domEvent.target;
+  const target = domEvent.target.closest("[data-action]");
   if (target?.dataset?.action === "select-geocode-result") {
   const index = Number(target.dataset.resultIndex);
 
