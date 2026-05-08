@@ -1,9 +1,13 @@
-import { getToken } from "/js/auth.js";
+const API_BASE = window.API_BASE || "https://gogoworld-api.onrender.com/api";
+
+function getToken() {
+  return localStorage.getItem("token");
+}
 
 export async function searchEventCoordinates(payload) {
   const token = getToken();
 
-  const response = await fetch("/api/geocode/search", {
+  const response = await fetch(`${API_BASE}/geocode/search`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
