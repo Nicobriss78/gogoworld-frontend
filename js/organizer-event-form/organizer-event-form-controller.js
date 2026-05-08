@@ -240,7 +240,11 @@ async function handleSearchCoordinates(form, button) {
   try {
     const payload = buildGeocodePayloadFromForm(form);
     const result = await searchEventCoordinates(payload);
-    const firstResult = Array.isArray(result.results) ? result.results[0] : null;
+    const results = Array.isArray(result.results)
+  ? result.results
+  : [];
+
+const firstResult = results[0] || null;
 
     if (!firstResult) {
       eventFormState.error = "Nessuna coordinata trovata per questo luogo.";
