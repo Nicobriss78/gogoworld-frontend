@@ -251,7 +251,13 @@ const firstResult = results[0] || null;
       renderEventForm(eventFormState);
       return;
     }
-
+    if (results.length > 1) {
+  eventFormState.geocodeResults = results;
+  eventFormState.event = collectFormData(form);
+  eventFormState.success = "Seleziona il luogo corretto.";
+  renderEventForm(eventFormState);
+  return;
+}
     applyGeocodeResultToForm(form, firstResult);
 
     eventFormState.event = collectFormData(form);
