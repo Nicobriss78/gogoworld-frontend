@@ -195,7 +195,14 @@ const isCustomSubcategory = Boolean(
             <input id="country" name="country" type="text" value="${escapeHtml(event.country || "IT")}" required />
           </div>
         </div>
-
+           <div class="org-event-field">
+  <button type="button" data-action="search-coordinates">
+    Cerca coordinate
+  </button>
+  <small>
+    Usa nome luogo, indirizzo, città, provincia, regione e paese per suggerire latitudine e longitudine.
+  </small>
+</div>
         <div class="org-event-row">
           <div class="org-event-field">
             <label for="lat">Latitudine</label>
