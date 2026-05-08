@@ -320,9 +320,17 @@ function bindFormEvents() {
   });
 
   document.addEventListener("click", (domEvent) => {
-    const target = domEvent.target;
+  const target = domEvent.target;
 
-    if (target?.dataset?.action !== "generate-access-code") return;
+  if (target?.dataset?.action === "search-coordinates") {
+    const form = target.closest("[data-org-event-form]");
+    if (!form) return;
+
+    handleSearchCoordinates(form, target);
+    return;
+  }
+
+  if (target?.dataset?.action !== "generate-access-code") return;
 
     const form = target.closest("[data-org-event-form]");
     if (!form) return;
