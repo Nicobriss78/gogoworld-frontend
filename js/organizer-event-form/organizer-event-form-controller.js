@@ -258,6 +258,7 @@ const firstResult = results[0] || null;
   renderEventForm(eventFormState);
   return;
 }
+    eventFormState.geocodeResults = [];
     applyGeocodeResultToForm(form, firstResult);
 
     eventFormState.event = collectFormData(form);
