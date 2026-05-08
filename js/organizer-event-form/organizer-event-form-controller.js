@@ -332,7 +332,24 @@ function bindFormEvents() {
 
   document.addEventListener("click", (domEvent) => {
   const target = domEvent.target;
+  if (target?.dataset?.action === "select-geocode-result") {
+  const index = Number(target.dataset.resultIndex);
 
+  const result = eventFormState.geocodeResults?.[index];
+  if (!result) return;
+
+  const form = document.querySelector("[data-org-event-form]");
+  if (!form) return;
+
+  applyGeocodeResultToForm(form, result);
+
+  eventFormState.geocodeResults = [];
+  eventFormState.event = collectFormData(form);
+  eventFormState.success = "Coordinate applicate.";
+  renderEventForm(eventFormState);
+
+  return;
+}
   if (target?.dataset?.action === "search-coordinates") {
     const form = target.closest("[data-org-event-form]");
     if (!form) return;
