@@ -200,6 +200,44 @@ const isCustomSubcategory = Boolean(
     Cerca coordinate
   </button>
   <small>
+  ${
+  Array.isArray(state.geocodeResults) && state.geocodeResults.length > 1
+    ? `
+      <div class="org-event-geocode-results">
+        <label>Seleziona il luogo corretto</label>
+
+        <div class="org-event-geocode-results-list">
+          ${state.geocodeResults
+            .map(
+              (result, index) => `
+                <button
+                  type="button"
+                  class="org-event-geocode-result"
+                  data-action="select-geocode-result"
+                  data-result-index="${index}"
+                >
+                  <strong>${escapeHtml(result.label || "Luogo")}</strong>
+
+                  <small>
+                    ${escapeHtml(
+                      [
+                        result.city,
+                        result.region,
+                        result.country,
+                      ]
+                        .filter(Boolean)
+                        .join(" • ")
+                    )}
+                  </small>
+                </button>
+              `
+            )
+            .join("")}
+        </div>
+      </div>
+    `
+    : ""
+  }
     Usa nome luogo, indirizzo, città, provincia, regione e paese per suggerire latitudine e longitudine.
   </small>
 </div>
