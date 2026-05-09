@@ -1,5 +1,4 @@
-import { organizerNav } from "./organizer-nav-registry.js?v=9";
-import { navigate } from "./organizer-router.js?v=9";
+import { organizerNav } from "./organizer-nav-registry.js?v=10";
 
 function getCurrentViewId() {
   return document.body?.dataset?.organizerView || "dashboard";
@@ -12,8 +11,8 @@ export function renderBottomnav() {
   const currentViewId = getCurrentViewId();
 
   el.innerHTML = `
-    <nav class="org-bottomnav" aria-label="Navigazione Organizer">
-      ${organizerNav.map((item) => renderNavItem(item, currentViewId)).join("")}
+    <nav class="home-bottomnav org-bottomnav" aria-label="Navigazione Organizer">
+      ${organizerNav.map((item) => renderItem(item, currentViewId)).join("")}
     </nav>
   `;
 
@@ -28,14 +27,14 @@ export function renderBottomnav() {
       }
 
       event.preventDefault();
-      navigate(navId);
+      window.location.href = item.href;
     });
   });
 }
 
-function renderNavItem(item, currentViewId) {
+function renderItem(item, currentViewId) {
   const isActive = item.id === currentViewId;
-  const activeClass = isActive ? " is-active" : "";
+  const activeClass = isActive ? " is-active active" : "";
   const disabledClass = item.enabled ? "" : " is-disabled";
   const ariaCurrent = isActive ? ' aria-current="page"' : "";
   const ariaDisabled = item.enabled ? "" : ' aria-disabled="true"';
@@ -43,15 +42,14 @@ function renderNavItem(item, currentViewId) {
   return `
     <a
       href="${item.enabled ? item.href : "#"}"
-      class="org-bottomnav__item gw-iconbtn${activeClass}${disabledClass}"
-      data-org-nav="${item.id}"
+      class="gw-iconbtn${activeClass}${disabledClass}"
       aria-label="${item.label}"
-      title="${item.label}"${ariaCurrent}${ariaDisabled}
+      title="${item.label}"
+      data-org-nav="${item.id}"${ariaCurrent}${ariaDisabled}
     >
       <svg class="gw-icon" aria-hidden="true">
         <use href="#gw-icon-${item.icon}"></use>
       </svg>
-      <span class="org-bottomnav__label">${item.label}</span>
     </a>
   `;
 }
