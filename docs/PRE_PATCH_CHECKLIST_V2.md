@@ -114,6 +114,59 @@ Se sto modificando MAPPA / MAPPA PRIVATI:
 
 ---
 
+GEOLOCATION / GEOCODE
+
+- Sto lavorando:
+  
+  - su search geocode? [ ]
+  - su reverse geocode? [ ]
+
+- Sto rispettando approccio backend-first? [ ]
+
+- Sto evitando chiamate dirette provider dal frontend? [ ]
+
+- Sto mantenendo separazione:
+  
+  - api layer frontend [ ]
+  - controller UI [ ]
+  - backend controller [ ]
+  - backend service [ ]
+
+- Sto evitando parsing provider dentro renderer UI? [ ]
+
+- Sto verificando che:
+  
+  - latitudine sia valida? [ ]
+  - longitudine sia valida? [ ]
+
+- Sto sanitizzando query testuali? [ ]
+
+- Sto mantenendo rate limit dedicato? [ ]
+
+- Sto evitando fallback casuali multipli che peggiorano ranking provider? [ ]
+
+- Sto trattando correttamente:
+  
+  - nome luogo [ ]
+  - indirizzo [ ]
+  - coordinate GPS [ ]
+
+- Sto evitando inferenze non affidabili su:
+  
+  - venueName [ ]
+  - street [ ]
+  - streetNumber [ ]
+
+- La feature è testabile via API senza frontend? [ ]
+
+- Ho previsto:
+  
+  - gestione GPS negato? [ ]
+  - gestione timeout GPS? [ ]
+  - gestione provider senza risultati? [ ]
+
+---
+
 ## TRILLI (BACKEND ATTIVO)
 
 - Sto modificando il sistema Trilli esistente? [ ]
