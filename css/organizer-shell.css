@@ -1,4 +1,13 @@
-.organizer-shell {
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body.organizer-shell {
   --org-accent: #7A3242;
   --org-accent-hover: #622735;
   --org-accent-soft: rgba(122, 50, 66, 0.08);
@@ -22,28 +31,91 @@
   min-height: var(--gw-app-viewport-h, 100vh);
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
   background: var(--home-bg);
   color: var(--home-text);
   font-family: var(--gw-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+  line-height: 1.35;
+}
+
+body.organizer-shell *,
+body.organizer-shell *::before,
+body.organizer-shell *::after {
+  box-sizing: border-box;
+}
+
+body.organizer-shell h1,
+body.organizer-shell h2,
+body.organizer-shell h3,
+body.organizer-shell p {
+  margin: 0;
+}
+
+body.organizer-shell a {
+  color: inherit;
+  text-decoration: none;
+}
+
+body.organizer-shell button,
+body.organizer-shell input,
+body.organizer-shell textarea,
+body.organizer-shell select {
+  font: inherit;
+}
+
+body.organizer-shell .gw-iconbtn {
+  font: inherit;
 }
 
 #organizer-view {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: calc(var(--gw-app-viewport-h, 100vh) - var(--gw-topbar-h, 104px) - var(--home-bottomnav-h));
+  width: 100%;
+  max-width: 100%;
   overflow-y: auto;
-  padding: var(--gw-space-md, 16px);
-  padding-bottom: calc(var(--home-bottomnav-h) + var(--gw-space-lg, 24px));
+  overflow-x: hidden;
+  padding: var(--gw-page-pad-y, 12px) var(--home-page-pad-x) calc(var(--home-bottomnav-h) + 10px);
+  -webkit-overflow-scrolling: touch;
 }
 
-.organizer-shell .home-topbar__brand,
-.organizer-shell .home-topbar__btn:hover,
-.organizer-shell .home-topbar__btn:focus-visible {
+.organizer-shell .home-topbar,
+.organizer-shell .home-bottomnav {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.organizer-shell .home-topbar__row {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.organizer-shell .home-topbar__identity {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.organizer-shell .home-topbar__greeting,
+.organizer-shell .home-topbar__role {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.organizer-shell .home-topbar__brand {
+  min-width: 0;
+  max-width: 48%;
+  overflow: hidden;
   color: var(--org-accent-hover);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .organizer-shell .home-topbar__btn:hover,
 .organizer-shell .home-topbar__btn:focus-visible {
   border-color: var(--org-accent-border);
   background: var(--org-accent-soft);
+  color: var(--org-accent-hover);
 }
 
 .organizer-shell .home-bottomnav > .gw-iconbtn.is-active,
@@ -98,6 +170,7 @@
   width: min(280px, calc(100vw - 32px));
   max-height: calc(100dvh - var(--gw-topbar-h, 104px) - var(--gw-bottomnav-h, 68px) - 40px);
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 4px;
