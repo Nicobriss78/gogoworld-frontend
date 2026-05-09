@@ -339,6 +339,101 @@ Il targeting geolocalizzato reale NON è ancora implementato.
 - promo QR
 - sistema crediti (free / pro)
 
+🌍 GEOLOCALIZZAZIONE EVENTI — ORGANIZER EVENT FORM V2
+
+Stato reale attuale
+
+Backend:
+
+- proxy geocode server-side attivo
+- integrazione OpenStreetMap / Nominatim
+- separazione:
+  - routes
+  - controllers
+  - services
+- rate limit dedicato
+- sanitizzazione query attiva
+
+Frontend:
+
+- Organizer Event Form V2 integrato
+- ricerca coordinate intelligente
+- supporto risultati multipli
+- compilazione automatica campi affidabili
+- selezione manuale sede attività
+
+Ricerca supportata
+
+Funziona bene:
+
+- nome luogo + città
+- indirizzo + città
+- via + civico + città
+- nome luogo + CAP + città
+
+⚠️ Nota:
+ricerca:
+
+- nome luogo + sola regione
+
+non è garantita.
+
+Limite reale del provider Nominatim/OpenStreetMap.
+
+Compilazione automatica
+
+Il sistema compila automaticamente quando i dati sono affidabili:
+
+- coordinate
+- città
+- provincia
+- regione
+- paese
+- CAP
+
+Può compilare anche:
+
+- venueName
+- street
+- streetNumber
+
+solo se presenti realmente nella risposta provider.
+
+Stato reverse geocoding
+
+NON ancora implementato.
+
+Attualmente esiste solo:
+
+- geocode search
+
+Manca ancora:
+
+- reverse geocode backend
+
+Step approvato successivo
+
+“Usa la mia posizione”
+
+Architettura prevista:
+
+1. browser ottiene GPS
+2. frontend invia coordinate al backend
+3. backend esegue reverse geocoding
+4. frontend compila automaticamente i campi affidabili
+
+Regole architetturali
+
+- mai chiamare OpenStreetMap direttamente dal frontend
+- sempre passare dal backend
+- evitare fallback casuali multipli
+- mantenere separazione responsabilità
+- mantenere compatibilità futura con:
+  - check-in
+  - geo-targeting
+  - Trilli
+  - mappe V2
+
 ## 📌 STATO ORGANIZER V2
 
 ### Completato
