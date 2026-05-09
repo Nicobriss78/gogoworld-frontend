@@ -6,5 +6,5 @@ export function logout() {
 }
 
 export function openNotifications() {
-  window.location.href = "/pages/notifiche-v2.html?rootReturnTo=organizer";
+  window.dispatchEvent(new CustomEvent("organizer:toggle-notifications"));
 }
