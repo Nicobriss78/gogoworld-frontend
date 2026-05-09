@@ -34,3 +34,33 @@ export async function searchEventCoordinates(payload) {
 
   return response.json();
 }
+export async function reverseEventCoordinates(payload) {
+  const token = getToken();
+
+  const response = await fetch(`${API_BASE}/geocode/reverse`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (response.status === 429) {
+    throw new Error("Troppe richieste. Attendi qualche secondo e riprova.");
+  }
+
+  if (response.status === 400) {
+    throw new Error("Coordinate non valide.");
+  }
+
+  if (response.status === 502) {
+    throw new Error("Servizio posizione temporaneamente non disponibile.");
+  }
+
+  if (!response.ok) {
+    throw new Error("Impossibile leggere la posizione.");
+  }
+
+  return response.json();
+}
