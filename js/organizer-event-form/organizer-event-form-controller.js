@@ -432,6 +432,13 @@ function bindFormEvents() {
 
   return;
 }
+  if (target?.dataset?.action === "use-current-position") {
+  const form = target.closest("[data-org-event-form]");
+  if (!form) return;
+
+  handleUseCurrentPosition(form, target);
+  return;
+}
   if (target?.dataset?.action === "search-coordinates") {
     const form = target.closest("[data-org-event-form]");
     if (!form) return;
