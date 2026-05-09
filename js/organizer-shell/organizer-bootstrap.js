@@ -1,9 +1,13 @@
-import { renderTopbar } from "./organizer-topbar.js?v=9";
-import { renderBottomnav } from "./organizer-bottomnav.js?v=9";
-import { renderMenu, toggleOrganizerMenu } from "./organizer-menu.js?v=9";
-import { loadBadges } from "./organizer-badges.js?v=9";
+import { ensureOrganizerIconSprite } from "./organizer-icons.js?v=10";
+import { renderTopbar } from "./organizer-topbar.js?v=10";
+import { renderBottomnav } from "./organizer-bottomnav.js?v=10";
+import { renderMenu, toggleOrganizerMenu } from "./organizer-menu.js?v=10";
+import { loadBadges } from "./organizer-badges.js?v=10";
 import { checkAccess } from "./organizer-access-guard.js?v=7";
-import { openNotifications } from "./organizer-actions.js?v=9";
+import { openNotifications } from "./organizer-actions.js?v=10";
+import { initNotificationsCenter } from "../shared/notifications-center.js";
+
+let notificationsCenter = null;
 
 async function initCurrentView() {
   const view = document.body?.dataset?.organizerView || "dashboard";
@@ -41,6 +45,12 @@ function bindShellActions() {
       }
     });
   });
+
+  window.addEventListener("organizer:toggle-notifications", () => {
+    if (notificationsCenter) {
+      notificationsCenter.toggle();
+    }
+  });
 }
 
 async function bootstrap() {
@@ -48,9 +58,16 @@ async function bootstrap() {
 
   if (!accessResult.allowed) return;
 
+  ensureOrganizerIconSprite();
+
   renderTopbar();
   renderBottomnav();
   renderMenu();
+
+  notificationsCenter = initNotificationsCenter({
+    button: document.querySelector('[data-org-action="notifications"]'),
+  });
+
   bindShellActions();
 
   await loadBadges();
