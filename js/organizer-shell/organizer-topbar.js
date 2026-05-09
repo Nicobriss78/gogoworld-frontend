@@ -14,33 +14,20 @@ export function renderTopbar() {
     "Organizzatore";
 
   el.innerHTML = `
-    <header class="org-topbar">
-      <div class="org-topbar__left">
-        <button
-          class="org-topbar__btn gw-iconbtn"
-          type="button"
-          data-org-action="menu"
-          aria-label="Apri menu Organizer"
-          aria-expanded="false"
-          aria-controls="organizer-menu"
-        >
-          <svg class="gw-icon" aria-hidden="true">
-            <use href="#gw-icon-menu"></use>
-          </svg>
-        </button>
-
-        <div class="org-topbar__identity">
-          <div class="org-topbar__greeting">Ciao, ${username}</div>
-          <div class="org-topbar__role">Area Organizzatore</div>
+    <header class="home-topbar org-topbar">
+      <div class="home-topbar__row home-topbar__row--identity">
+        <div class="home-topbar__identity">
+          <div class="home-topbar__greeting">Ciao, ${username}</div>
+          <div class="home-topbar__role">Area Organizzatore</div>
         </div>
+
+        <div class="home-topbar__brand org-topbar__brand">GoGoWorld.life</div>
       </div>
 
-      <div class="org-topbar__brand">GoGoWorld</div>
-
-      <div class="org-topbar__actions">
+      <div class="home-topbar__row home-topbar__row--actions">
         <a
-          class="org-topbar__btn gw-iconbtn"
           href="/pages/messages-v2.html?rootReturnTo=organizer"
+          class="home-topbar__btn gw-iconbtn"
           aria-label="Messaggi"
           title="Messaggi"
         >
@@ -51,11 +38,13 @@ export function renderTopbar() {
         </a>
 
         <button
-          class="org-topbar__btn gw-iconbtn"
+          class="home-topbar__btn gw-iconbtn"
           type="button"
           data-org-action="notifications"
           aria-label="Notifiche"
           title="Notifiche"
+          aria-expanded="false"
+          aria-controls="gwNotificationsPanel"
         >
           <svg class="gw-icon" aria-hidden="true">
             <use href="#gw-icon-bell"></use>
@@ -63,9 +52,9 @@ export function renderTopbar() {
           <span class="org-shell-badge" data-org-badge="notifications" hidden></span>
         </button>
 
-        <a
-          class="org-topbar__btn gw-iconbtn is-disabled"
-          href="#"
+        <button
+          class="home-topbar__btn gw-iconbtn is-disabled"
+          type="button"
           aria-disabled="true"
           aria-label="Comunicazioni non ancora disponibili"
           title="Comunicazioni"
@@ -73,11 +62,11 @@ export function renderTopbar() {
           <svg class="gw-icon" aria-hidden="true">
             <use href="#gw-icon-communications"></use>
           </svg>
-        </a>
+        </button>
 
         <a
-          class="org-topbar__btn gw-iconbtn"
           href="/pages/profilo-v2.html?rootReturnTo=organizer"
+          class="home-topbar__btn gw-iconbtn"
           aria-label="Profilo"
           title="Profilo"
         >
@@ -85,6 +74,20 @@ export function renderTopbar() {
             <use href="#gw-icon-profile"></use>
           </svg>
         </a>
+
+        <button
+          class="home-topbar__btn gw-iconbtn"
+          type="button"
+          data-org-action="menu"
+          aria-label="Menu"
+          title="Menu"
+          aria-expanded="false"
+          aria-controls="organizer-menu-panel"
+        >
+          <svg class="gw-icon" aria-hidden="true">
+            <use href="#gw-icon-menu"></use>
+          </svg>
+        </button>
       </div>
     </header>
   `;
