@@ -352,6 +352,13 @@ const firstResult = results[0] || null;
   } finally {
     button.disabled = false;
     button.textContent = "Cerca coordinate";
+    if (target?.dataset?.action === "use-current-position") {
+  const form = target.closest("[data-org-event-form]");
+  if (!form) return;
+
+  handleUseCurrentPosition(form, target);
+  return;
+    }
   }
 }
 async function loadEditEvent() {
