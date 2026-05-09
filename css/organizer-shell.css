@@ -110,7 +110,9 @@ body.organizer-shell .gw-iconbtn {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
+.organizer-shell .home-topbar__btn {
+  position: relative;
+}
 .organizer-shell .home-topbar__btn:hover,
 .organizer-shell .home-topbar__btn:focus-visible {
   border-color: var(--org-accent-border);
