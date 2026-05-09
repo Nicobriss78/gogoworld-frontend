@@ -70,6 +70,71 @@ MAPPA / MAPPA PRIVATI:
 - Nessun import morto nei bootstrap? [ ]
 ---
 
+GEOLOCATION / GEOCODE — VALIDAZIONE
+
+SEARCH GEOCODE
+
+- Ricerca:
+  
+  - nome luogo + città funzionante? [ ]
+  - indirizzo + città funzionante? [ ]
+  - via + civico + città funzionante? [ ]
+  - nome luogo + CAP + città funzionante? [ ]
+
+- Risultati multipli:
+  
+  - renderizzati correttamente? [ ]
+  - selezionabili? [ ]
+  - compilazione automatica coerente? [ ]
+
+- Nessuna apertura automatica mappe/chat? [ ]
+
+REVERSE GEOCODE
+
+- GPS browser ottenuto correttamente? [ ]
+
+- Gestione permesso negato corretta? [ ]
+
+- Gestione timeout GPS corretta? [ ]
+
+- Reverse geocode backend funzionante? [ ]
+
+- Coordinate validate correttamente? [ ]
+
+- Compilazione automatica:
+  
+  - città [ ]
+  - provincia [ ]
+  - regione [ ]
+  - paese [ ]
+  - CAP [ ]
+
+- venueName compilato solo se affidabile? [ ]
+
+- street compilata solo se affidabile? [ ]
+
+- streetNumber compilato solo se affidabile? [ ]
+
+- Nessuna inferenza inventata? [ ]
+
+BACKEND
+
+- Nessuna chiamata provider dal frontend? [ ]
+- Endpoint backend funzionanti via API reale? [ ]
+- Rate limit funzionante? [ ]
+- Errori provider gestiti correttamente? [ ]
+- Nessun leak provider verso UI? [ ]
+
+FUTURA COMPATIBILITÀ
+
+- Compatibilità preservata con:
+  - check-in [ ]
+  - geo-targeting [ ]
+  - Trilli [ ]
+  - mappe V2 [ ]
+
+---
+
 ## BACKEND FEATURES (VALIDAZIONE)
 
 - La feature funziona senza frontend? [ ]
