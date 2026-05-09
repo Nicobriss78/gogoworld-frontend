@@ -196,9 +196,15 @@ const isCustomSubcategory = Boolean(
           </div>
         </div>
            <div class="org-event-field">
+  <div class="org-event-location-actions">
   <button type="button" data-action="search-coordinates">
     Cerca coordinate
   </button>
+
+  <button type="button" data-action="use-current-position">
+    Usa la mia posizione
+  </button>
+</div>
   <small>
   ${
   Array.isArray(state.geocodeResults) && state.geocodeResults.length > 1
