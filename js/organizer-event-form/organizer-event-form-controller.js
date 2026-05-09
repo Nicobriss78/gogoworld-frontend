@@ -225,9 +225,6 @@ function applyGeocodeResultToForm(form, result) {
     form.elements.country.value = result.country;
   }
 
-  if (result.postalCode && form.elements.postalCode && !form.elements.postalCode.value.trim()) {
-    form.elements.postalCode.value = result.postalCode;
-  }
 }
 function getBrowserPosition() {
   return new Promise((resolve, reject) => {
