@@ -229,7 +229,86 @@ function applyGeocodeResultToForm(form, result) {
     form.elements.postalCode.value = result.postalCode;
   }
 }
+function getBrowserPosition() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error("Geolocalizzazione non supportata dal browser."));
+      return;
+    }
 
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        });
+      },
+      (error) => {
+        if (error.code === error.PERMISSION_DENIED) {
+          reject(new Error("Permesso posizione negato."));
+          return;
+        }
+
+        if (error.code === error.TIMEOUT) {
+          reject(new Error("Tempo scaduto durante il rilevamento posizione."));
+          return;
+        }
+
+        reject(new Error("Impossibile ottenere la posizione attuale."));
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 30000,
+      }
+    );
+  });
+}
+
+async function handleUseCurrentPosition(form, button) {
+  if (button.disabled) return;
+
+  button.disabled = true;
+  button.textContent = "Rilevo posizione...";
+
+  eventFormState.error = null;
+  eventFormState.success = null;
+  eventFormState.geocodeResults = [];
+
+  try {
+    const coordinates = await getBrowserPosition();
+
+    button.textContent = "Leggo indirizzo...";
+
+    const payload = await reverseEventCoordinates(coordinates);
+    const result = payload?.result || null;
+
+    if (!result) {
+      if (form.elements.lat) form.elements.lat.value = coordinates.lat;
+      if (form.elements.lon) form.elements.lon.value = coordinates.lon;
+
+      eventFormState.event = collectFormData(form);
+      eventFormState.success =
+        "Posizione rilevata. Indirizzo non trovato: coordinate compilate.";
+      renderEventForm(eventFormState);
+      return;
+    }
+
+    applyGeocodeResultToForm(form, result);
+
+    eventFormState.event = collectFormData(form);
+    eventFormState.success = "Posizione rilevata e campi compilati.";
+    renderEventForm(eventFormState);
+  } catch (error) {
+    console.error("[OrganizerEventForm] reverse geocode failed", error);
+    eventFormState.error =
+      error.message || "Errore durante il rilevamento posizione.";
+    renderEventForm(eventFormState);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Usa la mia posizione";
+  }
+}
 async function handleSearchCoordinates(form, button) {
   if (button.disabled) return;
 
