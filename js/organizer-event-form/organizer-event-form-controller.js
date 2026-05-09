@@ -9,8 +9,10 @@ import { suggestDateEnd, toDateTimeLocalValue } from "./organizer-event-duration
 import { generateAccessCode, normalizePrivacy } from "./organizer-event-privacy.js?v=5";
 import { validateEventForm } from "./organizer-event-form-validation.js?v=5";
 import { getSubcategoryOptions } from "./event-categories.js?v=5";
-import { searchEventCoordinates } from "./organizer-event-form-geocode-api.js?v=5";
-function getEventIdFromUrl() {
+import {
+  reverseEventCoordinates,
+  searchEventCoordinates,
+} from "./organizer-event-form-geocode-api.js?v=5";function getEventIdFromUrl() {
   return new URLSearchParams(window.location.search).get("id");
 }
 
