@@ -1,12 +1,8 @@
-import { organizerNav } from "./organizer-nav-registry.js?v=4";
+import { organizerNav } from "./organizer-nav-registry.js?v=9";
+import { navigate } from "./organizer-router.js?v=9";
 
 function getCurrentViewId() {
-  const path = window.location.pathname;
-
-  if (path.includes("organizer-events-v2")) return "events";
-  if (path.includes("organizer-trills-v2")) return "trills";
-
-  return "dashboard";
+  return document.body?.dataset?.organizerView || "dashboard";
 }
 
 export function renderBottomnav() {
@@ -16,23 +12,46 @@ export function renderBottomnav() {
   const currentViewId = getCurrentViewId();
 
   el.innerHTML = `
-    <div class="org-bottomnav">
-      ${organizerNav
-        .map((item) => {
-          const activeClass = item.id === currentViewId ? "active" : "";
-          const disabledAttr = item.enabled ? "" : "disabled";
+    <nav class="org-bottomnav" aria-label="Navigazione Organizer">
+      ${organizerNav.map((item) => renderNavItem(item, currentViewId)).join("")}
+    </nav>
+  `;
 
-          if (!item.enabled) {
-            return `<button class="${activeClass}" ${disabledAttr}>${item.label}</button>`;
-          }
+  el.querySelectorAll("[data-org-nav]").forEach((node) => {
+    node.addEventListener("click", (event) => {
+      const navId = node.getAttribute("data-org-nav");
+      const item = organizerNav.find((entry) => entry.id === navId);
 
-          return `
-            <a class="${activeClass}" href="${item.href}">
-              ${item.label}
-            </a>
-          `;
-        })
-        .join("")}
-    </div>
+      if (!item?.enabled) {
+        event.preventDefault();
+        return;
+      }
+
+      event.preventDefault();
+      navigate(navId);
+    });
+  });
+}
+
+function renderNavItem(item, currentViewId) {
+  const isActive = item.id === currentViewId;
+  const activeClass = isActive ? " is-active" : "";
+  const disabledClass = item.enabled ? "" : " is-disabled";
+  const ariaCurrent = isActive ? ' aria-current="page"' : "";
+  const ariaDisabled = item.enabled ? "" : ' aria-disabled="true"';
+
+  return `
+    <a
+      href="${item.enabled ? item.href : "#"}"
+      class="org-bottomnav__item gw-iconbtn${activeClass}${disabledClass}"
+      data-org-nav="${item.id}"
+      aria-label="${item.label}"
+      title="${item.label}"${ariaCurrent}${ariaDisabled}
+    >
+      <svg class="gw-icon" aria-hidden="true">
+        <use href="#gw-icon-${item.icon}"></use>
+      </svg>
+      <span class="org-bottomnav__label">${item.label}</span>
+    </a>
   `;
 }
