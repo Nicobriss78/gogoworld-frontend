@@ -165,6 +165,72 @@ Post patch:
 - crediti / boost
 - analytics Trilli
 
+## 🌍 GEOLOCALIZZAZIONE EVENTI — STATO ATTUALE
+
+Backend
+
+Implementato:
+
+- geocode server-side
+- proxy OpenStreetMap/Nominatim
+- separazione:
+  - routes
+  - controllers
+  - services
+- rate limit dedicato
+
+Attualmente disponibile:
+
+- geocode search
+
+NON ancora implementato:
+
+- reverse geocode backend
+
+Frontend Organizer V2
+
+Implementato:
+
+- ricerca coordinate intelligente
+- risultati multipli
+- selezione sede attività
+- compilazione automatica campi affidabili
+
+Ricerca supportata
+
+Funziona bene:
+
+- nome luogo + città
+- indirizzo + città
+- via + civico + città
+- nome luogo + CAP + città
+
+⚠️ Ricerca:
+
+- nome luogo + sola regione
+
+non garantita
+(limite reale provider).
+
+Step successivo approvato
+
+“Usa la mia posizione”
+
+Architettura prevista:
+
+- GPS browser
+- reverse geocode backend
+- compilazione automatica campi affidabili
+
+Compatibilità futura prevista
+
+- check-in
+- mappe V2
+- geo-targeting
+- Trilli
+- futura Mappa Organizer V2
+
+
 ## 📌 STATO ORGANIZER V2
 
 ### Completato
