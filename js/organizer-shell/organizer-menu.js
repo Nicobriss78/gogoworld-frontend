@@ -1,7 +1,6 @@
-import { organizerMenuSections } from "./organizer-menu-registry.js?v=9";
-import { getOrganizerNavItem } from "./organizer-nav-registry.js?v=9";
-import { navigate } from "./organizer-router.js?v=9";
-import { logout, openNotifications } from "./organizer-actions.js?v=9";
+import { organizerMenuSections } from "./organizer-menu-registry.js?v=10";
+import { getOrganizerNavItem } from "./organizer-nav-registry.js?v=10";
+import { logout, openNotifications } from "./organizer-actions.js?v=10";
 
 let isOpen = false;
 let keydownBound = false;
@@ -12,7 +11,13 @@ export function renderMenu() {
 
   el.innerHTML = `
     <div class="org-menu-overlay" data-org-menu-overlay hidden></div>
-    <aside class="org-menu-panel" data-org-menu-panel hidden aria-label="Menu Organizer">
+    <aside
+      class="org-menu-panel"
+      id="organizer-menu-panel"
+      data-org-menu-panel
+      hidden
+      aria-label="Menu Organizer"
+    >
       ${organizerMenuSections.map(renderSection).join("")}
     </aside>
   `;
@@ -87,7 +92,10 @@ function bindMenu(root) {
       setOrganizerMenuOpen(false);
 
       if (item.type === "nav") {
-        navigate(item.navId);
+        const nav = getOrganizerNavItem(item.navId);
+        if (nav?.enabled && nav.href) {
+          window.location.href = nav.href;
+        }
         return;
       }
 
@@ -131,4 +139,4 @@ function runAction(action) {
   if (action === "notifications") {
     openNotifications();
   }
-}
+      }
