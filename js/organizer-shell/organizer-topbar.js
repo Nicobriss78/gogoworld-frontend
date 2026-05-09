@@ -18,7 +18,7 @@ export function renderTopbar() {
       <div class="home-topbar__row home-topbar__row--identity">
         <div class="home-topbar__identity">
           <div class="home-topbar__greeting">Ciao, ${username}</div>
-          <div class="home-topbar__role">Area Organizzatore</div>
+          <div class="home-topbar__role">Organizzatore</div>
         </div>
 
         <div class="home-topbar__brand org-topbar__brand">GoGoWorld.life</div>
