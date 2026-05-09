@@ -209,6 +209,18 @@ function applyGeocodeResultToForm(form, result) {
   if (form.elements.lat) form.elements.lat.value = result.lat ?? "";
   if (form.elements.lon) form.elements.lon.value = result.lon ?? "";
 
+  if (result.venueName && form.elements.venueName && !form.elements.venueName.value.trim()) {
+    form.elements.venueName.value = result.venueName;
+  }
+
+  if (result.street && form.elements.street && !form.elements.street.value.trim()) {
+    form.elements.street.value = result.street;
+  }
+
+  if (result.streetNumber && form.elements.streetNumber && !form.elements.streetNumber.value.trim()) {
+    form.elements.streetNumber.value = result.streetNumber;
+  }
+
   if (result.city && form.elements.city && !form.elements.city.value.trim()) {
     form.elements.city.value = result.city;
   }
@@ -224,7 +236,6 @@ function applyGeocodeResultToForm(form, result) {
   if (result.country && form.elements.country && !form.elements.country.value.trim()) {
     form.elements.country.value = result.country;
   }
-
 }
 function getBrowserPosition() {
   return new Promise((resolve, reject) => {
