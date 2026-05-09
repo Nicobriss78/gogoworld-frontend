@@ -84,6 +84,157 @@ Le nuove feature devono essere sviluppate:
 Il sistema Trilli è il caso di riferimento.
 ---
 
+---
+
+🌍 GEOLOCATION / GEOCODE RULES (VINCOLANTI)
+
+Contesto:
+La geolocalizzazione eventi dell’Organizer V2 è un sistema backend-first.
+
+Obiettivo:
+gestire:
+
+- ricerca luogo evento
+- coordinate evento
+- reverse geocoding
+- future geo-features
+
+senza dipendere direttamente da provider esterni nel frontend.
+
+---
+
+1. BACKEND AUTHORITY
+
+Tutte le richieste geocode/reverse-geocode devono passare dal backend.
+
+È vietato:
+
+- chiamare OpenStreetMap/Nominatim dal frontend
+- esporre provider esterni direttamente al client
+- salvare logica provider nella UI
+
+Il backend è l’unica authority.
+
+---
+
+2. SEPARAZIONE RESPONSABILITÀ
+
+Backend:
+
+- routes
+- controllers
+- services
+
+Frontend:
+
+- api layer
+- controller UI
+- renderer UI
+
+È vietato:
+
+- fare parsing provider nel renderer
+- mischiare fetch e rendering
+- inserire logica provider nella UI
+
+---
+
+3. SEARCH vs REVERSE GEOCODE
+
+SEARCH:
+→ testo → coordinate
+
+Esempi:
+
+- nome luogo + città
+- indirizzo + città
+
+REVERSE GEOCODE:
+→ coordinate → dati luogo
+
+Esempi:
+
+- GPS browser
+- “Usa la mia posizione”
+
+Sono due flussi distinti.
+
+---
+
+4. COMPILAZIONE CAMPI
+
+La compilazione automatica deve essere:
+
+opportunistica e affidabile.
+
+Il sistema può compilare:
+
+- coordinate
+- città
+- provincia
+- regione
+- paese
+- CAP
+
+Può compilare:
+
+- venueName
+- street
+- streetNumber
+
+solo se realmente presenti e affidabili nella risposta provider.
+
+È vietato:
+
+- inventare dati
+- inferire nomi attività
+- forzare parsing non affidabili
+
+---
+
+5. PROVIDER LIMITS
+
+I limiti dei provider geocode devono essere considerati normali.
+
+Esempio:
+
+- ricerca:
+  - nome attività + sola regione
+
+può NON essere affidabile.
+
+È vietato:
+
+- introdurre fallback casuali multipli
+- degradare ranking risultati
+- peggiorare UX stabile
+
+---
+
+6. RATE LIMIT OBBLIGATORIO
+
+Tutti gli endpoint geocode devono avere:
+
+- rate limit dedicato
+- validazione input
+- sanitizzazione query
+- gestione errori controllata
+
+---
+
+7. FUTURA COMPATIBILITÀ
+
+La struttura geocode deve restare compatibile con:
+
+- check-in
+- mappe V2
+- geo-targeting
+- Trilli
+- promo geolocalizzate
+- futura Mappa Organizer V2
+
+---
+
 # ⚠️ MAPPA PUBBLICA vs MAPPA PRIVATI
 
 ## MAPPA PUBBLICA
