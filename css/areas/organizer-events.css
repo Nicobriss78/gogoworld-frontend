@@ -489,8 +489,8 @@
     white-space: normal;
   }
 
-  .org-event-actions a,
-  .org-event-actions button {
+  .org-event-secondary-actions a,
+  .org-event-secondary-actions button {
     flex: 1 1 auto;
   }
     }
