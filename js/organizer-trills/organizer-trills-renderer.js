@@ -103,7 +103,7 @@ export function renderOrganizerTrills(state) {
 
   root.innerHTML = `
     <h1>Trilli</h1>
-
+    ${renderTrillsFilterNotice(state)}
     ${state.actionMessage ? `<p class="org-trill-success">${escapeHtml(state.actionMessage)}</p>` : ""}
     ${state.actionError ? `<p class="org-trill-error">${escapeHtml(state.actionError)}</p>` : ""}
 
