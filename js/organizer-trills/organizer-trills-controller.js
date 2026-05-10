@@ -33,15 +33,8 @@ async function load() {
 
   try {
     const data = await fetchMyTrills();
-const params = new URLSearchParams(window.location.search);
-const filter = String(params.get("filter") || "").trim();
-
-const trills = data?.trills || [];
-
-organizerTrillsState.trills =
-  filter === "draft"
-    ? trills.filter((trill) => String(trill?.status || "").toLowerCase() === "draft")
-    : trills;
+organizerTrillsState.allTrills = data?.trills || [];
+applyTrillsFilter();
   } catch (err) {
     organizerTrillsState.error = err.message;
   } finally {
