@@ -1,4 +1,4 @@
-import { applyEventFilters } from "./organizer-events-filters.js?v=5";
+import { applyEventFilters } from "./organizer-events-filters.js?v=7";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -35,6 +35,49 @@ function getEventId(event) {
   return String(event?._id || event?.id || "").trim();
 }
 
+function withOrganizerReturn(href) {
+  const params = new URLSearchParams(window.location.search);
+  const fromDashboard = params.get("from") === "dashboard";
+  const separator = href.includes("?") ? "&" : "?";
+
+  if (fromDashboard) {
+    return `${href}${separator}rootReturnTo=organizer-dashboard`;
+  }
+
+  return href;
+}
+
+function getActiveFilterLabel(filters) {
+  if (filters.special === "no-participants") {
+    return "Eventi approvati, futuri e senza partecipanti";
+  }
+
+  const labels = {
+    approved: "Eventi approvati",
+    pending: "Eventi in revisione",
+    rejected: "Eventi respinti",
+    blocked: "Eventi bloccati",
+  };
+
+  return labels[filters.approvalStatus] || "";
+}
+
+function renderDashboardFilterNotice(state) {
+  const label = getActiveFilterLabel(state.filters);
+
+  if (!state.sourceLabel && !label) return "";
+
+  return `
+    <section class="org-event-source-notice">
+      <div>
+        <strong>${escapeHtml(state.sourceLabel || "Filtro attivo")}</strong>
+        ${label ? `<span>${escapeHtml(label)}</span>` : ""}
+      </div>
+      <button type="button" data-action="clear-dashboard-filter">Mostra tutti</button>
+    </section>
+  `;
+}
+
 function renderDeleteAction(eventId, state) {
   const safeEventId = escapeHtml(eventId);
   const isConfirming = state.confirmDeleteId === eventId;
@@ -67,7 +110,11 @@ function renderEventCard(event, state) {
   const status = escapeHtml(event.approvalStatus || "pending");
   const visibility = escapeHtml(event.visibility || "public");
   const city = escapeHtml(event.city || "Città non indicata");
-  const participants = Array.isArray(event.participants) ? event.participants.length : 0;
+  const participants = Array.isArray(event.participants)
+    ? event.participants.length
+    : typeof event.participantsCount === "number"
+      ? event.participantsCount
+      : 0;
   const privacy = event.isPrivate ? "Privato" : "Pubblico";
 
   return `
@@ -84,8 +131,8 @@ function renderEventCard(event, state) {
       </div>
 
       <div class="org-event-actions">
-        <a href="/pages/organizer-event-detail-v2.html?id=${encodedEventId}">Apri</a>
-        <a href="/pages/organizer-event-edit-v2.html?id=${encodedEventId}">Modifica</a>
+        <a href="${escapeHtml(withOrganizerReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`))}">Apri</a>
+        <a href="${escapeHtml(withOrganizerReturn(`/pages/organizer-event-edit-v2.html?id=${encodedEventId}`))}">Modifica</a>
         ${renderDeleteAction(eventId, state)}
       </div>
     </article>
@@ -97,7 +144,7 @@ function renderToolbar(filters) {
 
   return `
     <div class="org-events-toolbar">
-      <a href="/pages/organizer-event-create-v2.html">Crea nuovo evento</a>
+      <a href="${escapeHtml(withOrganizerReturn("/pages/organizer-event-create-v2.html"))}">Crea nuovo evento</a>
 
       <input
         type="search"
@@ -167,6 +214,7 @@ export function renderEventsPage(state) {
     <h1>Eventi Organizer V2</h1>
     <p>Lista reale degli eventi dell’organizzatore.</p>
 
+    ${renderDashboardFilterNotice(state)}
     ${renderToolbar(state.filters)}
 
     <div data-org-events-list></div>
