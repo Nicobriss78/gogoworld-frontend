@@ -8,7 +8,15 @@ import { organizerTrillFormState } from "./organizer-trill-form-state.js";
 function getEventIdFromUrl() {
   return new URLSearchParams(window.location.search).get("eventId");
 }
+function getRootReturnTo() {
+  return new URLSearchParams(window.location.search).get("rootReturnTo") || "";
+}
 
+function getSuccessRedirectHref() {
+  return getRootReturnTo() === "organizer-dashboard"
+    ? "/pages/organizer-dashboard-v2.html"
+    : "/pages/organizer-trills-v2.html";
+}
 function normalizeEventPayload(payload) {
   return payload?.event || payload?.data?.event || payload?.data || null;
 }
