@@ -289,7 +289,7 @@ export function renderDashboard(state) {
 
       <div class="org-dashboard-actions">
         ${renderAction({ label: "Crea evento", href: withDashboardReturn("/pages/organizer-event-create-v2.html") })}
-        ${renderAction({ label: "Eventi", href: "/pages/organizer-events-v2.html?from=dashboard", tone: "ghost" })}
+        ${renderAction({ label: "Eventi", href: "/pages/organizer-events-v2.html", tone: "ghost" })}
         ${renderAction({ label: "Trilli", href: "/pages/organizer-trills-v2.html?from=dashboard", tone: "ghost" })}
         ${renderAction({ label: "Promozioni", href: "#", disabled: true })}
         ${renderAction({ label: "Mappa Organizer", href: "#", disabled: true })}
