@@ -273,6 +273,18 @@
   text-decoration: none;
 }
 
+.org-dashboard-action--primary {
+  background: var(--org-accent);
+  color: #fff;
+}
+
+.org-dashboard-action--primary:visited,
+.org-dashboard-action--primary:hover,
+.org-dashboard-action--primary:focus-visible,
+.org-dashboard-action--primary:active {
+  color: #fff;
+}
+
 .org-dashboard-action--ghost,
 .org-dashboard-event__link,
 .org-dashboard-top-event a {
@@ -384,4 +396,4 @@
   .org-dashboard-event__link {
     width: 100%;
   }
-                                  }
+                     }
