@@ -105,6 +105,7 @@ if (clearFilterBtn) {
 }
 
 export async function initOrganizerTrills() {
-  bind();
-  await load();
+  applyInitialFilterFromUrl();
+bind();
+await load();
 }
