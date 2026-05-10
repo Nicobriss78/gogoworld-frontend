@@ -13,7 +13,7 @@ async function initCurrentView() {
   const view = document.body?.dataset?.organizerView || "dashboard";
 
   if (view === "events") {
-    const module = await import("../organizer-events/organizer-events-controller.js?v=6");
+    const module = await import("../organizer-events/organizer-events-controller.js?v=7");
     await module.initEventsPage();
     return;
   }
