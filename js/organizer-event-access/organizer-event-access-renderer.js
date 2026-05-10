@@ -10,6 +10,7 @@ function escapeHtml(value) {
 function encodeUrlValue(value) {
   return encodeURIComponent(String(value ?? "").trim());
 }
+
 function getRootReturnTo() {
   return new URLSearchParams(window.location.search).get("rootReturnTo") || "";
 }
@@ -37,6 +38,7 @@ function withCurrentReturn(href) {
   const separator = href.includes("?") ? "&" : "?";
   return `${href}${separator}rootReturnTo=${encodeURIComponent(rootReturnTo)}`;
 }
+
 function getUserId(user) {
   return String(user?._id || user?.id || user?.userId || "").trim();
 }
@@ -142,7 +144,9 @@ function renderUserList(
 ) {
   const list = normalizeList(users);
   const currentUserId = String(state.currentUserId || "").trim();
-  const organizerId = String(state.event?.organizer?._id || state.event?.organizer || "").trim();
+  const organizerId = String(
+    state.event?.organizer?._id || state.event?.organizer || ""
+  ).trim();
 
   if (!list.length) {
     return `<p class="org-access-muted">${escapeHtml(emptyText)}</p>`;
@@ -161,21 +165,25 @@ function renderUserList(
           const isAdmin = role === "admin";
           const isSelf = userId && userId === currentUserId;
 
-          const canAct = userId && actionName && !isOrganizer && !isAdmin && !isSelf;
+          const canAct =
+            userId && actionName && !isOrganizer && !isAdmin && !isSelf;
 
           return `
             <article class="org-access-user">
               <strong>${escapeHtml(label)}</strong>
 
               <div class="org-access-meta">
-                ${email ? `<span class="org-access-muted">${escapeHtml(email)}</span>` : ""}
-
+                ${
+                  email
+                    ? `<span class="org-access-muted">${escapeHtml(email)}</span>`
+                    : ""
+                }
                 ${
                   role === "admin"
                     ? `<span class="org-access-badge">Admin</span>`
                     : isOrganizer
-                    ? `<span class="org-access-badge">Organizzatore</span>`
-                    : ""
+                      ? `<span class="org-access-badge">Organizzatore</span>`
+                      : ""
                 }
               </div>
 
@@ -183,7 +191,13 @@ function renderUserList(
                 canAct
                   ? `
                     <div class="org-access-actions" style="margin-top:10px;">
-                      ${renderUserAction(userId, actionLabel, actionName, danger, state)}
+                      ${renderUserAction(
+                        userId,
+                        actionLabel,
+                        actionName,
+                        danger,
+                        state
+                      )}
                     </div>
                   `
                   : ""
@@ -200,17 +214,29 @@ function renderRotateCodeAction(state) {
   if (state.confirmRotateCode) {
     return `
       <span>Confermi rigenerazione codice?</span>
-      <button type="button" data-action="confirm-rotate-code" ${state.rotatingCode ? "disabled" : ""}>
+      <button
+        type="button"
+        data-action="confirm-rotate-code"
+        ${state.rotatingCode ? "disabled" : ""}
+      >
         ${state.rotatingCode ? "Rigenerazione..." : "Conferma"}
       </button>
-      <button type="button" data-action="cancel-rotate-code" ${state.rotatingCode ? "disabled" : ""}>
+      <button
+        type="button"
+        data-action="cancel-rotate-code"
+        ${state.rotatingCode ? "disabled" : ""}
+      >
         Annulla
       </button>
     `;
   }
 
   return `
-    <button type="button" data-action="request-rotate-code" ${hasPendingAction(state) ? "disabled" : ""}>
+    <button
+      type="button"
+      data-action="request-rotate-code"
+      ${hasPendingAction(state) ? "disabled" : ""}
+    >
       Rigenera codice
     </button>
   `;
@@ -222,6 +248,9 @@ export function renderEventAccess(state) {
 
   const eventId = String(state.eventId || "").trim();
   const encodedEventId = encodeUrlValue(eventId);
+  const detailHref = withCurrentReturn(
+    `/pages/organizer-event-detail-v2.html?id=${encodedEventId}`
+  );
 
   if (state.loading) {
     root.innerHTML = `
@@ -236,9 +265,7 @@ export function renderEventAccess(state) {
       <h1>Accessi evento privato</h1>
       <section class="org-access-error">${escapeHtml(state.error)}</section>
       <p>
-        <a href="${escapeHtml(withCurrentReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`))}">
-          Torna al dettaglio evento
-        </a>
+        <a href="${escapeHtml(detailHref)}">Torna al dettaglio evento</a>
       </p>
     `;
     return;
@@ -247,17 +274,26 @@ export function renderEventAccess(state) {
   const event = state.event || {};
   const access = state.access || {};
   const title = event?.title || "Evento privato";
+  const accessCode = event?.accessCode || event?.privateAccessCode || "—";
 
   root.innerHTML = `
     <h1>Accessi evento privato</h1>
     <p>${escapeHtml(title)}</p>
 
-    ${state.success ? `<section class="org-access-success">${escapeHtml(state.success)}</section>` : ""}
-    ${state.error ? `<section class="org-access-error">${escapeHtml(state.error)}</section>` : ""}
+    ${
+      state.success
+        ? `<section class="org-access-success">${escapeHtml(state.success)}</section>`
+        : ""
+    }
+    ${
+      state.error
+        ? `<section class="org-access-error">${escapeHtml(state.error)}</section>`
+        : ""
+    }
 
     <section class="org-access-card">
       <h2>Codice accesso</h2>
-      <p><strong>${escapeHtml(event?.accessCode || "N/D")}</strong></p>
+      <p><strong>${escapeHtml(accessCode)}</strong></p>
       <div class="org-access-actions">
         ${renderRotateCodeAction(state)}
       </div>
@@ -275,12 +311,10 @@ export function renderEventAccess(state) {
           placeholder="Email utente da invitare"
           required
           ${hasPendingAction(state) ? "disabled" : ""}
-        />
-        <div class="org-access-actions">
-          <button type="submit" ${hasPendingAction(state) ? "disabled" : ""}>
-            ${state.saving ? "Invio..." : "Invita"}
-          </button>
-        </div>
+        >
+        <button type="submit" ${hasPendingAction(state) ? "disabled" : ""}>
+          ${state.saving ? "Invio..." : "Invita"}
+        </button>
       </form>
     </section>
 
@@ -310,12 +344,10 @@ export function renderEventAccess(state) {
 
     <section class="org-access-card">
       <div class="org-access-actions">
-        <a href="${escapeHtml(withCurrentReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`))}">
-          Torna al dettaglio evento
-        </a>
+        <a href="${escapeHtml(detailHref)}">Torna al dettaglio evento</a>
         <a href="${escapeHtml(getBackHref())}">
-  ${escapeHtml(getBackLabel())}
-</a>
+          ${escapeHtml(getBackLabel())}
+        </a>
       </div>
     </section>
   `;
