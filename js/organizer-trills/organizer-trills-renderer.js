@@ -67,7 +67,26 @@ function renderActions(trill, state) {
     </button>
   `;
 }
+function getActiveFilterLabel(filter) {
+  if (filter === "draft") return "Trilli in bozza";
+  return "";
+}
 
+function renderTrillsFilterNotice(state) {
+  const label = getActiveFilterLabel(state.activeFilter);
+
+  if (!state.sourceLabel && !label) return "";
+
+  return `
+    <section class="org-trill-source-notice">
+      <div>
+        <strong>${escapeHtml(state.sourceLabel || "Filtro attivo")}</strong>
+        ${label ? `<span>${escapeHtml(label)}</span>` : ""}
+      </div>
+      <button type="button" data-action="clear-trills-filter">Mostra tutti</button>
+    </section>
+  `;
+}
 export function renderOrganizerTrills(state) {
   const root = document.querySelector("[data-org-trills-root]");
   if (!root) return;
