@@ -34,6 +34,12 @@ function applyInitialFiltersFromUrl() {
     eventsState.filters.temporal = "upcoming";
     eventsState.filters.special = "no-participants";
   }
+  
+  if (filter === "needs-correction") {
+  eventsState.filters.approvalStatus = "all";
+  eventsState.filters.temporal = "all";
+  eventsState.filters.special = "needs-correction";
+  }
 }
 
 async function loadEvents() {
