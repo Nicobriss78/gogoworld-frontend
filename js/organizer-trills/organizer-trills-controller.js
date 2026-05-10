@@ -9,7 +9,15 @@ async function load() {
 
   try {
     const data = await fetchMyTrills();
-    organizerTrillsState.trills = data?.trills || [];
+const params = new URLSearchParams(window.location.search);
+const filter = String(params.get("filter") || "").trim();
+
+const trills = data?.trills || [];
+
+organizerTrillsState.trills =
+  filter === "draft"
+    ? trills.filter((trill) => String(trill?.status || "").toLowerCase() === "draft")
+    : trills;
   } catch (err) {
     organizerTrillsState.error = err.message;
   } finally {
