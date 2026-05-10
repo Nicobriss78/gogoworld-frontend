@@ -71,7 +71,7 @@ export function renderOrganizerTrillForm(state) {
           <h1>Crea trillo</h1>
           <section class="org-trill-error">${safeError}</section>
           <div class="org-trill-actions" style="margin-top: 14px;">
-            <a href="/pages/organizer-events-v2.html">Torna agli eventi</a>
+            <a href="${escapeHtml(getBackHref())}">${escapeHtml(getBackLabel())}</a>
           </div>
         </div>
       </section>
