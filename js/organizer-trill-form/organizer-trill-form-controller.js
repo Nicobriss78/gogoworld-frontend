@@ -96,7 +96,7 @@ function bindForm() {
       renderOrganizerTrillForm(organizerTrillFormState);
 
       window.setTimeout(() => {
-        window.location.href = "/pages/organizer-trills-v2.html";
+        window.location.href = getSuccessRedirectHref();
       }, 900);
     } catch (error) {
       console.error("[OrganizerTrillForm] create failed", error);
