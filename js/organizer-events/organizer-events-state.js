@@ -3,6 +3,7 @@ export const eventsState = {
   error: null,
   actionError: null,
   actionMessage: null,
+  sourceLabel: "",
   confirmDeleteId: null,
   deletingId: null,
   events: [],
@@ -11,5 +12,6 @@ export const eventsState = {
     approvalStatus: "all",
     visibility: "all",
     privacy: "all",
+    special: "all",
   },
 };
