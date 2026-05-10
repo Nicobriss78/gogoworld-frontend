@@ -159,7 +159,7 @@ export function renderEventDetail(state) {
       <div class="org-event-detail-actions">
         ${
           editable && eventId
-            ? `<a href="/pages/organizer-event-edit-v2.html?id=${encodedEventId}">Modifica</a>`
+            ? `<a href="${escapeHtml(withCurrentReturn(`/pages/organizer-event-edit-v2.html?id=${encodedEventId}`))}">Modifica</a>`
             : `<button type="button" disabled>Modifica bloccata</button>`
         }
 
