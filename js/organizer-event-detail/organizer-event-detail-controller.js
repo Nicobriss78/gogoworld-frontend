@@ -98,48 +98,50 @@ const action = target?.dataset?.action;
     }
 
     if (action === "open-room") {
-      if (organizerEventDetailState.openingRoom) return;
+  if (organizerEventDetailState.openingRoom) return;
 
-      organizerEventDetailState.openingRoom = true;
-      organizerEventDetailState.actionError = null;
-      organizerEventDetailState.actionMessage = null;
+  organizerEventDetailState.openingRoom = true;
+  organizerEventDetailState.actionError = null;
+  organizerEventDetailState.actionMessage = null;
+  renderEventDetail(organizerEventDetailState);
+
+  try {
+    const payload = await openOrJoinEventRoom(eventId);
+    const roomId = extractRoomId(payload);
+
+    if (!roomId) {
+      console.error("[OrganizerEventDetail] room payload without id", payload);
+      organizerEventDetailState.actionError = "Room aperta, ma ID room non ricevuto.";
+      organizerEventDetailState.openingRoom = false;
       renderEventDetail(organizerEventDetailState);
-
-      try {
-        const payload = await openOrJoinEventRoom(eventId);
-        const roomId = extractRoomId(payload);
-
-        if (!roomId) {
-          console.error("[OrganizerEventDetail] room payload without id", payload);
-          organizerEventDetailState.actionError = "Room aperta, ma ID room non ricevuto.";
-          organizerEventDetailState.openingRoom = false;
-          renderEventDetail(organizerEventDetailState);
-          return;
-        }
-
-const params = new URLSearchParams();
-params.set("roomId", roomId);
-const currentReturn = getRootReturnTo();
-const detailReturn = new URLSearchParams();
-detailReturn.set("id", eventId);
-
-if (currentReturn) {
-  detailReturn.set("rootReturnTo", currentReturn);
-}
-
-params.set(
-  "rootReturnTo",
-  `/pages/organizer-event-detail-v2.html?${detailReturn.toString()}`
-);
-
-window.location.href = `/pages/messages-v2.html?${params.toString()}`;
-} catch (error) {
-console.error("[OrganizerEventDetail] open room failed", error);
-organizerEventDetailState.actionError = error.message || "Errore durante l’apertura della room evento.";
-organizerEventDetailState.openingRoom = false;
-renderEventDetail(organizerEventDetailState);
-}
+      return;
     }
+
+    const params = new URLSearchParams();
+    params.set("roomId", roomId);
+
+    const currentReturn = getRootReturnTo();
+    const detailReturn = new URLSearchParams();
+    detailReturn.set("id", eventId);
+
+    if (currentReturn) {
+      detailReturn.set("rootReturnTo", currentReturn);
+    }
+
+    params.set(
+      "rootReturnTo",
+      `/pages/organizer-event-detail-v2.html?${detailReturn.toString()}`
+    );
+
+    window.location.href = `/pages/messages-v2.html?${params.toString()}`;
+  } catch (error) {
+    console.error("[OrganizerEventDetail] open room failed", error);
+    organizerEventDetailState.actionError =
+      error.message || "Errore durante l’apertura della room evento.";
+    organizerEventDetailState.openingRoom = false;
+    renderEventDetail(organizerEventDetailState);
+  }
+}
   });
 }
 
