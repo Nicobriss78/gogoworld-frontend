@@ -1,7 +1,31 @@
 import { fetchMyTrills, sendTrill } from "./organizer-trills-api.js";
 import { renderOrganizerTrills } from "./organizer-trills-renderer.js";
 import { organizerTrillsState } from "./organizer-trills-state.js";
+function applyTrillsFilter() {
+  if (organizerTrillsState.activeFilter === "draft") {
+    organizerTrillsState.trills = organizerTrillsState.allTrills.filter(
+      (trill) => String(trill?.status || "").toLowerCase() === "draft"
+    );
+    return;
+  }
 
+  organizerTrillsState.trills = organizerTrillsState.allTrills;
+}
+
+function applyInitialFilterFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const source = params.get("from");
+  const filter = params.get("filter");
+
+  if (source === "dashboard" && filter === "draft") {
+    organizerTrillsState.sourceLabel = "Filtro aperto dalla Dashboard";
+    organizerTrillsState.activeFilter = "draft";
+  }
+}
+
+function updateUrlToCleanTrills() {
+  window.history.replaceState({}, "", "/pages/organizer-trills-v2.html");
+}
 async function load() {
   organizerTrillsState.loading = true;
   organizerTrillsState.error = null;
