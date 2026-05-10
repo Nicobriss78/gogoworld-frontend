@@ -220,7 +220,7 @@ export function renderDashboard(state) {
 
       <div class="org-dashboard-hero__actions">
         ${renderAction({ label: "Crea evento", href: withDashboardReturn("/pages/organizer-event-create-v2.html") })}
-        ${renderAction({ label: "Gestisci eventi", href: "/pages/organizer-events-v2.html", tone: "ghost" })}
+        ${renderAction({ label: "Gestisci eventi", href: "/pages/organizer-events-v2.html?from=dashboard", tone: "ghost" })}
       </div>
     </section>
 
