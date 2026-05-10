@@ -87,7 +87,7 @@ function bindEvents() {
   });
 
   document.addEventListener("click", async (event) => {
-    const target = event.target;
+    const target = event.target?.closest?.("[data-action]");
     const action = target?.dataset?.action;
 
     if (!action) return;
