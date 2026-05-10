@@ -29,6 +29,35 @@ function getBackLabel() {
     ? "Torna alla Dashboard"
     : "Torna agli eventi";
 }
+function getEventIdFromUrl() {
+  return new URLSearchParams(window.location.search).get("id") || "";
+}
+
+function getEventDetailBackHref() {
+  const eventId = getEventIdFromUrl();
+  const rootReturnTo = getRootReturnTo();
+
+  if (!eventId) return getBackHref();
+
+  const params = new URLSearchParams();
+  params.set("id", eventId);
+
+  if (rootReturnTo) {
+    params.set("rootReturnTo", rootReturnTo);
+  }
+
+  return `/pages/organizer-event-detail-v2.html?${params.toString()}`;
+}
+
+function getEventFormBackHref() {
+  const isEdit = window.location.pathname.includes("organizer-event-edit-v2");
+  return isEdit ? getEventDetailBackHref() : getBackHref();
+}
+
+function getEventFormBackLabel() {
+  const isEdit = window.location.pathname.includes("organizer-event-edit-v2");
+  return isEdit ? "Torna al dettaglio evento" : getBackLabel();
+}
 function checked(value) {
   return value ? "checked" : "";
 }
