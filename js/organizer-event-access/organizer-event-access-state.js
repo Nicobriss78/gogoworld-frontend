@@ -5,6 +5,7 @@ export const organizerEventAccessState = {
   success: null,
   eventId: null,
   event: null,
+  currentUserId: null,
   access: {
     allowedUsers: [],
     bannedUsers: [],
