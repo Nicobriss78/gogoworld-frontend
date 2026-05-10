@@ -343,7 +343,7 @@ const isCustomSubcategory = Boolean(
         <button class="primary" type="submit" ${state.saving ? "disabled" : ""}>
           ${state.saving ? "Salvataggio..." : "Salva evento"}
         </button>
-        <a href="/pages/organizer-events-v2.html">Torna agli eventi</a>
+        <a href="${escapeHtml(getBackHref())}">${escapeHtml(getBackLabel())}</a>
       </div>
     </form>
   `;
