@@ -24,7 +24,7 @@ async function initCurrentView() {
     return;
   }
 
-  const module = await import("../organizer-dashboard/organizer-dashboard-controller.js?v=6");
+  const module = await import("../organizer-dashboard/organizer-dashboard-controller.js?v=11");
   await module.initDashboard();
 }
 
