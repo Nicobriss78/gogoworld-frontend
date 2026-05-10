@@ -165,7 +165,7 @@ export function renderEventDetail(state) {
 
         ${
           isPrivate && eventId
-            ? `<a href="/pages/organizer-event-access-v2.html?id=${encodedEventId}">Accessi privati</a>`
+            ? `<a href="${escapeHtml(withCurrentReturn(`/pages/organizer-event-access-v2.html?id=${encodedEventId}`))}">Accessi privati</a>`
             : `<button type="button" disabled>Accessi privati</button>`
         }
 
