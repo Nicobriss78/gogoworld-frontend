@@ -9,7 +9,15 @@ import { organizerEventDetailState } from "./organizer-event-detail-state.js?v=6
 function getEventIdFromUrl() {
   return new URLSearchParams(window.location.search).get("id");
 }
+function getRootReturnTo() {
+  return new URLSearchParams(window.location.search).get("rootReturnTo") || "";
+}
 
+function getBackHref() {
+  return getRootReturnTo() === "organizer-dashboard"
+    ? "/pages/organizer-dashboard-v2.html"
+    : "/pages/organizer-events-v2.html";
+}
 function extractRoomId(payload) {
   return (
     payload?.data?.roomId ||
