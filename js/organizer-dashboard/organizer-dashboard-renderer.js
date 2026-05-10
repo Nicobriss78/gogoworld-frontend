@@ -3,7 +3,7 @@ import {
   getDashboardEventDate,
   getDashboardEventId,
   getDashboardParticipantsCount,
-} from "./organizer-dashboard-widgets.js?v=11";
+} from "./organizer-dashboard-widgets.js?v=12";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -16,6 +16,11 @@ function escapeHtml(value) {
 
 function encodeUrlValue(value) {
   return encodeURIComponent(String(value ?? "").trim());
+}
+
+function withDashboardReturn(href) {
+  const separator = href.includes("?") ? "&" : "?";
+  return `${href}${separator}rootReturnTo=organizer-dashboard`;
 }
 
 function formatDate(value) {
@@ -106,7 +111,7 @@ function renderEventRow(event) {
 
       ${
         eventId
-          ? `<a class="org-dashboard-event__link" href="/pages/organizer-event-detail-v2.html?id=${encodedId}">Apri</a>`
+          ? `<a class="org-dashboard-event__link" href="${escapeHtml(withDashboardReturn(`/pages/organizer-event-detail-v2.html?id=${encodedId}`))}">Apri</a>`
           : ""
       }
     </article>
@@ -169,7 +174,7 @@ function renderTopEvent(stats) {
       <article class="org-dashboard-top-event">
         <strong>${escapeHtml(event.title || "Evento senza titolo")}</strong>
         <span>${escapeHtml(stats.topEventParticipants)} partecipanti</span>
-        ${eventId ? `<a href="/pages/organizer-event-detail-v2.html?id=${encodedId}">Apri evento</a>` : ""}
+        ${eventId ? `<a href="${escapeHtml(withDashboardReturn(`/pages/organizer-event-detail-v2.html?id=${encodedId}`))}">Apri evento</a>` : ""}
       </article>
     </section>
   `;
@@ -214,8 +219,8 @@ export function renderDashboard(state) {
       </div>
 
       <div class="org-dashboard-hero__actions">
-        ${renderAction({ label: "Crea evento", href: "/pages/organizer-event-create-v2.html" })}
-        ${renderAction({ label: "Gestisci eventi", href: "/pages/organizer-events-v2.html", tone: "ghost" })}
+        ${renderAction({ label: "Crea evento", href: withDashboardReturn("/pages/organizer-event-create-v2.html") })}
+        ${renderAction({ label: "Gestisci eventi", href: "/pages/organizer-events-v2.html?from=dashboard", tone: "ghost" })}
       </div>
     </section>
 
@@ -283,9 +288,9 @@ export function renderDashboard(state) {
       </div>
 
       <div class="org-dashboard-actions">
-        ${renderAction({ label: "Crea evento", href: "/pages/organizer-event-create-v2.html" })}
-        ${renderAction({ label: "Eventi", href: "/pages/organizer-events-v2.html", tone: "ghost" })}
-        ${renderAction({ label: "Trilli", href: "/pages/organizer-trills-v2.html", tone: "ghost" })}
+        ${renderAction({ label: "Crea evento", href: withDashboardReturn("/pages/organizer-event-create-v2.html") })}
+        ${renderAction({ label: "Eventi", href: "/pages/organizer-events-v2.html?from=dashboard", tone: "ghost" })}
+        ${renderAction({ label: "Trilli", href: "/pages/organizer-trills-v2.html?from=dashboard", tone: "ghost" })}
         ${renderAction({ label: "Promozioni", href: "#", disabled: true })}
         ${renderAction({ label: "Mappa Organizer", href: "#", disabled: true })}
       </div>
