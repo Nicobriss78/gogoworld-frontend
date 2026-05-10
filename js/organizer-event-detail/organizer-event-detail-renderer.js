@@ -175,7 +175,7 @@ export function renderEventDetail(state) {
 
         ${
           eventId
-            ? `<a href="/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}">Crea trillo</a>`
+            ? `<a href="${escapeHtml(withCurrentReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`))}">Crea trillo</a>`
             : `<button type="button" disabled>Crea trillo</button>`
         }
 
