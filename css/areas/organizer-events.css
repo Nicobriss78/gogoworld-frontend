@@ -358,6 +358,8 @@
   text-decoration: none;
 }
 
+.org-event-primary-action,
+.org-event-primary-action:link,
 .org-event-primary-action:visited,
 .org-event-primary-action:hover,
 .org-event-primary-action:focus-visible,
