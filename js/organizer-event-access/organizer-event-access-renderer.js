@@ -310,7 +310,7 @@ export function renderEventAccess(state) {
 
     <section class="org-access-card">
       <div class="org-access-actions">
-        <a href="/pages/organizer-event-detail-v2.html?id=${encodedEventId}">
+        <a href="${escapeHtml(withCurrentReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`))}">
           Torna al dettaglio evento
         </a>
         <a href="/pages/organizer-events-v2.html">
