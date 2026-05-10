@@ -236,7 +236,7 @@ export function renderEventAccess(state) {
       <h1>Accessi evento privato</h1>
       <section class="org-access-error">${escapeHtml(state.error)}</section>
       <p>
-        <a href="/pages/organizer-event-detail-v2.html?id=${encodedEventId}">
+        <a href="${escapeHtml(withCurrentReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`))}">
           Torna al dettaglio evento
         </a>
       </p>
