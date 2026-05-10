@@ -110,7 +110,7 @@ export function renderEventDetail(state) {
     root.innerHTML = `
       <h1>Dettaglio evento</h1>
       <section class="org-event-detail-error">${escapeHtml(state.error)}</section>
-      <p><a href="/pages/organizer-events-v2.html">Torna agli eventi</a></p>
+      <p><a href="${escapeHtml(getBackHref())}">${escapeHtml(getBackLabel())}</a></p>
     `;
     return;
   }
