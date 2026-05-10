@@ -377,6 +377,7 @@ function renderEventCard(event, state) {
   const participants = getParticipantsCount(event);
   const privateEvent = isPrivateEvent(event);
   const temporalLabel = getTemporalLabel(event);
+  const primaryAction = getPrimaryAction(event, encodedEventId);
 
   return `
     <article class="org-event-card org-event-card--${escapeHtml(status)}" data-event-id="${escapeHtml(eventId)}">
@@ -395,25 +396,18 @@ function renderEventCard(event, state) {
 
       <div class="org-event-card__meta">
         <span>Fine: ${escapeHtml(formatDate(getEventEndDate(event)))}</span>
-        <span>${participants} partecipanti</span>
+        <span>${participants ? `${participants} partecipanti` : "Nessun partecipante"}</span>
+      </div>
+
+      <div class="org-event-card__smart-status">
+        ${escapeHtml(getSmartStatusText(event))}
       </div>
 
       ${renderSmartNotice(event)}
 
-      <div class="org-event-actions">
-        <a href="${escapeHtml(withOrganizerReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`))}">Apri</a>
-        <a href="${escapeHtml(withOrganizerReturn(`/pages/organizer-event-edit-v2.html?id=${encodedEventId}`))}">Modifica</a>
-        ${
-          privateEvent
-            ? `<a href="${escapeHtml(withOrganizerReturn(`/pages/organizer-event-access-v2.html?id=${encodedEventId}`))}">Accessi</a>`
-            : ""
-        }
-        ${
-          status === "approved"
-            ? `<a href="${escapeHtml(withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`))}">Trillo</a>`
-            : ""
-        }
-        ${renderDeleteAction(eventId, state)}
+      <div class="org-event-card__actions">
+        ${renderPrimaryAction(primaryAction)}
+        ${renderSecondaryActions(event, eventId, encodedEventId, state, primaryAction.id)}
       </div>
     </article>
   `;
