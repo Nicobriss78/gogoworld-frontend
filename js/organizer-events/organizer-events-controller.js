@@ -1,7 +1,30 @@
 import { fetchOrganizerEvents } from "./organizer-events-api.js?v=4";
-import { renderEventsPage, renderEventsList } from "./organizer-events-renderer.js?v=4";
-import { eventsState } from "./organizer-events-state.js?v=4";
+import { renderEventsPage, renderEventsList } from "./organizer-events-renderer.js?v=7";
+import { eventsState } from "./organizer-events-state.js?v=7";
 import { handleDeleteEvent } from "./organizer-events-actions.js?v=4";
+
+function applyInitialFiltersFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const source = params.get("from");
+  const filter = params.get("filter");
+
+  if (source === "dashboard") {
+    eventsState.sourceLabel = "Filtro aperto dalla Dashboard";
+  }
+
+  if (!filter) return;
+
+  if (["approved", "pending", "rejected", "blocked"].includes(filter)) {
+    eventsState.filters.approvalStatus = filter;
+    eventsState.filters.special = "all";
+    return;
+  }
+
+  if (filter === "no-participants") {
+    eventsState.filters.approvalStatus = "approved";
+    eventsState.filters.special = "no-participants";
+  }
+}
 
 async function loadEvents() {
   eventsState.loading = true;
@@ -51,6 +74,15 @@ function bindEvents() {
 
     if (!action) return;
 
+    if (action === "clear-dashboard-filter") {
+      eventsState.sourceLabel = "";
+      eventsState.filters.approvalStatus = "all";
+      eventsState.filters.special = "all";
+      window.history.replaceState({}, "", "/pages/organizer-events-v2.html");
+      renderEventsPage(eventsState);
+      return;
+    }
+
     if (action === "request-delete-event") {
       const eventId = getEventIdFromButton(target);
       if (!eventId) return;
@@ -99,6 +131,7 @@ function bindEvents() {
 }
 
 export async function initEventsPage() {
+  applyInitialFiltersFromUrl();
   bindEvents();
   await loadEvents();
 }
