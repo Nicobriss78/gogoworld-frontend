@@ -52,21 +52,39 @@ function renderActions(trill, state) {
   if (isConfirming) {
     return `
       <span class="org-trill-confirm-text">Confermi l’invio?</span>
-      <button type="button" data-action="confirm-send" data-id="${escapeHtml(id)}" class="primary" ${isSending ? "disabled" : ""}>
+      <button
+        type="button"
+        data-action="confirm-send"
+        data-id="${escapeHtml(id)}"
+        class="primary"
+        ${isSending ? "disabled" : ""}
+      >
         ${isSending ? "Invio..." : "Conferma"}
       </button>
-      <button type="button" data-action="cancel-send" class="secondary" ${isSending ? "disabled" : ""}>
+      <button
+        type="button"
+        data-action="cancel-send"
+        class="secondary"
+        ${isSending ? "disabled" : ""}
+      >
         Annulla
       </button>
     `;
   }
 
   return `
-    <button type="button" data-action="request-send" data-id="${escapeHtml(id)}" class="primary" ${state.sendingId ? "disabled" : ""}>
+    <button
+      type="button"
+      data-action="request-send"
+      data-id="${escapeHtml(id)}"
+      class="primary"
+      ${state.sendingId ? "disabled" : ""}
+    >
       Invia
     </button>
   `;
 }
+
 function getActiveFilterLabel(filter) {
   if (filter === "draft") return "Trilli in bozza";
   return "";
@@ -87,47 +105,66 @@ function renderTrillsFilterNotice(state) {
     </section>
   `;
 }
+
+function renderTrillCard(trill, state) {
+  const eventTitle = trill.event?.title || trill.eventId?.title || "N/D";
+  const message = trill.message || "Messaggio non disponibile";
+  const status = mapStatusLabel(trill.status);
+
+  return `
+    <article class="org-trill-card">
+      <div class="org-trill-title">${escapeHtml(message)}</div>
+
+      <div class="org-trill-meta">
+        Evento: ${escapeHtml(eventTitle)} · Stato: ${escapeHtml(status)}
+      </div>
+
+      <div class="org-trill-actions">
+        ${renderActions(trill, state)}
+      </div>
+    </article>
+  `;
+}
+
 export function renderOrganizerTrills(state) {
   const root = document.querySelector("[data-org-trills-root]");
   if (!root) return;
 
   if (state.loading) {
-    root.innerHTML = `<h1>Trilli</h1><p>Caricamento...</p>`;
+    root.innerHTML = `
+      <h1>Trilli</h1>
+      <p>Caricamento...</p>
+    `;
     return;
   }
 
   if (state.error) {
-    root.innerHTML = `<h1>Trilli</h1><p>${escapeHtml(state.error)}</p>`;
+    root.innerHTML = `
+      <h1>Trilli</h1>
+      <p>${escapeHtml(state.error)}</p>
+    `;
     return;
   }
 
   root.innerHTML = `
     <h1>Trilli</h1>
     ${renderTrillsFilterNotice(state)}
-    ${state.actionMessage ? `<p class="org-trill-success">${escapeHtml(state.actionMessage)}</p>` : ""}
-    ${state.actionError ? `<p class="org-trill-error">${escapeHtml(state.actionError)}</p>` : ""}
+
+    ${
+      state.actionMessage
+        ? `<p class="org-trill-success">${escapeHtml(state.actionMessage)}</p>`
+        : ""
+    }
+    ${
+      state.actionError
+        ? `<p class="org-trill-error">${escapeHtml(state.actionError)}</p>`
+        : ""
+    }
 
     <div class="org-trills-list">
       ${
         state.trills.length
-          ? state.trills.map((t) => {
-              const eventTitle = t.event?.title || t.eventId?.title || "N/D";
-
-              return `
-                <article class="org-trill-card">
-                  <div class="org-trill-title">${escapeHtml(t.message)}</div>
-
-                  <div class="org-trill-meta">
-                    Evento: ${escapeHtml(eventTitle)}<br/>
-                    Stato: ${escapeHtml(mapStatusLabel(t.status))}
-                  </div>
-
-                  <div class="org-trill-actions">
-                    ${renderActions(t, state)}
-                  </div>
-                </article>
-              `;
-            }).join("")
+          ? state.trills.map((trill) => renderTrillCard(trill, state)).join("")
           : "<p>Nessun trill trovato.</p>"
       }
     </div>
