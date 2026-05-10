@@ -39,7 +39,7 @@
 }
 
 .org-trill-actions button.primary {
-  background: var(--gw-accent, #1877F2);
+  background: var(--org-accent, #7A3242);
   color: #ffffff;
 }
 
