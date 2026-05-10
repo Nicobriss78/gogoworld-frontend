@@ -10,7 +10,25 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+function getRootReturnTo() {
+  return new URLSearchParams(window.location.search).get("rootReturnTo") || "";
+}
 
+function getBackHref() {
+  const rootReturnTo = getRootReturnTo();
+
+  if (rootReturnTo === "organizer-dashboard") {
+    return "/pages/organizer-dashboard-v2.html";
+  }
+
+  return "/pages/organizer-events-v2.html";
+}
+
+function getBackLabel() {
+  return getRootReturnTo() === "organizer-dashboard"
+    ? "Torna alla Dashboard"
+    : "Torna agli eventi";
+}
 function checked(value) {
   return value ? "checked" : "";
 }
