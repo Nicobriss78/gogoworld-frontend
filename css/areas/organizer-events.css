@@ -41,8 +41,7 @@
   gap: var(--gw-space-sm, 10px);
 }
 
-.org-events-hero__actions a,
-.org-events-create {
+.org-events-hero__actions a {
   min-height: 38px;
   padding: 9px 13px;
   border: 1px solid var(--home-accent-border);
