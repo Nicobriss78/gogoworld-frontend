@@ -304,8 +304,6 @@ function renderToolbar(filters, total, filtered) {
   return `
     <section class="org-events-toolbar-panel">
       <div class="org-events-toolbar">
-        <a class="org-events-create" href="${escapeHtml(withOrganizerReturn("/pages/organizer-event-create-v2.html"))}">Crea nuovo evento</a>
-
         <input
           type="search"
           placeholder="Cerca titolo, città, luogo o categoria"
