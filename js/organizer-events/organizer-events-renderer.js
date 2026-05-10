@@ -245,7 +245,128 @@ function renderSmartNotice(event) {
 
   return "";
 }
+function getSmartStatusText(event) {
+  const status = getApprovalStatus(event);
 
+  if (needsCorrection(event)) {
+    return "Richiede modifiche";
+  }
+
+  if (isApprovedUpcomingWithoutParticipants(event)) {
+    return "Potrebbe aver bisogno di promozione";
+  }
+
+  if (status === "pending") {
+    return "In attesa di approvazione";
+  }
+
+  if (isPrivateEvent(event)) {
+    return "Accesso controllato attivo";
+  }
+
+  if (status === "approved") {
+    return "Evento operativo";
+  }
+
+  return "Da verificare";
+}
+
+function getPrimaryAction(event, encodedEventId) {
+  const status = getApprovalStatus(event);
+  const privateEvent = isPrivateEvent(event);
+
+  if (needsCorrection(event)) {
+    return {
+      id: "edit",
+      label: "Correggi evento",
+      href: withOrganizerReturn(`/pages/organizer-event-edit-v2.html?id=${encodedEventId}`),
+    };
+  }
+
+  if (isApprovedUpcomingWithoutParticipants(event) && status === "approved") {
+    return {
+      id: "trill",
+      label: "Crea trillo",
+      href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
+    };
+  }
+
+  if (privateEvent) {
+    return {
+      id: "access",
+      label: "Gestisci accessi",
+      href: withOrganizerReturn(`/pages/organizer-event-access-v2.html?id=${encodedEventId}`),
+    };
+  }
+
+  if (status === "pending") {
+    return {
+      id: "edit",
+      label: "Modifica evento",
+      href: withOrganizerReturn(`/pages/organizer-event-edit-v2.html?id=${encodedEventId}`),
+    };
+  }
+
+  return {
+    id: "open",
+    label: "Apri evento",
+    href: withOrganizerReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`),
+  };
+}
+
+function renderPrimaryAction(action) {
+  return `
+    <a class="org-event-primary-action" href="${escapeHtml(action.href)}">
+      ${escapeHtml(action.label)}
+    </a>
+  `;
+}
+
+function renderSecondaryActions(event, eventId, encodedEventId, state, primaryActionId) {
+  const status = getApprovalStatus(event);
+  const privateEvent = isPrivateEvent(event);
+
+  const actions = [
+    {
+      id: "open",
+      label: "Apri",
+      href: withOrganizerReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`),
+      visible: primaryActionId !== "open",
+    },
+    {
+      id: "edit",
+      label: "Modifica",
+      href: withOrganizerReturn(`/pages/organizer-event-edit-v2.html?id=${encodedEventId}`),
+      visible: primaryActionId !== "edit",
+    },
+    {
+      id: "access",
+      label: "Accessi",
+      href: withOrganizerReturn(`/pages/organizer-event-access-v2.html?id=${encodedEventId}`),
+      visible: privateEvent && primaryActionId !== "access",
+    },
+    {
+      id: "trill",
+      label: "Trillo",
+      href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
+      visible: status === "approved" && primaryActionId !== "trill",
+    },
+  ];
+
+  return `
+    <div class="org-event-secondary-actions">
+      ${actions
+        .filter((action) => action.visible)
+        .map(
+          (action) => `
+            <a href="${escapeHtml(action.href)}">${escapeHtml(action.label)}</a>
+          `
+        )
+        .join("")}
+      ${renderDeleteAction(eventId, state)}
+    </div>
+  `;
+}
 function renderEventCard(event, state) {
   const eventId = getEventId(event);
   const encodedEventId = encodeUrlValue(eventId);
