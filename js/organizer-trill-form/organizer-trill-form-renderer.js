@@ -138,9 +138,9 @@ export function renderOrganizerTrillForm(state) {
             <button type="submit" ${state.saving ? "disabled" : ""}>
               ${state.saving ? "Creazione..." : "Crea bozza trillo"}
             </button>
-            <a href="/pages/organizer-event-detail-v2.html?id=${encodedEventId}">
-              Torna al dettaglio evento
-            </a>
+            <a href="${escapeHtml(withCurrentReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`))}">
+  Torna al dettaglio evento
+</a>
           </div>
         </form>
       </div>
