@@ -86,7 +86,7 @@ function bindEventDetailActions(eventId) {
 
       try {
         await deleteOrganizerEvent(eventId);
-        window.location.href = "/pages/organizer-events-v2.html";
+        window.location.href = getBackHref();
       } catch (error) {
         console.error("[OrganizerEventDetail] delete failed", error);
         organizerEventDetailState.actionError = error.message || "Errore durante l’eliminazione dell’evento.";
