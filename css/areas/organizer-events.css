@@ -397,7 +397,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .org-events-create,
   .org-events-toolbar input {
     grid-column: span 2;
   }
