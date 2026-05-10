@@ -127,7 +127,13 @@ if (currentReturn) {
   detailReturn.set("rootReturnTo", currentReturn);
 }
 
-params.set("rootReturnTo", `/pages/organizer-event-detail-v2.html?${detailReturn.toString()}`);window.location.href = `/pages/messages-v2.html?${params.toString()}`;      } catch (error) {
+params.set(
+  "rootReturnTo",
+  `/pages/organizer-event-detail-v2.html?${detailReturn.toString()}`
+);
+
+window.location.href = `/pages/messages-v2.html?${params.toString()}`;
+
         console.error("[OrganizerEventDetail] open room failed", error);
         organizerEventDetailState.actionError = error.message || "Errore durante l’apertura della room evento.";
         organizerEventDetailState.openingRoom = false;
