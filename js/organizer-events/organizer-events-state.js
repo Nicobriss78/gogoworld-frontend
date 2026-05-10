@@ -12,6 +12,7 @@ export const eventsState = {
     approvalStatus: "all",
     visibility: "all",
     privacy: "all",
+    temporal: "all",
     special: "all",
   },
 };
