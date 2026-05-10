@@ -36,6 +36,14 @@ function sortByDateDesc(a, b) {
   return dateB - dateA;
 }
 
+function buildTopEvent(events) {
+  return events.reduce((best, event) => {
+    const count = getParticipantsCount(event);
+    const bestCount = best ? getParticipantsCount(best) : -1;
+    return count > bestCount ? event : best;
+  }, null);
+}
+
 function buildAttentionItems(events, trills) {
   const pendingEvents = events.filter((event) => getApprovalStatus(event) === "pending");
   const rejectedEvents = events.filter((event) => getApprovalStatus(event) === "rejected");
@@ -61,7 +69,7 @@ function buildAttentionItems(events, trills) {
       title: "Eventi in revisione",
       value: pendingEvents.length,
       text: "Sono in attesa di approvazione. Tienili monitorati prima della pubblicazione.",
-      href: "/pages/organizer-events-v2.html",
+      href: "/pages/organizer-events-v2.html?from=dashboard&filter=pending",
     });
   }
 
@@ -71,7 +79,7 @@ function buildAttentionItems(events, trills) {
       title: "Eventi respinti",
       value: rejectedEvents.length,
       text: "Richiedono correzioni prima di poter tornare utili all’organizzazione.",
-      href: "/pages/organizer-events-v2.html",
+      href: "/pages/organizer-events-v2.html?from=dashboard&filter=rejected",
     });
   }
 
@@ -81,7 +89,7 @@ function buildAttentionItems(events, trills) {
       title: "Eventi bloccati",
       value: blockedEvents.length,
       text: "Sono fermi per moderazione o problemi critici. Vanno verificati.",
-      href: "/pages/organizer-events-v2.html",
+      href: "/pages/organizer-events-v2.html?from=dashboard&filter=blocked",
     });
   }
 
@@ -91,7 +99,7 @@ function buildAttentionItems(events, trills) {
       title: "Eventi imminenti senza partecipanti",
       value: upcomingWithoutParticipants.length,
       text: "Potrebbero avere bisogno di visibilità, trilli o promozione.",
-      href: "/pages/organizer-events-v2.html",
+      href: "/pages/organizer-events-v2.html?from=dashboard&filter=no-participants",
     });
   }
 
@@ -101,19 +109,11 @@ function buildAttentionItems(events, trills) {
       title: "Trilli da gestire",
       value: draftTrills.length,
       text: "Ci sono trilli in bozza o non ancora inviati.",
-      href: "/pages/organizer-trills-v2.html",
+      href: "/pages/organizer-trills-v2.html?from=dashboard&filter=draft",
     });
   }
 
   return items.slice(0, 5);
-}
-
-function buildTopEvent(events) {
-  return events.reduce((best, event) => {
-    const count = getParticipantsCount(event);
-    const bestCount = best ? getParticipantsCount(best) : -1;
-    return count > bestCount ? event : best;
-  }, null);
 }
 
 export function buildDashboardStats({ events = [], promos = [], trills = [] }) {
@@ -133,10 +133,7 @@ export function buildDashboardStats({ events = [], promos = [], trills = [] }) {
     .sort(sortByDateAsc)
     .slice(0, 5);
 
-  const recentEvents = [...events]
-    .sort(sortByDateDesc)
-    .slice(0, 5);
-
+  const recentEvents = [...events].sort(sortByDateDesc).slice(0, 5);
   const topEvent = buildTopEvent(events);
 
   return {
