@@ -49,6 +49,15 @@ function getTrillIdFromButton(btn) {
 
 function bind() {
   document.addEventListener("click", async (e) => {
+    const clearFilterBtn = e.target.closest("[data-action='clear-trills-filter']");
+if (clearFilterBtn) {
+  organizerTrillsState.sourceLabel = "";
+  organizerTrillsState.activeFilter = "";
+  updateUrlToCleanTrills();
+  applyTrillsFilter();
+  renderOrganizerTrills(organizerTrillsState);
+  return;
+}
     const requestBtn = e.target.closest("[data-action='request-send']");
     if (requestBtn) {
       const id = getTrillIdFromButton(requestBtn);
