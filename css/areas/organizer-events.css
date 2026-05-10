@@ -325,15 +325,45 @@
   color: var(--gw-danger, #B52A32);
 }
 
-.org-event-actions {
+.org-event-card__actions {
   margin-top: var(--gw-space-md, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gw-space-sm, 10px);
+}
+
+.org-event-primary-action {
+  width: 100%;
+  min-height: 42px;
+  padding: 11px 14px;
+  border: 1px solid var(--home-accent-border);
+  border-radius: var(--gw-radius-btn, 10px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--org-accent);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.org-event-primary-action:visited,
+.org-event-primary-action:hover,
+.org-event-primary-action:focus-visible,
+.org-event-primary-action:active {
+  color: #fff;
+}
+
+.org-event-secondary-actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--gw-space-sm, 10px);
 }
 
-.org-event-actions button,
-.org-event-actions a {
+.org-event-secondary-actions button,
+.org-event-secondary-actions a {
   min-height: 36px;
   padding: 8px 11px;
   border: 1px solid var(--home-accent-border);
@@ -347,7 +377,7 @@
   text-decoration: none;
 }
 
-.org-event-actions button.danger {
+.org-event-secondary-actions button.danger {
   border-color: rgba(181, 42, 50, 0.22);
   color: var(--gw-danger, #B52A32);
 }
