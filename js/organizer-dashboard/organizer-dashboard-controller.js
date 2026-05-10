@@ -1,7 +1,7 @@
 import { fetchDashboardData } from "./organizer-dashboard-api.js?v=3";
-import { renderDashboard } from "./organizer-dashboard-renderer.js?v=3";
+import { renderDashboard } from "./organizer-dashboard-renderer.js?v=11";
 import { dashboardState } from "./organizer-dashboard-state.js?v=3";
-import { buildDashboardStats } from "./organizer-dashboard-widgets.js?v=3";
+import { buildDashboardStats } from "./organizer-dashboard-widgets.js?v=11";
 
 export async function initDashboard() {
   dashboardState.loading = true;
