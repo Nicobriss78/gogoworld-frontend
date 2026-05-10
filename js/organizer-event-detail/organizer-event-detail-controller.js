@@ -133,12 +133,12 @@ params.set(
 );
 
 window.location.href = `/pages/messages-v2.html?${params.toString()}`;
-
-        console.error("[OrganizerEventDetail] open room failed", error);
-        organizerEventDetailState.actionError = error.message || "Errore durante l’apertura della room evento.";
-        organizerEventDetailState.openingRoom = false;
-        renderEventDetail(organizerEventDetailState);
-      }
+} catch (error) {
+console.error("[OrganizerEventDetail] open room failed", error);
+organizerEventDetailState.actionError = error.message || "Errore durante l’apertura della room evento.";
+organizerEventDetailState.openingRoom = false;
+renderEventDetail(organizerEventDetailState);
+}
     }
   });
 }
