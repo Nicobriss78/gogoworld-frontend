@@ -185,7 +185,7 @@ export function renderEventDetail(state) {
 
         ${renderDeleteAction(state)}
 
-        <a href="/pages/organizer-events-v2.html">Torna agli eventi</a>
+        <a href="${escapeHtml(getBackHref())}">${escapeHtml(getBackLabel())}</a>
       </div>
     </section>
   `;
