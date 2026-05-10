@@ -116,8 +116,8 @@ function bindAccessActions() {
   });
 
   document.addEventListener("click", async (domEvent) => {
-    const target = domEvent.target;
-    const action = target?.dataset?.action;
+    const target = domEvent.target?.closest?.("[data-action]");
+const action = target?.dataset?.action;
 
     if (!action) return;
 
