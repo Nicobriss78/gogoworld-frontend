@@ -431,7 +431,6 @@
     grid-template-columns: 1fr;
   }
 
-  .org-events-create,
   .org-events-toolbar input {
     grid-column: auto;
   }
