@@ -24,7 +24,52 @@
   background: #ffffff;
   font-size: 15px;
 }
+/* Notice filtro proveniente dalla Dashboard Organizer */
+.org-event-source-notice {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+margin: 0 0 14px;
+padding: 10px 14px;
+border: 1px solid var(--home-accent-border, rgba(122, 50, 66, 0.22));
+border-radius: 12px;
+background: var(--home-accent-soft, rgba(122, 50, 66, 0.08));
+color: var(--home-text, #1C2430);
+}
 
+.org-event-source-notice div {
+display: flex;
+flex-direction: column;
+gap: 2px;
+min-width: 0;
+}
+
+.org-event-source-notice strong {
+color: var(--org-accent, #7A3242);
+font-size: 14px;
+line-height: 1.2;
+font-weight: 800;
+}
+
+.org-event-source-notice span {
+color: var(--home-text-secondary, #5A6572);
+font-size: 13px;
+line-height: 1.3;
+}
+
+.org-event-source-notice button {
+min-height: 34px;
+padding: 8px 11px;
+border: 1px solid var(--home-accent-border, rgba(122, 50, 66, 0.22));
+border-radius: 10px;
+background: var(--home-surface, #FFFFFF);
+color: var(--org-accent, #7A3242);
+font: inherit;
+font-size: 13px;
+line-height: 1;
+font-weight: 800;
+}
 .org-events-list {
   display: grid;
   gap: 12px;
