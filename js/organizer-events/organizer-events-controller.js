@@ -1,14 +1,23 @@
 import { fetchOrganizerEvents } from "./organizer-events-api.js?v=4";
-import { renderEventsPage, renderEventsList } from "./organizer-events-renderer.js?v=7";
-import { eventsState } from "./organizer-events-state.js?v=7";
+import { renderEventsPage, renderEventsList } from "./organizer-events-renderer.js?v=8";
+import { eventsState } from "./organizer-events-state.js?v=8";
 import { handleDeleteEvent } from "./organizer-events-actions.js?v=4";
+
+function resetFilters() {
+  eventsState.filters.query = "";
+  eventsState.filters.approvalStatus = "all";
+  eventsState.filters.visibility = "all";
+  eventsState.filters.privacy = "all";
+  eventsState.filters.temporal = "all";
+  eventsState.filters.special = "all";
+}
 
 function applyInitialFiltersFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const source = params.get("from");
   const filter = params.get("filter");
 
-  if (source === "dashboard") {
+  if (source === "dashboard" && filter) {
     eventsState.sourceLabel = "Filtro aperto dalla Dashboard";
   }
 
@@ -22,6 +31,7 @@ function applyInitialFiltersFromUrl() {
 
   if (filter === "no-participants") {
     eventsState.filters.approvalStatus = "approved";
+    eventsState.filters.temporal = "upcoming";
     eventsState.filters.special = "no-participants";
   }
 }
@@ -47,6 +57,10 @@ function getEventIdFromButton(button) {
   return String(button?.dataset?.eventId || "").trim();
 }
 
+function updateUrlToCleanEvents() {
+  window.history.replaceState({}, "", "/pages/organizer-events-v2.html");
+}
+
 function bindEvents() {
   document.addEventListener("input", (event) => {
     const target = event.target;
@@ -55,7 +69,9 @@ function bindEvents() {
     if (!key) return;
 
     eventsState.filters[key] = target.value;
-    renderEventsList(eventsState);
+    eventsState.sourceLabel = "";
+    updateUrlToCleanEvents();
+    renderEventsPage(eventsState);
   });
 
   document.addEventListener("change", (event) => {
@@ -65,7 +81,9 @@ function bindEvents() {
     if (!key) return;
 
     eventsState.filters[key] = target.value;
-    renderEventsList(eventsState);
+    eventsState.sourceLabel = "";
+    updateUrlToCleanEvents();
+    renderEventsPage(eventsState);
   });
 
   document.addEventListener("click", async (event) => {
@@ -74,11 +92,41 @@ function bindEvents() {
 
     if (!action) return;
 
-    if (action === "clear-dashboard-filter") {
+    if (action === "clear-dashboard-filter" || action === "reset-events-filters") {
       eventsState.sourceLabel = "";
-      eventsState.filters.approvalStatus = "all";
-      eventsState.filters.special = "all";
-      window.history.replaceState({}, "", "/pages/organizer-events-v2.html");
+      resetFilters();
+      updateUrlToCleanEvents();
+      renderEventsPage(eventsState);
+      return;
+    }
+
+    if (action === "apply-events-filter") {
+      const key = target.dataset.filterKey;
+      const value = target.dataset.filterValue;
+
+      if (!key || value === undefined) return;
+
+      resetFilters();
+
+      if (key === "approvalStatus") {
+        eventsState.filters.approvalStatus = value;
+      }
+
+      if (key === "privacy") {
+        eventsState.filters.privacy = value;
+      }
+
+      if (key === "special") {
+        eventsState.filters.special = value;
+
+        if (value === "no-participants") {
+          eventsState.filters.approvalStatus = "approved";
+          eventsState.filters.temporal = "upcoming";
+        }
+      }
+
+      eventsState.sourceLabel = "";
+      updateUrlToCleanEvents();
       renderEventsPage(eventsState);
       return;
     }
