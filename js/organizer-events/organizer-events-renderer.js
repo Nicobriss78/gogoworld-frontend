@@ -378,11 +378,11 @@ function renderSecondaryActions(event, eventId, encodedEventId, state, primaryAc
       visible: privateEvent && primaryActionId !== "access",
     },
     {
-      id: "trill",
-      label: "Trillo",
-      href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
-      visible: status === "approved" && primaryActionId !== "trill",
-    },
+  id: "trill",
+  label: "Trillo",
+  href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
+  visible: canCreateTrill && primaryActionId !== "trill",
+},
   ];
 
   return `
