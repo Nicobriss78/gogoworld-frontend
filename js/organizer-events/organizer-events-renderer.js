@@ -92,10 +92,10 @@ function getActiveFilterLabel(filters) {
   };
 
   if (filters.approvalStatus && filters.approvalStatus !== "all") {
-  return labels[filters.approvalStatus] || "";
-}
+    return labels[filters.approvalStatus] || "";
+  }
 
-return "";
+  return "";
 }
 
 function buildSummary(events) {
@@ -282,10 +282,15 @@ function getSmartStatusText(event) {
   const participants = getParticipantsCount(event);
 
   if (needsCorrection(event)) return "Richiede modifiche";
+
   if (status === "approved" && isOngoingEvent(event) && participants === 0) {
     return "Evento in corso senza partecipanti";
   }
-  if (isApprovedUpcomingWithoutParticipants(event)) return "Potrebbe aver bisogno di promozione";
+
+  if (isApprovedUpcomingWithoutParticipants(event)) {
+    return "Potrebbe aver bisogno di promozione";
+  }
+
   if (status === "pending" && isPastEvent(event)) return "Evento mai approvato";
   if (status === "pending") return "In attesa di approvazione";
   if (isPrivateEvent(event)) return "Accesso controllato attivo";
@@ -307,20 +312,20 @@ function getPrimaryAction(event, encodedEventId) {
   }
 
   if (status === "approved" && isOngoingEvent(event) && getParticipantsCount(event) === 0) {
-  return {
-    id: "trill",
-    label: "Lancia trillo",
-    href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
-  };
-}
+    return {
+      id: "trill",
+      label: "Lancia trillo",
+      href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
+    };
+  }
 
-if (isApprovedUpcomingWithoutParticipants(event) && status === "approved") {
-  return {
-    id: "trill",
-    label: "Crea trillo",
-    href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
-  };
-}
+  if (isApprovedUpcomingWithoutParticipants(event) && status === "approved") {
+    return {
+      id: "trill",
+      label: "Crea trillo",
+      href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
+    };
+  }
 
   if (privateEvent) {
     return {
@@ -360,17 +365,17 @@ function renderSecondaryActions(event, eventId, encodedEventId, state, primaryAc
 
   const actions = [
     {
-  id: "edit",
-  label: "Modifica",
-  href: withOrganizerReturn(`/pages/organizer-event-edit-v2.html?id=${encodedEventId}`),
-  visible: primaryActionId !== "edit",
-},
-{
-  id: "open",
-  label: "Apri",
-  href: withOrganizerReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`),
-  visible: primaryActionId !== "open",
-},
+      id: "edit",
+      label: "Modifica",
+      href: withOrganizerReturn(`/pages/organizer-event-edit-v2.html?id=${encodedEventId}`),
+      visible: primaryActionId !== "edit",
+    },
+    {
+      id: "open",
+      label: "Apri",
+      href: withOrganizerReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`),
+      visible: primaryActionId !== "open",
+    },
     {
       id: "access",
       label: "Accessi",
@@ -378,11 +383,11 @@ function renderSecondaryActions(event, eventId, encodedEventId, state, primaryAc
       visible: privateEvent && primaryActionId !== "access",
     },
     {
-  id: "trill",
-  label: "Trillo",
-  href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
-  visible: canCreateTrill && primaryActionId !== "trill",
-},
+      id: "trill",
+      label: "Trillo",
+      href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
+      visible: canCreateTrill && primaryActionId !== "trill",
+    },
   ];
 
   return `
@@ -575,4 +580,4 @@ export function renderEventsPage(state) {
   `;
 
   renderEventsList(state);
-    }
+      }
