@@ -319,7 +319,7 @@ font-weight: 800;
 }
 
 .org-event-card__notice {
-margin-top: var(--gw-space-sm, 10px);
+margin-top: 14px;
 padding: 9px 11px;
 border-radius: var(--gw-radius-btn, 10px);
 font-size: 13px;
