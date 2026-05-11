@@ -360,17 +360,17 @@ function renderSecondaryActions(event, eventId, encodedEventId, state, primaryAc
 
   const actions = [
     {
-      id: "open",
-      label: "Apri",
-      href: withOrganizerReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`),
-      visible: primaryActionId !== "open",
-    },
-    {
-      id: "edit",
-      label: "Modifica",
-      href: withOrganizerReturn(`/pages/organizer-event-edit-v2.html?id=${encodedEventId}`),
-      visible: primaryActionId !== "edit",
-    },
+  id: "edit",
+  label: "Modifica",
+  href: withOrganizerReturn(`/pages/organizer-event-edit-v2.html?id=${encodedEventId}`),
+  visible: primaryActionId !== "edit",
+},
+{
+  id: "open",
+  label: "Apri",
+  href: withOrganizerReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`),
+  visible: primaryActionId !== "open",
+},
     {
       id: "access",
       label: "Accessi",
