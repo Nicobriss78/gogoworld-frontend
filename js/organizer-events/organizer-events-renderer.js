@@ -198,7 +198,7 @@ function renderDashboardFilterNotice(state) {
   return `
     <section class="org-event-source-notice">
       <div>
-        <strong>${escapeHtml(state.sourceLabel || "Filtro attivo")}</strong>
+        <strong>${escapeHtml(state.sourceLabel || "Filtro aperto dalla Dashboard")}</strong>
         ${label ? `<span>${escapeHtml(label)}</span>` : ""}
       </div>
       <button type="button" data-action="clear-dashboard-filter">Mostra tutti</button>
