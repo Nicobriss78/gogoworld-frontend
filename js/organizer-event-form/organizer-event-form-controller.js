@@ -2,17 +2,17 @@ import {
   createOrganizerEvent,
   fetchEventById,
   updateOrganizerEvent,
-} from "./organizer-event-form-api.js?v=5";
-import { renderEventForm } from "./organizer-event-form-renderer.js?v=5";
-import { eventFormState } from "./organizer-event-form-state.js?v=5";
-import { suggestDateEnd, toDateTimeLocalValue } from "./organizer-event-duration.js?v=5";
-import { generateAccessCode, normalizePrivacy } from "./organizer-event-privacy.js?v=5";
-import { validateEventForm } from "./organizer-event-form-validation.js?v=5";
-import { getSubcategoryOptions } from "./event-categories.js?v=5";
+} from "./organizer-event-form-api.js?v=7";
+import { renderEventForm } from "./organizer-event-form-renderer.js?v=7";
+import { eventFormState } from "./organizer-event-form-state.js?v=7";
+import { suggestDateEnd, toDateTimeLocalValue } from "./organizer-event-duration.js?v=7";
+import { generateAccessCode, normalizePrivacy } from "./organizer-event-privacy.js?v=7";
+import { validateEventForm } from "./organizer-event-form-validation.js?v=7";
+import { getSubcategoryOptions } from "./event-categories.js?v=7";
 import {
   reverseEventCoordinates,
   searchEventCoordinates,
-} from "./organizer-event-form-geocode-api.js?v=5";function getEventIdFromUrl() {
+} from "./organizer-event-form-geocode-api.js?v=7";function getEventIdFromUrl() {
   return new URLSearchParams(window.location.search).get("id");
 }
 
