@@ -121,8 +121,8 @@ function renderSummaryCard({ label, value, hint, action, key, filterValue, tone 
 
   return `
     <article class="org-events-summary-card org-events-summary-card--${escapeHtml(tone)}"${attrs}>
-      <strong>${escapeHtml(value)}</strong>
       <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
       <small>${escapeHtml(hint)}</small>
     </article>
   `;
@@ -210,17 +210,34 @@ function renderDeleteAction(eventId, state) {
   if (isConfirming) {
     return `
       <span class="org-event-delete-confirm">Confermi eliminazione?</span>
-      <button type="button" class="danger" data-action="confirm-delete-event" data-event-id="${safeEventId}" ${isDeleting ? "disabled" : ""}>
+      <button
+        type="button"
+        class="danger"
+        data-action="confirm-delete-event"
+        data-event-id="${safeEventId}"
+        ${isDeleting ? "disabled" : ""}
+      >
         ${isDeleting ? "Eliminazione..." : "Conferma"}
       </button>
-      <button type="button" data-action="cancel-delete-event" data-event-id="${safeEventId}" ${isDeleting ? "disabled" : ""}>
+      <button
+        type="button"
+        data-action="cancel-delete-event"
+        data-event-id="${safeEventId}"
+        ${isDeleting ? "disabled" : ""}
+      >
         Annulla
       </button>
     `;
   }
 
   return `
-    <button type="button" class="danger" data-action="request-delete-event" data-event-id="${safeEventId}" ${state.deletingId ? "disabled" : ""}>
+    <button
+      type="button"
+      class="danger"
+      data-action="request-delete-event"
+      data-event-id="${safeEventId}"
+      ${state.deletingId ? "disabled" : ""}
+    >
       Elimina
     </button>
   `;
@@ -245,28 +262,15 @@ function renderSmartNotice(event) {
 
   return "";
 }
+
 function getSmartStatusText(event) {
   const status = getApprovalStatus(event);
 
-  if (needsCorrection(event)) {
-    return "Richiede modifiche";
-  }
-
-  if (isApprovedUpcomingWithoutParticipants(event)) {
-    return "Potrebbe aver bisogno di promozione";
-  }
-
-  if (status === "pending") {
-    return "In attesa di approvazione";
-  }
-
-  if (isPrivateEvent(event)) {
-    return "Accesso controllato attivo";
-  }
-
-  if (status === "approved") {
-    return "Evento operativo";
-  }
+  if (needsCorrection(event)) return "Richiede modifiche";
+  if (isApprovedUpcomingWithoutParticipants(event)) return "Potrebbe aver bisogno di promozione";
+  if (status === "pending") return "In attesa di approvazione";
+  if (isPrivateEvent(event)) return "Accesso controllato attivo";
+  if (status === "approved") return "Evento operativo";
 
   return "Da verificare";
 }
@@ -357,16 +361,13 @@ function renderSecondaryActions(event, eventId, encodedEventId, state, primaryAc
     <div class="org-event-secondary-actions">
       ${actions
         .filter((action) => action.visible)
-        .map(
-          (action) => `
-            <a href="${escapeHtml(action.href)}">${escapeHtml(action.label)}</a>
-          `
-        )
+        .map((action) => `<a href="${escapeHtml(action.href)}">${escapeHtml(action.label)}</a>`)
         .join("")}
       ${renderDeleteAction(eventId, state)}
     </div>
   `;
 }
+
 function renderEventCard(event, state) {
   const eventId = getEventId(event);
   const encodedEventId = encodeUrlValue(eventId);
@@ -381,15 +382,17 @@ function renderEventCard(event, state) {
 
   return `
     <article class="org-event-card org-event-card--${escapeHtml(status)}" data-event-id="${escapeHtml(eventId)}">
-      <div class="org-event-card__head">
-        <div class="org-event-card__title">
+      <div class="org-event-card__header">
+        <div>
           <h2>${title}</h2>
           <p>${city} · ${escapeHtml(formatDate(getEventDate(event)))}</p>
         </div>
 
         <div class="org-event-card__badges">
-          <span class="org-event-badge org-event-badge--${escapeHtml(status)}">${escapeHtml(getStatusLabel(status))}</span>
-          <span class="org-event-badge">${escapeHtml(privateEvent ? "Privato" : "Pubblico")}</span>
+          <span class="org-event-badge org-event-badge--${escapeHtml(status)}">
+            ${escapeHtml(getStatusLabel(status))}
+          </span>
+          <span class="org-event-badge">${privateEvent ? "Privato" : "Pubblico"}</span>
           <span class="org-event-badge">${escapeHtml(temporalLabel)}</span>
         </div>
       </div>
@@ -448,7 +451,7 @@ function renderToolbar(filters, total, filtered) {
         </select>
 
         <select data-events-filter="special">
-          <option value="all" ${filters.special === "all" ? "selected" : ""}>Tutte le criticità</option>
+          <option value="all" ${filters.special === "all" ? "selected" : ""}>Nessun filtro speciale</option>
           <option value="no-participants" ${filters.special === "no-participants" ? "selected" : ""}>Senza partecipanti</option>
           <option value="needs-correction" ${filters.special === "needs-correction" ? "selected" : ""}>Da correggere</option>
         </select>
@@ -473,8 +476,16 @@ export function renderEventsList(state) {
   const filteredEvents = applyEventFilters(state.events, state.filters);
 
   listRoot.innerHTML = `
-    ${state.actionMessage ? `<section class="org-event-success">${escapeHtml(state.actionMessage)}</section>` : ""}
-    ${state.actionError ? `<section class="org-event-error">${escapeHtml(state.actionError)}</section>` : ""}
+    ${
+      state.actionMessage
+        ? `<section class="org-event-success">${escapeHtml(state.actionMessage)}</section>`
+        : ""
+    }
+    ${
+      state.actionError
+        ? `<section class="org-event-error">${escapeHtml(state.actionError)}</section>`
+        : ""
+    }
     ${
       filteredEvents.length
         ? `<section class="org-events-list">${filteredEvents.map((event) => renderEventCard(event, state)).join("")}</section>`
@@ -536,4 +547,4 @@ export function renderEventsPage(state) {
   `;
 
   renderEventsList(state);
-}
+    }
