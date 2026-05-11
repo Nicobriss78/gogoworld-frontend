@@ -279,9 +279,14 @@ function renderSmartNotice(event) {
 
 function getSmartStatusText(event) {
   const status = getApprovalStatus(event);
+  const participants = getParticipantsCount(event);
 
   if (needsCorrection(event)) return "Richiede modifiche";
+  if (status === "approved" && isOngoingEvent(event) && participants === 0) {
+    return "Evento in corso senza partecipanti";
+  }
   if (isApprovedUpcomingWithoutParticipants(event)) return "Potrebbe aver bisogno di promozione";
+  if (status === "pending" && isPastEvent(event)) return "Evento mai approvato";
   if (status === "pending") return "In attesa di approvazione";
   if (isPrivateEvent(event)) return "Accesso controllato attivo";
   if (status === "approved") return "Evento operativo";
