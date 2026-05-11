@@ -10,6 +10,7 @@ function escapeHtml(value) {
 function encodeUrlValue(value) {
   return encodeURIComponent(String(value ?? "").trim());
 }
+
 function getRootReturnTo() {
   return new URLSearchParams(window.location.search).get("rootReturnTo") || "";
 }
@@ -37,6 +38,7 @@ function withCurrentReturn(href) {
   const separator = href.includes("?") ? "&" : "?";
   return `${href}${separator}rootReturnTo=${encodeURIComponent(rootReturnTo)}`;
 }
+
 function formatDate(value) {
   if (!value) return "Data non disponibile";
 
@@ -60,6 +62,18 @@ function canEditEvent(event) {
   return event?.approvalStatus !== "blocked";
 }
 
+function isPastEvent(event) {
+  const end = event?.dateEnd ? new Date(event.dateEnd) : null;
+  const start = event?.dateStart ? new Date(event.dateStart) : null;
+  const reference = end && !Number.isNaN(end.getTime()) ? end : start;
+
+  return Boolean(reference && !Number.isNaN(reference.getTime()) && reference.getTime() < Date.now());
+}
+
+function canCreateTrill(event) {
+  return String(event?.approvalStatus || "").toLowerCase() === "approved" && !isPastEvent(event);
+}
+
 function renderModeration(event) {
   const reason = event?.moderation?.reason || "";
   const notes = event?.moderation?.notes || "";
@@ -78,17 +92,31 @@ function renderDeleteAction(state) {
   if (state.confirmDelete) {
     return `
       <span>Confermi eliminazione?</span>
-      <button type="button" class="danger" data-action="confirm-delete-event" ${state.deleting ? "disabled" : ""}>
+      <button
+        type="button"
+        class="danger"
+        data-action="confirm-delete-event"
+        ${state.deleting ? "disabled" : ""}
+      >
         ${state.deleting ? "Eliminazione..." : "Conferma"}
       </button>
-      <button type="button" data-action="cancel-delete-event" ${state.deleting ? "disabled" : ""}>
+      <button
+        type="button"
+        data-action="cancel-delete-event"
+        ${state.deleting ? "disabled" : ""}
+      >
         Annulla
       </button>
     `;
   }
 
   return `
-    <button type="button" class="danger" data-action="request-delete-event" ${state.deleting ? "disabled" : ""}>
+    <button
+      type="button"
+      class="danger"
+      data-action="request-delete-event"
+      ${state.deleting ? "disabled" : ""}
+    >
       Elimina evento
     </button>
   `;
@@ -110,7 +138,9 @@ export function renderEventDetail(state) {
     root.innerHTML = `
       <h1>Dettaglio evento</h1>
       <section class="org-event-detail-error">${escapeHtml(state.error)}</section>
-      <p><a href="${escapeHtml(getBackHref())}">${escapeHtml(getBackLabel())}</a></p>
+      <p>
+        <a href="${escapeHtml(getBackHref())}">${escapeHtml(getBackLabel())}</a>
+      </p>
     `;
     return;
   }
@@ -121,13 +151,23 @@ export function renderEventDetail(state) {
   const participants = Array.isArray(event.participants) ? event.participants.length : 0;
   const isPrivate = Boolean(event.isPrivate || event.visibility === "private");
   const editable = canEditEvent(event);
+  const trillAvailable = eventId && canCreateTrill(event);
 
   root.innerHTML = `
     <h1>${escapeHtml(event.title || "Evento senza titolo")}</h1>
     <p>Hub operativo evento Organizer V2.</p>
 
-    ${state.actionMessage ? `<section class="org-event-detail-success">${escapeHtml(state.actionMessage)}</section>` : ""}
-    ${state.actionError ? `<section class="org-event-detail-error">${escapeHtml(state.actionError)}</section>` : ""}
+    ${
+      state.actionMessage
+        ? `<section class="org-event-detail-success">${escapeHtml(state.actionMessage)}</section>`
+        : ""
+    }
+
+    ${
+      state.actionError
+        ? `<section class="org-event-detail-error">${escapeHtml(state.actionError)}</section>`
+        : ""
+    }
 
     <section class="org-event-detail-card">
       <h2>Dati evento</h2>
@@ -169,14 +209,19 @@ export function renderEventDetail(state) {
             : `<button type="button" disabled>Accessi privati</button>`
         }
 
-        <button type="button" data-action="open-room" data-event-id="${escapeHtml(eventId)}" ${eventId || state.openingRoom ? "" : "disabled"} ${state.openingRoom ? "disabled" : ""}>
+        <button
+          type="button"
+          data-action="open-room"
+          data-event-id="${escapeHtml(eventId)}"
+          ${eventId && !state.openingRoom ? "" : "disabled"}
+        >
           ${state.openingRoom ? "Apertura room..." : "Apri room"}
         </button>
 
         ${
-          eventId
+          trillAvailable
             ? `<a href="${escapeHtml(withCurrentReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`))}">Crea trillo</a>`
-            : `<button type="button" disabled>Crea trillo</button>`
+            : `<button type="button" disabled>Trillo non disponibile</button>`
         }
 
         <button type="button" disabled title="Funzione Promozioni Organizer V2 non ancora implementata">
@@ -189,4 +234,4 @@ export function renderEventDetail(state) {
       </div>
     </section>
   `;
-}
+                     }
