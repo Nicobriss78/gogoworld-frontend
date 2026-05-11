@@ -248,10 +248,20 @@ function renderDeleteAction(eventId, state) {
 }
 
 function renderSmartNotice(event) {
+  const participants = getParticipantsCount(event);
+
   if (needsCorrection(event)) {
     return `
       <div class="org-event-card__notice org-event-card__notice--danger">
         Evento da correggere prima di essere pienamente operativo.
+      </div>
+    `;
+  }
+
+  if (getApprovalStatus(event) === "approved" && isOngoingEvent(event) && participants === 0) {
+    return `
+      <div class="org-event-card__notice org-event-card__notice--warning">
+        Evento in corso senza partecipanti. Valuta un trillo immediato.
       </div>
     `;
   }
