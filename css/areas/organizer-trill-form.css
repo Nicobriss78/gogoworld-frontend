@@ -86,7 +86,7 @@
 }
 
 .org-trill-actions button {
-  background: var(--gw-primary, #1677ff);
+  background: var(--org-accent, #7A3242);
   color: #fff;
 }
 
