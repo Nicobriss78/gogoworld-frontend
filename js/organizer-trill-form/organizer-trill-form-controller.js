@@ -13,9 +13,13 @@ function getRootReturnTo() {
 }
 
 function getSuccessRedirectHref() {
-  return getRootReturnTo() === "organizer-dashboard"
-    ? "/pages/organizer-dashboard-v2.html"
-    : "/pages/organizer-trills-v2.html";
+  const rootReturnTo = getRootReturnTo();
+
+  if (rootReturnTo === "organizer-dashboard") {
+    return "/pages/organizer-dashboard-v2.html";
+  }
+
+  return "/pages/organizer-trills-v2.html?from=trill-create&filter=draft";
 }
 function normalizeEventPayload(payload) {
   return payload?.event || payload?.data?.event || payload?.data || null;
