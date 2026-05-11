@@ -373,6 +373,7 @@ async function loadEditEvent() {
     const event = payload?.event || payload;
 
     eventFormState.event = mapBackendEventToForm(event);
+eventFormState.dateEndTouched = true;
   } catch (error) {
     console.error("[OrganizerEventForm] load edit failed", error);
     eventFormState.error = error.message || "Errore caricamento evento.";
