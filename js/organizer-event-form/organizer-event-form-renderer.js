@@ -375,7 +375,8 @@ const isCustomSubcategory = Boolean(
         <a href="${escapeHtml(getEventFormBackHref())}">${escapeHtml(getEventFormBackLabel())}</a>
       </div>
     </form>
-   }
+  `;
+}
 
 
 
