@@ -91,7 +91,11 @@ function getActiveFilterLabel(filters) {
     blocked: "Eventi bloccati",
   };
 
+  if (filters.approvalStatus && filters.approvalStatus !== "all") {
   return labels[filters.approvalStatus] || "";
+}
+
+return "";
 }
 
 function buildSummary(events) {
