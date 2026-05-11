@@ -17,10 +17,13 @@ function applyInitialFilterFromUrl() {
   const source = params.get("from");
   const filter = params.get("filter");
 
-  if (source === "dashboard" && filter === "draft") {
-    organizerTrillsState.sourceLabel = "Filtro aperto dalla Dashboard";
-    organizerTrillsState.activeFilter = "draft";
-  }
+  if ((source === "dashboard" || source === "trill-create") && filter === "draft") {
+  organizerTrillsState.sourceLabel =
+    source === "dashboard"
+      ? "Filtro aperto dalla Dashboard"
+      : "Bozze trillo";
+  organizerTrillsState.activeFilter = "draft";
+}
 }
 
 function updateUrlToCleanTrills() {
