@@ -83,13 +83,15 @@ margin-top: 12px;
 
 .org-event-actions button,
 .org-event-actions a {
-min-height: 42px;
-padding: 10px 12px;
+min-height: 44px;
+padding: 10px 16px;
 border: 1px solid var(--org-form-border);
 border-radius: var(--radius-btn, 10px);
 background: var(--org-form-surface);
 color: var(--org-form-text);
 font: inherit;
+font-size: 15px;
+line-height: 1.2;
 font-weight: 700;
 text-decoration: none;
 cursor: pointer;
