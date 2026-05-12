@@ -2,14 +2,18 @@ import { organizerState } from "./organizer-state.js?v=3";
 import { loadIdentity } from "./organizer-identity.js?v=3";
 
 function renderAccessDenied() {
+  document.body.classList.add("organizer-shell", "organizer-access-denied-page");
+
   document.body.innerHTML = `
-    <main style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;font-family:Arial,sans-serif;background:#f5f7fb;">
-      <section style="max-width:420px;background:#fff;border-radius:18px;padding:24px;box-shadow:0 12px 30px rgba(15,23,42,.12);">
-        <h1 style="margin:0 0 12px;font-size:24px;">Accesso non autorizzato</h1>
-        <p style="margin:0 0 18px;line-height:1.5;color:#475569;">
+    <main class="org-access-denied" aria-labelledby="orgAccessDeniedTitle">
+      <section class="org-access-denied__card">
+        <h1 id="orgAccessDeniedTitle" class="org-access-denied__title">
+          Accesso non autorizzato
+        </h1>
+        <p class="org-access-denied__text">
           Il tuo profilo non è abilitato all’accesso come organizzatore.
         </p>
-        <a href="/index.html" style="display:inline-block;text-decoration:none;font-weight:700;color:#0f6bff;">
+        <a class="org-access-denied__link" href="/index.html">
           Torna alla schermata iniziale
         </a>
       </section>
