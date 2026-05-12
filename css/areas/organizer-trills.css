@@ -38,7 +38,86 @@
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
+.org-trill-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
 
+.org-trill-card__header h2 {
+  margin: 0;
+  color: var(--gw-text-main, #1f2937);
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.org-trill-card__header p {
+  margin: 6px 0 0;
+  color: var(--gw-text-secondary, #5A6572);
+  font-size: 14px;
+}
+
+.org-trill-badge {
+  flex: 0 0 auto;
+  min-height: 24px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--org-accent-soft, rgba(122, 50, 66, 0.08));
+  color: var(--org-accent, #7A3242);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.org-trill-badge--sent {
+  background: rgba(21, 128, 61, 0.10);
+  color: #15803d;
+}
+
+.org-trill-badge--failed,
+.org-trill-badge--blocked {
+  background: rgba(181, 42, 50, 0.08);
+  color: #b91c1c;
+}
+
+.org-trill-card__meta {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  color: var(--gw-text-secondary, #5A6572);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.org-trill-smart-notice {
+  margin-top: 14px;
+  padding: 9px 11px;
+  border-radius: 10px;
+  background: var(--org-accent-soft, rgba(122, 50, 66, 0.08));
+  color: var(--org-accent, #7A3242);
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 800;
+}
+
+.org-trill-smart-notice--done {
+  background: rgba(21, 128, 61, 0.10);
+  color: #15803d;
+}
+
+.org-trill-smart-notice--danger {
+  background: rgba(181, 42, 50, 0.08);
+  color: #b91c1c;
+}
+
+.org-trill-action-status {
+  color: var(--gw-text-secondary, #5A6572);
+  font-size: 13px;
+  font-weight: 800;
+}
 .org-trill-title {
   font-weight: 600;
   margin-bottom: 8px;
