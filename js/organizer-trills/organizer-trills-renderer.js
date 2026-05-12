@@ -128,8 +128,8 @@ function renderActions(trill, state) {
   const statusLabel = mapStatusLabel(trill.status);
 
   if (!canSendTrill(trill.status)) {
-    return `<span class="org-trill-action-status">${escapeHtml(statusLabel)}</span>`;
-  }
+  return "";
+}
 
   if (!id) {
     return `<span class="org-trill-error">ID trillo non valido</span>`;
