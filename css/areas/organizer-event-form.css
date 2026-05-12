@@ -96,7 +96,26 @@ font-weight: 700;
 text-decoration: none;
 cursor: pointer;
 }
+@media (max-width: 520px) {
+.org-event-actions {
+gap: 8px;
+}
 
+.org-event-actions button,
+.org-event-actions a {
+min-height: 42px;
+padding: 9px 12px;
+font-size: 14px;
+}
+
+.org-event-actions button.primary {
+flex: 1 1 140px;
+}
+
+.org-event-actions a {
+flex: 1 1 160px;
+}
+}
 .org-event-actions button:hover,
 .org-event-actions a:hover,
 .org-event-actions button:focus-visible,
