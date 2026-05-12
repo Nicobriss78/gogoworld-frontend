@@ -6,7 +6,10 @@
 - Sto lavorando sul backup reale? [ ]
 - Ho verificato il codice reale? [ ]
 - Sto evitando ipotesi? [ ]
-
+• Ho aperto realmente i file coinvolti? [ ]
+• Ho verificato dipendenze reali prima della patch? [ ]
+• Sto ragionando sul backup attuale e NON a memoria? [ ]
+• Le ancore proposte esistono davvero nel file? [ ]
 ---
 
 ## RESPONSABILITÀ
@@ -164,7 +167,9 @@ GEOLOCATION / GEOCODE
   - gestione GPS negato? [ ]
   - gestione timeout GPS? [ ]
   - gestione provider senza risultati? [ ]
-
+• Sto evitando auto-compilazione CAP? [ ]
+• Il CAP resta manuale? [ ]
+• Sto evitando fiducia cieca nel postalCode provider? [ ]
 ---
 
 ## TRILLI (BACKEND ATTIVO)
@@ -188,7 +193,21 @@ GEOLOCATION / GEOCODE
   - calcolo target lato frontend [ ]
 
 - Sto verificando che la feature sia testabile via API? [ ]
-  
+TARGETING REALE
+
+• Sto lavorando sul targeting attuale V1/V1.5? [ ]
+• Sto distinguendo:
+◦ nearby fallback non geo reale [ ]
+◦ geo-targeting reale (future V2) [ ]
+
+• Sto evitando assunzioni errate tipo:
+“radiusMeters = distanza reale”? [ ]
+
+• Se feature Geo Trilli:
+◦ usa consenso posizione utenti? [ ]
+◦ mantiene privacy-safe? [ ]
+◦ evita posizione precisa utente? [ ]
+◦ usa distanceBand aggregate? [ ]  
 ---
 
 ## TRILLI (FRONTEND ORGANIZER V2)
@@ -250,6 +269,8 @@ GEOLOCATION / GEOCODE
 - Ho controllato la console? [ ]
 - Ho verificato Network tab? [ ]
 - L’errore backend è chiaro? [ ]
+• Ho verificato comportamento reale dopo deploy? [ ]
+• Ho confrontato comportamento previsto vs reale? [ ]
 ## SICUREZZA
 - Nessuna logica sensibile lato client? [ ]
 - Nessun bypass backend? [ ]
