@@ -293,21 +293,24 @@ body.organizer-access-denied-page {
   line-height: 1.5;
 }
 
-.org-access-denied__link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  padding: 0 var(--space-md, 16px);
-  border-radius: var(--radius-btn, 10px);
-  background: var(--org-accent);
-  color: #fff;
-  font-weight: 700;
-  text-decoration: none;
+body.organizer-shell .org-access-denied__link {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+min-height: 42px;
+padding: 0 var(--space-md, 16px);
+border-radius: var(--radius-btn, 10px);
+background: var(--org-accent);
+color: #fff;
+font-weight: 700;
+text-decoration: none;
 }
 
-.org-access-denied__link:hover,
-.org-access-denied__link:focus-visible {
-  background: var(--org-accent-hover);
-  outline: none;
+body.organizer-shell .org-access-denied__link:visited,
+body.organizer-shell .org-access-denied__link:hover,
+body.organizer-shell .org-access-denied__link:focus-visible,
+body.organizer-shell .org-access-denied__link:active {
+color: #fff;
+background: var(--org-accent-hover);
+outline: none;
 }
