@@ -5,8 +5,10 @@
 }
 
 .org-event-form-container h1 {
-  font-size: 24px;
   margin-bottom: 8px;
+  color: var(--home-text);
+  font-size: 24px;
+  line-height: 1.2;
 }
 
 .org-event-form {
@@ -21,6 +23,7 @@
 }
 
 .org-event-field label {
+  color: var(--home-text);
   font-weight: 700;
 }
 
@@ -29,10 +32,19 @@
 .org-event-field select {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #d8dee8;
-  border-radius: 10px;
-  background: #ffffff;
+  border: 1px solid var(--home-border);
+  border-radius: var(--radius-btn, 10px);
+  background: var(--home-surface);
+  color: var(--home-text);
   font-size: 15px;
+}
+
+.org-event-field input:focus,
+.org-event-field textarea:focus,
+.org-event-field select:focus {
+  border-color: var(--org-accent-border);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--org-accent-soft);
 }
 
 .org-event-field textarea {
@@ -46,10 +58,11 @@
 }
 
 .org-event-box {
-  background: #ffffff;
-  border-radius: 14px;
   padding: 14px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--home-border);
+  border-radius: var(--radius-main, 12px);
+  background: var(--home-surface);
+  box-shadow: var(--shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
 }
 
 .org-event-actions {
@@ -61,32 +74,54 @@
 
 .org-event-actions button,
 .org-event-actions a {
-  border: 1px solid #d8dee8;
-  background: #ffffff;
-  color: #111827;
-  border-radius: 10px;
+  min-height: 42px;
   padding: 10px 12px;
-  text-decoration: none;
+  border: 1px solid var(--home-border);
+  border-radius: var(--radius-btn, 10px);
+  background: var(--home-surface);
+  color: var(--home-text);
+  font: inherit;
   font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.org-event-actions button:hover,
+.org-event-actions a:hover,
+.org-event-actions button:focus-visible,
+.org-event-actions a:focus-visible {
+  border-color: var(--org-accent-border);
+  background: var(--org-accent-soft);
+  color: var(--org-accent-hover);
+  outline: none;
 }
 
 .org-event-actions button.primary {
-  background: #111827;
-  color: #ffffff;
+  border-color: var(--org-accent);
+  background: var(--org-accent);
+  color: #fff;
+}
+
+.org-event-actions button.primary:hover,
+.org-event-actions button.primary:focus-visible {
+  border-color: var(--org-accent-hover);
+  background: var(--org-accent-hover);
+  color: #fff;
+  outline: none;
 }
 
 .org-event-error {
-  background: #fff1f2;
-  border: 1px solid #fecdd3;
-  color: #991b1b;
-  border-radius: 12px;
   padding: 12px;
+  border: 1px solid var(--gw-danger-border, #fecdd3);
+  border-radius: var(--radius-main, 12px);
+  background: var(--gw-danger-soft, #fff1f2);
+  color: var(--gw-danger, #991b1b);
 }
 
 .org-event-success {
-  background: #ecfdf3;
-  border: 1px solid #bbf7d0;
-  color: #166534;
-  border-radius: 12px;
   padding: 12px;
+  border: 1px solid var(--gw-success-border, #bbf7d0);
+  border-radius: var(--radius-main, 12px);
+  background: var(--gw-success-soft, #ecfdf3);
+  color: var(--gw-success, #166534);
 }
