@@ -129,8 +129,8 @@ function renderSmartNotice(trill) {
   }
 
   if (status === "sent") {
-    return `<div class="org-trill-smart-notice org-trill-smart-notice--done">Trillo già inviato.</div>`;
-  }
+  return "";
+}
 
   if (status === "blocked" || status === "failed") {
     return `<div class="org-trill-smart-notice org-trill-smart-notice--danger">Trillo non operativo: verifica stato o moderazione.</div>`;
