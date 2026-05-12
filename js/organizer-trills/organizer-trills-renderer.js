@@ -60,12 +60,7 @@ function getTrillEvent(trill) {
 
 function getEventTitle(trill) {
   const event = getTrillEvent(trill);
-
-  return (
-    event?.title ||
-    trill?.eventTitle ||
-    "Evento non indicato"
-  );
+  return event?.title || trill?.eventTitle || "Evento non indicato";
 }
 
 function getRadiusLabel(trill) {
@@ -115,58 +110,30 @@ function renderSmartNotice(trill) {
 
   if (status === "draft") {
     if (isInProgress) {
-      return `
-        <div class="org-trill-smart-notice">
-          Evento in corso: valuta invio immediato.
-        </div>
-      `;
+      return `<div class="org-trill-smart-notice">Evento in corso: valuta invio immediato.</div>`;
     }
 
     if (isFuture) {
-      return `
-        <div class="org-trill-smart-notice">
-          Bozza pronta: inviala vicino all’inizio dell’evento.
-        </div>
-      `;
+      return `<div class="org-trill-smart-notice">Bozza pronta: inviala vicino all’inizio dell’evento.</div>`;
     }
 
     if (isPast) {
-      return `
-        <div class="org-trill-smart-notice org-trill-smart-notice--danger">
-          Evento terminato: trillo non più inviabile.
-        </div>
-      `;
+      return `<div class="org-trill-smart-notice org-trill-smart-notice--danger">Evento terminato: trillo non più inviabile.</div>`;
     }
 
-    return `
-      <div class="org-trill-smart-notice">
-        Bozza pronta: puoi inviarla quando l’evento è nel momento giusto.
-      </div>
-    `;
+    return `<div class="org-trill-smart-notice">Bozza pronta: puoi inviarla quando l’evento è nel momento giusto.</div>`;
   }
 
   if (status === "scheduled") {
-    return `
-      <div class="org-trill-smart-notice">
-        Trillo programmato: controlla orario e targeting prima dell’invio.
-      </div>
-    `;
+    return `<div class="org-trill-smart-notice">Trillo programmato: controlla orario e targeting prima dell’invio.</div>`;
   }
 
   if (status === "sent") {
-    return `
-      <div class="org-trill-smart-notice org-trill-smart-notice--done">
-        Trillo già inviato.
-      </div>
-    `;
+    return `<div class="org-trill-smart-notice org-trill-smart-notice--done">Trillo già inviato.</div>`;
   }
 
   if (status === "blocked" || status === "failed") {
-    return `
-      <div class="org-trill-smart-notice org-trill-smart-notice--danger">
-        Trillo non operativo: verifica stato o moderazione.
-      </div>
-    `;
+    return `<div class="org-trill-smart-notice org-trill-smart-notice--danger">Trillo non operativo: verifica stato o moderazione.</div>`;
   }
 
   return "";
@@ -197,34 +164,17 @@ function renderActions(trill, state) {
   if (isConfirming) {
     return `
       <span class="org-trill-confirm-text">Confermi l’invio?</span>
-      <button
-        type="button"
-        data-action="confirm-send"
-        data-id="${escapeHtml(id)}"
-        class="primary"
-        ${isSending ? "disabled" : ""}
-      >
+      <button type="button" data-action="confirm-send" data-id="${escapeHtml(id)}" class="primary" ${isSending ? "disabled" : ""}>
         ${isSending ? "Invio..." : "Conferma"}
       </button>
-      <button
-        type="button"
-        data-action="cancel-send"
-        class="secondary"
-        ${isSending ? "disabled" : ""}
-      >
+      <button type="button" data-action="cancel-send" class="secondary" ${isSending ? "disabled" : ""}>
         Annulla
       </button>
     `;
   }
 
   return `
-    <button
-      type="button"
-      data-action="request-send"
-      data-id="${escapeHtml(id)}"
-      class="primary"
-      ${state.sendingId ? "disabled" : ""}
-    >
+    <button type="button" data-action="request-send" data-id="${escapeHtml(id)}" class="primary" ${state.sendingId ? "disabled" : ""}>
       Invia
     </button>
   `;
@@ -309,16 +259,8 @@ export function renderOrganizerTrills(state) {
     <h1>Trilli</h1>
     ${renderTrillsFilterNotice(state)}
 
-    ${
-      state.actionMessage
-        ? `<p class="org-trill-success">${escapeHtml(state.actionMessage)}</p>`
-        : ""
-    }
-    ${
-      state.actionError
-        ? `<p class="org-trill-error">${escapeHtml(state.actionError)}</p>`
-        : ""
-    }
+    ${state.actionMessage ? `<p class="org-trill-success">${escapeHtml(state.actionMessage)}</p>` : ""}
+    ${state.actionError ? `<p class="org-trill-error">${escapeHtml(state.actionError)}</p>` : ""}
 
     <div class="org-trills-list">
       ${
