@@ -302,7 +302,7 @@ body.organizer-access-denied-page {
   border-radius: var(--radius-btn, 10px);
   background: var(--org-accent);
   color: #fff;
-  font-weight: 800;
+  font-weight: 700;
   text-decoration: none;
 }
 
