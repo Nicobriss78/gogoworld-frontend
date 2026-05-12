@@ -15,6 +15,10 @@ Questo documento definisce le regole INVIO-LABILI del progetto GoGoWorld.life.
 - Sicurezza sempre prioritaria
 - Metodo: Analisi → Test → Isolamento → Fix
 - Nessun `alert()` / `confirm()` nelle aree V2 hardenizzate
+• Apertura reale dei file obbligatoria
+• Verifica profonda del codice reale prima di patch
+• Vietato ragionare “a memoria”
+• Vietato proporre ancore ipotizzate
 ---
 
 # 🧠 PRINCIPI ARCHITETTURALI
@@ -169,12 +173,20 @@ opportunistica e affidabile.
 
 Il sistema può compilare:
 
-- coordinate
-- città
-- provincia
-- regione
-- paese
-- CAP
+• coordinate
+• città
+• provincia
+• regione
+• paese
+
+⚠️ CAP NON auto-compilato
+
+Decisione definitiva:
+
+Il CAP resta manuale
+perché i provider geografici
+non sono sufficientemente affidabili
+sul postalCode.
 
 Può compilare:
 
@@ -632,23 +644,52 @@ Il sistema Trilli è il riferimento ufficiale di questo approccio.
 - posizione utenti
 - distanza precisa
 - identità utenti target
+  
+---
+
+## 4.5 CONSENSO POSIZIONE (FUTURO TRILLI GEO V2)
+
+Il futuro geo-targeting reale:
+
+• deve usare solo utenti con consenso posizione attivo
+• non deve usare tracking occulto
+• non deve esporre posizione reale utenti
+• deve restare privacy-safe
+• deve lavorare per fasce distanza aggregate
 
 ---
 
 ## 5. TARGETING (STATO ATTUALE)
 
+Stato reale:
+🟡 Trilli V1 / V1.5 consolidata
+
 Attualmente:
 
-- `interested_not_checked_in`
-  → utenti partecipanti senza check-in
+• interested_not_checked_in
+→ utenti partecipanti senza check-in
 
-- `nearby`
-  → fallback utenti participant (NON geolocalizzato reale)
+• nearby
+→ fallback utenti participant
+(NON geolocalizzato reale)
 
-- `both`
-  → combinazione dei due
+• both
+→ combinazione dei due
 
-⚠️ Il targeting geolocalizzato reale NON è ancora implementato.
+radiusMeters:
+• viene salvato
+• NON governa ancora
+un calcolo geografico reale.
+
+⚠️ Geo-targeting reale NON ancora implementato
+
+NON ancora presente:
+
+• distanza reale utente ↔ evento
+• targeting per fasce distanza
+• distanceBand reale
+• metriche geo
+• consenso posizione/privacy
 
 ---
 
@@ -678,7 +719,15 @@ I Trilli verranno integrati con:
 
 - UI Organizer V2
 - UI Partecipante (toast/banner live)
-- geo-targeting reale utenti
+• Trilli Geo V2 / Targeting geografico avanzato
+Obiettivo:
+
+• distanza reale utente-evento
+• targeting per fasce distanza
+• distanceBand reale
+• metriche geo
+• targeting privacy-aware
+• futura integrazione Promo QR
 - promo QR
 - sistema crediti (free / pro / promo)
 
@@ -729,15 +778,15 @@ Stato:
 ### messages-v2 / Organizer
 
 Stato:
-- apertura room Organizer funzionante
-- `rootReturnTo=organizer` NON ancora allineato
-
-Possibile effetto:
-- tasto “Torna” → 404 Netlify
+• apertura room Organizer funzionante
+• verificare definitivamente:
+  organizer → room/messages-v2 → Torna
+• verificare gestione rootReturnTo
+• verificare eventuali edge case Netlify/404
 
 Criticità:
-- NON bloccante
-- da affrontare in step dedicato futuro
+🟡 da validare sul backup reale attuale
+prima di considerare il problema chiuso.
 
 # 🏁 CONCLUSIONE
 
