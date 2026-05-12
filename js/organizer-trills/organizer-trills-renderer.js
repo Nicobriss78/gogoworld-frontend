@@ -16,6 +16,16 @@ function mapStatusLabel(status) {
   return status || "N/D";
 }
 
+function mapTargetLabel(value) {
+  const normalized = String(value || "").toLowerCase().trim();
+
+  if (normalized === "nearby") return "Utenti vicini";
+  if (normalized === "interested_not_checked_in") return "Interessati non presenti";
+  if (normalized === "both") return "Vicini + interessati";
+
+  return value || "Target non indicato";
+}
+
 function canSendTrill(status) {
   const normalized = normalizeStatus(status);
   return normalized === "draft" || normalized === "scheduled";
@@ -30,8 +40,87 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function formatDate(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleString("it-IT", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 function getTrillId(trill) {
   return String(trill?._id || trill?.id || "").trim();
+}
+
+function getEventTitle(trill) {
+  return (
+    trill?.event?.title ||
+    trill?.eventId?.title ||
+    trill?.eventTitle ||
+    "Evento non indicato"
+  );
+}
+
+function getRadiusLabel(trill) {
+  const radius = Number(trill?.radiusMeters || trill?.radius || 0);
+  if (!radius) return "Raggio non indicato";
+  if (radius >= 1000) return `${radius / 1000} km`;
+  return `${radius} m`;
+}
+
+function renderStatusBadge(status) {
+  const normalized = normalizeStatus(status) || "unknown";
+
+  return `
+    <span class="org-trill-badge org-trill-badge--${escapeHtml(normalized)}">
+      ${escapeHtml(mapStatusLabel(status))}
+    </span>
+  `;
+}
+
+function renderSmartNotice(trill) {
+  const status = normalizeStatus(trill.status);
+
+  if (status === "draft") {
+    return `
+      <div class="org-trill-smart-notice">
+        Bozza pronta: puoi inviarla quando l’evento è nel momento giusto.
+      </div>
+    `;
+  }
+
+  if (status === "scheduled") {
+    return `
+      <div class="org-trill-smart-notice">
+        Trillo programmato: controlla orario e targeting prima dell’invio.
+      </div>
+    `;
+  }
+
+  if (status === "sent") {
+    return `
+      <div class="org-trill-smart-notice org-trill-smart-notice--done">
+        Trillo già inviato.
+      </div>
+    `;
+  }
+
+  if (status === "blocked" || status === "failed") {
+    return `
+      <div class="org-trill-smart-notice org-trill-smart-notice--danger">
+        Trillo non operativo: verifica stato o moderazione.
+      </div>
+    `;
+  }
+
+  return "";
 }
 
 function renderActions(trill, state) {
@@ -39,7 +128,7 @@ function renderActions(trill, state) {
   const statusLabel = mapStatusLabel(trill.status);
 
   if (!canSendTrill(trill.status)) {
-    return `<span>${escapeHtml(statusLabel)}</span>`;
+    return `<span class="org-trill-action-status">${escapeHtml(statusLabel)}</span>`;
   }
 
   if (!id) {
@@ -107,17 +196,31 @@ function renderTrillsFilterNotice(state) {
 }
 
 function renderTrillCard(trill, state) {
-  const eventTitle = trill.event?.title || trill.eventId?.title || "N/D";
   const message = trill.message || "Messaggio non disponibile";
-  const status = mapStatusLabel(trill.status);
+  const eventTitle = getEventTitle(trill);
+  const target = mapTargetLabel(trill.targetingMode);
+  const radius = getRadiusLabel(trill);
+  const createdAt = formatDate(trill.createdAt);
+  const sentAt = formatDate(trill.sentAt || trill.deliveredAt);
 
   return `
     <article class="org-trill-card">
-      <div class="org-trill-title">${escapeHtml(message)}</div>
-
-      <div class="org-trill-meta">
-        Evento: ${escapeHtml(eventTitle)} · Stato: ${escapeHtml(status)}
+      <div class="org-trill-card__header">
+        <div>
+          <h2>${escapeHtml(message)}</h2>
+          <p>Evento: ${escapeHtml(eventTitle)}</p>
+        </div>
+        ${renderStatusBadge(trill.status)}
       </div>
+
+      <div class="org-trill-card__meta">
+        <span>Target: ${escapeHtml(target)}</span>
+        <span>Raggio: ${escapeHtml(radius)}</span>
+        ${createdAt ? `<span>Creato: ${escapeHtml(createdAt)}</span>` : ""}
+        ${sentAt ? `<span>Inviato: ${escapeHtml(sentAt)}</span>` : ""}
+      </div>
+
+      ${renderSmartNotice(trill)}
 
       <div class="org-trill-actions">
         ${renderActions(trill, state)}
@@ -169,4 +272,4 @@ export function renderOrganizerTrills(state) {
       }
     </div>
   `;
-}
+      }
