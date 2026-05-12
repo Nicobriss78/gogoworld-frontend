@@ -88,7 +88,58 @@ function renderStatusBadge(status) {
 function renderSmartNotice(trill) {
   const status = normalizeStatus(trill.status);
 
+  const event =
+    trill?.event ||
+    trill?.eventId ||
+    {};
+
+  const now = Date.now();
+
+  const start = event?.dateStart
+    ? new Date(event.dateStart).getTime()
+    : null;
+
+  const end = event?.dateEnd
+    ? new Date(event.dateEnd).getTime()
+    : null;
+
+  const isFuture =
+    start && start > now;
+
+  const isInProgress =
+    start &&
+    end &&
+    start <= now &&
+    end >= now;
+
+  const isPast =
+    end && end < now;
+
   if (status === "draft") {
+    if (isInProgress) {
+      return `
+        <div class="org-trill-smart-notice">
+          Evento in corso: valuta invio immediato.
+        </div>
+      `;
+    }
+
+    if (isFuture) {
+      return `
+        <div class="org-trill-smart-notice">
+          Bozza pronta: inviala vicino all’inizio dell’evento.
+        </div>
+      `;
+    }
+
+    if (isPast) {
+      return `
+        <div class="org-trill-smart-notice org-trill-smart-notice--danger">
+          Evento terminato: trillo non più inviabile.
+        </div>
+      `;
+    }
+
     return `
       <div class="org-trill-smart-notice">
         Bozza pronta: puoi inviarla quando l’evento è nel momento giusto.
