@@ -126,6 +126,25 @@ function buildEventThreadAction(meta, activeEventId) {
   if (!activeEventId) return null;
 
   const state = getMessagesState();
+  const rootReturnTo = String(state.rootReturnTo || "").trim();
+
+  if (rootReturnTo === "organizer") {
+    const organizerParams = new URLSearchParams();
+    organizerParams.set("id", activeEventId);
+
+    return {
+      label: "Apri evento",
+      href: `/pages/organizer-event-detail-v2.html?${organizerParams.toString()}`,
+    };
+  }
+
+  if (rootReturnTo.startsWith("/pages/organizer-event-detail-v2.html")) {
+    return {
+      label: "Apri evento",
+      href: rootReturnTo,
+    };
+  }
+
   const params = new URLSearchParams();
   params.set("id", activeEventId);
 
