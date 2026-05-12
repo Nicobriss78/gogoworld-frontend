@@ -33,8 +33,10 @@ function isTrillEventPast(trill) {
 
   return Boolean(reference && reference < Date.now());
 }
-function canSendTrill(status) {
-  const normalized = normalizeStatus(status);
+function canSendTrill(trill) {
+  if (isTrillEventPast(trill)) return false;
+
+  const normalized = normalizeStatus(trill.status);
   return normalized === "draft" || normalized === "scheduled";
 }
 
