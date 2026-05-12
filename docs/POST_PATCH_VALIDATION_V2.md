@@ -101,14 +101,18 @@ REVERSE GEOCODE
 
 - Coordinate validate correttamente? [ ]
 
-- Compilazione automatica:
-  
-  - città [ ]
-  - provincia [ ]
-  - regione [ ]
-  - paese [ ]
-  - CAP [ ]
+• Compilazione automatica:
 
+• città [ ]
+• provincia [ ]
+• regione [ ]
+• paese [ ]
+
+⚠️ CAP
+
+• NON auto-compilato? [ ]
+• resta manuale? [ ]
+• nessuna fiducia cieca nel postalCode provider? [ ]
 - venueName compilato solo se affidabile? [ ]
 
 - street compilata solo se affidabile? [ ]
@@ -235,7 +239,19 @@ PRIVATI:
   - identità utenti target [ ]
 
 - Feature testata via API reale (console / curl)? [ ]
+  
+STATO TARGETING REALE
 
+• radiusMeters viene salvato correttamente? [ ]
+• nearby è ancora fallback non geo reale? [ ]
+• Nessun calcolo reale distanza utente-evento introdotto accidentalmente? [ ]
+
+Se feature Trilli Geo V2:
+
+• consenso posizione rispettato? [ ]
+• nessuna posizione precisa esposta? [ ]
+• distanceBand aggregate usate? [ ]
+• privacy-safe rispettato? [ ]
 ---
 ---
 
@@ -305,7 +321,8 @@ PRIVATI:
 - Desktop OK [ ]
 - Mobile OK [ ]
 - Ritorno OK [ ]
-
+• Deploy reale verificato? [ ]
+• Comportamento reale coerente col previsto? [ ]
 ---
 ## ORGANIZER V2 — VALIDAZIONE
 
@@ -330,6 +347,12 @@ PRIVATI:
 - Nessuna bottomnav presente? [ ]
 - Nessuna shell completa presente? [ ]
 - `checkAccess()` diretto funzionante? [ ]
+• rootReturnTo Organizer funzionante? [ ]
+• ritorno Dashboard/Eventi corretto? [ ]
+• Event Detail → room/messages → ritorno corretto? [ ]
+• Accessi privati funzionanti? [ ]
+• blocco Trilli su eventi passati verificato? [ ]
+• Dashboard → Eventi filtrati funzionante? [ ]
 
 ### Hardening
 
@@ -338,12 +361,12 @@ PRIVATI:
 - Loading action funzionanti? [ ]
 - Azioni concorrenti bloccate? [ ]
 
-### Criticità note
+### Criticità da validare sul backup reale
 
-- `messages-v2`
-  - `rootReturnTo=organizer`
-  - verificato/stabile? [ ]
-    
+• messages-v2 / Organizer
+◦ organizer → room/messages-v2 → Torna verificato? [ ]
+◦ rootReturnTo gestito correttamente? [ ]
+◦ nessun 404 Netlify? [ ]
 --- 
   
 ## CHIUSURA
