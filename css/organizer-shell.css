@@ -255,3 +255,59 @@ body.organizer-shell .gw-iconbtn {
 .org-menu-item.is-danger:focus-visible {
   background: rgba(181, 42, 50, 0.08);
 }
+/* Organizer access denied */
+body.organizer-access-denied-page {
+  min-height: var(--gw-app-viewport-h, 100vh);
+}
+
+.org-access-denied {
+  min-height: var(--gw-app-viewport-h, 100vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg, 24px);
+  background: var(--home-bg);
+}
+
+.org-access-denied__card {
+  width: min(420px, 100%);
+  padding: var(--space-lg, 24px);
+  border: 1px solid var(--home-border);
+  border-radius: var(--radius-main, 12px);
+  background: var(--home-surface);
+  box-shadow: var(--shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
+}
+
+.org-access-denied__title {
+  margin: 0 0 var(--space-sm, 10px);
+  color: var(--home-text);
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.org-access-denied__text {
+  margin: 0 0 var(--space-md, 16px);
+  color: var(--home-text-secondary);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.org-access-denied__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 var(--space-md, 16px);
+  border-radius: var(--radius-btn, 10px);
+  background: var(--org-accent);
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.org-access-denied__link:hover,
+.org-access-denied__link:focus-visible {
+  background: var(--org-accent-hover);
+  outline: none;
+}
