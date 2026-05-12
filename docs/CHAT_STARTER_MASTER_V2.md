@@ -2,10 +2,24 @@
 
 ---
 
-## CONTESTO
-Frontend V2 in ricostruzione.
-Backend stabile.
-Legacy da eliminare.
+CONTESTO
+
+GoGoWorld.life è in rifondazione strutturale V2.
+
+Stato reale:
+
+• Area Partecipante V2 stabile e maturata
+• Organizer V2 in fase avanzata di consolidamento
+• Backend già esteso e riusabile
+• Legacy ancora presente ma solo come miniera logica
+• Admin ancora legacy (da rifondare successivamente)
+
+Direzione ufficiale:
+
+CONSOLIDARE → STABILIZZARE → ESPANDERE
+
+mai:
+❌ creare nuove aree lasciando instabile la base
 
 ---
 
@@ -15,7 +29,10 @@ Leggere sempre:
 - ARCHITECTURE_RULES_V2
 - PRE_PATCH_CHECKLIST_V2
 - POST_PATCH_VALIDATION_V2
-
+• Aprire SEMPRE realmente i file allegati
+• Verificare codice reale prima di proporre patch
+• Nessuna analisi a memoria
+• Nessuna ancora ipotizzata
 ---
 
 ## METODO
@@ -149,12 +166,62 @@ CHAT:
 - Polling intelligente attivo
 - WebSocket/SSE non introdotti
 
-### Sistema Trilli
+🔔 SISTEMA TRILLI — STATO REALE
 
-- Backend completato e verificato
-- Notifiche integrate
-- Moderazione attiva
-- Test reale eseguito con successo
+Backend:
+• completato
+• verificato
+• notifiche integrate
+• moderazione admin attiva
+• delivery tracking presente
+
+Frontend Organizer V2:
+• implementato
+• consolidato
+• hardenizzato
+• integrato nella Organizer Shell V2
+
+Stato tecnico
+
+• T1 — Backend base ✅
+• T2 — Integrazione notifiche ✅
+• T3 — Moderazione admin ✅
+• T3.5 — Test reale API completato ✅
+• T4 — Organizer UI base completata ✅
+• T4.5 — Hardening Organizer completato ✅
+
+Funzioni attive
+
+• Creazione draft Trilli
+• Lista Trilli Organizer
+• Invio Trilli
+• Stato aggiornato draft → sent
+• Conferma interna invio
+• Loading state
+• Blocco doppio click
+• Feedback state-driven
+• Nessun alert() / confirm()
+
+Targeting reale attuale
+
+• interested_not_checked_in
+• nearby (fallback non geolocalizzato reale)
+• both
+
+⚠️ Geo-targeting reale NON ancora implementato
+
+Nuovo step approvato:
+
+🔔 TRILLI GEO V2 / TARGETING GEOGRAFICO AVANZATO
+
+Obiettivo:
+
+• distanza reale utente-evento
+• targeting per fasce distanza
+• distanceBand reale
+• metriche geo
+• consenso posizione/privacy
+• futura integrazione Promo QR
 
 ## 🔔 CENTRO NOTIFICHE V2 — COMPLETATO
 
@@ -289,56 +356,6 @@ geo-targeting reale NON ancora implementato.
 - crediti / boost
 - analytics Trilli
 
-### Stato tecnico
-
-- T1 — Backend base ✅
-- T2 — Integrazione notifiche ✅
-- T3 — Moderazione admin ✅
-- T3.5 — Test reale completato ✅
-
-### Funzionamento
-
-- Creazione draft Trilli (`POST /api/trills`)
-- Invio notifiche (`POST /api/trills/:id/send`)
-- Creazione Notification (type: "trill")
-- Creazione TrillDelivery
-- Aggiornamento metriche:
-  - recipientCount
-  - deliveredCount
-
-### Moderazione
-
-- Admin può bloccare un Trillo
-- Trillo bloccato NON è inviabile
-
-### Targeting (stato attuale)
-
-- `interested_not_checked_in`
-  → utenti partecipanti senza check-in
-
-- `nearby`
-  → fallback utenti participant (NON geolocalizzato reale)
-
-- `both`
-  → combinazione dei due
-
-⚠️ Nota:
-Il targeting geolocalizzato reale NON è ancora implementato.
-
-### Vincoli attuali
-
-- Nessuna UI Trilli
-- Nessuna integrazione frontend
-- Nessuna implementazione nel legacy
-
-### Integrazione futura
-
-- UI Organizer V2
-- UI Partecipante (toast/banner live)
-- geo-targeting reale utenti
-- promo QR
-- sistema crediti (free / pro)
-
 🌍 GEOLOCALIZZAZIONE EVENTI — ORGANIZER EVENT FORM V2
 
 Stato reale attuale
@@ -384,12 +401,19 @@ Compilazione automatica
 
 Il sistema compila automaticamente quando i dati sono affidabili:
 
-- coordinate
-- città
-- provincia
-- regione
-- paese
-- CAP
+• coordinate
+• città
+• provincia
+• regione
+• paese
+
+⚠️ CAP NON auto-compilato
+
+Decisione definitiva:
+
+il CAP resta manuale
+perché i provider geografici
+non sono sufficientemente affidabili.
 
 Può compilare anche:
 
@@ -401,15 +425,21 @@ solo se presenti realmente nella risposta provider.
 
 Stato reverse geocoding
 
-NON ancora implementato.
+Implementato:
 
-Attualmente esiste solo:
+• reverse geocode backend
+• endpoint:
+  POST /api/geocode/reverse
 
-- geocode search
+Disponibile:
 
-Manca ancora:
+• geocode search
+• reverse geocode
 
-- reverse geocode backend
+Stato reale:
+🟡 beta funzionante
+da consolidare con edge case reali
+(civici, POI, città dense)
 
 Step approvato successivo
 
@@ -452,6 +482,16 @@ Regole architetturali
 - CTA Promo temporaneamente disabilitata
 - Pulizia `organizer-bootstrap.js`
 
+• Event Form V2 consolidato
+• Event Detail V2 consolidato
+• Accessi Evento Privato V2 consolidati
+• rootReturnTo Organizer introdotto
+• Dashboard → Eventi filtrati supportato
+• blocco Trilli su eventi passati
+• supporto no-participants
+• supporto needs-correction
+• ritorni intelligenti Dashboard/Eventi
+
 ### Stato architetturale
 
 Organizer V2:
@@ -463,29 +503,36 @@ Organizer V2:
 - renderer separati
 - no monoliti
 
-### Criticità note NON bloccanti
+### Criticità da verificare sul backup reale
 
-`messages-v2`
-- `rootReturnTo=organizer`
-- ritorno Organizer non ancora risolto correttamente
-- possibile 404 Netlify sul tasto “Torna”
+messages-v2
 
-Da affrontare in step dedicato futuro.
+• apertura room da Organizer funzionante
+• verificare definitivamente:
+  organizer → room/messages-v2 → Torna
+• verificare gestione rootReturnTo
+• verificare eventuali edge case Netlify/404
+
+Stato:
+🟡 da validare sul backup attuale
+prima di considerare il problema chiuso.
 
 ---
 
 ## 📌 ROADMAP REALE
 
-1. Hardening finale Organizer V2
-2. Promozioni Organizer V2
-3. Comunicazioni Organizer V2
+1. Audit finale Organizer V2
+2. Hardening finale Organizer V2
+3. Promozioni Organizer V2
 4. Mappa Organizer V2
-5. Rifondazione Admin V2
-6. UI Partecipante Trilli
-7. Geo targeting reale
-8. Promo QR
-9. Eliminazione legacy frontend
-10. PWA
+5. Comunicazioni Organizer V2
+6. Rifondazione Admin V2
+7. UI Partecipante Trilli
+8. Trilli Geo V2 / Targeting geografico avanzato
+9. Promo QR
+10. Eliminazione legacy frontend
+11. PWA
+
 
 ---
 
@@ -548,14 +595,15 @@ Organizzatore e Admin verranno allineati quando saranno rifondati.
 7. Organizer V2 controller hardening ✅
 8. Rifondazione Organizer V2 (completamento)
 9. Promozioni Organizer V2
-10. Comunicazioni Organizer V2
-11. Mappa Organizer V2
+10. Mappa Organizer V2
+11. Comunicazioni Organizer V2
 12. Rifondazione Admin V2
 13. UI Partecipante Trilli
-14. Geo targeting reale
-15. Promo QR
-16. Eliminazione legacy frontend
-17. PWA
+14. Trilli Geo V2 / Targeting geografico avanzato
+15. Geo targeting reale
+16. Promo QR
+17. Eliminazione legacy frontend
+18. PWA
 ---
 
 ## REGOLA
