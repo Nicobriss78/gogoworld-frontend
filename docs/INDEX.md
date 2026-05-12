@@ -155,15 +155,53 @@ Post patch:
 - `nearby` fallback non geolocalizzato reale
 - `both`
 
-⚠️ Geo-targeting reale non ancora implementato.
+⚠️ GEO-TARGETING REALE NON ANCORA IMPLEMENTATO
 
-### Dipendenze future
+Stato reale Trilli:
+🟡 V1 / V1.5 consolidata
 
-- UI Partecipante live
-- geo-targeting reale
-- promo QR
-- crediti / boost
-- analytics Trilli
+Attualmente:
+
+• radiusMeters viene salvato
+• targetingMode supportato
+• nearby disponibile solo come fallback logico
+• nessun calcolo reale distanza utente-evento
+
+Targeting attuale reale:
+
+• interested_not_checked_in
+• nearby (fallback non geolocalizzato reale)
+• both
+
+NON ancora implementato:
+
+• calcolo reale distanza utente ↔ evento
+• selezione destinatari per raggio reale
+• distanceBand reale:
+  ◦ 0–500m
+  ◦ 500m–1km
+  ◦ 1–3km
+  ◦ 3–5km
+• targeting differenziato per fascia
+• metriche per fascia
+• geo-targeting privacy-aware
+• anti abuso specifici Trilli geo
+
+Nuovo step roadmap approvato:
+
+🔔 TRILLI GEO V2 / TARGETING GEOGRAFICO AVANZATO
+
+Obiettivo:
+
+evolvere Trilli oltre la V1/V1.5
+introducendo:
+
+• distanza reale utente-evento
+• targeting geografico reale
+• selezione per fasce distanza
+• metriche geo
+• consenso posizione/privacy
+• futura integrazione promo QR
 
 ## 🌍 GEOLOCALIZZAZIONE EVENTI — STATO ATTUALE
 
@@ -183,9 +221,17 @@ Attualmente disponibile:
 
 - geocode search
 
-NON ancora implementato:
+Implementato:
 
-- reverse geocode backend
+• reverse geocode backend
+• endpoint POST /api/geocode/reverse
+• normalizzazione dati localizzazione
+• supporto “Usa la mia posizione”
+
+Stato reale:
+🟡 BETA FUNZIONANTE
+da consolidare con edge case reali
+(città, civici, POI complessi)
 
 Frontend Organizer V2
 
@@ -248,6 +294,15 @@ Compatibilità futura prevista
 - Blocco doppio click
 - CTA Promo temporaneamente disabilitata
 - `organizer-bootstrap.js` limitato al primo livello
+• Event Detail Organizer V2 consolidato
+• Accessi Evento Privato V2 consolidati
+• Event Form V2 consolidato
+• rootReturnTo Organizer introdotto
+• Dashboard → Eventi filtrati supportato
+• blocco Trilli su eventi passati
+• Eventi no-participants supportati
+• needs-correction supportato
+• ritorni intelligenti Dashboard/Eventi
 
 ### Primo livello Organizer V2
 
@@ -263,27 +318,34 @@ Compatibilità futura prevista
 - `organizer-event-access-v2`
 - `organizer-trill-create-v2`
 
-### Criticità nota non bloccante
+Criticità da verificare su backup reale
 
-`messages-v2`:
-- apertura room da Organizer funzionante
-- `rootReturnTo=organizer` non ancora risolto correttamente
-- possibile 404 Netlify sul tasto “Torna”
+messages-v2:
 
-Da affrontare in step dedicato futuro.
+• apertura room da Organizer funzionante
+• verificare definitivamente il flusso:
+  organizer → room/messages-v2 → Torna
+• verificare gestione reale di:
+  rootReturnTo
+• verificare eventuali edge case Netlify/404
 
-## 📌 PROSSIMI STEP REALI
+Stato:
+🟡 da validare sul backup attuale
+prima di considerare il problema chiuso.
+
+📌 PROSSIMI STEP REALI
 
 1. Audit finale Organizer V2
-2. Promozioni Organizer V2
-3. Comunicazioni Organizer V2
+2. Hardening finale Organizer V2
+3. Promozioni Organizer V2
 4. Mappa Organizer V2
-5. Rifondazione Admin V2
-6. UI Partecipante Trilli
-7. Geo targeting reale
-8. Promo QR
-9. Eliminazione legacy frontend
-10. PWA post Organizer/Admin
+5. Comunicazioni Organizer V2
+6. Rifondazione Admin V2
+7. UI Partecipante Trilli
+8. Trilli Geo V2 / Targeting geografico avanzato
+9. Promo QR
+10. Eliminazione legacy frontend
+11. PWA post Organizer/Admin
 ---
 
 ## 3. Regole aggiornamento
