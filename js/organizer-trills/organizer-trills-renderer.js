@@ -25,7 +25,14 @@ function mapTargetLabel(value) {
 
   return value || "Target non indicato";
 }
+function isTrillEventPast(trill) {
+  const event = trill?.event || trill?.eventId || {};
+  const end = event?.dateEnd ? new Date(event.dateEnd).getTime() : null;
+  const start = event?.dateStart ? new Date(event.dateStart).getTime() : null;
+  const reference = end || start;
 
+  return Boolean(reference && reference < Date.now());
+}
 function canSendTrill(status) {
   const normalized = normalizeStatus(status);
   return normalized === "draft" || normalized === "scheduled";
