@@ -25,20 +25,6 @@ function mapTargetLabel(value) {
 
   return value || "Target non indicato";
 }
-function isTrillEventPast(trill) {
-  const event = trill?.event || trill?.eventId || {};
-  const end = event?.dateEnd ? new Date(event.dateEnd).getTime() : null;
-  const start = event?.dateStart ? new Date(event.dateStart).getTime() : null;
-  const reference = end || start;
-
-  return Boolean(reference && reference < Date.now());
-}
-function canSendTrill(trill) {
-  if (isTrillEventPast(trill)) return false;
-
-  const normalized = normalizeStatus(trill.status);
-  return normalized === "draft" || normalized === "scheduled";
-}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -68,10 +54,15 @@ function getTrillId(trill) {
   return String(trill?._id || trill?.id || "").trim();
 }
 
+function getTrillEvent(trill) {
+  return trill?.event || trill?.eventId || {};
+}
+
 function getEventTitle(trill) {
+  const event = getTrillEvent(trill);
+
   return (
-    trill?.event?.title ||
-    trill?.eventId?.title ||
+    event?.title ||
     trill?.eventTitle ||
     "Evento non indicato"
   );
@@ -82,6 +73,22 @@ function getRadiusLabel(trill) {
   if (!radius) return "Raggio non indicato";
   if (radius >= 1000) return `${radius / 1000} km`;
   return `${radius} m`;
+}
+
+function isTrillEventPast(trill) {
+  const event = getTrillEvent(trill);
+  const end = event?.dateEnd ? new Date(event.dateEnd).getTime() : null;
+  const start = event?.dateStart ? new Date(event.dateStart).getTime() : null;
+  const reference = end || start;
+
+  return Boolean(reference && reference < Date.now());
+}
+
+function canSendTrill(trill) {
+  if (isTrillEventPast(trill)) return false;
+
+  const normalized = normalizeStatus(trill.status);
+  return normalized === "draft" || normalized === "scheduled";
 }
 
 function renderStatusBadge(status) {
@@ -96,33 +103,15 @@ function renderStatusBadge(status) {
 
 function renderSmartNotice(trill) {
   const status = normalizeStatus(trill.status);
-
-  const event =
-    trill?.event ||
-    trill?.eventId ||
-    {};
-
+  const event = getTrillEvent(trill);
   const now = Date.now();
 
-  const start = event?.dateStart
-    ? new Date(event.dateStart).getTime()
-    : null;
+  const start = event?.dateStart ? new Date(event.dateStart).getTime() : null;
+  const end = event?.dateEnd ? new Date(event.dateEnd).getTime() : null;
 
-  const end = event?.dateEnd
-    ? new Date(event.dateEnd).getTime()
-    : null;
-
-  const isFuture =
-    start && start > now;
-
-  const isInProgress =
-    start &&
-    end &&
-    start <= now &&
-    end >= now;
-
-  const isPast =
-    end && end < now;
+  const isFuture = start && start > now;
+  const isInProgress = start && end && start <= now && end >= now;
+  const isPast = end && end < now;
 
   if (status === "draft") {
     if (isInProgress) {
@@ -185,11 +174,18 @@ function renderSmartNotice(trill) {
 
 function renderActions(trill, state) {
   const id = getTrillId(trill);
-  const statusLabel = mapStatusLabel(trill.status);
 
-  if (!canSendTrill(trill.status)) {
-  return "";
-}
+  if (!canSendTrill(trill)) {
+    if (isTrillEventPast(trill) && normalizeStatus(trill.status) === "draft") {
+      return `
+        <button type="button" class="secondary" disabled>
+          Trillo non disponibile
+        </button>
+      `;
+    }
+
+    return "";
+  }
 
   if (!id) {
     return `<span class="org-trill-error">ID trillo non valido</span>`;
@@ -332,4 +328,4 @@ export function renderOrganizerTrills(state) {
       }
     </div>
   `;
-      }
+}
