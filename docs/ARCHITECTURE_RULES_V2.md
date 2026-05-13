@@ -19,6 +19,24 @@ Questo documento definisce le regole INVIO-LABILI del progetto GoGoWorld.life.
 • Verifica profonda del codice reale prima di patch
 • Vietato ragionare “a memoria”
 • Vietato proporre ancore ipotizzate
+• Per logiche complesse o rischiose:
+◦ consentita versione base stabile
+◦ test reale
+◦ affinamento progressivo
+
+• Per HTML/CSS e UI prevedibile:
+◦ vietato partire da file embrionali
+◦ generare direttamente versioni mature
+◦ già coerenti con:
+▪ token
+▪ responsive
+▪ accessibilità
+▪ stati UI
+▪ cache/versioning
+▪ access denied
+▪ gerarchia V2
+
+• Definire sempre il contratto completo del file prima della generazione
 ---
 
 # 🧠 PRINCIPI ARCHITETTURALI
@@ -57,6 +75,8 @@ NON devono usare:
 
 Devono usare:
 - `checkAccess()` diretto
+• access denied stilato
+• CSS shell area disponibile se necessario
 - controller dedicato
 - struttura autonoma
 - back contestuale
@@ -233,6 +253,24 @@ Tutti gli endpoint geocode devono avere:
 - gestione errori controllata
 
 ---
+
+⚠️ Residuo UI noto (Organizer Event Form V2)
+
+Da rifinire:
+
+• styling geocode results UI
+• classi residue:
+◦ .org-event-location-actions
+◦ .org-event-geocode-results
+◦ .org-event-geocode-results-list
+◦ .org-event-geocode-result
+
+Stato:
+🟡 non bloccante
+da rifinire nel consolidamento finale Organizer V2.
+
+---
+
 
 7. FUTURA COMPATIBILITÀ
 
@@ -772,21 +810,31 @@ Stato:
 - blocco doppio click presente
 - nessun `alert()` / `confirm()`
 - bootstrap Organizer pulito e limitato al primo livello
+• organizer-event-form.css normalizzato
+• organizer-event-detail.css normalizzato
+• organizer-event-access.css normalizzato
+• organizer-trill-form.css normalizzato
+• organizer-access-guard hardenizzato
+• access denied secondo livello consolidato
+• organizer-shell.css disponibile nei second-level
+• versioning Trilli Organizer consolidato
+• messages-v2 Organizer consolidato
 
 ## ⚠️ CRITICITÀ NOTE NON BLOCCANTI
 
 ### messages-v2 / Organizer
 
-Stato:
-• apertura room Organizer funzionante
-• verificare definitivamente:
-  organizer → room/messages-v2 → Torna
-• verificare gestione rootReturnTo
-• verificare eventuali edge case Netlify/404
+Stato reale:
+✅ consolidato
 
-Criticità:
-🟡 da validare sul backup reale attuale
-prima di considerare il problema chiuso.
+Verificato sul backup reale:
+
+• apertura room Organizer funzionante
+• organizer → room/messages-v2 → Torna corretto
+• rootReturnTo Organizer corretto
+• “Apri evento” contestuale Organizer corretto
+• nessun loop di navigazione rilevato
+• nessun 404 Netlify rilevato nei test eseguiti
 
 # 🏁 CONCLUSIONE
 
