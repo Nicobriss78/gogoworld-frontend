@@ -115,7 +115,13 @@ color: var(--org-form-text);
 font-size: 14px;
 font-weight: 700;
 }
-
+.org-event-location-helper {
+color: var(--org-form-text-secondary);
+font-size: 13px;
+line-height: 1.45;
+max-width: 62ch;
+margin-top: 2px;
+}
 .org-event-geocode-results-list {
 display: grid;
 gap: 8px;
