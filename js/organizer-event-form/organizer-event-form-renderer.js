@@ -102,9 +102,10 @@ const isCustomSubcategory = Boolean(
   event.subcategory &&
   !subcategoryOptions.includes(event.subcategory)
 );
-  root.innerHTML = `
-    <h1>${title}</h1>
-    <p>Form evento V2 allineato ai campi legacy/backend attualmente stabili.</p>
+  root.innerHTML = `<h1>${title}</h1>
+<p class="org-event-intro">
+Compila le informazioni dell’evento. I campi sono allineati alla struttura attualmente stabile del sistema.
+</p>
 
     ${state.error ? `<section class="org-event-error">${escapeHtml(state.error)}</section>` : ""}
     ${state.success ? `<section class="org-event-success">${escapeHtml(state.success)}</section>` : ""}
