@@ -41,7 +41,21 @@ Leggere sempre:
 - Backup reale
 - No patch in coda
 - Test sempre
+• Per logiche complesse:
+◦ versione base stabile → test reale → affinamento progressivo
 
+• Per HTML/CSS e UI prevedibile:
+◦ partire subito da versione avanzata/matura
+◦ già coerente con:
+▪ token
+▪ responsive
+▪ accessibilità
+▪ stati UI
+▪ cache/versioning
+▪ access denied
+▪ gerarchia V2
+
+• Definire sempre il contratto completo del file prima della generazione
 ---
 
 ## DECISIONI CHIAVE
@@ -269,6 +283,8 @@ Le pagine immersive/operative NON devono usare:
 
 Devono usare:
 - `checkAccess()` diretto
+• access denied stilato
+• organizer-shell.css disponibile se necessario
 - controller dedicato
 - back contestuale
 - struttura autonoma
@@ -378,6 +394,13 @@ Frontend:
 - supporto risultati multipli
 - compilazione automatica campi affidabili
 - selezione manuale sede attività
+⚠️ Residuo UI noto:
+• styling geocode results da rifinire
+• classi residue:
+◦ .org-event-location-actions
+◦ .org-event-geocode-results
+◦ .org-event-geocode-results-list
+◦ .org-event-geocode-result
 
 Ricerca supportata
 
@@ -482,15 +505,24 @@ Regole architetturali
 - CTA Promo temporaneamente disabilitata
 - Pulizia `organizer-bootstrap.js`
 
-• Event Form V2 consolidato
-• Event Detail V2 consolidato
-• Accessi Evento Privato V2 consolidati
-• rootReturnTo Organizer introdotto
-• Dashboard → Eventi filtrati supportato
-• blocco Trilli su eventi passati
-• supporto no-participants
-• supporto needs-correction
-• ritorni intelligenti Dashboard/Eventi
+- Event Form V2 consolidato
+  • organizer-event-form.css normalizzato
+  • organizer-event-detail.css normalizzato
+  • organizer-event-access.css normalizzato
+  • organizer-trill-form.css normalizzato
+  • organizer-access-guard hardenizzato
+  • access denied secondo livello consolidato
+  • organizer-shell.css disponibile nei second-level
+  • versioning Trilli Organizer consolidato
+  • messages-v2 Organizer consolidato
+- Event Detail V2 consolidato
+- Accessi Evento Privato V2 consolidati
+- rootReturnTo Organizer introdotto
+- Dashboard → Eventi filtrati supportato
+- blocco Trilli su eventi passati
+- supporto no-participants
+- supporto needs-correction
+- ritorni intelligenti Dashboard/Eventi
 
 ### Stato architetturale
 
@@ -505,24 +537,27 @@ Organizer V2:
 
 ### Criticità da verificare sul backup reale
 
-messages-v2
+messages-v2 / Organizer
 
-• apertura room da Organizer funzionante
-• verificare definitivamente:
-  organizer → room/messages-v2 → Torna
-• verificare gestione rootReturnTo
-• verificare eventuali edge case Netlify/404
+Stato reale:
+✅ consolidato
 
-Stato:
-🟡 da validare sul backup attuale
-prima di considerare il problema chiuso.
+Verificato sul backup reale:
+
+• apertura room Organizer funzionante
+• organizer → room/messages-v2 → Torna corretto
+• rootReturnTo Organizer corretto
+• “Apri evento” contestuale Organizer corretto
+• nessun loop di navigazione rilevato
+• nessun 404 Netlify rilevato nei test eseguiti
 
 ---
 
 ## 📌 ROADMAP REALE
 
-1. Audit finale Organizer V2
-2. Hardening finale Organizer V2
+1. Consolidamento finale Organizer V2
+2. Docs finali Organizer V2
+2.5 Rifinitura geocode Organizer V2
 3. Promozioni Organizer V2
 4. Mappa Organizer V2
 5. Comunicazioni Organizer V2
