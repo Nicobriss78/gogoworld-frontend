@@ -56,7 +56,31 @@ border-color: var(--org-access-accent-border);
 outline: none;
 box-shadow: 0 0 0 3px var(--org-access-accent-soft);
 }
+.org-access-form button {
+min-height: 42px;
+border: 1px solid var(--org-access-accent);
+border-radius: var(--radius-btn, 10px);
+background: var(--org-access-accent);
+color: #fff;
+font: inherit;
+font-size: 15px;
+line-height: 1.2;
+font-weight: 700;
+cursor: pointer;
+}
 
+.org-access-form button:hover,
+.org-access-form button:focus-visible {
+border-color: var(--org-access-accent-hover);
+background: var(--org-access-accent-hover);
+color: #fff;
+outline: none;
+}
+
+.org-access-form button:disabled {
+opacity: 0.45;
+cursor: not-allowed;
+}
 .org-access-actions {
 display: flex;
 flex-wrap: wrap;
