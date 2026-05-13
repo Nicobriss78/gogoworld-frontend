@@ -1,113 +1,159 @@
 .org-event-access-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding-bottom: 90px;
+--org-access-accent: #7A3242;
+--org-access-accent-hover: #622735;
+--org-access-accent-soft: rgba(122, 50, 66, 0.08);
+--org-access-accent-border: rgba(122, 50, 66, 0.22);
+--org-access-surface: var(--gw-surface, #FFFFFF);
+--org-access-border: var(--gw-border, #E6EAF0);
+--org-access-text: var(--gw-text, #1C2430);
+--org-access-text-secondary: var(--gw-text-secondary, #5A6572);
+--org-access-text-muted: var(--gw-text-muted, #8B95A1);
+
+max-width: 900px;
+margin: 0 auto;
+padding-bottom: 90px;
 }
 
 .org-event-access-container h1 {
-  font-size: 24px;
-  margin-bottom: 8px;
+color: var(--org-access-text);
+font-size: 24px;
+line-height: 1.2;
+margin-bottom: 8px;
 }
 
 .org-access-card {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 14px;
-  margin-top: 14px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+background: var(--org-access-surface);
+border: 1px solid var(--org-access-border);
+border-radius: var(--radius-main, 12px);
+padding: 14px;
+margin-top: 14px;
+box-shadow: var(--shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
 }
 
 .org-access-card h2 {
-  margin-top: 0;
+margin-top: 0;
+color: var(--org-access-text);
 }
 
 .org-access-form {
-  display: grid;
-  gap: 10px;
-  margin-top: 12px;
+display: grid;
+gap: 10px;
+margin-top: 12px;
 }
 
 .org-access-form input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #d8dee8;
-  border-radius: 10px;
-  background: #ffffff;
-  font-size: 15px;
+width: 100%;
+padding: 10px 12px;
+border: 1px solid var(--org-access-border);
+border-radius: var(--radius-btn, 10px);
+background: var(--org-access-surface);
+color: var(--org-access-text);
+font-size: 15px;
+}
+
+.org-access-form input:focus {
+border-color: var(--org-access-accent-border);
+outline: none;
+box-shadow: 0 0 0 3px var(--org-access-accent-soft);
 }
 
 .org-access-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
 }
 
 .org-access-actions button,
 .org-access-actions a {
-  border: 1px solid #d8dee8;
-  background: #ffffff;
-  color: #111827;
-  border-radius: 10px;
-  padding: 10px 12px;
-  text-decoration: none;
-  font-weight: 700;
+min-height: 42px;
+border: 1px solid var(--org-access-border);
+background: var(--org-access-surface);
+color: var(--org-access-text);
+border-radius: var(--radius-btn, 10px);
+padding: 10px 12px;
+text-decoration: none;
+font: inherit;
+font-size: 15px;
+line-height: 1.2;
+font-weight: 700;
+cursor: pointer;
+}
+
+.org-access-actions button:hover,
+.org-access-actions a:hover,
+.org-access-actions button:focus-visible,
+.org-access-actions a:focus-visible {
+border-color: var(--org-access-accent-border);
+background: var(--org-access-accent-soft);
+color: var(--org-access-accent-hover);
+outline: none;
 }
 
 .org-access-actions button.danger {
-  color: #b42318;
-  border-color: #f3b5b0;
+color: var(--gw-danger, #B52A32);
+border-color: var(--gw-danger-border, #fecdd3);
+}
+
+.org-access-actions button.danger:hover,
+.org-access-actions button.danger:focus-visible {
+background: var(--gw-danger-soft, #fff1f2);
+color: var(--gw-danger, #B52A32);
+outline: none;
 }
 
 .org-access-user-list {
-  display: grid;
-  gap: 10px;
-  margin-top: 12px;
+display: grid;
+gap: 10px;
+margin-top: 12px;
 }
 
 .org-access-user {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 12px;
-  background: #ffffff;
+border: 1px solid var(--org-access-border);
+border-radius: var(--radius-main, 12px);
+padding: 12px;
+background: var(--org-access-surface);
 }
 
 .org-access-user strong {
-  display: block;
-  margin-bottom: 4px;
+display: block;
+margin-bottom: 4px;
+color: var(--org-access-text);
 }
 
 .org-access-muted {
-  color: #64748b;
+color: var(--org-access-text-muted);
 }
 
 .org-access-error {
-  background: #fff1f2;
-  border: 1px solid #fecdd3;
-  color: #991b1b;
-  border-radius: 12px;
-  padding: 12px;
-  margin-top: 12px;
+background: var(--gw-danger-soft, #fff1f2);
+border: 1px solid var(--gw-danger-border, #fecdd3);
+color: var(--gw-danger, #991b1b);
+border-radius: var(--radius-main, 12px);
+padding: 12px;
+margin-top: 12px;
 }
 
 .org-access-success {
-  background: #ecfdf3;
-  border: 1px solid #bbf7d0;
-  color: #166534;
-  border-radius: 12px;
-  padding: 12px;
-  margin-top: 12px;
+background: var(--gw-success-soft, #ecfdf3);
+border: 1px solid var(--gw-success-border, #bbf7d0);
+color: var(--gw-success, #166534);
+border-radius: var(--radius-main, 12px);
+padding: 12px;
+margin-top: 12px;
 }
+
 .org-access-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
+display: flex;
+align-items: center;
+gap: 8px;
+margin-top: 4px;
 }
 
 .org-access-badge {
-  font-size: 12px;
-  padding: 2px 6px;
-  border-radius: 6px;
-  background: #eee;
-  font-weight: 600;
+font-size: 12px;
+padding: 2px 6px;
+border-radius: 6px;
+background: var(--org-access-accent-soft);
+color: var(--org-access-accent-hover);
+font-weight: 600;
 }
