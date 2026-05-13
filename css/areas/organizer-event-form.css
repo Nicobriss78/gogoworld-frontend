@@ -39,12 +39,6 @@ font-weight: 700;
 .org-event-field input,
 .org-event-field textarea,
 .org-event-field select {
-.org-event-field input[type="checkbox"] {
-width: 18px;
-height: 18px;
-padding: 0;
-accent-color: var(--org-form-accent);
-}
 width: 100%;
 padding: 10px 12px;
 border: 1px solid var(--org-form-border);
@@ -66,6 +60,15 @@ box-shadow: 0 0 0 3px var(--org-form-accent-soft);
 min-height: 110px;
 resize: vertical;
 }
+
+.org-event-field input[type="checkbox"] {
+width: 18px;
+height: 18px;
+padding: 0;
+accent-color: var(--org-form-accent);
+cursor: pointer;
+}
+
 .org-event-location-actions {
 display: flex;
 flex-wrap: wrap;
@@ -73,22 +76,7 @@ gap: 10px;
 margin-top: 4px;
 }
 
-.org-event-location-actions button {
-min-height: 42px;
-padding: 9px 14px;
-border: 1px solid var(--org-form-accent-border);
-border-radius: var(--radius-btn, 10px);
-background: var(--org-form-accent-soft);
-color: var(--org-form-accent-hover);
-font: inherit;
-font-size: 14px;
-font-weight: 700;
-line-height: 1.2;
-cursor: pointer;
-}
-
-.org-event-location-actions button:hover,
-.org-event-location-actions button:focus-visible {
+.org-event-location-actions button,
 .org-event-field[data-private-code-field] button {
 min-height: 42px;
 padding: 9px 14px;
@@ -103,13 +91,10 @@ line-height: 1.2;
 cursor: pointer;
 }
 
+.org-event-location-actions button:hover,
+.org-event-location-actions button:focus-visible,
 .org-event-field[data-private-code-field] button:hover,
 .org-event-field[data-private-code-field] button:focus-visible {
-border-color: var(--org-form-accent);
-background: var(--org-form-accent);
-color: #fff;
-outline: none;
-}
 border-color: var(--org-form-accent);
 background: var(--org-form-accent);
 color: #fff;
@@ -164,6 +149,7 @@ border-color: var(--org-form-accent-border);
 background: var(--org-form-accent-soft);
 outline: none;
 }
+
 .org-event-row {
 display: grid;
 gap: 12px;
@@ -199,10 +185,12 @@ font-weight: 700;
 text-decoration: none;
 cursor: pointer;
 }
+
 @media (max-width: 520px) {
 .org-event-actions {
 gap: 8px;
 }
+
 .org-event-location-actions {
 gap: 8px;
 }
@@ -213,6 +201,7 @@ min-height: 42px;
 padding: 9px 12px;
 font-size: 14px;
 }
+
 .org-event-actions button,
 .org-event-actions a {
 min-height: 42px;
@@ -228,6 +217,7 @@ flex: 1 1 140px;
 flex: 1 1 160px;
 }
 }
+
 .org-event-actions button:hover,
 .org-event-actions a:hover,
 .org-event-actions button:focus-visible,
