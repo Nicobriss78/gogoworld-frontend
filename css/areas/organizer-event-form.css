@@ -65,8 +65,11 @@ resize: vertical;
 width: 18px;
 height: 18px;
 padding: 0;
+margin: 0 2px 0 0;
 accent-color: var(--org-form-accent);
 cursor: pointer;
+transform: translateY(1px);
+vertical-align: middle;
 }
 
 .org-event-location-actions {
