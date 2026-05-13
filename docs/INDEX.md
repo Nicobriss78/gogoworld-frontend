@@ -294,15 +294,23 @@ Compatibilità futura prevista
 - Blocco doppio click
 - CTA Promo temporaneamente disabilitata
 - `organizer-bootstrap.js` limitato al primo livello
-• Event Detail Organizer V2 consolidato
-• Accessi Evento Privato V2 consolidati
-• Event Form V2 consolidato
-• rootReturnTo Organizer introdotto
-• Dashboard → Eventi filtrati supportato
-• blocco Trilli su eventi passati
-• Eventi no-participants supportati
-• needs-correction supportato
-• ritorni intelligenti Dashboard/Eventi
+- Event Detail Organizer V2 consolidato
+- Accessi Evento Privato V2 consolidati
+- Event Form V2 consolidato
+  • organizer-event-form.css normalizzato
+  • organizer-event-detail.css normalizzato
+  • organizer-event-access.css normalizzato
+  • organizer-trill-form.css normalizzato
+  • organizer-access-guard hardenizzato
+  • Access denied stilato anche nei second-level
+- Trilli Organizer cache/versioning consolidato
+- organizer-shell.css disponibile anche nei second-level
+- rootReturnTo Organizer introdotto
+- Dashboard → Eventi filtrati supportato
+- blocco Trilli su eventi passati
+- Eventi no-participants supportati
+- needs-correction supportato
+- ritorni intelligenti Dashboard/Eventi
 
 ### Primo livello Organizer V2
 
@@ -320,32 +328,35 @@ Compatibilità futura prevista
 
 Criticità da verificare su backup reale
 
-messages-v2:
+messages-v2 / Organizer
 
-• apertura room da Organizer funzionante
-• verificare definitivamente il flusso:
-  organizer → room/messages-v2 → Torna
-• verificare gestione reale di:
-  rootReturnTo
-• verificare eventuali edge case Netlify/404
+Stato reale:
+✅ consolidato
 
-Stato:
-🟡 da validare sul backup attuale
-prima di considerare il problema chiuso.
+Verificato sul backup reale:
+
+• apertura room Organizer funzionante
+• organizer → room/messages-v2 → Torna corretto
+• rootReturnTo Organizer corretto
+• “Apri evento” contestuale Organizer corretto
+• nessun loop di navigazione rilevato
+• nessun 404 Netlify rilevato nei test eseguiti
 
 📌 PROSSIMI STEP REALI
 
-1. Audit finale Organizer V2
-2. Hardening finale Organizer V2
-3. Promozioni Organizer V2
-4. Mappa Organizer V2
-5. Comunicazioni Organizer V2
-6. Rifondazione Admin V2
-7. UI Partecipante Trilli
-8. Trilli Geo V2 / Targeting geografico avanzato
-9. Promo QR
-10. Eliminazione legacy frontend
-11. PWA post Organizer/Admin
+1. Consolidamento finale Organizer V2
+2. Docs finali Organizer V2
+   2.5 Rifinitura geocode Organizer V2
+(geocode results UI + styling residue)
+4. Promozioni Organizer V2
+5. Mappa Organizer V2
+6. Comunicazioni Organizer V2
+7. Rifondazione Admin V2
+8. UI Partecipante Trilli
+9. Trilli Geo V2 / Targeting geografico avanzato
+10. Promo QR
+11. Eliminazione legacy frontend
+12. PWA post Organizer/Admin
 ---
 
 ## 3. Regole aggiornamento
