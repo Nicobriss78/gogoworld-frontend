@@ -1,6 +1,6 @@
-import { fetchMyTrills, sendTrill } from "./organizer-trills-api.js";
-import { renderOrganizerTrills } from "./organizer-trills-renderer.js";
-import { organizerTrillsState } from "./organizer-trills-state.js";
+import { fetchMyTrills, sendTrill } from "./organizer-trills-api.js?v=8";
+import { renderOrganizerTrills } from "./organizer-trills-renderer.js?v=8";
+import { organizerTrillsState } from "./organizer-trills-state.js?v=8";
 function applyTrillsFilter() {
   if (organizerTrillsState.activeFilter === "draft") {
     organizerTrillsState.trills = organizerTrillsState.allTrills.filter(
