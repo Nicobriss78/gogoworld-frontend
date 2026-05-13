@@ -19,7 +19,13 @@ color: var(--org-form-text);
 font-size: 24px;
 line-height: 1.2;
 }
-
+.org-event-intro {
+margin: 0 0 18px;
+color: var(--org-form-text-secondary);
+font-size: 14px;
+line-height: 1.5;
+max-width: 68ch;
+}
 .org-event-form {
 display: grid;
 gap: 14px;
