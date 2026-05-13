@@ -1,96 +1,143 @@
 .org-trill-form-page {
-  padding: 18px;
+padding: 18px;
 }
 
 .org-trill-form-card {
-  background: #fff;
-  border-radius: 18px;
-  padding: 16px;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
-  margin-bottom: 16px;
+--org-trill-accent: #7A3242;
+--org-trill-accent-hover: #622735;
+--org-trill-accent-soft: rgba(122, 50, 66, 0.08);
+--org-trill-accent-border: rgba(122, 50, 66, 0.22);
+--org-trill-surface: var(--gw-surface, #FFFFFF);
+--org-trill-border: var(--gw-border, #E6EAF0);
+--org-trill-text: var(--gw-text, #1C2430);
+--org-trill-text-secondary: var(--gw-text-secondary, #5A6572);
+
+background: var(--org-trill-surface);
+border: 1px solid var(--org-trill-border);
+border-radius: 18px;
+padding: 16px;
+box-shadow: var(--shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
+margin-bottom: 16px;
 }
 
 .org-trill-form-card h1 {
-  margin: 0 0 8px;
-  font-size: 26px;
+margin: 0 0 8px;
+font-size: 26px;
+color: var(--org-trill-text);
 }
 
 .org-trill-form-card p {
-  margin: 0 0 12px;
+margin: 0 0 12px;
+color: var(--org-trill-text-secondary);
 }
 
 .org-trill-form {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+display: flex;
+flex-direction: column;
+gap: 14px;
 }
 
 .org-trill-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+display: flex;
+flex-direction: column;
+gap: 6px;
 }
 
 .org-trill-field label {
-  font-weight: 600;
+font-weight: 700;
+color: var(--org-trill-text);
 }
 
 .org-trill-field input,
 .org-trill-field select,
 .org-trill-field textarea {
-  width: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  border-radius: 12px;
-  padding: 12px;
-  font: inherit;
-  box-sizing: border-box;
+width: 100%;
+border: 1px solid var(--org-trill-border);
+border-radius: 12px;
+padding: 12px;
+background: var(--org-trill-surface);
+color: var(--org-trill-text);
+font: inherit;
+box-sizing: border-box;
+}
+
+.org-trill-field input:focus,
+.org-trill-field select:focus,
+.org-trill-field textarea:focus {
+border-color: var(--org-trill-accent-border);
+outline: none;
+box-shadow: 0 0 0 3px var(--org-trill-accent-soft);
 }
 
 .org-trill-field textarea {
-  min-height: 120px;
-  resize: vertical;
+min-height: 120px;
+resize: vertical;
 }
 
 .org-trill-muted {
-  color: var(--gw-text-secondary, #667085);
-  font-size: 14px;
+color: var(--org-trill-text-secondary);
+font-size: 14px;
 }
 
 .org-trill-error {
-  background: #fff1f1;
-  color: #a40000;
-  padding: 12px;
-  border-radius: 12px;
+background: var(--gw-danger-soft, #fff1f2);
+border: 1px solid var(--gw-danger-border, #fecdd3);
+color: var(--gw-danger, #991b1b);
+padding: 12px;
+border-radius: 12px;
 }
 
 .org-trill-success {
-  background: #effaf2;
-  color: #166534;
-  padding: 12px;
-  border-radius: 12px;
+background: var(--gw-success-soft, #ecfdf3);
+border: 1px solid var(--gw-success-border, #bbf7d0);
+color: var(--gw-success, #166534);
+padding: 12px;
+border-radius: 12px;
 }
 
 .org-trill-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+display: flex;
+gap: 10px;
+flex-wrap: wrap;
 }
 
 .org-trill-actions button,
 .org-trill-actions a {
-  border: none;
-  border-radius: 12px;
-  padding: 11px 14px;
-  text-decoration: none;
-  font-weight: 600;
+min-height: 42px;
+border-radius: 12px;
+padding: 11px 14px;
+text-decoration: none;
+font: inherit;
+font-size: 15px;
+line-height: 1.2;
+font-weight: 700;
+cursor: pointer;
 }
 
 .org-trill-actions button {
-  background: var(--org-accent, #7A3242);
-  color: #fff;
+border: 1px solid var(--org-trill-accent);
+background: var(--org-trill-accent);
+color: #fff;
+}
+
+.org-trill-actions button:hover,
+.org-trill-actions button:focus-visible {
+border-color: var(--org-trill-accent-hover);
+background: var(--org-trill-accent-hover);
+color: #fff;
+outline: none;
 }
 
 .org-trill-actions a {
-  background: rgba(0, 0, 0, 0.06);
-  color: inherit;
+border: 1px solid var(--org-trill-border);
+background: var(--org-trill-surface);
+color: var(--org-trill-text);
+}
+
+.org-trill-actions a:hover,
+.org-trill-actions a:focus-visible {
+border-color: var(--org-trill-accent-border);
+background: var(--org-trill-accent-soft);
+color: var(--org-trill-accent-hover);
+outline: none;
 }
