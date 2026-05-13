@@ -176,7 +176,16 @@ cursor: pointer;
 .org-event-actions {
 gap: 8px;
 }
+.org-event-location-actions {
+gap: 8px;
+}
 
+.org-event-location-actions button {
+flex: 1 1 160px;
+min-height: 42px;
+padding: 9px 12px;
+font-size: 14px;
+}
 .org-event-actions button,
 .org-event-actions a {
 min-height: 42px;
