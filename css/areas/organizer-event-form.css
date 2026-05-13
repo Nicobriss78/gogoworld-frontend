@@ -39,6 +39,12 @@ font-weight: 700;
 .org-event-field input,
 .org-event-field textarea,
 .org-event-field select {
+.org-event-field input[type="checkbox"] {
+width: 18px;
+height: 18px;
+padding: 0;
+accent-color: var(--org-form-accent);
+}
 width: 100%;
 padding: 10px 12px;
 border: 1px solid var(--org-form-border);
