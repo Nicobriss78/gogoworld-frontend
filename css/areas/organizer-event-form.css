@@ -60,7 +60,83 @@ box-shadow: 0 0 0 3px var(--org-form-accent-soft);
 min-height: 110px;
 resize: vertical;
 }
+.org-event-location-actions {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 4px;
+}
 
+.org-event-location-actions button {
+min-height: 42px;
+padding: 9px 14px;
+border: 1px solid var(--org-form-accent-border);
+border-radius: var(--radius-btn, 10px);
+background: var(--org-form-accent-soft);
+color: var(--org-form-accent-hover);
+font: inherit;
+font-size: 14px;
+font-weight: 700;
+line-height: 1.2;
+cursor: pointer;
+}
+
+.org-event-location-actions button:hover,
+.org-event-location-actions button:focus-visible {
+border-color: var(--org-form-accent);
+background: var(--org-form-accent);
+color: #fff;
+outline: none;
+}
+
+.org-event-geocode-results {
+display: grid;
+gap: 8px;
+margin-top: 12px;
+}
+
+.org-event-geocode-results label {
+color: var(--org-form-text);
+font-size: 14px;
+font-weight: 700;
+}
+
+.org-event-geocode-results-list {
+display: grid;
+gap: 8px;
+}
+
+.org-event-geocode-result {
+display: grid;
+gap: 4px;
+width: 100%;
+padding: 10px 12px;
+border: 1px solid var(--org-form-border);
+border-radius: var(--radius-btn, 10px);
+background: var(--org-form-surface);
+color: var(--org-form-text);
+font: inherit;
+text-align: left;
+cursor: pointer;
+}
+
+.org-event-geocode-result strong {
+font-size: 14px;
+line-height: 1.25;
+}
+
+.org-event-geocode-result small {
+color: var(--org-form-text-secondary);
+font-size: 12px;
+line-height: 1.3;
+}
+
+.org-event-geocode-result:hover,
+.org-event-geocode-result:focus-visible {
+border-color: var(--org-form-accent-border);
+background: var(--org-form-accent-soft);
+outline: none;
+}
 .org-event-row {
 display: grid;
 gap: 12px;
