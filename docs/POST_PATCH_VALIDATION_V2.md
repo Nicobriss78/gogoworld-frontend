@@ -24,12 +24,16 @@
 - Le pagine immersive usano:
   - `checkAccess()` diretto [ ]
   - controller dedicato [ ]
+  • access denied stilato [ ]
+  • CSS shell area disponibile se necessario [ ]
 ---
 
 ## UI
 - Topbar visibile? [ ]
 - Bottom nav fissa? [ ]
 - Layout stabile? [ ]
+• Nessuna regressione visuale reale post patch CSS? [ ]
+• Mobile verificato realmente dopo deploy? [ ]
 - Proporzioni shared coerenti tra le 6 schede V2? [ ]
 - Font V2 centralizzato tramite `--gw-font-family`? [ ]
 - Nessun `100vh` / `100dvh` / `100svh` diretto nei CSS V2? [ ]
@@ -354,6 +358,18 @@ Se feature Trilli Geo V2:
 • blocco Trilli su eventi passati verificato? [ ]
 • Dashboard → Eventi filtrati funzionante? [ ]
 
+### Consolidamento UI
+
+• organizer-event-form.css normalizzato? [ ]
+• organizer-event-detail.css normalizzato? [ ]
+• organizer-event-access.css normalizzato? [ ]
+• organizer-trill-form.css normalizzato? [ ]
+• organizer-access-guard hardenizzato? [ ]
+• access denied secondo livello verificato? [ ]
+• organizer-shell.css disponibile nei second-level? [ ]
+• versioning Trilli Organizer verificato? [ ]
+• messages-v2 Organizer consolidato? [ ]
+
 ### Hardening
 
 - Nessun `alert()` / `confirm()` Organizer? [ ]
@@ -363,10 +379,13 @@ Se feature Trilli Geo V2:
 
 ### Criticità da validare sul backup reale
 
-• messages-v2 / Organizer
-◦ organizer → room/messages-v2 → Torna verificato? [ ]
-◦ rootReturnTo gestito correttamente? [ ]
-◦ nessun 404 Netlify? [ ]
+messages-v2 / Organizer (consolidato)
+
+• organizer → room/messages-v2 → Torna corretto? [ ]
+• rootReturnTo Organizer corretto? [ ]
+• “Apri evento” contestuale Organizer corretto? [ ]
+• nessun loop navigazione? [ ]
+• nessun 404 Netlify rilevato? [ ]
 --- 
   
 ## CHIUSURA
