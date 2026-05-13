@@ -41,7 +41,13 @@ gap: 6px;
 color: var(--org-form-text);
 font-weight: 700;
 }
-
+.org-event-field label:has(input[type="checkbox"]) {
+display: inline-flex;
+align-items: center;
+gap: 10px;
+width: fit-content;
+line-height: 1.2;
+}
 .org-event-field input,
 .org-event-field textarea,
 .org-event-field select {
