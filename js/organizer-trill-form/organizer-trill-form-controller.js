@@ -1,9 +1,9 @@
 import {
   createTrillDraft,
   fetchOrganizerEvent,
-} from "./organizer-trill-form-api.js";
-import { renderOrganizerTrillForm } from "./organizer-trill-form-renderer.js";
-import { organizerTrillFormState } from "./organizer-trill-form-state.js";
+} from "./organizer-trill-form-api.js?v=8";
+import { renderOrganizerTrillForm } from "./organizer-trill-form-renderer.js?v=8";
+import { organizerTrillFormState } from "./organizer-trill-form-state.js?v=8";
 
 function getEventIdFromUrl() {
   return new URLSearchParams(window.location.search).get("eventId");
