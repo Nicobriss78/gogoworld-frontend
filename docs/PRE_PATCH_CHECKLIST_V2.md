@@ -10,6 +10,13 @@
 • Ho verificato dipendenze reali prima della patch? [ ]
 • Sto ragionando sul backup attuale e NON a memoria? [ ]
 • Le ancore proposte esistono davvero nel file? [ ]
+• Se il file è HTML/CSS/UI prevedibile:
+→ sto proponendo una versione già matura e non embrionale? [ ]
+
+• Se la logica è complessa/rischiosa:
+→ sto partendo da una versione base stabile prima di affinare? [ ]
+
+• Ho definito il contratto completo del file prima della patch? [ ]
 ---
 
 ## RESPONSABILITÀ
@@ -29,8 +36,10 @@
   → NO bottomnav
   → `checkAccess()` diretto
   → controller dedicato
+  → access denied stilato
+  → CSS shell area disponibile se necessario
 
-- Sto evitando bootstrap su pagine immersive? [ ]
+  - Sto evitando bootstrap su pagine immersive? [ ]
 
 ---
 
@@ -88,6 +97,8 @@ Se sto lavorando su MAPPA PUBBLICA:
 - Topbar mount presente? [ ]
 - Bottom nav fixed? [ ]
 - Le proporzioni shared sono rispettate? [ ]
+• Sto evitando regressioni visuali reali dopo patch CSS? [ ]
+• Ho verificato il comportamento reale mobile dopo deploy? [ ]
 - Nessun font locale hardcoded? [ ]
 - Nessun `100vh` / `100dvh` / `100svh` diretto nei CSS V2? [ ]
 - Uso corretto di `--gw-app-viewport-h`? [ ]
