@@ -102,10 +102,9 @@ const isCustomSubcategory = Boolean(
   event.subcategory &&
   !subcategoryOptions.includes(event.subcategory)
 );
-  root.innerHTML = `<h1>${title}</h1>
-<p class="org-event-intro">
-Compila le informazioni dell’evento. I campi sono allineati alla struttura attualmente stabile del sistema.
-</p>
+  root.innerHTML = `
+    <h1>${title}</h1>
+    <p>Form evento V2 allineato ai campi legacy/backend attualmente stabili.</p>
 
     ${state.error ? `<section class="org-event-error">${escapeHtml(state.error)}</section>` : ""}
     ${state.success ? `<section class="org-event-success">${escapeHtml(state.success)}</section>` : ""}
@@ -184,7 +183,7 @@ Compila le informazioni dell’evento. I campi sono allineati alla struttura att
         </div>
 
         <div class="org-event-field">
-          <label>
+          <label class="org-event-checkbox-label">
             <input name="isPrivate" type="checkbox" ${checked(event.isPrivate)} />
             Evento privato
           </label>
@@ -245,22 +244,15 @@ Compila le informazioni dell’evento. I campi sono allineati alla struttura att
         </div>
            <div class="org-event-field">
   <div class="org-event-location-actions">
-<button type="button" data-action="search-coordinates">
-Cerca coordinate
-</button>
+  <button type="button" data-action="search-coordinates">
+    Cerca coordinate
+  </button>
 
-<button type="button" data-action="use-current-position">
-Usa la mia posizione
-</button>
+  <button type="button" data-action="use-current-position">
+    Usa la mia posizione
+  </button>
 </div>
-
-<small class="org-event-location-helper">
-${Array.isArray(state.geocodeResults) && state.geocodeResults.length > 1
-? `...`
-: ""}
-
-Usa nome luogo, indirizzo, città, provincia, regione e paese per suggerire latitudine e longitudine.
-</small>
+  <small class="org-event-location-helper">
   ${
   Array.isArray(state.geocodeResults) && state.geocodeResults.length > 1
     ? `
@@ -333,7 +325,7 @@ Usa nome luogo, indirizzo, città, provincia, regione e paese per suggerire lati
         <h2>Prezzo</h2>
 
         <div class="org-event-field">
-          <label>
+          <label class="org-event-checkbox-label">
             <input name="isFree" type="checkbox" ${checked(event.isFree)} />
             Evento gratuito
           </label>
@@ -384,8 +376,4 @@ Usa nome luogo, indirizzo, città, provincia, regione e paese per suggerire lati
       </div>
     </form>
   `;
-}
-
-
-
-
+              }
