@@ -245,15 +245,22 @@ Compila le informazioni dell’evento. I campi sono allineati alla struttura att
         </div>
            <div class="org-event-field">
   <div class="org-event-location-actions">
-  <button type="button" data-action="search-coordinates">
-    Cerca coordinate
-  </button>
+<button type="button" data-action="search-coordinates">
+Cerca coordinate
+</button>
 
-  <button type="button" data-action="use-current-position">
-    Usa la mia posizione
-  </button>
+<button type="button" data-action="use-current-position">
+Usa la mia posizione
+</button>
 </div>
-  <small>
+
+<small class="org-event-location-helper">
+${Array.isArray(state.geocodeResults) && state.geocodeResults.length > 1
+? `...`
+: ""}
+
+Usa nome luogo, indirizzo, città, provincia, regione e paese per suggerire latitudine e longitudine.
+</small>
   ${
   Array.isArray(state.geocodeResults) && state.geocodeResults.length > 1
     ? `
