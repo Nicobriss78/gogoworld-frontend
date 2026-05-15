@@ -1,0 +1,386 @@
+/* css/areas/organizer-promo-create.css */
+/* Organizer Promo Create V2 — pagina immersiva */
+
+.org-promo-create-page {
+  width: 100%;
+  max-width: 1180px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px 14px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gw-space-md, 16px);
+}
+
+.org-promo-create-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gw-space-md, 16px);
+  padding: var(--gw-space-md, 16px);
+  border: 1px solid var(--home-accent-border);
+  border-radius: var(--gw-radius, 12px);
+  background: linear-gradient(135deg, var(--home-surface), var(--home-accent-soft));
+  box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
+}
+
+body.organizer-shell .org-promo-create-back {
+  width: fit-content;
+  min-height: 38px;
+  padding: 9px 12px;
+  border: 1px solid var(--home-accent-border);
+  border-radius: var(--gw-radius-btn, 10px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--home-surface);
+  color: var(--org-accent, #7A3242);
+  font-size: 14px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.org-promo-create-eyebrow {
+  margin: 0 0 6px;
+  color: var(--org-accent, #7A3242);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.org-promo-create-header h1 {
+  margin: 0;
+  color: var(--home-text);
+  font-size: 26px;
+  line-height: 1.15;
+  font-weight: 900;
+}
+
+.org-promo-create-header p {
+  max-width: 720px;
+  margin: 8px 0 0;
+  color: var(--home-text-secondary);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.org-promo-create-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: var(--gw-space-md, 16px);
+  align-items: start;
+}
+
+.org-promo-create-form,
+.org-promo-create-live {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gw-space-md, 16px);
+}
+
+.org-promo-create-live {
+  position: sticky;
+  top: 14px;
+}
+
+.org-promo-create-card,
+.org-promo-create-submit,
+.org-promo-create-error,
+.org-promo-create-success {
+  padding: var(--gw-space-md, 16px);
+  border: 1px solid var(--home-border);
+  border-radius: var(--gw-radius, 12px);
+  background: var(--home-surface);
+  box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
+}
+
+.org-promo-create-card h2 {
+  margin: 0;
+  color: var(--home-text);
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 900;
+}
+
+.org-promo-create-card > p {
+  margin: 6px 0 14px;
+  color: var(--home-text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.org-promo-create-field {
+  min-width: 0;
+  margin-top: var(--gw-space-sm, 10px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.org-promo-create-field span {
+  color: var(--home-text-muted);
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.org-promo-create-field input,
+.org-promo-create-field select,
+.org-promo-create-field textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--home-border);
+  border-radius: var(--gw-radius-btn, 10px);
+  background: var(--home-surface);
+  color: var(--home-text);
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.org-promo-create-field textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+
+.org-promo-create-field input:focus,
+.org-promo-create-field select:focus,
+.org-promo-create-field textarea:focus {
+  border-color: var(--home-accent-border);
+  outline: 2px solid var(--home-accent-soft);
+  outline-offset: 1px;
+}
+
+.org-promo-create-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gw-space-sm, 10px);
+}
+
+.org-promo-create-event-preview,
+.org-promo-create-preview {
+  margin-top: var(--gw-space-md, 16px);
+  padding: 10px;
+  border: 1px solid var(--home-border);
+  border-radius: var(--gw-radius, 12px);
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: var(--gw-space-sm, 10px);
+  align-items: center;
+  background: var(--home-bg);
+}
+
+.org-promo-create-event-preview[hidden] {
+  display: none;
+}
+
+.org-promo-create-event-preview img,
+.org-promo-create-preview img {
+  width: 76px;
+  height: 58px;
+  border-radius: var(--gw-radius-btn, 10px);
+  object-fit: cover;
+  background: var(--home-accent-soft);
+}
+
+.org-promo-create-event-preview strong,
+.org-promo-create-preview strong {
+  display: block;
+  color: var(--home-text);
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 900;
+}
+
+.org-promo-create-event-preview span,
+.org-promo-create-preview span {
+  display: block;
+  margin-top: 4px;
+  color: var(--home-text-secondary);
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.org-promo-create-price {
+  margin-top: var(--gw-space-md, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.org-promo-create-price span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--home-text-secondary);
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 800;
+}
+
+.org-promo-create-price span:last-child {
+  padding-top: 9px;
+  border-top: 1px solid var(--home-border);
+  color: var(--home-text);
+  font-size: 16px;
+}
+
+.org-promo-create-price strong {
+  color: var(--home-text);
+  font-weight: 900;
+}
+
+.org-promo-create-help {
+  margin: 12px 0 0;
+  color: var(--home-text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.org-promo-create-availability {
+  margin-top: var(--gw-space-md, 16px);
+  padding: 12px;
+  border: 1px solid var(--home-border);
+  border-radius: var(--gw-radius-btn, 10px);
+  background: var(--home-bg);
+}
+
+.org-promo-create-availability strong {
+  display: block;
+  color: var(--home-text);
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 900;
+}
+
+.org-promo-create-availability p {
+  margin: 5px 0 0;
+  color: var(--home-text-secondary);
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.org-promo-create-availability[data-tone="available"] {
+  border-color: rgba(21, 128, 61, 0.24);
+  background: rgba(21, 128, 61, 0.08);
+}
+
+.org-promo-create-availability[data-tone="limited"] {
+  border-color: rgba(154, 106, 18, 0.24);
+  background: rgba(154, 106, 18, 0.08);
+}
+
+.org-promo-create-availability[data-tone="low"] {
+  border-color: rgba(234, 88, 12, 0.24);
+  background: rgba(234, 88, 12, 0.08);
+}
+
+.org-promo-create-availability[data-tone="unavailable"] {
+  border-color: rgba(181, 42, 50, 0.24);
+  background: rgba(181, 42, 50, 0.08);
+}
+
+.org-promo-create-submit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.org-promo-create-submit button {
+  min-height: 44px;
+  padding: 11px 16px;
+  border: 1px solid var(--home-accent-border);
+  border-radius: var(--gw-radius-btn, 10px);
+  background: var(--org-accent, #7A3242);
+  color: #fff;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.org-promo-create-submit button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.org-promo-create-submit p {
+  margin: 0;
+  color: var(--home-text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+.org-promo-create-error,
+.org-promo-create-success {
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 800;
+}
+
+.org-promo-create-error {
+  border-color: rgba(181, 42, 50, 0.24);
+  background: rgba(181, 42, 50, 0.08);
+  color: var(--gw-danger, #B52A32);
+}
+
+.org-promo-create-success {
+  border-color: rgba(21, 128, 61, 0.24);
+  background: rgba(21, 128, 61, 0.08);
+  color: #15803d;
+}
+
+.org-promo-create-error[hidden],
+.org-promo-create-success[hidden] {
+  display: none;
+}
+
+@media (max-width: 920px) {
+  .org-promo-create-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .org-promo-create-live {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .org-promo-create-page {
+    padding: 12px 10px 22px;
+    gap: var(--gw-space-sm, 10px);
+  }
+
+  .org-promo-create-header,
+  .org-promo-create-card,
+  .org-promo-create-submit {
+    padding: var(--gw-space-sm, 10px);
+  }
+
+  .org-promo-create-header h1 {
+    font-size: 23px;
+  }
+
+  .org-promo-create-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .org-promo-create-event-preview,
+  .org-promo-create-preview {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .org-promo-create-event-preview img,
+  .org-promo-create-preview img {
+    width: 64px;
+    height: 52px;
+  }
+  }
