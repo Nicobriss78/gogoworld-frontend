@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <title>Crea promozione Organizer V2</title>
+
+  <link rel="stylesheet" href="/css/tokens.v2.css" />
+  <link rel="stylesheet" href="/css/icons-v2.css" />
+  <link rel="stylesheet" href="/css/shared-shell.css" />
+  <link rel="stylesheet" href="/css/shared-notifications.css" />
+
+  <link rel="stylesheet" href="/css/organizer-shell.css" />
+  <link rel="stylesheet" href="/css/areas/organizer-promo-create.css" />
+</head>
+
+<body class="organizer-shell" data-organizer-view="promos">
+  <main class="org-promo-create-page" data-org-promo-create-root>
+    <header class="org-promo-create-header">
+      <a class="org-promo-create-back" href="/pages/organizer-promos-v2.html">
+        ← Promozioni
+      </a>
+
+      <div>
+        <p class="org-promo-create-eyebrow">Nuova promozione</p>
+        <h1>Crea promozione</h1>
+        <p>
+          Configura una promozione per un tuo evento. Il preventivo e la disponibilità
+          vengono aggiornati mentre compili il form.
+        </p>
+      </div>
+    </header>
+
+    <section class="org-promo-create-layout">
+      <form class="org-promo-create-form" data-org-promo-create-form>
+        <section class="org-promo-create-card">
+          <h2>1. Evento da promuovere</h2>
+          <p>Ogni promozione deve essere collegata a un evento reale.</p>
+
+          <label class="org-promo-create-field">
+            <span>Evento</span>
+            <select required data-promo-field="eventId">
+              <option value="">Seleziona evento</option>
+            </select>
+          </label>
+
+          <div class="org-promo-create-event-preview" data-promo-event-preview hidden>
+            <img data-promo-event-image alt="" />
+            <div>
+              <strong data-promo-event-title>—</strong>
+              <span data-promo-event-meta>—</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="org-promo-create-card">
+          <h2>2. Configurazione</h2>
+
+          <label class="org-promo-create-field">
+            <span>Titolo promozione</span>
+            <input required type="text" maxlength="90" data-promo-field="title" />
+          </label>
+
+          <label class="org-promo-create-field">
+            <span>Immagine promozione</span>
+            <input required type="url" placeholder="https://..." data-promo-field="imageUrl" />
+          </label>
+
+          <label class="org-promo-create-field">
+            <span>Placement</span>
+            <select required data-promo-field="placement">
+              <option value="events_list_inline">Eventi inline</option>
+              <option value="home_top">Home top</option>
+            </select>
+          </label>
+
+          <label class="org-promo-create-field">
+            <span>Copertura</span>
+            <select required data-promo-field="geoScope">
+              <option value="REGION">Regionale</option>
+              <option value="COUNTRY">Nazionale</option>
+              <option value="GLOBAL">Globale</option>
+            </select>
+          </label>
+
+          <div class="org-promo-create-grid">
+            <label class="org-promo-create-field" data-country-field>
+              <span>Paese</span>
+              <input type="text" value="IT" maxlength="2" data-promo-field="country" />
+            </label>
+
+            <label class="org-promo-create-field" data-region-field>
+              <span>Regione</span>
+              <input type="text" placeholder="Lazio" data-promo-field="region" />
+            </label>
+          </div>
+
+          <div class="org-promo-create-grid">
+            <label class="org-promo-create-field">
+              <span>Inizio</span>
+              <input required type="datetime-local" data-promo-field="activeFrom" />
+            </label>
+
+            <label class="org-promo-create-field">
+              <span>Fine</span>
+              <input required type="datetime-local" data-promo-field="activeTo" />
+            </label>
+          </div>
+
+          <label class="org-promo-create-field">
+            <span>Note per revisione</span>
+            <textarea rows="4" data-promo-field="notes"></textarea>
+          </label>
+        </section>
+
+        <section class="org-promo-create-submit">
+          <button type="submit" data-promo-submit>
+            Invia richiesta promozione
+          </button>
+
+          <p>
+            La promozione sarà verificata prima della richiesta di pagamento.
+          </p>
+        </section>
+      </form>
+
+      <aside class="org-promo-create-live">
+        <section class="org-promo-create-card">
+          <h2>Preventivo live</h2>
+
+          <div class="org-promo-create-price" data-promo-price>
+            <span>Imponibile <strong data-price-net>—</strong></span>
+            <span>IVA 22% <strong data-price-vat>—</strong></span>
+            <span>Totale <strong data-price-gross>—</strong></span>
+          </div>
+
+          <p class="org-promo-create-help">
+            Il preventivo è calcolato dal backend in base a durata, placement e copertura.
+          </p>
+        </section>
+
+        <section class="org-promo-create-card">
+          <h2>Disponibilità live</h2>
+
+          <div class="org-promo-create-availability" data-promo-availability>
+            <strong>Verifica disponibilità</strong>
+            <p>Compila i campi principali per stimare la disponibilità pubblicitaria.</p>
+          </div>
+        </section>
+
+        <section class="org-promo-create-card">
+          <h2>Anteprima</h2>
+
+          <article class="org-promo-create-preview">
+            <img data-promo-preview-image alt="" />
+            <div>
+              <strong data-promo-preview-title>La tua promozione</strong>
+              <span data-promo-preview-meta>Anteprima banner</span>
+            </div>
+          </article>
+        </section>
+      </aside>
+    </section>
+
+    <section class="org-promo-create-error" data-promo-error hidden></section>
+    <section class="org-promo-create-success" data-promo-success hidden></section>
+  </main>
+
+  <script type="module" src="/js/organizer-promo-create/organizer-promo-create-controller.js?v=1"></script>
+</body>
+</html>
