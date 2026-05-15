@@ -208,11 +208,14 @@ function buildActions(item) {
       `;
 
     default:
-      return `
-        <button class="org-promos-card__action">
-          Visualizza dettagli
-        </button>
-      `;
+  return `
+    <a
+      class="org-promos-card__action"
+      href="/pages/organizer-promo-detail-v2.html?id=${encodeURIComponent(item.id)}"
+    >
+      Visualizza dettagli
+    </a>
+  `;
   }
 }
 
