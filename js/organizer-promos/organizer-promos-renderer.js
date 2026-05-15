@@ -148,15 +148,18 @@ function normalizePromo(raw = {}) {
 function buildActions(item) {
   switch (item.status) {
     case "PENDING_REVIEW":
-      return `
-        <button class="org-promos-card__action">
-          Visualizza dettagli
-        </button>
+  return `
+    <a
+      class="org-promos-card__action"
+      href="/pages/organizer-promo-detail-v2.html?id=${encodeURIComponent(item.id)}"
+    >
+      Visualizza dettagli
+    </a>
 
-        <button class="org-promos-card__action org-promos-card__action--danger">
-          Annulla richiesta
-        </button>
-      `;
+    <button class="org-promos-card__action org-promos-card__action--danger" disabled>
+      Annulla richiesta
+    </button>
+  `;
 
     case "PENDING_PAYMENT":
     case "AWAITING_PAYMENT":
