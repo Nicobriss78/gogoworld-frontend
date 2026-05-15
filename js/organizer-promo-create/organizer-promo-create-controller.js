@@ -370,8 +370,9 @@ async function loadEvents() {
   const errorBox = qs("[data-promo-error]");
 
   try {
-    state.events = await fetchOrganizerEvents();
-    renderEventsOptions(select, state.events);
+    const events = await fetchOrganizerEvents();
+state.events = events.filter(isPromotableEvent);
+renderEventsOptions(select, state.events);
   } catch (err) {
     console.error("[OrganizerPromoCreate] events load failed:", err);
     showMessage(
