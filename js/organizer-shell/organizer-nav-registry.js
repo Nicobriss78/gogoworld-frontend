@@ -32,7 +32,7 @@ export const organizerNav = [
     label: "Promo",
     icon: "promo",
     href: "/pages/organizer-promos-v2.html",
-    enabled: false,
+    enabled: true,
   },
   {
     id: "profile",
