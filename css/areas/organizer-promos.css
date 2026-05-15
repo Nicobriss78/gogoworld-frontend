@@ -82,19 +82,19 @@ body.organizer-shell .org-promos-state button {
   cursor: pointer;
 }
 
-.org-promos-primary-btn:visited,
-.org-promos-primary-btn:hover,
-.org-promos-primary-btn:focus-visible,
-.org-promos-primary-btn:active,
-.org-promos-empty a:visited,
-.org-promos-empty a:hover,
-.org-promos-empty a:focus-visible,
-.org-promos-empty a:active,
-.org-promos-smart-banner a:visited,
-.org-promos-smart-banner a:hover,
-.org-promos-smart-banner a:focus-visible,
-.org-promos-smart-banner a:active {
-  color: #fff;
+body.organizer-shell .org-promos-primary-btn:visited,
+body.organizer-shell .org-promos-primary-btn:hover,
+body.organizer-shell .org-promos-primary-btn:focus-visible,
+body.organizer-shell .org-promos-primary-btn:active,
+body.organizer-shell .org-promos-empty a:visited,
+body.organizer-shell .org-promos-empty a:hover,
+body.organizer-shell .org-promos-empty a:focus-visible,
+body.organizer-shell .org-promos-empty a:active,
+body.organizer-shell .org-promos-smart-banner a:visited,
+body.organizer-shell .org-promos-smart-banner a:hover,
+body.organizer-shell .org-promos-smart-banner a:focus-visible,
+body.organizer-shell .org-promos-smart-banner a:active {
+color: #fff;
 }
 
 /* KPI */
