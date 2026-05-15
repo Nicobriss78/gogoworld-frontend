@@ -183,14 +183,25 @@ function syncEventSelection() {
   const imageUrl = field("imageUrl");
 
   if (state.selectedEvent) {
-    if (title && !title.value) {
-      title.value = getEventTitle(state.selectedEvent);
-    }
+if (title && !title.value) {
+title.value = getEventTitle(state.selectedEvent);
+}
 
-    if (imageUrl && !imageUrl.value) {
-      imageUrl.value = getEventImage(state.selectedEvent);
-    }
-  }
+if (imageUrl && !imageUrl.value) {
+imageUrl.value = getEventImage(state.selectedEvent);
+}
+
+const country = field("country");
+const region = field("region");
+
+if (country && !country.value) {
+country.value = getEventCountry(state.selectedEvent);
+}
+
+if (region && !region.value) {
+region.value = getEventRegion(state.selectedEvent);
+}
+}
 
   renderEventPreview(
     {
