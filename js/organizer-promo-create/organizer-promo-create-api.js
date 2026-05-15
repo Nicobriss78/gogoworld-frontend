@@ -4,7 +4,7 @@
 import { apiGet, apiPost } from "../api.js";
 
 export async function fetchOrganizerEvents() {
-  const response = await apiGet("/events/organizer");
+  const response = await apiGet("/events/mine/list");
 
   if (Array.isArray(response)) {
     return response;
