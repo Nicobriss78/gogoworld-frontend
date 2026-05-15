@@ -47,7 +47,63 @@ function getEventImage(event) {
     "https://placehold.co/600x300?text=Evento"
   );
 }
+function getEventCountry(event) {
+return (
+event?.country ||
+event?.countryCode ||
+event?.location?.country ||
+"IT"
+);
+}
 
+function getEventRegion(event) {
+return (
+event?.region ||
+event?.location?.region ||
+event?.address?.region ||
+""
+);
+}
+
+function getEventStartDate(event) {
+return (
+event?.dateStart ||
+event?.dataStart ||
+event?.startDate ||
+event?.startAt ||
+event?.startsAt ||
+null
+);
+}
+
+function getEventEndDate(event) {
+return (
+event?.dateEnd ||
+event?.dataEnd ||
+event?.endDate ||
+event?.endAt ||
+event?.endsAt ||
+null
+);
+}
+
+function isPromotableEvent(event) {
+const now = new Date();
+
+const end = getEventEndDate(event);
+if (end) {
+const endDate = new Date(end);
+return !Number.isNaN(endDate.getTime()) && endDate >= now;
+}
+
+const start = getEventStartDate(event);
+if (start) {
+const startDate = new Date(start);
+return !Number.isNaN(startDate.getTime()) && startDate >= now;
+}
+
+return true;
+}
 function getEventTargetUrl(event) {
   const id = getEventId(event);
   return id ? `/pages/evento-v2.html?id=${encodeURIComponent(id)}` : "";
