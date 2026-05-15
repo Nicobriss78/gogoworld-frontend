@@ -62,10 +62,10 @@
   gap: var(--gw-space-sm, 10px);
 }
 
-.org-promos-primary-btn,
-.org-promos-empty a,
-.org-promos-smart-banner a,
-.org-promos-state button {
+body.organizer-shell .org-promos-primary-btn,
+body.organizer-shell .org-promos-empty a,
+body.organizer-shell .org-promos-smart-banner a,
+body.organizer-shell .org-promos-state button {
   min-height: 40px;
   padding: 10px 14px;
   border: 1px solid var(--home-accent-border);
