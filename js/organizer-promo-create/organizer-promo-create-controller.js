@@ -105,8 +105,13 @@ return !Number.isNaN(startDate.getTime()) && startDate >= now;
 return true;
 }
 function getEventTargetUrl(event) {
-  const id = getEventId(event);
-  return id ? `/pages/evento-v2.html?id=${encodeURIComponent(id)}` : "";
+const id = getEventId(event);
+if (!id) return "";
+
+return new URL(
+`/pages/evento-v2.html?id=${encodeURIComponent(id)}`,
+window.location.origin
+).href;
 }
 
 function toIsoFromDatetimeLocal(value) {
