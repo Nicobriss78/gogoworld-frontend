@@ -102,8 +102,17 @@ async function init() {
 
     const promo = await fetchOrganizerPromoById(promoId);
 
-    renderPromo(promo);
+let linkedEvent = null;
 
+if (promo?.eventId) {
+  try {
+    linkedEvent = await fetchLinkedEventById(promo.eventId);
+  } catch (eventErr) {
+    console.warn("[OrganizerPromoDetail] linked event load failed:", eventErr);
+  }
+}
+
+renderPromo(promo, linkedEvent);
     showLoading(false);
     showError(false);
     showContent(true);
