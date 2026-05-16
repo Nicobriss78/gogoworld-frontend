@@ -344,12 +344,17 @@ async function handleSubmit(event) {
 
   try {
     const response = await submitPromo(payload);
-    const data = response?.data || response;
 
-    showMessage(
-      successBox,
-      "Richiesta promozione inviata. Sarà verificata prima della richiesta di pagamento."
-    );
+if (!response?.ok) {
+throw new Error(response?.message || response?.error || "Submit promo failed");
+}
+
+const data = response?.data || response;
+
+showMessage(
+successBox,
+"Richiesta promozione inviata. Sarà verificata prima della richiesta di pagamento."
+);
 
     setTimeout(() => {
       window.location.href = "/pages/organizer-promos-v2.html";
