@@ -31,3 +31,10 @@ export async function fetchOrganizerPromoById(id) {
 
   return promo;
 }
+export async function fetchLinkedEventById(eventId) {
+  if (!eventId) return null;
+
+  const response = await apiGet(`/events/${encodeURIComponent(eventId)}`);
+
+  return response?.event || response?.data || response || null;
+}
