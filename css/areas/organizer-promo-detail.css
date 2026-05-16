@@ -333,6 +333,46 @@ body.organizer-shell .org-promo-detail-state a {
   text-align: right;
 }
 
+/* LINKED EVENT */
+.org-promo-detail-event-card {
+  padding: 10px;
+  border: 1px solid var(--home-border);
+  border-radius: var(--gw-radius, 12px);
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: var(--gw-space-sm, 10px);
+  align-items: center;
+  background: var(--home-bg);
+}
+
+.org-promo-detail-event-card img {
+  width: 82px;
+  height: 64px;
+  border-radius: var(--gw-radius-btn, 10px);
+  object-fit: cover;
+  background: var(--home-accent-soft);
+}
+
+.org-promo-detail-event-card strong {
+  display: block;
+  color: var(--home-text);
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 900;
+}
+
+.org-promo-detail-event-card span {
+  display: block;
+  margin-top: 4px;
+  color: var(--home-text-secondary);
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.org-promo-detail-event-actions {
+  margin-top: 12px;
+}
 /* ACTIONS */
 
 .org-promo-detail-actions {
