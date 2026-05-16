@@ -373,35 +373,88 @@ export function renderPerformance(root, promo) {
   `;
 }
 
-export function renderEvent(root, promo) {
+function getEventTitle(event = {}) {
+  return event.title || event.nome || "Evento senza titolo";
+}
+
+function getEventPlace(event = {}) {
+  return [event.city || event.citta, event.region]
+    .filter(Boolean)
+    .join(" · ") || "Luogo non disponibile";
+}
+
+function getEventDate(event = {}) {
+  return dateTimeLabel(
+    event.dateStart ||
+    event.dataStart ||
+    event.startDate ||
+    event.startAt
+  );
+}
+
+function getEventImage(event = {}) {
+  return (
+    event.coverImage ||
+    event.imageUrl ||
+    event.image ||
+    "https://placehold.co/600x300?text=Evento"
+  );
+}
+
+export function renderEvent(root, promo, linkedEvent = null) {
   if (!root) return;
 
-  const eventId = promo.eventId || "—";
+  if (!promo.eventId) {
+    root.innerHTML = `
+      <h2>Evento collegato</h2>
+      <p>Evento non disponibile.</p>
+    `;
+    return;
+  }
+
+  if (!linkedEvent) {
+    root.innerHTML = `
+      <h2>Evento collegato</h2>
+
+      <div class="org-promo-detail-rows">
+        <div class="org-promo-detail-row">
+          <span>ID evento</span>
+          <strong>${promo.eventId}</strong>
+        </div>
+      </div>
+
+      <p style="margin-top: 10px;">
+        Dettagli evento non disponibili al momento.
+      </p>
+    `;
+    return;
+  }
 
   root.innerHTML = `
     <h2>Evento collegato</h2>
 
-    <div class="org-promo-detail-rows">
-      <div class="org-promo-detail-row">
-        <span>ID evento</span>
-        <strong>${eventId}</strong>
-      </div>
-    </div>
+    <article class="org-promo-detail-event-card">
+      <img
+        src="${getEventImage(linkedEvent)}"
+        alt="${getEventTitle(linkedEvent)}"
+        loading="lazy"
+      />
 
-    ${
-      promo.eventId
-        ? `
-          <div class="org-promo-detail-actions" style="margin-top: 12px;">
-            <a
-              class="org-promo-detail-action"
-              href="/pages/evento-v2.html?id=${encodeURIComponent(promo.eventId)}"
-            >
-              Apri evento
-            </a>
-          </div>
-        `
-        : `<p>Evento non disponibile.</p>`
-    }
+      <div>
+        <strong>${getEventTitle(linkedEvent)}</strong>
+        <span>${getEventPlace(linkedEvent)}</span>
+        <span>${getEventDate(linkedEvent)}</span>
+      </div>
+    </article>
+
+    <div class="org-promo-detail-actions org-promo-detail-event-actions">
+      <a
+        class="org-promo-detail-action"
+        href="/pages/organizer-event-detail-v2.html?id=${encodeURIComponent(promo.eventId)}"
+      >
+        Apri evento
+      </a>
+    </div>
   `;
 }
 
