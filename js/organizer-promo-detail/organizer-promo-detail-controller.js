@@ -45,8 +45,7 @@ function showContent(show) {
   content.hidden = !show;
 }
 
-function renderPromo(promo) {
-  renderPromoHero(
+function renderPromo(promo, linkedEvent = null) {  renderPromoHero(
     qs("[data-promo-detail-hero]"),
     promo
   );
