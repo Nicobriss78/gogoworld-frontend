@@ -1,8 +1,10 @@
 // js/organizer-promo-detail/organizer-promo-detail-controller.js
 // Controller Organizer Promo Detail V2
 
-import { fetchOrganizerPromoById } from "./organizer-promo-detail-api.js";
-
+import {
+  fetchOrganizerPromoById,
+  fetchLinkedEventById,
+} from "./organizer-promo-detail-api.js";
 import {
   renderPromoHero,
   renderTimeline,
