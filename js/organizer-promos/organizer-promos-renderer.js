@@ -162,16 +162,22 @@ function buildActions(item) {
   `;
 
     case "PENDING_PAYMENT":
-    case "AWAITING_PAYMENT":
-      return `
-        <button class="org-promos-card__action org-promos-card__action--primary">
-          Completa pagamento
-        </button>
+case "AWAITING_PAYMENT":
+return `
+<button
+class="org-promos-card__action org-promos-card__action--primary"
+disabled
+>
+Completa pagamento
+</button>
 
-        <button class="org-promos-card__action">
-          Dettagli preventivo
-        </button>
-      `;
+<a
+class="org-promos-card__action"
+href="/pages/organizer-promo-detail-v2.html?id=${encodeURIComponent(item.id)}"
+>
+Dettagli preventivo
+</a>
+`;
 
     case "ACTIVE":
     case "SCHEDULED":
