@@ -66,9 +66,10 @@ function renderPromo(promo, linkedEvent = null) {  renderPromoHero(
   );
 
   renderEvent(
-    qs("[data-promo-detail-event]"),
-    promo
-  );
+  qs("[data-promo-detail-event]"),
+  promo,
+  linkedEvent
+);
 
   renderNotes(
     qs("[data-promo-detail-notes]"),
