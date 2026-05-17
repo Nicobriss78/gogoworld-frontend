@@ -628,6 +628,14 @@ document.addEventListener("click", async function(e){
       await adminFetch("/api/banners/" + id + "/resume", { method: "POST" });
       sponsorList(); houseList(); approvalsList();
     }
+    if (action === "mark-paid") {
+  await adminFetch("/api/banners/" + id + "/mark-paid", { method: "POST" });
+  try { showAlert("Pagamento confermato", "success"); } catch {}
+  loadBannerList();
+  sponsorList();
+  houseList();
+  approvalsList();
+    }
     if (action === "approve") {
       await adminFetch("/api/banners/" + id + "/approve", { method: "POST" });
       try { showAlert("Banner approvato", "success"); } catch {}
