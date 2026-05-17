@@ -254,13 +254,24 @@ function renderLive() {
 }
 
 function scheduleEstimate(payload) {
-  if (state.estimateTimer) {
-    clearTimeout(state.estimateTimer);
-  }
+if (state.estimateTimer) {
+clearTimeout(state.estimateTimer);
+}
 
-  state.estimateTimer = setTimeout(() => {
-    runEstimate(payload);
-  }, 350);
+const start = payload?.activeFrom;
+const end = payload?.activeTo;
+
+if (!start || !end) {
+return;
+}
+
+if (new Date(end) < new Date(start)) {
+return;
+}
+
+state.estimateTimer = setTimeout(() => {
+runEstimate(payload);
+}, 350);
 }
 
 async function runEstimate(payload) {
