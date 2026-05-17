@@ -265,7 +265,7 @@ function scheduleEstimate(payload) {
 
 async function runEstimate(payload) {
   try {
-    const response = await estimatePromo(payload);
+    const response = await analyzePromo(payload);
     const estimate = response?.data || response;
 
     state.latestEstimate = estimate;
