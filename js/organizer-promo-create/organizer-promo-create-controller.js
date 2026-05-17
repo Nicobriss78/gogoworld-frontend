@@ -3,7 +3,7 @@
 
 import {
   fetchOrganizerEvents,
-  estimatePromo,
+  analyzePromo,
   submitPromo,
 } from "./organizer-promo-create-api.js";
 
