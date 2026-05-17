@@ -117,6 +117,16 @@ export function renderAvailability(box, availability = {}) {
     "UNKNOWN";
 
   const map = {
+    COMPLETELY_AVAILABLE: {
+      tone: "available",
+      title: "Disponibile",
+      text: "Lo spazio promozionale risulta disponibile nel periodo selezionato.",
+    },
+    PARTIALLY_AVAILABLE: {
+      tone: "limited",
+      title: "Disponibilità parziale",
+      text: "Alcuni giorni del periodo selezionato risultano saturi o con disponibilità ridotta. Valuta date alternative o un periodo più breve.",
+    },
     AVAILABLE: {
       tone: "available",
       title: "Disponibilità elevata",
