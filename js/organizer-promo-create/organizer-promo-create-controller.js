@@ -323,6 +323,7 @@ const availability = analyze?.availability || null;
     );
 
     renderAvailability(qs("[data-promo-availability]"), availability);
+    setSubmitBlocked(availability?.available === false);
   } catch (err) {
     console.warn("[OrganizerPromoCreate] estimate failed:", err);
 
