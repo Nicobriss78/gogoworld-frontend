@@ -180,16 +180,23 @@ Dettagli preventivo
 `;
 
     case "ACTIVE":
-    case "SCHEDULED":
-      return `
-        <button class="org-promos-card__action">
-          Statistiche
-        </button>
+case "SCHEDULED":
+  return `
+    <a
+      class="org-promos-card__action org-promos-card__action--primary"
+      href="/pages/organizer-promo-detail-v2.html?id=${encodeURIComponent(item.id)}"
+    >
+      Visualizza dettagli
+    </a>
 
-        <button class="org-promos-card__action">
-          Duplica promo
-        </button>
-      `;
+    <button class="org-promos-card__action">
+      Statistiche
+    </button>
+
+    <button class="org-promos-card__action">
+      Duplica promo
+    </button>
+  `;
 
     case "ENDED":
       return `
