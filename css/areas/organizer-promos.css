@@ -475,9 +475,14 @@ color: #fff;
   cursor: pointer;
 }
 
-.org-promos-card__action--primary {
-  background: var(--org-accent, #7A3242);
-  color: #fff;
+.org-promos-card__action--primary,
+.org-promos-card__action--primary:visited,
+.org-promos-card__action--primary:hover,
+.org-promos-card__action--primary:focus-visible,
+.org-promos-card__action--primary:active {
+background: var(--org-accent, #7A3242);
+border-color: var(--org-accent, #7A3242);
+color: #fff;
 }
 
 .org-promos-card__action--danger {
