@@ -476,7 +476,9 @@ function renderBannerCard(b) {
   var end = b.activeTo ? new Date(b.activeTo).toLocaleString() : "—";
   var isExpired = !!(b.activeTo && new Date(b.activeTo) < new Date());
   var isSoon = !!(b.activeTo && !isExpired && (new Date(b.activeTo) - new Date() <= 48*3600*1000));
-
+  var payButton = b.status === "PENDING_PAYMENT"
+  ? '<button class="btn primary" data-action="mark-paid" data-id="' + b._id + '">Segna pagata</button>'
+  : "";
   return `
     <div class="admin-card banner-card${isExpired ? ' expired' : ''}${isSoon ? ' expiring' : ''}">
       <h3>${b.title || '(senza titolo)'} ${badge} ${isSoon ? '<span class="badge warning">in scadenza</span>' : ''}</h3>
