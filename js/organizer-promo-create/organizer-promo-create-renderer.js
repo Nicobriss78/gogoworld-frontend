@@ -117,6 +117,16 @@ export function renderAvailability(box, availability = {}) {
     "UNKNOWN";
 
   const map = {
+    INVALID_DATE_RANGE: {
+      tone: "unavailable",
+      title: "Periodo non valido",
+      text: "La data/ora di fine deve essere successiva alla data/ora di inizio.",
+    },
+    PROMO_AFTER_EVENT_END: {
+      tone: "unavailable",
+      title: "Periodo non consentito",
+      text: "La promozione non può terminare dopo la fine dell’evento selezionato.",
+    },
     COMPLETELY_AVAILABLE: {
       tone: "available",
       title: "Disponibile",
