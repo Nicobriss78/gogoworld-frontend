@@ -25,6 +25,10 @@ export async function estimatePromo(payload) {
   return apiPost("/banners/estimate", payload);
 }
 
+export async function analyzePromo(payload) {
+  return apiPost("/banners/analyze", payload);
+}
+
 export async function submitPromo(payload) {
   return apiPost("/banners/submit", payload);
 }
