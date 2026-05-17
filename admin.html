@@ -493,7 +493,8 @@ function renderBannerCard(b) {
         <div><strong>Priorità:</strong> ${b.priority || 100}</div>
       </div>
       <div class="actions">
-        <button class="btn" data-action="pause" data-id="${b._id}">Pausa</button>
+  ${payButton}
+  <button class="btn" data-action="pause" data-id="${b._id}">Pausa</button>
         <button class="btn" data-action="resume" data-id="${b._id}">Riprendi</button>
         <button class="btn" data-action="delete" data-id="${b._id}">Elimina</button>
         <a class="btn" href="${b.imageUrl}" target="_blank" rel="noopener">Immagine</a>
