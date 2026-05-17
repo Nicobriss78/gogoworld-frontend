@@ -281,9 +281,7 @@ const availability = analyze?.availability || null;
       estimate
     );
 
-    renderAvailability(qs("[data-promo-availability]"), {
-      status: "UNKNOWN",
-    });
+    renderAvailability(qs("[data-promo-availability]"), availability);
   } catch (err) {
     console.warn("[OrganizerPromoCreate] estimate failed:", err);
 
