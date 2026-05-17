@@ -246,7 +246,23 @@ function renderLive() {
     },
     payload
   );
+  if (hasInvalidDateRange(payload)) {
+renderEstimate(
+{
+net: qs("[data-price-net]"),
+vat: qs("[data-price-vat]"),
+gross: qs("[data-price-gross]"),
+},
+null
+);
 
+renderAvailability(qs("[data-promo-availability]"), {
+status: "INVALID_DATE_RANGE",
+});
+
+setSubmitBlocked(true);
+return;
+}
   if (!hasMinimumEstimatePayload(payload)) {
     renderEstimate(
       {
@@ -260,7 +276,7 @@ function renderLive() {
     renderAvailability(qs("[data-promo-availability]"), {
       status: "UNKNOWN",
     });
-
+ setSubmitBlocked(false);
     return;
   }
 
