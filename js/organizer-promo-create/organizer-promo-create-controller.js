@@ -336,9 +336,25 @@ const availability = analyze?.availability || null;
       null
     );
 
-    renderAvailability(qs("[data-promo-availability]"), {
-      status: "UNKNOWN",
-    });
+    const errorCode =
+err?.data?.error ||
+err?.error ||
+err?.code ||
+"";
+
+if (errorCode === "PROMO_AFTER_EVENT_END") {
+renderAvailability(qs("[data-promo-availability]"), {
+status: "PROMO_AFTER_EVENT_END",
+});
+setSubmitBlocked(true);
+return;
+}
+
+renderAvailability(qs("[data-promo-availability]"), {
+status: "UNKNOWN",
+});
+
+setSubmitBlocked(false);
   }
 }
 
