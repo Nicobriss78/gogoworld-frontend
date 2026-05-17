@@ -295,7 +295,7 @@ if (!start || !end) {
 return;
 }
 
-if (new Date(end) < new Date(start)) {
+if (new Date(end) <= new Date(start)) {
 return;
 }
 
