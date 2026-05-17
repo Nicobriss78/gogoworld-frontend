@@ -110,7 +110,11 @@ export function renderEstimate(elements, estimate) {
 export function renderAvailability(box, availability = {}) {
   if (!box) return;
 
-  const status = availability.status || "UNKNOWN";
+  const safeAvailability = availability || {};
+  const status =
+    safeAvailability.availabilityStatus ||
+    safeAvailability.status ||
+    "UNKNOWN";
 
   const map = {
     AVAILABLE: {
