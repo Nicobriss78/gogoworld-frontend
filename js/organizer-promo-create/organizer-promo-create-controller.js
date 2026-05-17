@@ -162,7 +162,21 @@ function hasMinimumEstimatePayload(payload) {
 
   return true;
 }
+function setSubmitBlocked(blocked) {
+const submitBtn = qs("[data-promo-submit]");
+if (!submitBtn) return;
 
+submitBtn.disabled = !!blocked;
+submitBtn.dataset.availabilityBlocked = blocked ? "true" : "false";
+}
+
+function hasInvalidDateRange(payload) {
+if (!payload?.activeFrom || !payload?.activeTo) {
+return false;
+}
+
+return new Date(payload.activeTo) <= new Date(payload.activeFrom);
+}
 function updateGeoFields() {
   const geoScope = field("geoScope")?.value || "REGION";
   const countryWrap = qs("[data-country-field]");
