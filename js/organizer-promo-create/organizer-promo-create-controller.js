@@ -325,27 +325,41 @@ const availability = analyze?.availability || null;
     renderAvailability(qs("[data-promo-availability]"), availability);
     setSubmitBlocked(availability?.available === false);
   } catch (err) {
-    console.warn("[OrganizerPromoCreate] estimate failed:", err);
+console.warn("[OrganizerPromoCreate] estimate failed:", err);
 
-    renderEstimate(
-      {
-        net: qs("[data-price-net]"),
-        vat: qs("[data-price-vat]"),
-        gross: qs("[data-price-gross]"),
-      },
-      null
-    );
+renderEstimate(
+{
+net: qs("[data-price-net]"),
+vat: qs("[data-price-vat]"),
+gross: qs("[data-price-gross]"),
+},
+null
+);
 
-    const errorCode =
-err?.data?.error ||
+const responseData =
+err?.data ||
+err?.response?.data ||
+err?.payload ||
+{};
+
+const errorCode =
+responseData?.error ||
+responseData?.code ||
 err?.error ||
 err?.code ||
 "";
 
-if (errorCode === "PROMO_AFTER_EVENT_END") {
+const validationErrors =
+responseData?.validationErrors || [];
+
+if (
+errorCode === "PROMO_AFTER_EVENT_END" ||
+validationErrors.includes("PROMO_AFTER_EVENT_END")
+) {
 renderAvailability(qs("[data-promo-availability]"), {
 status: "PROMO_AFTER_EVENT_END",
 });
+
 setSubmitBlocked(true);
 return;
 }
@@ -355,7 +369,7 @@ status: "UNKNOWN",
 });
 
 setSubmitBlocked(false);
-  }
+}
 }
 
 function validateSubmit(payload) {
