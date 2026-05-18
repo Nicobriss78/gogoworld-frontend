@@ -307,6 +307,45 @@ runEstimate(payload);
 async function runEstimate(payload) {
   try {
     const response = await analyzePromo(payload);
+    if (response?.ok === false) {
+const errorCode =
+response?.data?.error ||
+response?.data?.code ||
+response?.error ||
+"";
+
+const validationErrors =
+response?.data?.data?.validationErrors ||
+response?.data?.validationErrors ||
+[];
+
+renderEstimate(
+{
+net: qs("[data-price-net]"),
+vat: qs("[data-price-vat]"),
+gross: qs("[data-price-gross]"),
+},
+null
+);
+
+if (
+errorCode === "PROMO_AFTER_EVENT_END" ||
+validationErrors.includes("PROMO_AFTER_EVENT_END")
+) {
+renderAvailability(qs("[data-promo-availability]"), {
+status: "PROMO_AFTER_EVENT_END",
+});
+setSubmitBlocked(true);
+return;
+}
+
+renderAvailability(qs("[data-promo-availability]"), {
+status: "UNKNOWN",
+});
+
+setSubmitBlocked(false);
+return;
+}
     const analyze = response?.data || response;
 const estimate = analyze?.pricing || analyze;
 const availability = analyze?.availability || null;
