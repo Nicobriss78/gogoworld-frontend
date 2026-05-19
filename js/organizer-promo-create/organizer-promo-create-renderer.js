@@ -120,7 +120,7 @@ export function renderAvailability(box, availability = {}) {
     INVALID_DATE_RANGE: {
       tone: "unavailable",
       title: "Periodo non valido",
-      text: "La data/ora di fine deve essere successiva alla data/ora di inizio.",
+      text: "La data di fine non può essere precedente alla data di inizio.",
     },
     PROMO_AFTER_EVENT_END: {
       tone: "unavailable",
