@@ -135,7 +135,8 @@ export function renderAvailability(box, availability = {}) {
     PARTIALLY_AVAILABLE: {
       tone: "limited",
       title: "Disponibilità parziale",
-      text: "Alcuni giorni del periodo selezionato risultano saturi o con disponibilità ridotta. Valuta date alternative o un periodo più breve.",
+      text:
+      "Il periodo è disponibile, ma alcuni giorni hanno disponibilità ridotta o pochi slot residui.",
     },
     AVAILABLE: {
       tone: "available",
