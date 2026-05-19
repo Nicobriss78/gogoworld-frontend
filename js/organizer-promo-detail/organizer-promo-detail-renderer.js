@@ -53,7 +53,7 @@ function dateTimeLabel(value) {
 }
 
 function periodLabel(item = {}) {
-  return `${dateLabel(item.activeFrom)} → ${dateLabel(item.activeTo)}`;
+  return `${dateLabel(item.activeFrom)} → ${dateLabel(item.activeTo, { exclusiveEnd: true })}`;
 }
 
 function statusInfo(status) {
