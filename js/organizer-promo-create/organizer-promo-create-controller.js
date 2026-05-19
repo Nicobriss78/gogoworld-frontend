@@ -144,8 +144,8 @@ function getPayload() {
     country: field("country")?.value?.trim() || "",
     region: field("region")?.value?.trim() || "",
 
-    activeFrom: toIsoFromDatetimeLocal(field("activeFrom")?.value),
-    activeTo: toIsoFromDatetimeLocal(field("activeTo")?.value),
+    activeFrom: normalizeDateInput(field("activeFrom")?.value),
+    activeTo: normalizeDateInput(field("activeTo")?.value),
 
     notes: field("notes")?.value?.trim() || "",
   };
