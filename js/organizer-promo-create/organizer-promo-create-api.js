@@ -21,10 +21,6 @@ export async function fetchOrganizerEvents() {
   return [];
 }
 
-export async function estimatePromo(payload) {
-  return apiPost("/banners/estimate", payload);
-}
-
 export async function analyzePromo(payload) {
   return apiPost("/banners/analyze", payload);
 }
