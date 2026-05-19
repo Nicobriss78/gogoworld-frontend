@@ -273,7 +273,7 @@ export function renderPromos(root, promos = []) {
               </h2>
 
               <div class="org-promos-card__event">
-                Evento: ${item.eventId || "—"}
+                Evento: ${item.eventLabel || "—"}
               </div>
             </div>
 
