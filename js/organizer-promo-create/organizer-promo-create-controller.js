@@ -298,7 +298,7 @@ if (!start || !end) {
 return;
 }
 
-if (new Date(end) <= new Date(start)) {
+if (compareDateDays(end, start) < 0) {
 return;
 }
 
