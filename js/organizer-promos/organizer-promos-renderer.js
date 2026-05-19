@@ -67,9 +67,10 @@ function formatDateRange(from, to) {
 
   try {
     const start = new Date(from);
-    const end = new Date(to);
+const end = new Date(to);
+end.setUTCDate(end.getUTCDate() - 1);
 
-    return `${start.toLocaleDateString("it-IT")} → ${end.toLocaleDateString("it-IT")}`;
+return `${start.toLocaleDateString("it-IT")} → ${end.toLocaleDateString("it-IT")}`;
   } catch {
     return "—";
   }
