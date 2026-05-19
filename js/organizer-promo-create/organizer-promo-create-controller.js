@@ -426,9 +426,9 @@ function validateSubmit(payload) {
   if (!payload.activeFrom) return "Inserisci la data di inizio.";
   if (!payload.activeTo) return "Inserisci la data di fine.";
 
-  if (new Date(payload.activeTo) <= new Date(payload.activeFrom)) {
-    return "La data di fine deve essere successiva alla data di inizio.";
-  }
+  if (compareDateDays(payload.activeTo, payload.activeFrom) < 0) {
+  return "La data di fine non può essere precedente alla data di inizio.";
+}
 
   return "";
 }
