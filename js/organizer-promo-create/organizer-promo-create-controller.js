@@ -114,15 +114,19 @@ window.location.origin
 ).href;
 }
 
-function toIsoFromDatetimeLocal(value) {
+function normalizeDateInput(value) {
   if (!value) return null;
 
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
+  const normalized = String(value).trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
     return null;
   }
 
-  return date.toISOString();
+  return normalized;
+}
+
+function compareDateDays(a, b) {
+  return String(a || "").localeCompare(String(b || ""));
 }
 
 function getPayload() {
