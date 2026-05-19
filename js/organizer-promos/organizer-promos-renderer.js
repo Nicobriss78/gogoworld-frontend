@@ -125,6 +125,7 @@ function normalizePromo(raw = {}) {
   return {
     id: raw._id || raw.id || "",
     eventId: raw.eventId || null,
+    eventLabel: getEventLabel(raw.eventId),
 
     title: raw.title || "Promozione senza titolo",
 
