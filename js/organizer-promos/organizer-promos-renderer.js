@@ -87,7 +87,21 @@ function getGeoLabel(item) {
 
   return item.region || "Regionale";
 }
+function getEventLabel(eventId) {
+if (!eventId) return "—";
 
+if (typeof eventId === "object") {
+return (
+eventId.title ||
+eventId.nome ||
+eventId._id ||
+eventId.id ||
+"Evento collegato"
+);
+}
+
+return eventId;
+}
 function normalizePromo(raw = {}) {
   const estimatedPrice = Number(raw.estimatedPrice || 0);
 
