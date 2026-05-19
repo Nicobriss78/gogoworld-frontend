@@ -179,8 +179,7 @@ if (!payload?.activeFrom || !payload?.activeTo) {
 return false;
 }
 
-return new Date(payload.activeTo) <= new Date(payload.activeFrom);
-}
+return compareDateDays(payload.activeTo, payload.activeFrom) < 0;}
 function updateGeoFields() {
   const geoScope = field("geoScope")?.value || "REGION";
   const countryWrap = qs("[data-country-field]");
