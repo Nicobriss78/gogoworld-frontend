@@ -160,8 +160,9 @@ export function renderAvailability(box, availability = {}) {
     UNKNOWN: {
       tone: "unknown",
       title: "Verifica disponibilità",
-      text: "La disponibilità live sarà verificata quando il motore availability sarà attivo.",
-    },
+      text:
+      "Completa evento, copertura e date per verificare disponibilità e preventivo.",
+     },
   };
 
   const item = map[status] || map.UNKNOWN;
