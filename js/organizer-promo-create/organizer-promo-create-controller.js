@@ -443,7 +443,17 @@ responseData?.validationErrors ||
 responseData?.data?.availability?.validationErrors ||
 responseData?.availability?.validationErrors ||
 [];
+if (
+errorCode === "EVENT_ALREADY_STARTED" ||
+validationErrors.includes("EVENT_ALREADY_STARTED")
+) {
+renderAvailability(qs("[data-promo-availability]"), {
+status: "EVENT_ALREADY_STARTED",
+});
 
+setSubmitBlocked(true);
+return;
+}
 if (
 errorCode === "PROMO_AFTER_EVENT_END" ||
 validationErrors.includes("PROMO_AFTER_EVENT_END")
