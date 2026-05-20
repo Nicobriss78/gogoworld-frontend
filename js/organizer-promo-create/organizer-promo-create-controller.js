@@ -166,6 +166,19 @@ function hasMinimumEstimatePayload(payload) {
 
   return true;
 }
+function getGeoValidationStatus(payload) {
+  if (!payload?.geoScope) return "INVALID_GEO_CONFIGURATION";
+
+  if (payload.geoScope === "COUNTRY" && !payload.country) {
+    return "INVALID_GEO_CONFIGURATION";
+  }
+
+  if (payload.geoScope === "REGION" && (!payload.country || !payload.region)) {
+    return "INVALID_GEO_CONFIGURATION";
+  }
+
+  return "";
+}
 function setSubmitBlocked(blocked) {
 const submitBtn = qs("[data-promo-submit]");
 if (!submitBtn) return;
