@@ -377,6 +377,18 @@ setSubmitBlocked(true);
 return;
 }
 if (
+errorCode === "PROMO_DURATION_EXCEEDED" ||
+validationErrors.includes("PROMO_DURATION_EXCEEDED") ||
+errorCode === "MAX_DURATION_EXCEEDED" ||
+validationErrors.includes("MAX_DURATION_EXCEEDED")
+) {
+renderAvailability(qs("[data-promo-availability]"), {
+status: "PROMO_DURATION_EXCEEDED",
+});
+setSubmitBlocked(true);
+return;
+}      
+if (
 errorCode === "BOOKING_WINDOW_EXCEEDED" ||
 validationErrors.includes("BOOKING_WINDOW_EXCEEDED")
 ) {
