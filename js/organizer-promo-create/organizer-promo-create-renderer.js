@@ -117,6 +117,11 @@ export function renderAvailability(box, availability = {}) {
     "UNKNOWN";
 
   const map = {
+    INVALID_GEO_CONFIGURATION: {
+      tone: "unavailable",
+      title: "Copertura incompleta",
+      text: "Per la copertura regionale devi indicare anche la regione.",
+    },
     INVALID_DATE_RANGE: {
       tone: "unavailable",
       title: "Periodo non valido",
