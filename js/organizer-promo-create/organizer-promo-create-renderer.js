@@ -135,9 +135,9 @@ export function renderAvailability(box, availability = {}) {
     },
     BOOKING_WINDOW_EXCEEDED: {
       tone: "unavailable",
-      title: "Periodo troppo lontano",
+      title: "Periodo non consentito",
       text:
-        "La promozione non può essere programmata così in anticipo.",
+        "La promozione può essere programmata fino a un massimo di 90 giorni in anticipo.",
     },
     PROMO_AFTER_EVENT_END: {
       tone: "unavailable",
