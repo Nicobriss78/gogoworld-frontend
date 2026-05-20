@@ -511,9 +511,10 @@ state.isSubmitting = true;
   const error = validateSubmit(payload);
 
   if (error) {
-    showMessage(errorBox, error);
-    return;
-  }
+  state.isSubmitting = false;
+  showMessage(errorBox, error);
+  return;
+}
 
   if (submitBtn) {
     submitBtn.disabled = true;
