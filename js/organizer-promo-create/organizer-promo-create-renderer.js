@@ -127,6 +127,12 @@ export function renderAvailability(box, availability = {}) {
       title: "Periodo non valido",
       text: "La data di fine non può essere precedente alla data di inizio.",
     },
+    EVENT_ALREADY_STARTED: {
+      tone: "unavailable",
+      title: "Periodo non valido",
+      text:
+        "La promozione non può iniziare in una data già trascorsa.",
+    },
     PROMO_AFTER_EVENT_END: {
       tone: "unavailable",
       title: "Periodo non consentito",
