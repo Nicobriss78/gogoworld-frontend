@@ -426,7 +426,11 @@ err?.code ||
 "";
 
 const validationErrors =
-responseData?.validationErrors || [];
+responseData?.data?.validationErrors ||
+responseData?.validationErrors ||
+responseData?.data?.availability?.validationErrors ||
+responseData?.availability?.validationErrors ||
+[];
 
 if (
 errorCode === "PROMO_AFTER_EVENT_END" ||
