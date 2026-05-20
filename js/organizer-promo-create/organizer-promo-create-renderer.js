@@ -139,6 +139,12 @@ export function renderAvailability(box, availability = {}) {
       text:
         "La promozione può essere programmata fino a un massimo di 90 giorni in anticipo.",
     },
+    PROMO_DURATION_EXCEEDED: {
+      tone: "unavailable",
+      title: "Durata non consentita",
+      text:
+        "La promozione non può superare i 30 giorni di durata.",
+    },
     PROMO_AFTER_EVENT_END: {
       tone: "unavailable",
       title: "Periodo non consentito",
