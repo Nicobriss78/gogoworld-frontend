@@ -474,7 +474,11 @@ function validateSubmit(payload) {
 
 async function handleSubmit(event) {
   event.preventDefault();
+if (state.isSubmitting) {
+  return;
+}
 
+state.isSubmitting = true;
   const errorBox = qs("[data-promo-error]");
   const successBox = qs("[data-promo-success]");
   const submitBtn = qs("[data-promo-submit]");
