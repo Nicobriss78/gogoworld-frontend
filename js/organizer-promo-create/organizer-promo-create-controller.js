@@ -262,6 +262,25 @@ function renderLive() {
     },
     payload
   );
+  const geoValidationStatus = getGeoValidationStatus(payload);
+
+if (geoValidationStatus) {
+  renderEstimate(
+    {
+      net: qs("[data-price-net]"),
+      vat: qs("[data-price-vat]"),
+      gross: qs("[data-price-gross]"),
+    },
+    null
+  );
+
+  renderAvailability(qs("[data-promo-availability]"), {
+    status: geoValidationStatus,
+  });
+
+  setSubmitBlocked(true);
+  return;
+}
   if (hasInvalidDateRange(payload)) {
 renderEstimate(
 {
