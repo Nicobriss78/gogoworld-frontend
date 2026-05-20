@@ -525,10 +525,12 @@ successBox,
       err?.message || "Impossibile inviare la richiesta promozione."
     );
   } finally {
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Invia richiesta promozione";
-    }
+    state.isSubmitting = false;
+
+if (submitBtn && !successBox?.textContent) {
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Invia richiesta promozione";
+}
   }
 }
 
