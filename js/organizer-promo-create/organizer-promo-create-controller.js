@@ -352,6 +352,8 @@ response?.error ||
 const validationErrors =
 response?.data?.data?.validationErrors ||
 response?.data?.validationErrors ||
+response?.data?.data?.availability?.validationErrors ||
+response?.data?.availability?.validationErrors ||
 [];
 
 renderEstimate(
