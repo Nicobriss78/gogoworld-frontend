@@ -133,6 +133,12 @@ export function renderAvailability(box, availability = {}) {
       text:
         "La promozione non può iniziare in una data già trascorsa.",
     },
+    BOOKING_WINDOW_EXCEEDED: {
+      tone: "unavailable",
+      title: "Periodo troppo lontano",
+      text:
+        "La promozione non può essere programmata così in anticipo.",
+    },
     PROMO_AFTER_EVENT_END: {
       tone: "unavailable",
       title: "Periodo non consentito",
