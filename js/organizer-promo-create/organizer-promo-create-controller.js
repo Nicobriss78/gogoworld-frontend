@@ -21,6 +21,7 @@ const state = {
   selectedEvent: null,
   estimateTimer: null,
   latestEstimate: null,
+  isSubmitting: false,
 };
 
 function qs(selector) {
