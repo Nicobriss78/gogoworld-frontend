@@ -376,7 +376,16 @@ status: "EVENT_ALREADY_STARTED",
 setSubmitBlocked(true);
 return;
 }
-
+if (
+errorCode === "BOOKING_WINDOW_EXCEEDED" ||
+validationErrors.includes("BOOKING_WINDOW_EXCEEDED")
+) {
+  renderAvailability(qs("[data-promo-availability]"), {
+    status: "BOOKING_WINDOW_EXCEEDED",
+  });
+  setSubmitBlocked(true);
+  return;
+}
 if (
 errorCode === "PROMO_AFTER_EVENT_END" ||
 validationErrors.includes("PROMO_AFTER_EVENT_END")
