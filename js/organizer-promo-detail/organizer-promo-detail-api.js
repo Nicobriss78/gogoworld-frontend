@@ -8,28 +8,9 @@ export async function fetchOrganizerPromoById(id) {
     throw new Error("Promo id mancante");
   }
 
-  const response = await apiGet("/banners/mine");
+  const response = await apiGet(`/banners/mine/${encodeURIComponent(id)}`);
 
-  let promos = [];
-
-  if (Array.isArray(response)) {
-    promos = response;
-  } else if (Array.isArray(response?.data)) {
-    promos = response.data;
-  } else if (Array.isArray(response?.data?.data)) {
-    promos = response.data.data;
-  }
-
-  const promo = promos.find((item) => {
-    const itemId = item?._id || item?.id;
-    return String(itemId) === String(id);
-  });
-
-  if (!promo) {
-    throw new Error("Promozione non trovata");
-  }
-
-  return promo;
+  return response?.data || response?.promo || response || null;
 }
 export async function fetchLinkedEventById(eventId) {
   if (!eventId) return null;
