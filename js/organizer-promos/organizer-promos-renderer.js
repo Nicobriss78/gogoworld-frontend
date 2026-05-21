@@ -157,92 +157,133 @@ function normalizePromo(raw = {}) {
 }
 
 function buildActions(item) {
+  const detailHref = `/pages/organizer-promo-detail-v2.html?id=${encodeURIComponent(item.id)}`;
+
   switch (item.status) {
     case "PENDING_REVIEW":
-  return `
-    <a
-      class="org-promos-card__action"
-      href="/pages/organizer-promo-detail-v2.html?id=${encodeURIComponent(item.id)}"
-    >
-      Visualizza dettagli
-    </a>
+      return `
+        <a
+          class="org-promos-card__action"
+          href="${detailHref}"
+        >
+          Visualizza dettagli
+        </a>
 
-    <button class="org-promos-card__action org-promos-card__action--danger" disabled>
-      Annulla richiesta
-    </button>
-  `;
+        <button
+          class="org-promos-card__action org-promos-card__action--danger"
+          type="button"
+          disabled
+          title="Il ritiro richiesta sarà abilitato con il prossimo endpoint dedicato"
+        >
+          Annulla richiesta
+        </button>
+      `;
 
     case "PENDING_PAYMENT":
-case "AWAITING_PAYMENT":
-return `
-<button
-class="org-promos-card__action org-promos-card__action--primary"
-disabled
->
-Completa pagamento
-</button>
+      return `
+        <a
+          class="org-promos-card__action org-promos-card__action--primary"
+          href="${detailHref}"
+          title="Apri il riepilogo pagamento. Il checkout reale sarà collegato in una fase successiva."
+        >
+          Completa pagamento
+        </a>
 
-<a
-class="org-promos-card__action"
-href="/pages/organizer-promo-detail-v2.html?id=${encodeURIComponent(item.id)}"
->
-Dettagli preventivo
-</a>
-`;
+        <a
+          class="org-promos-card__action"
+          href="${detailHref}"
+        >
+          Dettagli preventivo
+        </a>
+      `;
 
     case "ACTIVE":
-case "SCHEDULED":
-  return `
-    <a
-      class="org-promos-card__action org-promos-card__action--primary"
-      href="/pages/organizer-promo-detail-v2.html?id=${encodeURIComponent(item.id)}"
-    >
-      Visualizza dettagli
-    </a>
+    case "SCHEDULED":
+      return `
+        <a
+          class="org-promos-card__action org-promos-card__action--primary"
+          href="${detailHref}"
+        >
+          Visualizza dettagli
+        </a>
 
-    <button class="org-promos-card__action">
-      Statistiche
-    </button>
+        <button
+          class="org-promos-card__action"
+          type="button"
+          disabled
+          title="Le statistiche avanzate saranno abilitate con l’endpoint dedicato"
+        >
+          Statistiche
+        </button>
 
-    <button class="org-promos-card__action">
-      Duplica promo
-    </button>
-  `;
+        <button
+          class="org-promos-card__action"
+          type="button"
+          disabled
+          title="La duplicazione promo sarà abilitata con il prossimo endpoint dedicato"
+        >
+          Duplica promo
+        </button>
+      `;
 
     case "ENDED":
       return `
-        <button class="org-promos-card__action org-promos-card__action--primary">
+        <a
+          class="org-promos-card__action org-promos-card__action--primary"
+          href="${detailHref}"
+        >
+          Visualizza dettagli
+        </a>
+
+        <button
+          class="org-promos-card__action"
+          type="button"
+          disabled
+          title="La funzione Ripromuovi sarà abilitata con il prossimo endpoint dedicato"
+        >
           Ripromuovi
         </button>
 
-        <button class="org-promos-card__action">
+        <button
+          class="org-promos-card__action"
+          type="button"
+          disabled
+          title="Le statistiche avanzate saranno abilitate con l’endpoint dedicato"
+        >
           Statistiche
         </button>
       `;
 
     case "REJECTED":
       return `
-        <button class="org-promos-card__action">
+        <a
+          class="org-promos-card__action"
+          href="${detailHref}"
+        >
           Vedi motivo
-        </button>
+        </a>
 
-        <button class="org-promos-card__action org-promos-card__action--primary">
+        <button
+          class="org-promos-card__action org-promos-card__action--primary"
+          type="button"
+          disabled
+          title="La modifica e il reinvio saranno abilitati con il prossimo endpoint dedicato"
+        >
           Modifica e reinvia
         </button>
       `;
 
     default:
-  return `
-    <a
-      class="org-promos-card__action"
-      href="/pages/organizer-promo-detail-v2.html?id=${encodeURIComponent(item.id)}"
-    >
-      Visualizza dettagli
-    </a>
-  `;
+      return `
+        <a
+          class="org-promos-card__action"
+          href="${detailHref}"
+        >
+          Visualizza dettagli
+        </a>
+      `;
   }
 }
-
 export function renderPromos(root, promos = []) {
   if (!root) return;
 
