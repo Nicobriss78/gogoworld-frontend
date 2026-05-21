@@ -23,7 +23,6 @@ function setHidden(el, hidden) {
 }
 
 function getPromoStatusGroup(status) {
-  if (status === "AWAITING_PAYMENT") return "PENDING_PAYMENT";
   return status || "UNKNOWN";
 }
 
