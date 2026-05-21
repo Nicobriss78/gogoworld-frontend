@@ -504,7 +504,8 @@ export function renderActions(root, promo) {
     </div>
 
     <p style="margin-top: 10px;">
-      Alcune azioni sono predisposte ma saranno abilitate con i prossimi endpoint dedicati.
+      Le azioni commerciali avanzate saranno abilitate progressivamente con i prossimi endpoint dedicati.
+      Il checkout reale non è ancora collegato: in questa fase il passaggio a pagata resta disponibile solo come controllo admin/test.
     </p>
   `;
     }
