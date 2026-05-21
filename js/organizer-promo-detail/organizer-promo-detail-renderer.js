@@ -7,7 +7,6 @@ const STATUS_MAP = {
   DRAFT: { label: "Bozza", tone: "paused" },
   PENDING_REVIEW: { label: "In revisione", tone: "review" },
   PENDING_PAYMENT: { label: "In attesa pagamento", tone: "payment" },
-  AWAITING_PAYMENT: { label: "In attesa pagamento", tone: "payment" },
   SCHEDULED: { label: "Programmata", tone: "scheduled" },
   ACTIVE: { label: "Attiva", tone: "active" },
   PAUSED: { label: "In pausa", tone: "paused" },
