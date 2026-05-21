@@ -199,9 +199,13 @@ function actionsForStatus(status) {
       ];
 
     case "PENDING_PAYMENT":
-    case "AWAITING_PAYMENT":
       return [
-        { label: "Completa pagamento", tone: "primary", disabled: true },
+        {
+          label: "Completa pagamento",
+          tone: "primary",
+          disabled: true,
+          title: "Checkout reale non ancora collegato. In questa fase il pagamento viene avanzato solo da admin/test.",
+        },
         { label: "Dettagli preventivo", tone: "secondary", disabled: false },
       ];
 
