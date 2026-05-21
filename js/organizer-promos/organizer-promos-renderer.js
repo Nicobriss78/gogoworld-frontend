@@ -19,11 +19,6 @@ const STATUS_MAP = {
     tone: "payment",
   },
 
-  AWAITING_PAYMENT: {
-    label: "In attesa pagamento",
-    tone: "payment",
-  },
-
   ACTIVE: {
     label: "Attiva",
     tone: "active",
