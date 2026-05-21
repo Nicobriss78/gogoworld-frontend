@@ -109,9 +109,9 @@ function renderSmartBanner(promos = []) {
   if (!banner || !title || !text || !cta) return;
 
   const hasAny = promos.length > 0;
-  const hasPayment = promos.some((promo) =>
-    ["PENDING_PAYMENT", "AWAITING_PAYMENT"].includes(promo.status)
-  );
+  const hasPayment = promos.some(
+  (promo) => promo.status === "PENDING_PAYMENT"
+);
   const hasActive = promos.some((promo) => promo.status === "ACTIVE");
 
   if (!hasAny) {
