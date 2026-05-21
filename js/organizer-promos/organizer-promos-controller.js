@@ -244,8 +244,7 @@ function bindKpis() {
         const status = button.dataset.orgPromosFilterStatus || "ALL";
         const select = qs("[data-org-promos-status-filter]");
 
-        state.filters.status =
-          status === "AWAITING_PAYMENT" ? "PENDING_PAYMENT" : status;
+        state.filters.status = status;
 
         if (select) {
           select.value = state.filters.status;
