@@ -157,7 +157,6 @@ function timelineForStatus(status) {
     DRAFT: "created",
     PENDING_REVIEW: "review",
     PENDING_PAYMENT: "payment",
-    AWAITING_PAYMENT: "payment",
     SCHEDULED: "publish",
     ACTIVE: "publish",
     PAUSED: "publish",
