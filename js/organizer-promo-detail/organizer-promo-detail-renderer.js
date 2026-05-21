@@ -494,7 +494,7 @@ export function renderActions(root, promo) {
           <button
             type="button"
             class="${actionClass(action)}"
-            ${action.disabled ? "disabled title=\"Funzione in arrivo\"" : ""}
+            ${action.disabled ? `disabled title="${action.title || "Funzione in arrivo"}"` : ""}
           >
             ${action.label}
           </button>
