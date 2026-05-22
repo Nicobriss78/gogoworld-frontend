@@ -205,8 +205,19 @@ function actionsForStatus(status) {
   switch (status) {
     case "PENDING_REVIEW":
       return [
-        { label: "Modifica richiesta", tone: "secondary", disabled: true },
-        { label: "Annulla richiesta", tone: "danger", disabled: true },
+        {
+          label: "Modifica richiesta",
+          tone: "secondary",
+          disabled: true,
+          title: "La modifica richiesta sarà abilitata con il prossimo endpoint dedicato.",
+        },
+        {
+          label: "Annulla richiesta",
+          tone: "danger",
+          disabled: false,
+          action: "withdraw",
+          title: "Ritira questa richiesta prima della revisione admin.",
+        },
       ];
 
     case "PENDING_PAYMENT":
