@@ -19,7 +19,8 @@ import {
 function qs(selector) {
   return document.querySelector(selector);
 }
-
+let currentPromo = null;
+let currentLinkedEvent = null;
 function getPromoId() {
   const params = new URLSearchParams(window.location.search);
   return params.get("id") || "";
