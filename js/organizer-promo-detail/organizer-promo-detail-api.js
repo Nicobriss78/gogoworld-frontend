@@ -1,8 +1,7 @@
 // js/organizer-promo-detail/organizer-promo-detail-api.js
 // API Organizer Promo Detail V2
 
-import { apiGet } from "../api.js";
-
+import { apiGet, apiPost } from "../api.js";
 export async function fetchOrganizerPromoById(id) {
   if (!id) {
     throw new Error("Promo id mancante");
