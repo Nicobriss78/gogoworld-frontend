@@ -111,16 +111,23 @@ async function init() {
     const promo = await fetchOrganizerPromoById(promoId);
 
 let linkedEvent = null;
+const linkedEventId = getPromoEventId(promo);
 
-if (promo?.eventId) {
+if (linkedEventId) {
   try {
-    linkedEvent = await fetchLinkedEventById(promo.eventId);
+    linkedEvent = await fetchLinkedEventById(linkedEventId);
   } catch (eventErr) {
     console.warn("[OrganizerPromoDetail] linked event load failed:", eventErr);
   }
 }
 
-renderPromo(promo, linkedEvent);
+renderPromo(
+  {
+    ...promo,
+    eventId: linkedEventId || promo.eventId,
+  },
+  linkedEvent
+);
     showLoading(false);
     showError(false);
     showContent(true);
