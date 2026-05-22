@@ -145,6 +145,8 @@ async function init() {
   const root = qs("[data-promo-detail-root]");
   if (!root) return;
 
+  bindPromoActions();
+
   const promoId = getPromoId();
 
   if (!promoId) {
