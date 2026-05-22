@@ -27,3 +27,12 @@ export async function withdrawOrganizerPromo(id, reason = "") {
     reason,
   });
 }
+export async function payTestOrganizerPromo(id) {
+  if (!id) {
+    throw new Error("Promo id mancante");
+  }
+
+  return apiPost(`/banners/mine/${encodeURIComponent(id)}/pay-test`, {
+    mode: "test",
+  });
+}
