@@ -95,7 +95,52 @@ function renderPromo(promo, linkedEvent = null) {
     promo
   );
 }
+function bindPromoActions() {
+  const actionsRoot = qs("[data-promo-detail-actions]");
+  if (!actionsRoot) return;
 
+  actionsRoot.addEventListener("click", async (event) => {
+    const button = event.target.closest("[data-promo-detail-action]");
+    if (!button) return;
+
+    const action = button.dataset.promoDetailAction;
+    if (action !== "withdraw") return;
+
+    const promoId = currentPromo?._id || currentPromo?.id || "";
+    const promoTitle = currentPromo?.title || "questa promozione";
+
+    if (!promoId) return;
+
+    const confirmed = window.confirm(
+      `Vuoi annullare la richiesta "${promoTitle}"?\n\nQuesta azione è possibile solo finché la promozione è in revisione.`
+    );
+
+    if (!confirmed) return;
+
+    const originalText = button.textContent;
+
+    try {
+      button.disabled = true;
+      button.textContent = "Annullamento...";
+
+      const response = await withdrawOrganizerPromo(promoId);
+      const updatedPromo =
+        response?.data ||
+        response?.promo ||
+        response;
+
+      renderPromo(updatedPromo, currentLinkedEvent);
+    } catch (err) {
+      console.error("[OrganizerPromoDetail] withdraw error:", err);
+      window.alert(
+        "Non è stato possibile annullare la richiesta. Verifica che sia ancora in revisione."
+      );
+
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  });
+}
 async function init() {
   const root = qs("[data-promo-detail-root]");
   if (!root) return;
