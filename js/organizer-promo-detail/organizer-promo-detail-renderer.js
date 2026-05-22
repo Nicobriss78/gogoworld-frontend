@@ -163,7 +163,110 @@ function timelineForStatus(status) {
     PAUSED: "publish",
     ENDED: "ended",
   };
+  if (status === "SCHEDULED") {
+return [
+{
+key: "created",
+title: "Richiesta creata",
+text: "La richiesta promozione è stata registrata.",
+state: "done",
+},
+{
+key: "review",
+title: "Revisione completata",
+text: "La promozione è stata approvata.",
+state: "done",
+},
+{
+key: "payment",
+title: "Pagamento completato",
+text: "Il pagamento è stato registrato.",
+state: "done",
+},
+{
+key: "publish",
+title: "Promozione programmata",
+text: "La promozione partirà nel periodo previsto.",
+state: "active",
+},
+{
+key: "ended",
+title: "Terminata",
+text: "La promozione non ha ancora concluso il periodo previsto.",
+state: "pending",
+},
+];
+}
 
+if (status === "ACTIVE") {
+return [
+{
+key: "created",
+title: "Richiesta creata",
+text: "La richiesta promozione è stata registrata.",
+state: "done",
+},
+{
+key: "review",
+title: "Revisione completata",
+text: "La promozione è stata approvata.",
+state: "done",
+},
+{
+key: "payment",
+title: "Pagamento completato",
+text: "Il pagamento è stato registrato.",
+state: "done",
+},
+{
+key: "publish",
+title: "Promozione attiva",
+text: "La promozione è attualmente pubblicata.",
+state: "active",
+},
+{
+key: "ended",
+title: "Terminata",
+text: "La promozione non ha ancora concluso il periodo previsto.",
+state: "pending",
+},
+];
+}
+
+if (status === "ENDED") {
+return [
+{
+key: "created",
+title: "Richiesta creata",
+text: "La richiesta promozione è stata registrata.",
+state: "done",
+},
+{
+key: "review",
+title: "Revisione completata",
+text: "La promozione è stata approvata.",
+state: "done",
+},
+{
+key: "payment",
+title: "Pagamento completato",
+text: "Il pagamento è stato registrato.",
+state: "done",
+},
+{
+key: "publish",
+title: "Pubblicazione completata",
+text: "La promozione è stata pubblicata nel periodo previsto.",
+state: "done",
+},
+{
+key: "ended",
+title: "Terminata",
+text: "La promozione ha concluso il periodo previsto.",
+state: "active",
+},
+];
+}
   if (status === "REJECTED") {
     return base.map((step) => ({
       ...step,
