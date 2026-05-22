@@ -177,8 +177,10 @@ function buildActions(item) {
         <button
           class="org-promos-card__action org-promos-card__action--danger"
           type="button"
-          disabled
-          title="Il ritiro richiesta sarà abilitato con il prossimo endpoint dedicato"
+          data-org-promos-withdraw
+          data-promo-id="${item.id}"
+          data-promo-title="${item.title}"
+          title="Ritira questa richiesta prima della revisione admin"
         >
           Annulla richiesta
         </button>
