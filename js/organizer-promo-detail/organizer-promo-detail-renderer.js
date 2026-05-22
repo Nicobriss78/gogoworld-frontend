@@ -12,6 +12,7 @@ const STATUS_MAP = {
   PAUSED: { label: "In pausa", tone: "paused" },
   ENDED: { label: "Terminata", tone: "ended" },
   REJECTED: { label: "Rifiutata", tone: "rejected" },
+  CANCELLED: { label: "Annullata", tone: "ended" },
 };
 
 const PLACEMENT_LABELS = {
