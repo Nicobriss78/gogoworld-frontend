@@ -352,11 +352,21 @@ function actionsForStatus(status) {
       ];
 
     case "SCHEDULED":
-    case "ACTIVE":
-      return [
-        { label: "Vedi statistiche", tone: "secondary", disabled: true },
-        { label: "Duplica promo", tone: "secondary", disabled: true },
-      ];
+case "ACTIVE":
+return [
+{
+label: "Statistiche disponibili a breve",
+tone: "secondary",
+disabled: true,
+title: "Le statistiche avanzate saranno abilitate con l’endpoint dedicato.",
+},
+{
+label: "Duplicazione disponibile a breve",
+tone: "secondary",
+disabled: true,
+title: "La duplicazione promo sarà abilitata con il prossimo endpoint dedicato.",
+},
+ ];
 
     case "ENDED":
       return [
