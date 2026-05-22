@@ -265,7 +265,45 @@ function bindRetry() {
     loadPromos();
   });
 }
+function bindWithdrawActions() {
+  const list = qs("[data-org-promos-list]");
+  if (!list) return;
 
+  list.addEventListener("click", async (event) => {
+    const button = event.target.closest("[data-org-promos-withdraw]");
+    if (!button) return;
+
+    const promoId = button.dataset.promoId || "";
+    const promoTitle = button.dataset.promoTitle || "questa promozione";
+
+    if (!promoId) return;
+
+    const confirmed = window.confirm(
+      `Vuoi annullare la richiesta "${promoTitle}"?\n\nQuesta azione è possibile solo finché la promozione è in revisione.`
+    );
+
+    if (!confirmed) return;
+
+    const originalText = button.textContent;
+
+    try {
+      button.disabled = true;
+      button.textContent = "Annullamento...";
+
+      await withdrawOrganizerPromo(promoId);
+
+      await loadPromos();
+    } catch (err) {
+      console.error("[OrganizerPromos] withdraw error:", err);
+      window.alert(
+        "Non è stato possibile annullare la richiesta. Verifica che sia ancora in revisione."
+      );
+
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  });
+}
 function initOrganizerPromos() {
   const root = qs("[data-org-promos-root]");
   if (!root) return;
