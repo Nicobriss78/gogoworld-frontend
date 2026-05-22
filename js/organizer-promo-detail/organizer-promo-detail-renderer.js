@@ -250,6 +250,16 @@ function actionsForStatus(status) {
         { label: "Modifica e reinvia", tone: "primary", disabled: true },
       ];
 
+    case "CANCELLED":
+      return [
+        {
+          label: "Richiesta annullata",
+          tone: "secondary",
+          disabled: true,
+          title: "Questa richiesta è stata ritirata e non può più avanzare nel ciclo commerciale.",
+        },
+      ];
+
     default:
       return [{ label: "Visualizza dettagli", tone: "secondary", disabled: true }];
   }
