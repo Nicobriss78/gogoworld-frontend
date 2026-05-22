@@ -1,8 +1,7 @@
 // js/organizer-promos/organizer-promos-api.js
 // API Promozioni Organizer V2
 
-import { apiGet } from "../api.js";
-
+import { apiGet, apiPost } from "../api.js";
 export async function fetchOrganizerPromos(params = {}) {
   const query = new URLSearchParams();
 
