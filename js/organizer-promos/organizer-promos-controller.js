@@ -311,6 +311,7 @@ function initOrganizerPromos() {
   bindFilters();
   bindKpis();
   bindRetry();
+  bindWithdrawActions();
   loadPromos();
 }
 
