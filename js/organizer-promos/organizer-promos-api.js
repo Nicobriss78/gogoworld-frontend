@@ -18,3 +18,12 @@ export async function fetchOrganizerPromos(params = {}) {
 
   return apiGet(endpoint);
 }
+export async function withdrawOrganizerPromo(id, reason = "") {
+  if (!id) {
+    throw new Error("Promo id mancante");
+  }
+
+  return apiPost(`/banners/mine/${encodeURIComponent(id)}/withdraw`, {
+    reason,
+  });
+}
