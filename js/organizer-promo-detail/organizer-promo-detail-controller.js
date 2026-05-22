@@ -111,7 +111,38 @@ function bindPromoActions() {
     const promoTitle = currentPromo?.title || "questa promozione";
 
     if (!promoId) return;
+    if (action === "pay-test") {
+      const confirmed = window.confirm(
+        `Vuoi simulare il pagamento test per "${promoTitle}"?\n\nQuesta azione non apre un checkout reale: serve solo per testare il lifecycle commerciale.`
+      );
 
+      if (!confirmed) return;
+
+      const originalText = button.textContent;
+
+      try {
+        button.disabled = true;
+        button.textContent = "Pagamento test...";
+
+        const response = await payTestOrganizerPromo(promoId);
+        const updatedPromo =
+          response?.data ||
+          response?.promo ||
+          response;
+
+        renderPromo(updatedPromo, currentLinkedEvent);
+      } catch (err) {
+        console.error("[OrganizerPromoDetail] pay-test error:", err);
+        window.alert(
+          "Non è stato possibile completare il pagamento test. Verifica che la promozione sia in attesa di pagamento."
+        );
+
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+
+      return;
+    }
     const confirmed = window.confirm(
       `Vuoi annullare la richiesta "${promoTitle}"?\n\nQuesta azione è possibile solo finché la promozione è in revisione.`
     );
