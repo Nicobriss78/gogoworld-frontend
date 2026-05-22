@@ -234,12 +234,18 @@ function actionsForStatus(status) {
     case "PENDING_PAYMENT":
       return [
         {
-          label: "Completa pagamento",
+          label: "Pagamento test",
           tone: "primary",
-          disabled: true,
-          title: "Checkout reale non ancora collegato. In questa fase il pagamento viene avanzato solo da admin/test.",
+          disabled: false,
+          action: "pay-test",
+          title: "Simula il pagamento in ambiente test. Il checkout reale sarà collegato in una fase successiva.",
         },
-        { label: "Dettagli preventivo", tone: "secondary", disabled: false },
+        {
+          label: "Dettagli preventivo",
+          tone: "secondary",
+          disabled: true,
+          title: "Il preventivo è già visibile nel riepilogo commerciale.",
+        },
       ];
 
     case "SCHEDULED":
