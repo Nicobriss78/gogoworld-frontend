@@ -175,7 +175,17 @@ function timelineForStatus(status) {
             : "pending",
     }));
   }
-
+if (status === "CANCELLED") {
+    return base.map((step) => ({
+      ...step,
+      state:
+        step.key === "review"
+          ? "blocked"
+          : step.key === "created"
+            ? "done"
+            : "pending",
+    }));
+}
   const order = base.map((step) => step.key);
   const active = activeByStatus[status] || "created";
   const activeIndex = order.indexOf(active);
