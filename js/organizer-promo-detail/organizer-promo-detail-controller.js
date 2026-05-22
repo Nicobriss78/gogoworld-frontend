@@ -5,6 +5,7 @@ import {
   fetchOrganizerPromoById,
   fetchLinkedEventById,
   withdrawOrganizerPromo,
+  payTestOrganizerPromo,
 } from "./organizer-promo-detail-api.js";
 import {
   renderPromoHero,
