@@ -23,7 +23,15 @@ function getPromoId() {
   const params = new URLSearchParams(window.location.search);
   return params.get("id") || "";
 }
+function getPromoEventId(promo) {
+  if (!promo?.eventId) return "";
 
+  if (typeof promo.eventId === "string") {
+    return promo.eventId;
+  }
+
+  return promo.eventId._id || promo.eventId.id || "";
+}
 function showLoading(show) {
   const loading = qs("[data-promo-detail-loading]");
   if (!loading) return;
