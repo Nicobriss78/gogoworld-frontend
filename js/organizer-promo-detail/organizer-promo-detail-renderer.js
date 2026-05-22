@@ -179,21 +179,20 @@ if (status === "CANCELLED") {
     return [
       {
         key: "created",
-        label: "Richiesta creata",
-        description: "La richiesta promozione è stata registrata.",
+        title: "Richiesta creata",
+        text: "La richiesta promozione è stata registrata.",
         state: "done",
       },
       {
         key: "review",
-        label: "In revisione",
-        description: "La richiesta era in attesa di verifica admin.",
+        title: "In revisione",
+        text: "La richiesta era in attesa di verifica admin.",
         state: "pending",
       },
       {
         key: "cancelled",
-        label: "Richiesta annullata",
-        description:
-          "La promozione è stata ritirata dall’organizzatore prima della revisione admin.",
+        title: "Richiesta annullata",
+        text: "La promozione è stata ritirata dall’organizzatore prima della revisione admin.",
         state: "blocked",
       },
     ];
