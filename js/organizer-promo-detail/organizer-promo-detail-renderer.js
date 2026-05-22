@@ -527,6 +527,7 @@ export function renderActions(root, promo) {
             type="button"
             class="${actionClass(action)}"
             ${action.disabled ? `disabled title="${action.title || "Funzione in arrivo"}"` : ""}
+            ${action.action ? `data-promo-detail-action="${action.action}"` : ""}
           >
             ${action.label}
           </button>
