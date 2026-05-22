@@ -105,7 +105,7 @@ function bindPromoActions() {
     if (!button) return;
 
     const action = button.dataset.promoDetailAction;
-    if (action !== "withdraw") return;
+    if (!["withdraw", "pay-test"].includes(action)) return;
 
     const promoId = currentPromo?._id || currentPromo?.id || "";
     const promoTitle = currentPromo?.title || "questa promozione";
