@@ -1,8 +1,10 @@
 // js/organizer-promos/organizer-promos-controller.js
 // Controller Promozioni Organizer V2
 
-import { fetchOrganizerPromos } from "./organizer-promos-api.js";
-import { renderPromos } from "./organizer-promos-renderer.js";
+import {
+  fetchOrganizerPromos,
+  withdrawOrganizerPromo,
+} from "./organizer-promos-api.js";import { renderPromos } from "./organizer-promos-renderer.js";
 
 const state = {
   promos: [],
