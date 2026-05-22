@@ -55,7 +55,11 @@ function showContent(show) {
   content.hidden = !show;
 }
 
-function renderPromo(promo, linkedEvent = null) {  renderPromoHero(
+function renderPromo(promo, linkedEvent = null) {
+  currentPromo = promo;
+  currentLinkedEvent = linkedEvent;
+
+  renderPromoHero(
     qs("[data-promo-detail-hero]"),
     promo
   );
@@ -76,10 +80,10 @@ function renderPromo(promo, linkedEvent = null) {  renderPromoHero(
   );
 
   renderEvent(
-  qs("[data-promo-detail-event]"),
-  promo,
-  linkedEvent
-);
+    qs("[data-promo-detail-event]"),
+    promo,
+    linkedEvent
+  );
 
   renderNotes(
     qs("[data-promo-detail-notes]"),
