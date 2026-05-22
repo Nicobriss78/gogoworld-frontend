@@ -43,6 +43,11 @@ const STATUS_MAP = {
     label: "Rifiutata",
     tone: "rejected",
   },
+
+  CANCELLED: {
+    label: "Annullata",
+    tone: "ended",
+  },
 };
 
 const PLACEMENT_LABELS = {
