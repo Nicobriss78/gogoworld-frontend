@@ -176,16 +176,28 @@ function timelineForStatus(status) {
     }));
   }
 if (status === "CANCELLED") {
-    return base.map((step) => ({
-      ...step,
-      state:
-        step.key === "review"
-          ? "blocked"
-          : step.key === "created"
-            ? "done"
-            : "pending",
-    }));
-}
+    return [
+      {
+        key: "created",
+        label: "Richiesta creata",
+        description: "La richiesta promozione è stata registrata.",
+        state: "done",
+      },
+      {
+        key: "review",
+        label: "In revisione",
+        description: "La richiesta era in attesa di verifica admin.",
+        state: "pending",
+      },
+      {
+        key: "cancelled",
+        label: "Richiesta annullata",
+        description:
+          "La promozione è stata ritirata dall’organizzatore prima della revisione admin.",
+        state: "blocked",
+      },
+    ];
+  }
   const order = base.map((step) => step.key);
   const active = activeByStatus[status] || "created";
   const activeIndex = order.indexOf(active);
