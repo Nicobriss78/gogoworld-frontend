@@ -107,6 +107,45 @@ export function renderEstimate(elements, estimate) {
   if (gross) gross.textContent = euro(grossAmount);
 }
 
+function formatAvailabilityDate(value) {
+  if (!value) return "";
+
+  const date = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(date.getTime())) return String(value);
+
+  return date.toLocaleDateString("it-IT", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+function renderDaysList(days = [], emptyText = "") {
+  if (!Array.isArray(days) || !days.length) {
+    return emptyText ? `<p>${emptyText}</p>` : "";
+  }
+
+  return `
+    <ul class="org-promo-availability-days">
+      ${days
+        .map((day) => {
+          const label = formatAvailabilityDate(day.date);
+          const remaining = Number(day.remaining || 0);
+          const capacity = Number(day.capacity || 0);
+
+          return `
+            <li>
+              <span>${label}</span>
+              <small>${remaining} slot liberi su ${capacity}</small>
+            </li>
+          `;
+        })
+        .join("")}
+    </ul>
+  `;
+}
+
 export function renderAvailability(box, availability = {}) {
   if (!box) return;
 
@@ -115,6 +154,17 @@ export function renderAvailability(box, availability = {}) {
     safeAvailability.availabilityStatus ||
     safeAvailability.status ||
     "UNKNOWN";
+
+  const totalDays = Number(safeAvailability.totalDays || 0);
+  const availableCount = Number(safeAvailability.availableCount || 0);
+  const blockedCount = Number(safeAvailability.blockedCount || 0);
+  const limitedCount = Number(safeAvailability.limitedCount || 0);
+  const blockedDays = Array.isArray(safeAvailability.blockedDays)
+    ? safeAvailability.blockedDays
+    : [];
+  const limitedDays = Array.isArray(safeAvailability.limitedDays)
+    ? safeAvailability.limitedDays
+    : [];
 
   const map = {
     INVALID_GEO_CONFIGURATION: {
@@ -145,6 +195,12 @@ export function renderAvailability(box, availability = {}) {
       text:
         "La promozione non può superare i 30 giorni di durata.",
     },
+    MAX_DURATION_EXCEEDED: {
+      tone: "unavailable",
+      title: "Durata non consentita",
+      text:
+        "La promozione non può superare i 30 giorni di durata.",
+    },
     PROMO_AFTER_EVENT_END: {
       tone: "unavailable",
       title: "Periodo non consentito",
@@ -153,13 +209,17 @@ export function renderAvailability(box, availability = {}) {
     COMPLETELY_AVAILABLE: {
       tone: "available",
       title: "Disponibile",
-      text: "Lo spazio promozionale risulta disponibile nel periodo selezionato.",
+      text: totalDays > 0
+        ? `Tutti i ${totalDays} giorni selezionati risultano disponibili.`
+        : "Lo spazio promozionale risulta disponibile nel periodo selezionato.",
     },
     PARTIALLY_AVAILABLE: {
       tone: "limited",
       title: "Disponibilità parziale",
       text:
-      "Il periodo è disponibile, ma alcuni giorni hanno disponibilità ridotta o pochi slot residui.",
+        totalDays > 0
+          ? `Disponibili ${availableCount} giorni su ${totalDays}. ${blockedCount ? `${blockedCount} giorni risultano già pieni.` : ""} ${limitedCount ? `${limitedCount} giorni hanno pochi slot residui.` : ""}`.trim()
+          : "Il periodo è disponibile, ma alcuni giorni hanno disponibilità ridotta o pochi slot residui.",
     },
     AVAILABLE: {
       tone: "available",
@@ -179,22 +239,53 @@ export function renderAvailability(box, availability = {}) {
     UNAVAILABLE: {
       tone: "unavailable",
       title: "Nessuna disponibilità",
-      text: "Nel periodo selezionato gli spazi risultano occupati.",
+      text:
+        totalDays > 0
+          ? `Nessuno dei ${totalDays} giorni selezionati ha slot disponibili.`
+          : "Nel periodo selezionato gli spazi risultano occupati.",
     },
     UNKNOWN: {
       tone: "unknown",
       title: "Verifica disponibilità",
       text:
-      "Completa evento, copertura e date per verificare disponibilità e preventivo.",
-     },
+        "Completa evento, copertura e date per verificare disponibilità e preventivo.",
+    },
   };
 
   const item = map[status] || map.UNKNOWN;
+  const shouldShowBlockedDays =
+    ["PARTIALLY_AVAILABLE", "UNAVAILABLE"].includes(status) &&
+    blockedDays.length > 0;
+  const shouldShowLimitedDays =
+    status === "PARTIALLY_AVAILABLE" &&
+    limitedDays.length > 0;
 
   box.dataset.tone = item.tone;
   box.innerHTML = `
     <strong>${item.title}</strong>
     <p>${item.text}</p>
+
+    ${
+      shouldShowBlockedDays
+        ? `
+          <div class="org-promo-availability-detail">
+            <b>Giorni non disponibili</b>
+            ${renderDaysList(blockedDays)}
+          </div>
+        `
+        : ""
+    }
+
+    ${
+      shouldShowLimitedDays
+        ? `
+          <div class="org-promo-availability-detail">
+            <b>Giorni con pochi slot residui</b>
+            ${renderDaysList(limitedDays)}
+          </div>
+        `
+        : ""
+    }
   `;
 }
 
