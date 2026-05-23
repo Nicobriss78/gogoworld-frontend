@@ -266,7 +266,51 @@ body.organizer-shell .org-promo-create-back {
   line-height: 1.35;
   font-weight: 700;
 }
+.org-promo-availability-detail {
+margin-top: 10px;
+}
 
+.org-promo-availability-detail b {
+display: block;
+margin-bottom: 6px;
+color: var(--home-text);
+font-size: 12px;
+line-height: 1.25;
+font-weight: 900;
+}
+
+.org-promo-availability-days {
+display: grid;
+gap: 6px;
+margin: 0;
+padding: 0;
+list-style: none;
+}
+
+.org-promo-availability-days li {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 8px;
+padding: 7px 9px;
+border: 1px solid var(--home-border);
+border-radius: var(--gw-radius-btn, 10px);
+background: rgba(255, 255, 255, 0.68);
+}
+
+.org-promo-availability-days span {
+color: var(--home-text);
+font-size: 12px;
+line-height: 1.25;
+font-weight: 900;
+}
+
+.org-promo-availability-days small {
+color: var(--home-text-secondary);
+font-size: 12px;
+line-height: 1.25;
+font-weight: 800;
+}
 .org-promo-create-availability[data-tone="available"] {
   border-color: rgba(21, 128, 61, 0.24);
   background: rgba(21, 128, 61, 0.08);
