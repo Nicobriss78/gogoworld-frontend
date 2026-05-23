@@ -301,6 +301,28 @@ if (status === "CANCELLED") {
       },
     ];
   }
+  if (status === "INVALIDATED_BY_EVENT_CHANGE") {
+    return [
+      {
+        key: "created",
+        title: "Richiesta creata",
+        text: "La richiesta promozione è stata registrata.",
+        state: "done",
+      },
+      {
+        key: "event_changed",
+        title: "Date evento modificate",
+        text: "Le date dell’evento collegato sono cambiate dopo la creazione della promozione.",
+        state: "blocked",
+      },
+      {
+        key: "review_needed",
+        title: "Da rivalutare",
+        text: "Questa promozione deve essere rivalutata prima di poter proseguire.",
+        state: "blocked",
+      },
+    ];
+  }
   const order = base.map((step) => step.key);
   const active = activeByStatus[status] || "created";
   const activeIndex = order.indexOf(active);
