@@ -48,6 +48,11 @@ const STATUS_MAP = {
     label: "Annullata",
     tone: "ended",
   },
+
+  INVALIDATED_BY_EVENT_CHANGE: {
+    label: "Da rivalutare",
+    tone: "rejected",
+  },
 };
 
 const PLACEMENT_LABELS = {
