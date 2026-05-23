@@ -284,7 +284,24 @@ function buildActions(item) {
           Modifica e reinvia
         </button>
       `;
+   case "INVALIDATED_BY_EVENT_CHANGE":
+      return `
+        <a
+          class="org-promos-card__action org-promos-card__action--primary"
+          href="${detailHref}"
+        >
+          Visualizza dettagli
+        </a>
 
+        <button
+          class="org-promos-card__action"
+          type="button"
+          disabled
+          title="Le date dell’evento sono cambiate: questa promozione richiede una rivalutazione."
+        >
+          Richiede revisione
+        </button>
+      `; 
     default:
       return `
         <a
