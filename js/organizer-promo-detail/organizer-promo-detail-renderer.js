@@ -13,6 +13,7 @@ const STATUS_MAP = {
   ENDED: { label: "Terminata", tone: "ended" },
   REJECTED: { label: "Rifiutata", tone: "rejected" },
   CANCELLED: { label: "Annullata", tone: "ended" },
+  INVALIDATED_BY_EVENT_CHANGE: { label: "Da rivalutare", tone: "rejected" },
 };
 
 const PLACEMENT_LABELS = {
