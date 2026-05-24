@@ -337,7 +337,12 @@ function fillRevalidateForm(promo) {
   syncEventSelection();
   updateGeoFields();
   applyRevalidateModeUI();
+
+  // forza riallineamento state → UI
+  state.latestEstimate = null;
+
   renderLive();
+  scheduleEstimate();
 }
 function renderLive() {
   const payload = getPayload();
