@@ -176,9 +176,9 @@ function getPayload() {
     targetUrl: selected ? getEventTargetUrl(selected) : "",
 
     placement: field("placement")?.value || "events_list_inline",
-    geoScope: field("geoScope")?.value || "REGION",
-    country: field("country")?.value?.trim() || "",
-    region: field("region")?.value?.trim() || "",
+    geoScope: geoScopeValue,
+    country: countryValue,
+    region: regionValue,
 
     activeFrom: normalizeDateInput(field("activeFrom")?.value),
     activeTo: normalizeDateInput(field("activeTo")?.value),
