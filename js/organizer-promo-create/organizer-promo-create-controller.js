@@ -36,7 +36,22 @@ function qs(selector) {
 function field(name) {
   return qs(`[data-promo-field="${name}"]`);
 }
+function getRouteParams() {
+  return new URLSearchParams(window.location.search);
+}
 
+function getDateInputValue(value, { exclusiveEnd = false } = {}) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  if (exclusiveEnd) {
+    date.setUTCDate(date.getUTCDate() - 1);
+  }
+
+  return date.toISOString().slice(0, 10);
+}
 function getEventId(event) {
   return event?._id || event?.id || "";
 }
