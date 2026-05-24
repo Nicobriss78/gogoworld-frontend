@@ -36,3 +36,10 @@ export async function payTestOrganizerPromo(id) {
     mode: "test",
   });
 }
+export async function revalidateOrganizerPromo(id, payload = {}) {
+  if (!id) {
+    throw new Error("Promo id mancante");
+  }
+
+  return apiPost(`/banners/mine/${encodeURIComponent(id)}/revalidate`, payload);
+}
