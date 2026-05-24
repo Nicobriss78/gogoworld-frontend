@@ -215,6 +215,29 @@ return false;
 }
 
 return compareDateDays(payload.activeTo, payload.activeFrom) < 0;}
+function clearEstimateTimer() {
+  if (state.estimateTimer) {
+    clearTimeout(state.estimateTimer);
+    state.estimateTimer = null;
+  }
+}
+
+function getSelectedEventEndDay() {
+  const end = state.selectedEvent ? getEventEndDate(state.selectedEvent) : null;
+  if (!end) return "";
+
+  const date = new Date(end);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toISOString().slice(0, 10);
+}
+
+function hasPromoAfterEventEnd(payload) {
+  const eventEndDay = getSelectedEventEndDay();
+  if (!eventEndDay || !payload?.activeTo) return false;
+
+  return compareDateDays(payload.activeTo, eventEndDay) > 0;
+}
 function updateGeoFields() {
   const geoScope = field("geoScope")?.value || "REGION";
   const countryWrap = qs("[data-country-field]");
