@@ -741,10 +741,38 @@ async function init() {
   const root = qs("[data-org-promo-create-root]");
   if (!root) return;
 
+  const params = getRouteParams();
+  state.mode = params.get("mode") === "revalidate" ? "revalidate" : "create";
+  state.revalidatePromoId = state.mode === "revalidate" ? params.get("id") || "" : "";
+
   updateGeoFields();
   bindFields();
   renderLive();
   await loadEvents();
+
+  if (state.mode === "revalidate") {
+    const errorBox = qs("[data-promo-error]");
+
+    if (!state.revalidatePromoId) {
+      showMessage(errorBox, "Promozione da rivalutare non specificata.");
+      return;
+    }
+
+    try {
+      const promo = await fetchOrganizerPromoById(state.revalidatePromoId);
+
+      if (promo?.status !== "INVALIDATED_BY_EVENT_CHANGE") {
+        showMessage(errorBox, "Questa promozione non richiede rivalutazione.");
+        return;
+      }
+
+      state.revalidatePromo = promo;
+      fillRevalidateForm(promo);
+    } catch (err) {
+      console.error("[OrganizerPromoCreate] revalidate promo load failed:", err);
+      showMessage(errorBox, "Impossibile caricare la promozione da rivalutare.");
+    }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", init);
