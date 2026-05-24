@@ -678,7 +678,10 @@ state.mode === "revalidate"
 
   if (submitBtn) {
     submitBtn.disabled = false;
-    submitBtn.textContent = "Invia richiesta promozione";
+    submitBtn.textContent =
+  state.mode === "revalidate"
+    ? "Invia richiesta di rivalutazione"
+    : "Invia richiesta promozione";
   }
 }
   }
