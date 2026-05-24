@@ -27,6 +27,7 @@ const state = {
   mode: "create",
   revalidatePromoId: "",
   revalidatePromo: null,
+  isHydratingRevalidate: false,
 };
 
 function qs(selector) {
