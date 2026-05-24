@@ -643,7 +643,10 @@ state.isSubmitting = true;
   }
 
   try {
-    const response = await submitPromo(payload);
+    const response =
+      state.mode === "revalidate"
+        ? await revalidatePromo(state.revalidatePromoId, payload)
+        : await submitPromo(payload);
 
 if (!response?.ok) {
 throw new Error(response?.message || response?.error || "Submit promo failed");
