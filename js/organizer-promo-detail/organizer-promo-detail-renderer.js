@@ -416,10 +416,11 @@ title: "La duplicazione promo sarà abilitata con il prossimo endpoint dedicato.
     case "INVALIDATED_BY_EVENT_CHANGE":
       return [
         {
-          label: "Da rivalutare",
-          tone: "secondary",
-          disabled: true,
-          title: "Le date dell’evento collegato sono cambiate: questa promozione deve essere rivalutata.",
+          label: "Rivaluta promozione",
+          tone: "primary",
+          disabled: false,
+          action: "open-revalidate",
+          title: "Aggiorna la promozione e inviala di nuovo in revisione.",
         },
       ];
 
