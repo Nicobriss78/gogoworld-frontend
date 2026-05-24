@@ -372,20 +372,16 @@ function fillRevalidateForm(promo) {
   const notes = field("notes");
   if (notes) notes.value = promo.notes || "";
 
-  [field("geoScope"), field("country"), field("region")].forEach((el) => {
-  if (!el) return;
-  el.dispatchEvent(new Event("input", { bubbles: true }));
-  el.dispatchEvent(new Event("change", { bubbles: true }));
-});
+state.isHydratingRevalidate = true;
 
 syncEventSelection();
 updateGeoFields();
 applyRevalidateModeUI();
 
+state.isHydratingRevalidate = false;
 state.latestEstimate = null;
 
 renderLive();
-scheduleEstimate();
 }
 function renderLive() {
   const payload = getPayload();
