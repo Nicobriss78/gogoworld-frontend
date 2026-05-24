@@ -433,7 +433,28 @@ status: "INVALID_DATE_RANGE",
 setSubmitBlocked(true);
 return;
 }
-  if (!hasMinimumEstimatePayload(payload)) {
+
+if (hasPromoAfterEventEnd(payload)) {
+clearEstimateTimer();
+
+renderEstimate(
+{
+net: qs("[data-price-net]"),
+vat: qs("[data-price-vat]"),
+gross: qs("[data-price-gross]"),
+},
+null
+);
+
+renderAvailability(qs("[data-promo-availability]"), {
+status: "PROMO_AFTER_EVENT_END",
+});
+
+setSubmitBlocked(true);
+return;
+}
+
+if (!hasMinimumEstimatePayload(payload)) {
     renderEstimate(
       {
         net: qs("[data-price-net]"),
