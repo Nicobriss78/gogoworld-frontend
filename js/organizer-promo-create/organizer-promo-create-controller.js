@@ -271,7 +271,74 @@ region.value = getEventRegion(state.selectedEvent);
 
   renderLive();
 }
+function applyRevalidateModeUI() {
+  const eyebrow = qs(".org-promo-create-eyebrow");
+  const headerText = qs(".org-promo-create-header p:not(.org-promo-create-eyebrow)");
+  const submitBtn = qs("[data-promo-submit]");
+  const eventSelect = field("eventId");
 
+  if (state.mode !== "revalidate") return;
+
+  if (eyebrow) {
+    eyebrow.textContent = "Rivaluta promozione";
+  }
+
+  if (headerText) {
+    headerText.textContent =
+      "Le date dell’evento collegato sono cambiate. Aggiorna la promozione e inviala di nuovo in revisione.";
+  }
+
+  if (submitBtn) {
+    submitBtn.textContent = "Invia richiesta di rivalutazione";
+  }
+
+  if (eventSelect) {
+    eventSelect.disabled = true;
+  }
+}
+
+function fillRevalidateForm(promo) {
+  if (!promo) return;
+
+  const eventId = typeof promo.eventId === "object"
+    ? promo.eventId?._id || promo.eventId?.id || ""
+    : promo.eventId || "";
+
+  const eventSelect = field("eventId");
+  if (eventSelect) eventSelect.value = eventId;
+
+  const title = field("title");
+  if (title) title.value = promo.title || "";
+
+  const imageUrl = field("imageUrl");
+  if (imageUrl) imageUrl.value = promo.imageUrl || "";
+
+  const placement = field("placement");
+  if (placement) placement.value = promo.placement || "events_list_inline";
+
+  const geoScope = field("geoScope");
+  if (geoScope) geoScope.value = promo.geoScope || "REGION";
+
+  const country = field("country");
+  if (country) country.value = promo.country || "IT";
+
+  const region = field("region");
+  if (region) region.value = promo.region || "";
+
+  const activeFrom = field("activeFrom");
+  if (activeFrom) activeFrom.value = getDateInputValue(promo.activeFrom);
+
+  const activeTo = field("activeTo");
+  if (activeTo) activeTo.value = getDateInputValue(promo.activeTo, { exclusiveEnd: true });
+
+  const notes = field("notes");
+  if (notes) notes.value = promo.notes || "";
+
+  syncEventSelection();
+  updateGeoFields();
+  applyRevalidateModeUI();
+  renderLive();
+}
 function renderLive() {
   const payload = getPayload();
 
