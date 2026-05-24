@@ -153,7 +153,21 @@ function compareDateDays(a, b) {
 
 function getPayload() {
   const selected = state.selectedEvent;
+  const fallbackCountry = selected ? getEventCountry(selected) : "";
+  const fallbackRegion = selected ? getEventRegion(selected) : "";
 
+  const geoScopeValue = field("geoScope")?.value || "REGION";
+  const countryValue =
+    field("country")?.value?.trim() ||
+    fallbackCountry ||
+    state.revalidatePromo?.country ||
+    "";
+
+  const regionValue =
+    field("region")?.value?.trim() ||
+    fallbackRegion ||
+    state.revalidatePromo?.region ||
+    "";
   return {
     eventId: selected ? getEventId(selected) : "",
 
