@@ -656,7 +656,9 @@ const data = response?.data || response;
 
 showMessage(
 successBox,
-"Richiesta promozione inviata. Sarà verificata prima della richiesta di pagamento."
+state.mode === "revalidate"
+  ? "Richiesta di rivalutazione inviata. Sarà verificata nuovamente."
+  : "Richiesta promozione inviata. Sarà verificata prima della richiesta di pagamento."
 );
 
     setTimeout(() => {
