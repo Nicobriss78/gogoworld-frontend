@@ -24,6 +24,9 @@ const state = {
   estimateTimer: null,
   latestEstimate: null,
   isSubmitting: false,
+  mode: "create",
+  revalidatePromoId: "",
+  revalidatePromo: null,
 };
 
 function qs(selector) {
