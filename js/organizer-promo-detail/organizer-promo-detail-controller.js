@@ -110,6 +110,11 @@ function bindPromoActions() {
     const promoTitle = currentPromo?.title || "questa promozione";
 
     if (!promoId) return;
+    if (action === "open-revalidate") {
+      window.location.href =
+        `/pages/organizer-promo-create-v2.html?mode=revalidate&id=${encodeURIComponent(promoId)}`;
+      return;
+    }
     if (action === "pay-test") {
       const confirmed = window.confirm(
         `Vuoi simulare il pagamento test per "${promoTitle}"?\n\nQuesta azione non apre un checkout reale: serve solo per testare il lifecycle commerciale.`
