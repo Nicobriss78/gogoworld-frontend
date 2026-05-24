@@ -384,6 +384,7 @@ state.latestEstimate = null;
 renderLive();
 }
 function renderLive() {
+  if (state.isHydratingRevalidate) return;
   const payload = getPayload();
 
   renderPromoPreview(
@@ -397,6 +398,7 @@ function renderLive() {
   const geoValidationStatus = getGeoValidationStatus(payload);
 
 if (geoValidationStatus) {
+  clearEstimateTimer();
   renderEstimate(
     {
       net: qs("[data-price-net]"),
@@ -414,6 +416,7 @@ if (geoValidationStatus) {
   return;
 }
   if (hasInvalidDateRange(payload)) {
+    clearEstimateTimer();
 renderEstimate(
 {
 net: qs("[data-price-net]"),
