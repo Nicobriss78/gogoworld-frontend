@@ -334,15 +334,20 @@ function fillRevalidateForm(promo) {
   const notes = field("notes");
   if (notes) notes.value = promo.notes || "";
 
-  syncEventSelection();
-  updateGeoFields();
-  applyRevalidateModeUI();
+  [field("geoScope"), field("country"), field("region")].forEach((el) => {
+  if (!el) return;
+  el.dispatchEvent(new Event("input", { bubbles: true }));
+  el.dispatchEvent(new Event("change", { bubbles: true }));
+});
 
-  // forza riallineamento state → UI
-  state.latestEstimate = null;
+syncEventSelection();
+updateGeoFields();
+applyRevalidateModeUI();
 
-  renderLive();
-  scheduleEstimate();
+state.latestEstimate = null;
+
+renderLive();
+scheduleEstimate();
 }
 function renderLive() {
   const payload = getPayload();
