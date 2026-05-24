@@ -28,3 +28,20 @@ export async function analyzePromo(payload) {
 export async function submitPromo(payload) {
   return apiPost("/banners/submit", payload);
 }
+export async function fetchOrganizerPromoById(id) {
+  if (!id) {
+    throw new Error("Promo id mancante");
+  }
+
+  const response = await apiGet(`/banners/mine/${encodeURIComponent(id)}`);
+
+  return response?.data || response?.promo || response || null;
+}
+
+export async function revalidatePromo(id, payload) {
+  if (!id) {
+    throw new Error("Promo id mancante");
+  }
+
+  return apiPost(`/banners/mine/${encodeURIComponent(id)}/revalidate`, payload);
+}
