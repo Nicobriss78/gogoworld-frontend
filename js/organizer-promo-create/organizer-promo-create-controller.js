@@ -569,7 +569,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "UNKNOWN",
 });
 
-setSubmitBlocked(false);
+setSubmitBlocked(true);
 return;
 }
     const analyze = response?.data || response;
