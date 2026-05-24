@@ -455,6 +455,7 @@ return;
 }
 
 if (!hasMinimumEstimatePayload(payload)) {
+  clearEstimateTimer();
     renderEstimate(
       {
         net: qs("[data-price-net]"),
