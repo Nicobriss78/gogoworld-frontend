@@ -501,7 +501,7 @@ export function renderPromoHero(root, promo) {
 export function renderTimeline(root, promo) {
   if (!root) return;
 
-  const steps = timelineForStatus(promo.status);
+  const steps = timelineForStatus(promo.status, promo);
 
   root.innerHTML = `
     <h2>Stato e avanzamento</h2>
