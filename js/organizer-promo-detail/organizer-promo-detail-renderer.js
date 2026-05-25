@@ -268,6 +268,34 @@ state: "active",
 },
 ];
 }
+  if (status === "PENDING_REVIEW" && isPaid) {
+return [
+{
+key: "created",
+title: "Richiesta creata",
+text: "La richiesta promozione è stata registrata.",
+state: "done",
+},
+{
+key: "review",
+title: "In revisione",
+text: "L’admin verifica contenuto, periodo e compatibilità commerciale.",
+state: "active",
+},
+{
+key: "payment",
+title: "Pagamento completato",
+text: "Il pagamento è già stato registrato e resterà valido dopo l’approvazione.",
+state: "done",
+},
+{
+key: "publish",
+title: "Pubblicazione",
+text: "La promozione potrà essere programmata o attivata dopo l’approvazione.",
+state: "pending",
+},
+];
+  }
   if (status === "REJECTED") {
 return [
 {
