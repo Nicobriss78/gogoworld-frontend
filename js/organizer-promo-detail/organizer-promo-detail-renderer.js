@@ -398,10 +398,21 @@ title: "La duplicazione promo sarà abilitata con il prossimo endpoint dedicato.
       ];
 
     case "REJECTED":
-      return [
-        { label: "Vedi motivo", tone: "secondary", disabled: true },
-        { label: "Modifica e reinvia", tone: "primary", disabled: true },
-      ];
+return [
+{
+label: "Vedi motivo",
+tone: "secondary",
+disabled: true,
+title: "Il motivo del rifiuto sarà mostrato quando il backend esporrà le note admin strutturate.",
+},
+{
+label: "Modifica e reinvia",
+tone: "primary",
+disabled: false,
+action: "open-revalidate",
+title: "Aggiorna la promozione e inviala di nuovo in revisione.",
+},
+];
 
     case "CANCELLED":
       return [
