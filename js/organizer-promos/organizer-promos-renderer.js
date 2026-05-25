@@ -267,23 +267,17 @@ function buildActions(item) {
       `;
 
     case "REJECTED":
-      return `
-        <a
-          class="org-promos-card__action"
-          href="${detailHref}"
-        >
-          Vedi motivo
-        </a>
+return `<a class="org-promos-card__action" href="${detailHref}">
+Vedi motivo
+</a>
 
-        <button
-          class="org-promos-card__action org-promos-card__action--primary"
-          type="button"
-          disabled
-          title="La modifica e il reinvio saranno abilitati con il prossimo endpoint dedicato"
-        >
-          Modifica e reinvia
-        </button>
-      `;
+<a
+class="org-promos-card__action org-promos-card__action--primary"
+href="/pages/organizer-promo-create-v2.html?mode=revalidate&id=${encodeURIComponent(item.id)}"
+title="Aggiorna la promozione e inviala di nuovo in revisione"
+>
+Modifica e reinvia
+</a>`;
    case "INVALIDATED_BY_EVENT_CHANGE":
       return `
         <a
