@@ -830,10 +830,10 @@ async function init() {
     try {
       const promo = await fetchOrganizerPromoById(state.revalidatePromoId);
 
-      if (promo?.status !== "INVALIDATED_BY_EVENT_CHANGE") {
-        showMessage(errorBox, "Questa promozione non richiede rivalutazione.");
-        return;
-      }
+      if (!["INVALIDATED_BY_EVENT_CHANGE", "REJECTED"].includes(promo?.status)) {
+  showMessage(errorBox, "Questa promozione non richiede rivalutazione o correzione.");
+  return;
+}
 
       state.revalidatePromo = promo;
       fillRevalidateForm(promo);
