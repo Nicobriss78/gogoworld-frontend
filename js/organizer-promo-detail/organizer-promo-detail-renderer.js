@@ -776,9 +776,40 @@ export function renderActions(root, promo) {
         .join("")}
     </div>
 
+    ${
+      shouldShowAdminContactAdvice(promo)
+        ? `
+          <div class="org-promo-detail-admin-advice">
+            <strong>Hai già corretto questa promozione più volte?</strong>
+            <span>
+              Se la promozione continua a essere rifiutata, ti consigliamo di contattare l’amministratore
+              per chiarire eventuali modifiche richieste.
+            </span>
+
+            ${
+              buildAdminContactHref(promo)
+                ? `
+                  <a
+                    class="org-promo-detail-action org-promo-detail-action--primary"
+                    href="${buildAdminContactHref(promo)}"
+                  >
+                    Contatta amministratore
+                  </a>
+                `
+                : `
+                  <span class="org-promo-detail-admin-advice__disabled">
+                    Contatto amministratore non ancora configurato.
+                  </span>
+                `
+            }
+          </div>
+        `
+        : ""
+    }
+
     <p style="margin-top: 10px;">
       Le azioni commerciali avanzate saranno abilitate progressivamente con i prossimi endpoint dedicati.
       Il checkout reale non è ancora collegato: in questa fase il passaggio a pagata resta disponibile solo come controllo admin/test.
     </p>
   `;
-    }
+}
