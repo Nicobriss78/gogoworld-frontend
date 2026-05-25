@@ -486,7 +486,25 @@ title: "Aggiorna la promozione e inviala di nuovo in revisione.",
       return [{ label: "Visualizza dettagli", tone: "secondary", disabled: true }];
   }
 }
+function shouldShowAdminContactAdvice(promo = {}) {
+  return Number(promo.rejectedCount || 0) >= 2;
+}
 
+function buildAdminContactHref(promo = {}) {
+  const adminUserId = promo.adminContactUserId || "";
+
+  if (!adminUserId) return "";
+
+  const params = new URLSearchParams();
+  params.set("tab", "dm");
+  params.set("userId", String(adminUserId));
+  params.set(
+    "rootReturnTo",
+    `/pages/organizer-promo-detail-v2.html?id=${encodeURIComponent(getId(promo))}`
+  );
+
+  return `/pages/messages-v2.html?${params.toString()}`;
+}
 function actionClass(action) {
   if (action.tone === "primary") return "org-promo-detail-action org-promo-detail-action--primary";
   if (action.tone === "danger") return "org-promo-detail-action org-promo-detail-action--danger";
