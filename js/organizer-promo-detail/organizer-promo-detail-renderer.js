@@ -126,8 +126,8 @@ function paymentLabel(value) {
   return map[value] || value || "—";
 }
 
-function timelineForStatus(status) {
-  const base = [
+function timelineForStatus(status, promo = {}) {
+const isPaid = promo.paymentStatus === "PAID" || !!promo.paidAt;  const base = [
     {
       key: "created",
       title: "Richiesta creata",
@@ -269,16 +269,35 @@ state: "active",
 ];
 }
   if (status === "REJECTED") {
-    return base.map((step) => ({
-      ...step,
-      state:
-        step.key === "review"
-          ? "blocked"
-          : step.key === "created"
-            ? "done"
-            : "pending",
-    }));
-  }
+return [
+{
+key: "created",
+title: "Richiesta creata",
+text: "La richiesta promozione è stata registrata.",
+state: "done",
+},
+{
+key: "review",
+title: "Revisione rifiutata",
+text: "L’admin ha richiesto correzioni prima della pubblicazione.",
+state: "blocked",
+},
+{
+key: "payment",
+title: isPaid ? "Pagamento completato" : "In attesa pagamento",
+text: isPaid
+? "Il pagamento è già stato registrato e resterà valido dopo la correzione."
+: "Dopo l’approvazione, sarà richiesto il pagamento.",
+state: isPaid ? "done" : "pending",
+},
+{
+key: "publish",
+title: "Pubblicazione",
+text: "La promozione potrà essere programmata o attivata dopo una nuova approvazione.",
+state: "pending",
+},
+];
+}
 if (status === "CANCELLED") {
     return [
       {
