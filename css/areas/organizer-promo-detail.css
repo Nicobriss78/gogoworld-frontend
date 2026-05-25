@@ -443,6 +443,10 @@ font-size: 13px;
 line-height: 1.35;
 font-weight: 800;
 }
+.org-promo-detail-admin-advice
+.org-promo-detail-action--primary {
+color: #ffffff;
+}
 /* RESPONSIVE */
 
 @media (max-width: 860px) {
