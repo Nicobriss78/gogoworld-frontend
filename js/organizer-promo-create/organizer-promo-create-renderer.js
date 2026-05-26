@@ -221,11 +221,14 @@ export function renderAvailability(box, availability = {}) {
           ? `Disponibili ${availableCount} giorni su ${totalDays}. ${blockedCount ? `${blockedCount} giorni risultano già pieni.` : ""} ${limitedCount ? `${limitedCount} giorni hanno pochi slot residui.` : ""}`.trim()
           : "Il periodo è disponibile, ma alcuni giorni hanno disponibilità ridotta o pochi slot residui.",
     },
-    AVAILABLE: {
-      tone: "available",
-      title: "Disponibilità elevata",
-      text: "Lo spazio promozionale risulta disponibile nel periodo selezionato.",
-    },
+    LOW_AVAILABILITY: {
+  tone: "limited",
+  title: "Ultimi slot disponibili",
+  text:
+    totalDays > 0
+      ? `Il periodo è disponibile, ma ${limitedCount} giorni hanno pochi slot residui.`
+      : "Il periodo è disponibile, ma la disponibilità è ridotta.",
+},
     LIMITED: {
       tone: "limited",
       title: "Disponibilità limitata",
