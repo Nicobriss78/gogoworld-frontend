@@ -262,11 +262,11 @@ export function renderAvailability(box, availability = {}) {
 
   const item = map[status] || map.UNKNOWN;
   const shouldShowBlockedDays =
-    ["PARTIALLY_AVAILABLE", "UNAVAILABLE"].includes(status) &&
-    blockedDays.length > 0;
-  const shouldShowLimitedDays =
-    status === "PARTIALLY_AVAILABLE" &&
-    limitedDays.length > 0;
+  ["PARTIALLY_AVAILABLE", "UNAVAILABLE"].includes(status) &&
+  blockedDays.length > 0;
+const shouldShowLimitedDays =
+  ["PARTIALLY_AVAILABLE", "LOW_AVAILABILITY"].includes(status) &&
+  limitedDays.length > 0;
 
   box.dataset.tone = item.tone;
   box.innerHTML = `
