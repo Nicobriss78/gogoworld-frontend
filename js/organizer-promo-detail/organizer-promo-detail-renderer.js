@@ -739,15 +739,30 @@ export function renderEvent(root, promo, linkedEvent = null) {
 export function renderNotes(root, promo) {
   if (!root) return;
 
+  const rejectionReason =
+    typeof promo.rejectionReason === "string"
+      ? promo.rejectionReason.trim()
+      : "";
+
   root.innerHTML = `
     <h2>Note e revisione</h2>
 
     <p>${promo.notes || "Nessuna nota inserita."}</p>
 
-    <p style="margin-top: 10px;">
-      Le note admin, il motivo di rifiuto e la cronologia di revisione saranno
-      disponibili quando il backend commerciale sarà esteso.
-    </p>
+    ${
+      rejectionReason
+        ? `
+          <div class="org-promo-detail-review-note">
+            <strong>Motivo del rifiuto</strong>
+            <span>${rejectionReason}</span>
+          </div>
+        `
+        : `
+          <p style="margin-top: 10px;">
+            Nessun motivo di rifiuto presente per questa promozione.
+          </p>
+        `
+    }
   `;
 }
 
