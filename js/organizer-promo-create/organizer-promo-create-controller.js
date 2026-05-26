@@ -576,19 +576,21 @@ return;
 const estimate = analyze?.pricing || analyze;
 const availability = analyze?.availability || null;
 
-    state.latestEstimate = estimate;
+    const isAvailabilityBlocked = availability?.available === false;
 
-    renderEstimate(
-      {
-        net: qs("[data-price-net]"),
-        vat: qs("[data-price-vat]"),
-        gross: qs("[data-price-gross]"),
-      },
-      estimate
-    );
+state.latestEstimate = isAvailabilityBlocked ? null : estimate;
 
-    renderAvailability(qs("[data-promo-availability]"), availability);
-    setSubmitBlocked(availability?.available === false);
+renderEstimate(
+  {
+    net: qs("[data-price-net]"),
+    vat: qs("[data-price-vat]"),
+    gross: qs("[data-price-gross]"),
+  },
+  isAvailabilityBlocked ? null : estimate
+);
+
+renderAvailability(qs("[data-promo-availability]"), availability);
+setSubmitBlocked(isAvailabilityBlocked);
   } catch (err) {
 console.warn("[OrganizerPromoCreate] estimate failed:", err);
 
