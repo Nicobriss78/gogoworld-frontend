@@ -642,10 +642,20 @@ document.addEventListener("click", async function(e){
       approvalsList();
     }
     if (action === "reject") {
-      await adminFetch("/api/banners/" + id + "/reject", { method: "POST" });
-      try { showAlert("Banner rifiutato", "info"); } catch {}
-      approvalsList();
-    }
+  var reason = prompt("Motivo del rifiuto:");
+  if (!reason || !reason.trim()) {
+    try { showAlert("Motivo del rifiuto obbligatorio", "error"); } catch {}
+    return;
+  }
+
+  await adminFetch("/api/banners/" + id + "/reject", {
+    method: "POST",
+    body: JSON.stringify({ reason: reason.trim() }),
+  });
+
+  try { showAlert("Banner rifiutato", "info"); } catch {}
+  approvalsList();
+}
   } catch (err) {
     try { showAlert(err.message || "Errore operazione", "error"); } catch { console.error(err); }
   }
