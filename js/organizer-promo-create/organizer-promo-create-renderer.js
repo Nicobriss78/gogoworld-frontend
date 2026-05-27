@@ -151,9 +151,10 @@ export function renderAvailability(box, availability = {}) {
 
   const safeAvailability = availability || {};
   const status =
-    safeAvailability.availabilityStatus ||
-    safeAvailability.status ||
-    "UNKNOWN";
+  safeAvailability.availabilityLevel ||
+  safeAvailability.status ||
+  safeAvailability.availabilityStatus ||
+  "UNKNOWN";
 
   const totalDays = Number(safeAvailability.totalDays || 0);
   const availableCount = Number(safeAvailability.availableCount || 0);
