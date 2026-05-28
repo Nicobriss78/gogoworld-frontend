@@ -412,7 +412,7 @@ if (geoValidationStatus) {
   renderAvailability(qs("[data-promo-availability]"), {
     status: geoValidationStatus,
   });
-
+  renderDemand(qs("[data-promo-demand]"), null);
   setSubmitBlocked(true);
   return;
 }
