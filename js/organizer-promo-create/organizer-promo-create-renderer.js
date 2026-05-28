@@ -297,7 +297,65 @@ const shouldShowLimitedDays =
     }
   `;
 }
+function getDemandLabel(value) {
+  const map = {
+    CALM: "Tranquilla",
+    ACTIVE: "Attiva",
+    COMPETITIVE: "Competitiva",
+    INTENSE: "Molto richiesta",
+    LOW: "Bassa",
+    MEDIUM: "Media",
+    HIGH: "Alta",
+    VERY_HIGH: "Molto alta",
+  };
 
+  return map[value] || "In valutazione";
+}
+
+function getDemandTone(demand = {}) {
+  const pressure = demand.periodPressure || demand.scarcityLevel || demand.demandLevel;
+
+  if (pressure === "VERY_HIGH" || pressure === "INTENSE") return "very-high";
+  if (pressure === "HIGH" || pressure === "COMPETITIVE") return "high";
+  if (pressure === "MEDIUM" || pressure === "ACTIVE") return "medium";
+
+  return "low";
+}
+
+export function renderDemand(box, demand = null) {
+  if (!box) return;
+
+  if (!demand) {
+    box.dataset.tone = "unknown";
+    box.innerHTML = `
+      <strong>Analisi periodo</strong>
+      <p>Completa evento, copertura e date per leggere la pressione promozionale del periodo.</p>
+    `;
+    return;
+  }
+
+  const score = Number(demand.competitionScore || 0);
+  const demandLabel = getDemandLabel(demand.demandLevel);
+  const pressureLabel = getDemandLabel(demand.periodPressure);
+  const message =
+    demand.message ||
+    "La pressione promozionale del periodo è stata analizzata in base agli slot già occupati.";
+
+  box.dataset.tone = getDemandTone(demand);
+  box.innerHTML = `
+    <strong>${demandLabel}</strong>
+    <p>${message}</p>
+
+    <div class="org-promo-demand-meter" aria-label="Pressione promozionale ${score} su 100">
+      <span style="width:${Math.max(0, Math.min(score, 100))}%"></span>
+    </div>
+
+    <div class="org-promo-demand-meta">
+      <span>Pressione: <b>${pressureLabel}</b></span>
+      <span>Indice: <b>${score}/100</b></span>
+    </div>
+  `;
+}
 export function showMessage(el, message) {
   if (!el) return;
   el.textContent = message || "";
