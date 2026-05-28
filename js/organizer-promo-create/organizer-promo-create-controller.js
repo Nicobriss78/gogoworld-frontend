@@ -430,6 +430,7 @@ null
 renderAvailability(qs("[data-promo-availability]"), {
 status: "INVALID_DATE_RANGE",
 });
+renderDemand(qs("[data-promo-demand]"), null);
 
 setSubmitBlocked(true);
 return;
