@@ -334,7 +334,7 @@ export function renderDemand(box, demand = null) {
     return;
   }
 
-  const score = Number(demand.competitionScore || 0);
+  const score = Math.max(0, Math.min(Number(demand.competitionScore || 0), 100));
   const demandLabel = getDemandLabel(demand.demandLevel);
   const pressureLabel = getDemandLabel(demand.periodPressure);
   const message =
@@ -347,7 +347,7 @@ export function renderDemand(box, demand = null) {
     <p>${message}</p>
 
     <div class="org-promo-demand-meter" aria-label="Pressione promozionale ${score} su 100">
-      <span style="width:${Math.max(0, Math.min(score, 100))}%"></span>
+      <span style="width:${score}%"></span>
     </div>
 
     <div class="org-promo-demand-meta">
