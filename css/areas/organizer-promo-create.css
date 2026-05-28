@@ -252,12 +252,13 @@ border-radius: var(--gw-radius-btn, 10px);
 background: var(--home-bg);
 }
 
-.org-promo-create-availability strong {
-  display: block;
-  color: var(--home-text);
-  font-size: 14px;
-  line-height: 1.25;
-  font-weight: 900;
+.org-promo-create-availability strong,
+.org-promo-create-demand strong {
+display: block;
+color: var(--home-text);
+font-size: 14px;
+line-height: 1.25;
+font-weight: 900;
 }
 
 .org-promo-create-availability p {
