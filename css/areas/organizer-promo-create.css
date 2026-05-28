@@ -243,12 +243,13 @@ body.organizer-shell .org-promo-create-back {
   line-height: 1.4;
 }
 
-.org-promo-create-availability {
-  margin-top: var(--gw-space-md, 16px);
-  padding: 12px;
-  border: 1px solid var(--home-border);
-  border-radius: var(--gw-radius-btn, 10px);
-  background: var(--home-bg);
+.org-promo-create-availability,
+.org-promo-create-demand {
+margin-top: var(--gw-space-md, 16px);
+padding: 12px;
+border: 1px solid var(--home-border);
+border-radius: var(--gw-radius-btn, 10px);
+background: var(--home-bg);
 }
 
 .org-promo-create-availability strong {
