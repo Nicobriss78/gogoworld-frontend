@@ -261,12 +261,13 @@ line-height: 1.25;
 font-weight: 900;
 }
 
-.org-promo-create-availability p {
-  margin: 5px 0 0;
-  color: var(--home-text-secondary);
-  font-size: 13px;
-  line-height: 1.35;
-  font-weight: 700;
+.org-promo-create-availability p,
+.org-promo-create-demand p {
+margin: 5px 0 0;
+color: var(--home-text-secondary);
+font-size: 13px;
+line-height: 1.35;
+font-weight: 700;
 }
 .org-promo-availability-detail {
 margin-top: 10px;
