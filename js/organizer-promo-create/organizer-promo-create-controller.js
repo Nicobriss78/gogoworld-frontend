@@ -15,6 +15,7 @@ import {
   renderPromoPreview,
   renderEstimate,
   renderAvailability,
+  renderDemand,
   showMessage,
 } from "./organizer-promo-create-renderer.js";
 
