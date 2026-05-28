@@ -451,28 +451,31 @@ null
 renderAvailability(qs("[data-promo-availability]"), {
 status: "PROMO_AFTER_EVENT_END",
 });
+renderDemand(qs("[data-promo-demand]"), null);
 
 setSubmitBlocked(true);
 return;
 }
-
 if (!hasMinimumEstimatePayload(payload)) {
-  clearEstimateTimer();
-    renderEstimate(
-      {
-        net: qs("[data-price-net]"),
-        vat: qs("[data-price-vat]"),
-        gross: qs("[data-price-gross]"),
-      },
-      null
-    );
+clearEstimateTimer();
+renderEstimate(
+{
+net: qs("[data-price-net]"),
+vat: qs("[data-price-vat]"),
+gross: qs("[data-price-gross]"),
+},
+null
+);
 
-    renderAvailability(qs("[data-promo-availability]"), {
-      status: "UNKNOWN",
-    });
- setSubmitBlocked(false);
-    return;
-  }
+renderAvailability(qs("[data-promo-availability]"), {
+status: "UNKNOWN",
+});
+renderDemand(qs("[data-promo-demand]"), null);
+
+setSubmitBlocked(false);
+return;
+}
+
 
   scheduleEstimate(payload);
 }
@@ -499,9 +502,9 @@ runEstimate(payload);
 }
 
 async function runEstimate(payload) {
-  try {
-    const response = await analyzePromo(payload);
-    if (response?.ok === false) {
+try {
+const response = await analyzePromo(payload);
+if (response?.ok === false) {
 const errorCode =
 response?.data?.error ||
 response?.data?.code ||
@@ -531,9 +534,12 @@ validationErrors.includes("EVENT_ALREADY_STARTED")
 renderAvailability(qs("[data-promo-availability]"), {
 status: "EVENT_ALREADY_STARTED",
 });
+renderDemand(qs("[data-promo-demand]"), null);
+
 setSubmitBlocked(true);
 return;
 }
+
 if (
 errorCode === "PROMO_DURATION_EXCEEDED" ||
 validationErrors.includes("PROMO_DURATION_EXCEEDED") ||
@@ -543,19 +549,25 @@ validationErrors.includes("MAX_DURATION_EXCEEDED")
 renderAvailability(qs("[data-promo-availability]"), {
 status: "PROMO_DURATION_EXCEEDED",
 });
+renderDemand(qs("[data-promo-demand]"), null);
+
 setSubmitBlocked(true);
 return;
-}      
+}
+
 if (
 errorCode === "BOOKING_WINDOW_EXCEEDED" ||
 validationErrors.includes("BOOKING_WINDOW_EXCEEDED")
 ) {
-  renderAvailability(qs("[data-promo-availability]"), {
-    status: "BOOKING_WINDOW_EXCEEDED",
-  });
-  setSubmitBlocked(true);
-  return;
+renderAvailability(qs("[data-promo-availability]"), {
+status: "BOOKING_WINDOW_EXCEEDED",
+});
+renderDemand(qs("[data-promo-demand]"), null);
+
+setSubmitBlocked(true);
+return;
 }
+
 if (
 errorCode === "PROMO_AFTER_EVENT_END" ||
 validationErrors.includes("PROMO_AFTER_EVENT_END")
@@ -563,6 +575,8 @@ validationErrors.includes("PROMO_AFTER_EVENT_END")
 renderAvailability(qs("[data-promo-availability]"), {
 status: "PROMO_AFTER_EVENT_END",
 });
+renderDemand(qs("[data-promo-demand]"), null);
+
 setSubmitBlocked(true);
 return;
 }
@@ -570,30 +584,34 @@ return;
 renderAvailability(qs("[data-promo-availability]"), {
 status: "UNKNOWN",
 });
+renderDemand(qs("[data-promo-demand]"), null);
 
 setSubmitBlocked(true);
 return;
 }
-    const analyze = response?.data || response;
+
+const analyze = response?.data || response;
 const estimate = analyze?.pricing || analyze;
 const availability = analyze?.availability || null;
+const demand = analyze?.demand || null;
 
-    const isAvailabilityBlocked = availability?.available === false;
+const isAvailabilityBlocked = availability?.available === false;
 
 state.latestEstimate = isAvailabilityBlocked ? null : estimate;
 
 renderEstimate(
-  {
-    net: qs("[data-price-net]"),
-    vat: qs("[data-price-vat]"),
-    gross: qs("[data-price-gross]"),
-  },
-  isAvailabilityBlocked ? null : estimate
+{
+net: qs("[data-price-net]"),
+vat: qs("[data-price-vat]"),
+gross: qs("[data-price-gross]"),
+},
+isAvailabilityBlocked ? null : estimate
 );
 
 renderAvailability(qs("[data-promo-availability]"), availability);
+renderDemand(qs("[data-promo-demand]"), demand);
 setSubmitBlocked(isAvailabilityBlocked);
-  } catch (err) {
+} catch (err) {
 console.warn("[OrganizerPromoCreate] estimate failed:", err);
 
 renderEstimate(
@@ -624,6 +642,7 @@ responseData?.validationErrors ||
 responseData?.data?.availability?.validationErrors ||
 responseData?.availability?.validationErrors ||
 [];
+
 if (
 errorCode === "EVENT_ALREADY_STARTED" ||
 validationErrors.includes("EVENT_ALREADY_STARTED")
@@ -631,10 +650,12 @@ validationErrors.includes("EVENT_ALREADY_STARTED")
 renderAvailability(qs("[data-promo-availability]"), {
 status: "EVENT_ALREADY_STARTED",
 });
+renderDemand(qs("[data-promo-demand]"), null);
 
 setSubmitBlocked(true);
 return;
 }
+
 if (
 errorCode === "PROMO_DURATION_EXCEEDED" ||
 validationErrors.includes("PROMO_DURATION_EXCEEDED") ||
@@ -644,10 +665,12 @@ validationErrors.includes("MAX_DURATION_EXCEEDED")
 renderAvailability(qs("[data-promo-availability]"), {
 status: "PROMO_DURATION_EXCEEDED",
 });
+renderDemand(qs("[data-promo-demand]"), null);
 
 setSubmitBlocked(true);
 return;
-}    
+}
+
 if (
 errorCode === "PROMO_AFTER_EVENT_END" ||
 validationErrors.includes("PROMO_AFTER_EVENT_END")
@@ -655,6 +678,7 @@ validationErrors.includes("PROMO_AFTER_EVENT_END")
 renderAvailability(qs("[data-promo-availability]"), {
 status: "PROMO_AFTER_EVENT_END",
 });
+renderDemand(qs("[data-promo-demand]"), null);
 
 setSubmitBlocked(true);
 return;
@@ -663,10 +687,12 @@ return;
 renderAvailability(qs("[data-promo-availability]"), {
 status: "UNKNOWN",
 });
+renderDemand(qs("[data-promo-demand]"), null);
 
 setSubmitBlocked(false);
 }
 }
+
 
 function validateSubmit(payload) {
   if (!payload.eventId) return "Seleziona un evento da promuovere.";
