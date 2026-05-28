@@ -333,7 +333,53 @@ font-weight: 800;
   border-color: rgba(181, 42, 50, 0.24);
   background: rgba(181, 42, 50, 0.08);
 }
+.org-promo-create-demand[data-tone="low"],
+.org-promo-create-demand[data-tone="unknown"] {
+border-color: rgba(21, 128, 61, 0.2);
+background: rgba(21, 128, 61, 0.06);
+}
 
+.org-promo-create-demand[data-tone="medium"] {
+border-color: rgba(154, 106, 18, 0.22);
+background: rgba(154, 106, 18, 0.07);
+}
+
+.org-promo-create-demand[data-tone="high"],
+.org-promo-create-demand[data-tone="very-high"] {
+border-color: rgba(234, 88, 12, 0.24);
+background: rgba(234, 88, 12, 0.08);
+}
+
+.org-promo-demand-meter {
+margin-top: 10px;
+height: 7px;
+overflow: hidden;
+border-radius: 999px;
+background: rgba(15, 23, 42, 0.08);
+}
+
+.org-promo-demand-meter span {
+display: block;
+height: 100%;
+border-radius: inherit;
+background: currentColor;
+}
+
+.org-promo-demand-meta {
+display: flex;
+justify-content: space-between;
+gap: 10px;
+margin-top: 9px;
+color: var(--home-text-secondary);
+font-size: 12px;
+line-height: 1.25;
+font-weight: 800;
+}
+
+.org-promo-demand-meta b {
+color: var(--home-text);
+font-weight: 900;
+}
 .org-promo-create-submit {
   display: flex;
   flex-direction: column;
