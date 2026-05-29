@@ -473,6 +473,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "UNKNOWN",
 });
 renderDemand(qs("[data-promo-demand]"), null);
+renderSuggestions(qs("[data-promo-suggestions-card]"), qs("[data-promo-suggestions]"), null);
 
 setSubmitBlocked(false);
 return;
