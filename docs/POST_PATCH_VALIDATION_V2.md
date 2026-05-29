@@ -307,7 +307,87 @@ Se feature Trilli Geo V2:
 - Network verificato? [ ]
 - Response backend corretta? [ ]
 
+───
 
+PROMO ORGANIZER V2 — VALIDAZIONE
+
+MOTORE 1 — AVAILABILITY ENGINE
+
+• Disponibilità live aggiornata correttamente? [ ]
+• Saturazione giorni coerente? [ ]
+• Giorni pieni rilevati correttamente? [ ]
+• Giorni parzialmente saturi coerenti? [ ]
+
+• Validazioni attive:
+◦ EVENT_ALREADY_STARTED [ ]
+◦ PROMO_DURATION_EXCEEDED [ ]
+◦ BOOKING_WINDOW_EXCEEDED [ ]
+◦ PROMO_AFTER_EVENT_END [ ]
+
+• Submit bloccato SOLO quando necessario? [ ]
+• Nessuna regressione preventivo live? [ ]
+• Nessun crash con copertura incompleta? [ ]
+
+───
+
+MOTORE 2 — DEMAND / SCARCITY ENGINE
+
+• La card “Pressione promozionale” compare? [ ]
+• Rendering coerente? [ ]
+• Nessun errore console? [ ]
+
+• Stato periodo coerente:
+◦ tranquilla [ ]
+◦ attiva [ ]
+◦ competitiva [ ]
+◦ molto richiesta [ ]
+
+• Indice competizione coerente? [ ]
+• Progressione score plausibile? [ ]
+• Saturazione periodo letta correttamente? [ ]
+
+• Messaging premium coerente? [ ]
+• Nessun tono aggressivo? [ ]
+• Nessuna UX ansiogena? [ ]
+• Nessun submit blocking introdotto accidentalmente? [ ]
+
+• Demand NON interferisce con Availability? [ ]
+• Nessuna regressione preventivo live? [ ]
+
+───
+
+MOTORE 3 — SUGGESTION ENGINE
+
+(se implementato)
+
+• Suggerimenti coerenti? [ ]
+• Nessun suggerimento punitivo? [ ]
+• Nessun “periodo scarso” esplicito? [ ]
+• Nessun “promo inefficace” esplicito? [ ]
+
+• Se non esistono alternative utili:
+◦ tono elegante? [ ]
+◦ fallback strategico Trilli valutato? [ ]
+
+───
+
+VALIDAZIONE UX PROMO
+
+• Preventivo live coerente? [ ]
+• Disponibilità live coerente? [ ]
+• Pressione promozionale leggibile? [ ]
+• UI premium coerente? [ ]
+• Nessuna regressione mobile? [ ]
+• Nessuna regressione Organizer V2? [ ]
+
+• Test reale eseguito su:
+◦ disponibilità alta [ ]
+◦ disponibilità media [ ]
+◦ disponibilità bassa [ ]
+◦ giorni saturi [ ]
+◦ periodo competitivo [ ]
+◦ copertura incompleta [ ]
+◦ blocchi temporali [ ]
 ---
   
 ## SICUREZZA
