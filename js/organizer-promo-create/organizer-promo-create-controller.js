@@ -597,6 +597,7 @@ const analyze = response?.data || response;
 const estimate = analyze?.pricing || analyze;
 const availability = analyze?.availability || null;
 const demand = analyze?.demand || null;
+const suggestions = analyze?.suggestions || null;
 
 const isAvailabilityBlocked = availability?.available === false;
 
