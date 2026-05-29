@@ -414,6 +414,7 @@ if (geoValidationStatus) {
     status: geoValidationStatus,
   });
   renderDemand(qs("[data-promo-demand]"), null);
+  renderSuggestions(qs("[data-promo-suggestions-card]"), qs("[data-promo-suggestions]"), null);
   setSubmitBlocked(true);
   return;
 }
