@@ -95,19 +95,190 @@ Questa regola è vincolante per:
 - Organizer V2
 - futura Admin V2
   
-## 📌 BACKEND-FIRST (ESTENSIONE)
+📌 BACKEND-FIRST (ESTENSIONE)
 
 Le nuove feature devono essere sviluppate:
 
-- prima backend
-- poi test API reale
-- solo dopo frontend
+1. backend
+2. test API reale
+3. frontend
+4. test reale UI
+5. consolidamento
+6. aggiornamento docs
 
 È vietato partire dal frontend.
 
-Il sistema Trilli è il caso di riferimento.
----
+Casi di riferimento ufficiali:
 
+• Trilli
+• Promozioni Organizer V2
+• Motori intelligenti promo
+
+Per logiche complesse o ad alto rischio:
+
+consentito:
+
+• partire da una versione base stabile
+• test reale
+• affinamento progressivo
+
+vietato:
+
+• costruire sistemi complessi solo teoricamente
+• saltare il test reale
+• avanzare roadmap senza consolidamento
+---
+📣 PROMO ORGANIZER V2 — REGOLE ARCHITETTURALI (VINCOLANTI)
+
+Contesto:
+Le Promozioni Organizer V2 sono un sistema intelligente composto da più motori indipendenti.
+
+Obiettivo:
+fornire all’organizzatore:
+
+• preventivo live
+• disponibilità reale
+• lettura pressione periodo
+• suggerimenti intelligenti
+
+senza introdurre logiche aggressive,
+manipolative o punitive.
+
+───
+
+1. BACKEND-FIRST (OBBLIGATORIO)
+
+I motori Promo devono seguire ordine vincolante:
+
+1. backend
+2. test API reale
+3. frontend
+4. test reale UI
+
+È vietato partire dalla UI.
+
+Regola di riferimento:
+approccio Trilli backend-first.
+
+───
+
+2. SEPARAZIONE RESPONSABILITÀ (OBBLIGATORIA)
+
+Le responsabilità devono restare separate.
+
+Motore 1 — Availability Engine
+Responsabilità:
+
+• disponibilità reale slot
+• saturazione giorni
+• limiti temporali
+• blocchi tecnici
+
+È l’unico motore autorizzato a:
+
+• bloccare submit
+• impedire creazione promo
+
+───
+
+Motore 2 — Demand / Scarcity Engine
+
+Responsabilità:
+
+• pressione promozionale
+• competitività periodo
+• saturazione commerciale
+• scoring pressione
+
+Output consentiti:
+
+• indice competizione
+• stato periodo
+◦ tranquilla
+◦ attiva
+◦ competitiva
+◦ molto richiesta
+• messaging premium
+
+È vietato:
+
+• bloccare submit
+• introdurre logiche punitive
+• degradare UX organizer
+
+Il Motore 2:
+informa, NON punisce.
+
+───
+
+Motore 3 — Suggestion Engine
+
+Responsabilità futura:
+
+• suggerimenti intelligenti
+• finestre alternative utili
+• opportunità residue
+• fallback strategici
+
+Vincolo definitivo:
+
+È vietato comunicare apertamente:
+
+• “periodo scarso”
+• “periodo poco performante”
+• “promo inefficace”
+
+quando non esistono alternative realmente migliori.
+
+In quei casi:
+
+• tono soft
+• approccio elegante
+• supporto strategico
+• possibile suggerimento Trilli
+
+Il sistema deve:
+
+guidare, non scoraggiare.
+
+───
+
+3. EVENTI PRIVATI (VINCOLO DEFINITIVO)
+
+I motori promo intelligenti:
+
+• Availability avanzato
+• Demand / Scarcity
+• Suggestion Engine
+
+NON devono intervenire
+nel flusso creazione evento privato.
+
+Motivazione:
+
+la logica promo è commerciale
+e appartiene esclusivamente
+al flusso Promozioni Organizer V2.
+
+───
+
+4. UX PROMO (VINCOLANTE)
+
+La UX Promo deve essere:
+
+• premium
+• leggibile
+• non ansiogena
+• non manipolativa
+
+È vietato:
+
+• usare copy aggressivo
+• generare FOMO artificiale
+• usare pattern dark UX
+
+La piattaforma deve:
+informare con eleganza.
 ---
 
 🌍 GEOLOCATION / GEOCODE RULES (VINCOLANTI)
