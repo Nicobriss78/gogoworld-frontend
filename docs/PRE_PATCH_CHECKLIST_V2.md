@@ -305,8 +305,60 @@ TARGETING REALE
 - Le conferme sono interne UI/state-driven? [ ]
 - Sto evitando dipendenza da dialog browser? [ ]
 
----
+───
 
+PROMO ORGANIZER V2
+
+• Sto modificando:
+◦ Availability Engine? [ ]
+◦ Demand / Scarcity Engine? [ ]
+◦ Suggestion Engine? [ ]
+
+• Sto rispettando separazione responsabilità? [ ]
+
+Availability:
+• gestisce SOLO:
+◦ disponibilità reale [ ]
+◦ saturazione giorni [ ]
+◦ validazioni temporali [ ]
+◦ submit gating [ ]
+
+• Sto evitando di spostare logica commerciale dentro Availability? [ ]
+
+Demand / Scarcity:
+• gestisce SOLO:
+◦ pressione promozionale [ ]
+◦ competitività periodo [ ]
+◦ scoring [ ]
+◦ messaging premium [ ]
+
+• Sto evitando:
+◦ submit blocking? [ ]
+◦ logiche punitive? [ ]
+◦ UX ansiogena? [ ]
+
+Suggestion Engine:
+• Sto evitando suggerimenti aggressivi? [ ]
+
+• Sto rispettando regola:
+“guidare, non scoraggiare”? [ ]
+
+• Se non esistono alternative utili:
+◦ evito messaggi negativi? [ ]
+◦ valuto fallback Trilli? [ ]
+
+• Sto mantenendo separazione:
+◦ pricing [ ]
+◦ availability [ ]
+◦ demand [ ]
+◦ suggestions [ ]
+
+• Sto evitando logica promo nel flusso evento privato? [ ]
+
+• La feature è testabile via API senza frontend? [ ]
+• Ho previsto test reale UI dopo deploy? [ ]
+
+───
 ## TEST
 - Ho definito test prima della patch? [ ]
 
