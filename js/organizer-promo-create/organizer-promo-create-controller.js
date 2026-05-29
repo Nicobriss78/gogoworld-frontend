@@ -538,6 +538,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "EVENT_ALREADY_STARTED",
 });
 renderDemand(qs("[data-promo-demand]"), null);
+renderSuggestions(qs("[data-promo-suggestions-card]"), qs("[data-promo-suggestions]"), null);
 
 setSubmitBlocked(true);
 return;
@@ -553,6 +554,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "PROMO_DURATION_EXCEEDED",
 });
 renderDemand(qs("[data-promo-demand]"), null);
+renderSuggestions(qs("[data-promo-suggestions-card]"), qs("[data-promo-suggestions]"), null);
 
 setSubmitBlocked(true);
 return;
@@ -566,6 +568,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "BOOKING_WINDOW_EXCEEDED",
 });
 renderDemand(qs("[data-promo-demand]"), null);
+renderSuggestions(qs("[data-promo-suggestions-card]"), qs("[data-promo-suggestions]"), null);
 
 setSubmitBlocked(true);
 return;
@@ -579,6 +582,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "PROMO_AFTER_EVENT_END",
 });
 renderDemand(qs("[data-promo-demand]"), null);
+renderSuggestions(qs("[data-promo-suggestions-card]"), qs("[data-promo-suggestions]"), null);
 
 setSubmitBlocked(true);
 return;
@@ -588,6 +592,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "UNKNOWN",
 });
 renderDemand(qs("[data-promo-demand]"), null);
+renderSuggestions(qs("[data-promo-suggestions-card]"), qs("[data-promo-suggestions]"), null);
 
 setSubmitBlocked(true);
 return;
