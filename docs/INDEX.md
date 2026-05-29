@@ -292,7 +292,7 @@ Compatibilità futura prevista
 - Eliminazione `alert()` / `confirm()` dai file Organizer V2
 - Azioni critiche con loading state
 - Blocco doppio click
-- CTA Promo temporaneamente disabilitata
+- Promozioni Organizer V2 avviate
 - `organizer-bootstrap.js` limitato al primo livello
 - Event Detail Organizer V2 consolidato
 - Accessi Evento Privato V2 consolidati
@@ -311,6 +311,66 @@ Compatibilità futura prevista
 - Eventi no-participants supportati
 - needs-correction supportato
 - ritorni intelligenti Dashboard/Eventi
+
+📣 PROMOZIONI ORGANIZER V2 — STATO REALE
+
+Stato:
+🟡 consolidamento avanzato
+
+Implementato:
+
+• flusso creazione promo Organizer V2
+• preventivo live
+• disponibilità live
+• anteprima promo
+• backend pricing attivo
+• validazioni backend attive
+• hardening progressivo frontend/backend
+
+Motori intelligenti Promo
+
+Motore 1 — Availability Engine
+🟢 implementato
+
+• disponibilità reale slot
+• saturazione giorni
+• validazioni temporali
+• submit gating
+
+Regola:
+solo Availability può bloccare submit.
+
+Motore 2 — Demand / Scarcity Engine
+🟢 implementato (V1)
+
+• pressione promozionale
+• competitività periodo
+• saturazione commerciale
+• scoring pressione
+• messaging premium
+
+Stati supportati:
+◦ tranquilla
+◦ attiva
+◦ competitiva
+◦ molto richiesta
+
+Regola:
+Demand NON blocca submit.
+
+Motore 3 — Suggestion Engine
+🟡 pianificato
+
+Previsto:
+
+• suggerimenti intelligenti
+• finestre alternative utili
+• opportunità residue
+• fallback strategico tramite Trilli
+
+Vincolo definitivo:
+nessun messaging aggressivo,
+punitivo o apertamente negativo.
 
 ### Primo livello Organizer V2
 
@@ -345,18 +405,48 @@ Verificato sul backup reale:
 📌 PROSSIMI STEP REALI
 
 1. Consolidamento finale Organizer V2
-2. Docs finali Organizer V2
-   2.5 Rifinitura geocode Organizer V2
+2. Aggiornamento docs reali V2
+2.5 Rifinitura geocode Organizer V2
 (geocode results UI + styling residue)
-4. Promozioni Organizer V2
-5. Mappa Organizer V2
-6. Comunicazioni Organizer V2
-7. Rifondazione Admin V2
-8. UI Partecipante Trilli
-9. Trilli Geo V2 / Targeting geografico avanzato
-10. Promo QR
-11. Eliminazione legacy frontend
-12. PWA post Organizer/Admin
+
+3. PROMOZIONI ORGANIZER V2
+
+Stato:
+🟡 consolidamento avanzato
+
+3.1 Motore 1 — Availability Engine
+🟢 implementato
+
+3.2 Motore 2 — Demand / Scarcity Engine
+🟢 implementato (V1)
+
+Micro-step residui:
+• refinement UX barra premium
+• coerenza cromatica tono
+• baseline minima psicologica
+• micro tuning score medio
+
+3.3 Motore 3 — Suggestion Engine
+🟡 prossimo step
+
+Funzioni previste:
+• suggerimenti intelligenti periodo
+• alternative eleganti
+• opportunità residue
+• fallback strategico Trilli
+
+Vincolo:
+mai messaging punitivo
+se non esistono alternative realmente utili.
+
+4. Mappa Organizer V2
+5. Comunicazioni Organizer V2
+6. Rifondazione Admin V2
+7. UI Partecipante Trilli
+8. Trilli Geo V2 / Targeting geografico avanzato
+9. Promo QR
+10. Eliminazione legacy frontend
+11. PWA post Organizer/Admin
 ---
 
 ## 3. Regole aggiornamento
