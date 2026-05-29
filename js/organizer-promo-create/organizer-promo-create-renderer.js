@@ -356,6 +356,102 @@ export function renderDemand(box, demand = null) {
     </div>
   `;
 }
+function formatSuggestionDate(value) {
+  if (!value) return "";
+
+  const date = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(date.getTime())) return String(value);
+
+  return date.toLocaleDateString("it-IT", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+function getSuggestionTone(suggestions = {}) {
+  const status = suggestions.status || "NEUTRAL";
+
+  if (status === "HAS_BETTER_WINDOW") return "window";
+  if (status === "TRILL_STRATEGY") return "trill";
+  if (status === "MICRO_OPTIMIZATION") return "soft";
+
+  return "neutral";
+}
+
+function renderSuggestionItem(item = {}) {
+  if (item.type === "BETTER_WINDOW") {
+    const from = formatSuggestionDate(item.activeFrom);
+    const to = formatSuggestionDate(item.activeTo);
+
+    return `
+      <article class="org-promo-suggestion-item org-promo-suggestion-window">
+        <span>Finestra consigliata</span>
+        <strong>${from} → ${to}</strong>
+        <p>${item.message || "Questa finestra resta entro la durata utile dell’evento e mostra condizioni più favorevoli."}</p>
+      </article>
+    `;
+  }
+
+  return `
+    <article class="org-promo-suggestion-item">
+      <span>${item.type === "TRILL_SUPPORT" ? "Supporto live" : "Ottimizzazione"}</span>
+      <p>${item.message || ""}</p>
+    </article>
+  `;
+}
+
+export function renderSuggestions(card, box, suggestions = null) {
+  if (!card || !box) return;
+
+  const status = suggestions?.status || "NEUTRAL";
+
+  if (!suggestions || status === "NEUTRAL") {
+    card.hidden = true;
+    box.dataset.tone = "neutral";
+    box.innerHTML = "";
+    return;
+  }
+
+  const title = suggestions.title || "Suggerimento strategico";
+  const message =
+    suggestions.message ||
+    "Il sistema ha individuato un suggerimento utile per valorizzare la promozione.";
+
+  const items = Array.isArray(suggestions.items) ? suggestions.items : [];
+  const trillMessage = suggestions?.trillFallback?.recommended
+    ? suggestions.trillFallback.message
+    : "";
+
+  card.hidden = false;
+  box.dataset.tone = getSuggestionTone(suggestions);
+  box.innerHTML = `
+    <div class="org-promo-suggestion-kicker">Analisi strategica</div>
+    <strong>${title}</strong>
+    <p>${message}</p>
+
+    ${
+      items.length
+        ? `
+          <div class="org-promo-suggestion-items">
+            ${items.map(renderSuggestionItem).join("")}
+          </div>
+        `
+        : ""
+    }
+
+    ${
+      trillMessage
+        ? `
+          <div class="org-promo-suggestion-note">
+            ${trillMessage}
+          </div>
+        `
+        : ""
+    }
+  `;
+}
 export function showMessage(el, message) {
   if (!el) return;
   el.textContent = message || "";
