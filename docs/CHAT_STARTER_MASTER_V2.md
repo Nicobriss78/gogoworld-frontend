@@ -6,21 +6,109 @@ CONTESTO
 
 GoGoWorld.life è in rifondazione strutturale V2.
 
-Stato reale:
+STATO
 
-• Area Partecipante V2 stabile e maturata
-• Organizer V2 in fase avanzata di consolidamento
-• Backend già esteso e riusabile
-• Legacy ancora presente ma solo come miniera logica
-• Admin ancora legacy (da rifondare successivamente)
+• Area Partecipante V2 stabile e consolidata
+• Organizer V2 in fase avanzata e quasi completamente rifondato
+• Backend esteso, riusabile e progressivamente hardenizzato
+• Legacy ancora presente ma usato esclusivamente come miniera logica
+• Admin ancora legacy (rifondazione successiva)
+
+📣 PROMOZIONI ORGANIZER V2 — STATO REALE
+
+Stato reale attuale:
+🟡 in consolidamento avanzato
+
+Implementato:
+
+• flusso creazione promozione Organizer V2
+• preventivo live
+• disponibilità live
+• anteprima promo
+• backend pricing già attivo
+• validazioni backend attive
+• hardening progressivo frontend/backend
+
+MOTORI INTELLIGENTI PROMO
+
+Motore 1 — Availability Engine
+🟢 implementato e funzionante
+
+Responsabilità:
+• verifica disponibilità slot
+• saturazione giorni
+• validazioni temporali
+• blocco submit nei casi non consentiti
+
+Regola:
+solo Availability può bloccare la creazione promo.
+
+Motore 2 — Demand / Scarcity Engine
+🟢 implementato (V1 operativa)
+
+Responsabilità:
+• analisi pressione promozionale
+• analisi saturazione periodo
+• scoring pressione
+• lettura competitività periodo
+
+Output:
+• pressione promozionale
+• indice competizione
+• messaging premium
+• stato:
+◦ tranquilla
+◦ attiva
+◦ competitiva
+◦ molto richiesta
+
+Regola:
+Demand / Scarcity NON blocca il submit.
+Comunica, non punisce.
+
+Motore 3 — Suggestion Engine
+🟡 pianificato
+
+Responsabilità futura:
+• suggerimenti temporali intelligenti
+• opportunità residue
+• suggerimenti commerciali non aggressivi
+• eventuali finestre alternative migliori
+• fallback strategico tramite Trilli nei casi particolari
+
+Decisione definitiva:
+Il sistema NON deve mai comunicare apertamente:
+
+“periodo poco performante”
+“periodo scarso”
+“promo inefficace”
+
+se non esistono alternative realmente utili.
+
+In quei casi:
+• tono soft
+• suggerimenti eleganti
+• eventuale richiamo strategico ai Trilli
 
 Direzione ufficiale:
 
 CONSOLIDARE → STABILIZZARE → ESPANDERE
 
+Regola operativa reale attuale:
+
 mai:
 ❌ creare nuove aree lasciando instabile la base
+❌ avanzare roadmap ignorando incongruenze emerse nei test reali
+❌ stratificare patch sporche sui file V2
 
+Prima:
+• consolidare
+• hardenizzare
+• testare realmente
+• aggiornare docs
+
+Solo dopo:
+• espandere roadmap
 ---
 
 ## REGOLE
@@ -553,12 +641,64 @@ Verificato sul backup reale:
 
 ---
 
-## 📌 ROADMAP REALE
+📌 ROADMAP REALE
 
 1. Consolidamento finale Organizer V2
-2. Docs finali Organizer V2
+2. Aggiornamento docs reali V2
 2.5 Rifinitura geocode Organizer V2
-3. Promozioni Organizer V2
+(styling risultati + residue UI)
+
+3. PROMOZIONI ORGANIZER V2
+
+Stato:
+🟡 in consolidamento avanzato
+
+Roadmap reale Promo:
+
+3.1 Motore 1 — Availability Engine
+🟢 implementato
+• validazioni disponibilità
+• saturazione giorni
+• blocchi temporali
+• submit gating
+
+3.2 Motore 2 — Demand / Scarcity Engine
+🟢 implementato (V1)
+• pressione promozionale
+• scoring periodo
+• indice competizione
+• messaging premium
+• lettura domanda periodo
+
+Micro-step residui:
+• refinement UX barra premium
+• coerenza cromatica tono
+• baseline minima psicologica
+• micro tuning score medio
+
+3.3 Motore 3 — Suggestion Engine
+🟡 prossimo step
+
+Obiettivo:
+trasformare il sistema da:
+
+“ti mostro il contesto”
+
+a:
+
+“ti suggerisco come sfruttarlo meglio”
+
+Funzioni previste:
+• suggerimenti intelligenti periodo
+• suggerimenti alternativi eleganti
+• opportunità residue
+• fallback strategico Trilli
+• messaging commerciale non aggressivo
+
+Vincolo definitivo:
+mai suggerimenti punitivi o apertamente negativi
+se non esistono alternative realmente utili.
+
 4. Mappa Organizer V2
 5. Comunicazioni Organizer V2
 6. Rifondazione Admin V2
@@ -566,7 +706,7 @@ Verificato sul backup reale:
 8. Trilli Geo V2 / Targeting geografico avanzato
 9. Promo QR
 10. Eliminazione legacy frontend
-11. PWA
+11. PWA post Organizer/Admin
 
 
 ---
