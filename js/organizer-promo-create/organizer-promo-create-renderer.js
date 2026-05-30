@@ -431,7 +431,7 @@ if (status === "HAS_BETTER_WINDOW") {
   card.hidden = false;
   box.dataset.tone = getSuggestionTone(suggestions);
   box.innerHTML = `
-    <div class="org-promo-suggestion-kicker">Analisi strategica</div>
+    <div class="org-promo-suggestion-kicker">Analisi del periodo</div>
     <strong>${title}</strong>
     <p>${message}</p>
 
