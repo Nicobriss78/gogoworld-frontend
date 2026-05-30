@@ -554,33 +554,107 @@ font-weight: 800;
 }
 
 @media (max-width: 640px) {
-  .org-promo-create-page {
-    padding: 12px 10px 22px;
-    gap: var(--gw-space-sm, 10px);
-  }
+.org-promo-create-page {
+padding: 10px 9px 20px;
+gap: 10px;
+}
 
-  .org-promo-create-header,
-  .org-promo-create-card,
-  .org-promo-create-submit {
-    padding: var(--gw-space-sm, 10px);
-  }
+.org-promo-create-form,
+.org-promo-create-live {
+gap: 10px;
+}
 
-  .org-promo-create-header h1 {
-    font-size: 23px;
-  }
+.org-promo-create-header,
+.org-promo-create-card,
+.org-promo-create-submit {
+padding: 12px;
+border-radius: 11px;
+}
 
-  .org-promo-create-grid {
-    grid-template-columns: 1fr;
-  }
+.org-promo-create-header {
+gap: 10px;
+}
 
-  .org-promo-create-event-preview,
-  .org-promo-create-preview {
-    grid-template-columns: 64px minmax(0, 1fr);
-  }
+.org-promo-create-header h1 {
+font-size: 22px;
+line-height: 1.12;
+}
 
-  .org-promo-create-event-preview img,
-  .org-promo-create-preview img {
-    width: 64px;
-    height: 52px;
-  }
-  }
+.org-promo-create-header p {
+margin-top: 6px;
+font-size: 14px;
+line-height: 1.38;
+}
+
+.org-promo-create-card h2 {
+font-size: 17px;
+line-height: 1.22;
+}
+
+.org-promo-create-card > p {
+margin: 5px 0 11px;
+font-size: 13px;
+line-height: 1.36;
+}
+
+.org-promo-create-field {
+margin-top: 8px;
+gap: 5px;
+}
+
+.org-promo-create-field input,
+.org-promo-create-field select,
+.org-promo-create-field textarea {
+min-height: 40px;
+padding: 9px 11px;
+}
+
+.org-promo-create-grid {
+grid-template-columns: 1fr;
+gap: 8px;
+}
+
+.org-promo-create-event-preview,
+.org-promo-create-preview {
+grid-template-columns: 64px minmax(0, 1fr);
+margin-top: 12px;
+padding: 9px;
+gap: 9px;
+}
+
+.org-promo-create-event-preview img,
+.org-promo-create-preview img {
+width: 64px;
+height: 52px;
+}
+
+.org-promo-create-price,
+.org-promo-create-availability,
+.org-promo-create-demand {
+margin-top: 12px;
+}
+
+.org-promo-create-availability,
+.org-promo-create-demand,
+.org-promo-create-suggestions {
+padding: 11px;
+border-radius: 10px;
+}
+
+.org-promo-create-suggestions {
+margin-top: 14px;
+}
+
+.org-promo-suggestion-items {
+gap: 7px;
+margin-top: 9px;
+}
+
+.org-promo-suggestion-item {
+padding: 9px;
+}
+
+.org-promo-create-submit button {
+min-height: 42px;
+}
+}
