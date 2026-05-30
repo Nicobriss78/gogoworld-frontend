@@ -264,11 +264,11 @@ letter-spacing: -0.01em;
 
 .org-promo-create-availability p,
 .org-promo-create-demand p {
-margin: 5px 0 0;
+margin: 6px 0 0;
 color: var(--home-text-secondary);
 font-size: 13px;
-line-height: 1.35;
-font-weight: 700;
+line-height: 1.42;
+font-weight: 600;
 }
 .org-promo-availability-detail {
 margin-top: 10px;
