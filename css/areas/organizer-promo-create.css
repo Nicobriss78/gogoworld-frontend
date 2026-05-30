@@ -668,14 +668,13 @@ padding: 10px;
 }
 
 .org-promo-suggestion-items {
-gap: 7px;
-margin-top: 9px;
+gap: 6px;
+margin-top: 8px;
 }
 
 .org-promo-suggestion-item {
-padding: 9px;
+padding: 8px 9px;
 }
-
 .org-promo-create-submit button {
 min-height: 42px;
 }
