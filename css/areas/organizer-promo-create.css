@@ -356,8 +356,13 @@ rgba(255, 255, 255, 0.72)
 
 .org-promo-create-demand[data-tone="high"],
 .org-promo-create-demand[data-tone="very-high"] {
-border-color: rgba(234, 88, 12, 0.24);
-background: rgba(234, 88, 12, 0.08);
+border-color: rgba(156, 97, 72, 0.20);
+background:
+linear-gradient(
+135deg,
+rgba(156, 97, 72, 0.055),
+rgba(255, 255, 255, 0.74)
+);
 }
 
 .org-promo-demand-meter {
