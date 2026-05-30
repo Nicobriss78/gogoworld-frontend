@@ -395,7 +395,7 @@ const rangeLabel = from && to ? `Dal ${from} al ${to}` : `${from} → ${to}`;
 
   return `
     <article class="org-promo-suggestion-item">
-      <span>${item.type === "TRILL_SUPPORT" ? "Supporto live" : "Ottimizzazione"}</span>
+      <span>${item.type === "TRILL_SUPPORT" ? "Supporto live consigliato" : "Ottimizzazione"}</span>
       <p>${item.message || ""}</p>
     </article>
   `;
