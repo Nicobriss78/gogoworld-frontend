@@ -327,10 +327,8 @@ export function renderDemand(box, demand = null) {
 
   if (!demand) {
     box.dataset.tone = "unknown";
-    box.innerHTML = `
-      <strong>Analisi periodo</strong>
-      <p>Completa evento, copertura e date per leggere la pressione promozionale del periodo.</p>
-    `;
+    box.innerHTML = `<strong>Analisi del periodo</strong>
+    <p>Seleziona le date per valutare quanto il periodo scelto è già richiesto da altre promozioni.</p>`;
     return;
   }
 
