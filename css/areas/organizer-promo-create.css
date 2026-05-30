@@ -315,8 +315,13 @@ line-height: 1.25;
 font-weight: 800;
 }
 .org-promo-create-availability[data-tone="available"] {
-  border-color: rgba(21, 128, 61, 0.24);
-  background: rgba(21, 128, 61, 0.08);
+border-color: rgba(96, 140, 112, 0.22);
+background:
+linear-gradient(
+135deg,
+rgba(96, 140, 112, 0.06),
+rgba(255, 255, 255, 0.72)
+);
 }
 
 .org-promo-create-availability[data-tone="limited"] {
