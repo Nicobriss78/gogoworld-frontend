@@ -387,12 +387,12 @@ const to = formatSuggestionDate(item.activeTo);
 const rangeLabel = from && to ? `Dal ${from} al ${to}` : `${from} → ${to}`;
 
     return `
-      <article class="org-promo-suggestion-item org-promo-suggestion-window">
-        <span>Finestra consigliata</span>
-        <strong>${from} → ${to}</strong>
-        <p>${item.message || "Questa finestra resta entro la durata utile dell’evento e mostra condizioni più favorevoli."}</p>
-      </article>
-    `;
+  <article class="org-promo-suggestion-item org-promo-suggestion-window">
+    <span>Periodo consigliato</span>
+    <strong>${rangeLabel}</strong>
+    <p>Disponibilità completa e pressione promozionale più favorevole.</p>
+  </article>
+`;
   }
 
   return `
