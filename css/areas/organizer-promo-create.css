@@ -345,8 +345,13 @@ background: rgba(21, 128, 61, 0.06);
 }
 
 .org-promo-create-demand[data-tone="medium"] {
-border-color: rgba(154, 106, 18, 0.22);
-background: rgba(154, 106, 18, 0.07);
+border-color: rgba(122, 96, 56, 0.18);
+background:
+linear-gradient(
+135deg,
+rgba(122, 96, 56, 0.05),
+rgba(255, 255, 255, 0.72)
+);
 }
 
 .org-promo-create-demand[data-tone="high"],
