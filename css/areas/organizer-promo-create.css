@@ -355,14 +355,18 @@ margin-top: 10px;
 height: 7px;
 overflow: hidden;
 border-radius: 999px;
-background: rgba(15, 23, 42, 0.08);
+background: rgba(28, 38, 52, 0.08);
 }
 
 .org-promo-demand-meter span {
 display: block;
 height: 100%;
 border-radius: inherit;
-background: currentColor;
+background: linear-gradient(
+90deg,
+rgba(37, 51, 72, 0.88) 0%,
+rgba(52, 69, 94, 0.78) 100%
+);
 }
 
 .org-promo-demand-meta {
