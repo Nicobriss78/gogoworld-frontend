@@ -383,7 +383,8 @@ function getSuggestionTone(suggestions = {}) {
 function renderSuggestionItem(item = {}) {
   if (item.type === "BETTER_WINDOW") {
     const from = formatSuggestionDate(item.activeFrom);
-    const to = formatSuggestionDate(item.activeTo);
+const to = formatSuggestionDate(item.activeTo);
+const rangeLabel = from && to ? `Dal ${from} al ${to}` : `${from} → ${to}`;
 
     return `
       <article class="org-promo-suggestion-item org-promo-suggestion-window">
