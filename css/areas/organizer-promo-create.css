@@ -663,7 +663,8 @@ border-radius: 10px;
 }
 
 .org-promo-create-suggestions {
-margin-top: 14px;
+margin-top: 12px;
+padding: 10px;
 }
 
 .org-promo-suggestion-items {
