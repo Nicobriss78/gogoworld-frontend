@@ -416,9 +416,14 @@ export function renderSuggestions(card, box, suggestions = null) {
   }
 
   const title = suggestions.title || "Suggerimento strategico";
-  const message =
-    suggestions.message ||
-    "Il sistema ha individuato un suggerimento utile per valorizzare la promozione.";
+  let message =
+  suggestions.message ||
+  "Il sistema ha individuato un suggerimento utile per valorizzare la promozione.";
+
+if (status === "HAS_BETTER_WINDOW") {
+  message =
+    "La prima parte del periodo selezionato risulta particolarmente richiesta. Abbiamo individuato una finestra successiva, sempre entro la durata dell’evento, con condizioni più favorevoli per la visibilità.";
+}
 
   const items = Array.isArray(suggestions.items) ? suggestions.items : [];
   const trillMessage = suggestions?.trillFallback?.recommended
