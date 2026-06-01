@@ -456,6 +456,91 @@ if (status === "HAS_BETTER_WINDOW") {
     }
   `;
 }
+function normalizeAdvisorText(value, fallback = "") {
+  return String(value || fallback || "").trim();
+}
+
+function renderAdvisorAction(action = {}, { secondary = false } = {}) {
+  const label = normalizeAdvisorText(action.label, secondary ? "Azione" : "Applica strategia");
+  const encoded = encodeURIComponent(JSON.stringify(action || {}));
+
+  return `
+    <button
+      type="button"
+      class="${secondary ? "org-promo-advisor-secondary-action" : "org-promo-advisor-primary-action"}"
+      data-promo-advisor-action="${encoded}"
+    >
+      ${label}
+    </button>
+  `;
+}
+
+function renderAdvisorAlternative(strategy = {}) {
+  const title = normalizeAdvisorText(strategy.title, "Strategia alternativa");
+  const summary = normalizeAdvisorText(strategy.summary);
+  const reason = normalizeAdvisorText(strategy.reason);
+  const primaryAction = strategy.primaryAction
+    ? renderAdvisorAction(strategy.primaryAction, { secondary: true })
+    : "";
+
+  return `
+    <article class="org-promo-advisor-alternative">
+      <span>Strategia alternativa</span>
+      <strong>${title}</strong>
+      ${summary ? `<p>${summary}</p>` : ""}
+      ${reason ? `<p>${reason}</p>` : ""}
+      ${primaryAction ? `<div class="org-promo-advisor-actions">${primaryAction}</div>` : ""}
+    </article>
+  `;
+}
+
+export function renderAdvisor(card, box, advisor = null) {
+  if (!card || !box) return;
+
+  const primaryStrategy = advisor?.primaryStrategy || null;
+
+  if (!advisor || !primaryStrategy) {
+    card.hidden = true;
+    box.innerHTML = "";
+    return;
+  }
+
+  const title = normalizeAdvisorText(primaryStrategy.title, "Strategia consigliata");
+  const summary = normalizeAdvisorText(primaryStrategy.summary);
+  const reason = normalizeAdvisorText(primaryStrategy.reason);
+  const primaryAction = renderAdvisorAction(primaryStrategy.primaryAction || {});
+  const alternativeStrategies = Array.isArray(advisor.alternativeStrategies)
+    ? advisor.alternativeStrategies
+    : [];
+
+  card.hidden = false;
+  box.dataset.level = normalizeAdvisorText(primaryStrategy.level, "SOFT").toLowerCase();
+  box.innerHTML = `
+    <div class="org-promo-advisor-kicker">Strategia consigliata</div>
+    <strong>${title}</strong>
+    ${summary ? `<p>${summary}</p>` : ""}
+    ${reason ? `<p>${reason}</p>` : ""}
+
+    <div class="org-promo-advisor-actions">
+      ${primaryAction}
+      ${
+        alternativeStrategies.length
+          ? `<button type="button" class="org-promo-advisor-toggle" data-promo-advisor-toggle>Mostra strategie alternative</button>`
+          : ""
+      }
+    </div>
+
+    ${
+      alternativeStrategies.length
+        ? `
+          <div class="org-promo-advisor-alternatives" data-promo-advisor-alternatives hidden>
+            ${alternativeStrategies.map(renderAdvisorAlternative).join("")}
+          </div>
+        `
+        : ""
+    }
+  `;
+}
 export function showMessage(el, message) {
   if (!el) return;
   el.textContent = message || "";
