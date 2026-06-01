@@ -704,7 +704,75 @@ setSubmitBlocked(false);
 }
 }
 
+function renderAdvisorBox(advisor = null) {
+  renderAdvisor(
+    qs("[data-promo-advisor-card]"),
+    qs("[data-promo-advisor]"),
+    advisor
+  );
+}
 
+function clearAdvisorBox() {
+  renderAdvisorBox(null);
+}
+
+function decodeAdvisorAction(encoded) {
+  try {
+    return JSON.parse(decodeURIComponent(encoded || ""));
+  } catch (err) {
+    console.warn("[OrganizerPromoCreate] invalid advisor action:", err);
+    return null;
+  }
+}
+
+function applyAdvisorFields(payload = {}) {
+  Object.entries(payload || {}).forEach(([name, value]) => {
+    if (value === null || value === undefined || value === "") return;
+
+    const input = field(name);
+    if (!input) return;
+
+    input.value = String(value);
+
+    if (name === "geoScope") {
+      updateGeoFields();
+    }
+  });
+
+  renderLive();
+}
+
+function handleAdvisorClick(event) {
+  const toggle = event.target.closest("[data-promo-advisor-toggle]");
+
+  if (toggle) {
+    const box = qs("[data-promo-advisor-alternatives]");
+    if (!box) return;
+
+    const nextHidden = !box.hidden;
+    box.hidden = nextHidden;
+    toggle.textContent = nextHidden
+      ? "Mostra strategie alternative"
+      : "Nascondi strategie alternative";
+    return;
+  }
+
+  const actionButton = event.target.closest("[data-promo-advisor-action]");
+  if (!actionButton) return;
+
+  const action = decodeAdvisorAction(actionButton.dataset.promoAdvisorAction);
+  if (!action) return;
+
+  if (action.action === "APPLY_PROMO_FIELDS") {
+    applyAdvisorFields(action.payload || {});
+    return;
+  }
+
+  if (action.action === "OPEN_KNOWLEDGE_CENTER") {
+    const target = action.payload?.target || "/pages/organizer-knowledge-center-v2.html";
+    window.location.href = target;
+  }
+}
 function validateSubmit(payload) {
   if (!payload.eventId) return "Seleziona un evento da promuovere.";
   if (!payload.title) return "Inserisci il titolo della promozione.";
