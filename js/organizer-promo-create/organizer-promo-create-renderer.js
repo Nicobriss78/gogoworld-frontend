@@ -522,7 +522,10 @@ export function renderAdvisor(card, box, advisor = null) {
   const summary = normalizeAdvisorText(primaryStrategy.summary);
   const reason = normalizeAdvisorText(primaryStrategy.reason);
   const primaryAction = renderAdvisorAction(primaryStrategy.primaryAction || {});
-  const alternativeStrategies = Array.isArray(advisor.alternativeStrategies)
+const detectedFactors = Array.isArray(advisor.detectedFactors)
+  ? advisor.detectedFactors
+  : [];
+const alternativeStrategies = Array.isArray(advisor.alternativeStrategies)
     ? advisor.alternativeStrategies
     : [];
 
