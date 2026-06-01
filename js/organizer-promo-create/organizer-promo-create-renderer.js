@@ -535,7 +535,17 @@ const alternativeStrategies = Array.isArray(advisor.alternativeStrategies)
     <div class="org-promo-advisor-kicker">Strategia consigliata</div>
     <strong>${title}</strong>
     ${summary ? `<p>${summary}</p>` : ""}
-    ${reason ? `<p>${reason}</p>` : ""}
+    ${
+      reason
+        ? `
+          <div class="org-promo-advisor-reason">
+            <span>Perché questa strategia</span>
+            <p>${reason}</p>
+          </div>
+        `
+        : ""
+    }
+    ${renderAdvisorFactors(detectedFactors)}
 
     <div class="org-promo-advisor-actions">
       ${primaryAction}
