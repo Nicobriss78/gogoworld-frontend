@@ -925,6 +925,10 @@ function bindFields() {
   if (form) {
     form.addEventListener("submit", handleSubmit);
   }
+  const advisorCard = qs("[data-promo-advisor-card]");
+  if (advisorCard) {
+    advisorCard.addEventListener("click", handleAdvisorClick);
+  }
 }
 
 async function init() {
