@@ -628,8 +628,7 @@ isAvailabilityBlocked ? null : estimate
 
 renderAvailability(qs("[data-promo-availability]"), availability);
 renderDemand(qs("[data-promo-demand]"), demand);
-renderAdvisorBox(isAvailabilityBlocked ? null : advisor);
-renderSuggestions(qs("[data-promo-suggestions-card]"), qs("[data-promo-suggestions]"), suggestions);
+renderAdvisorBox(advisor);renderSuggestions(qs("[data-promo-suggestions-card]"), qs("[data-promo-suggestions]"), suggestions);
 setSubmitBlocked(isAvailabilityBlocked);
 } catch (err) {
 console.warn("[OrganizerPromoCreate] estimate failed:", err);
