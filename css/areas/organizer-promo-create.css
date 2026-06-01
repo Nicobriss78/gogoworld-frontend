@@ -404,7 +404,110 @@ font-weight: 900;
 .org-promo-create-card[hidden] {
 display: none;
 }
+.org-promo-create-advisor {
+margin-top: 18px;
+padding: 14px;
+border: 1px solid rgba(122, 50, 66, 0.24);
+border-radius: var(--gw-radius-btn, 10px);
+background:
+  linear-gradient(135deg, rgba(122, 50, 66, 0.075), rgba(255, 255, 255, 0.78)),
+  var(--home-bg);
+}
 
+.org-promo-advisor-kicker {
+margin-bottom: 6px;
+color: var(--org-accent, #7A3242);
+font-size: 10px;
+line-height: 1.2;
+font-weight: 900;
+letter-spacing: 0.07em;
+text-transform: uppercase;
+}
+
+.org-promo-create-advisor strong {
+display: block;
+color: var(--home-text);
+font-size: 15px;
+line-height: 1.25;
+font-weight: 900;
+letter-spacing: -0.01em;
+}
+
+.org-promo-create-advisor p {
+margin: 7px 0 0;
+color: var(--home-text-secondary);
+font-size: 13px;
+line-height: 1.42;
+font-weight: 650;
+}
+
+.org-promo-advisor-actions {
+margin-top: 12px;
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+}
+
+.org-promo-advisor-primary-action,
+.org-promo-advisor-secondary-action,
+.org-promo-advisor-toggle {
+min-height: 36px;
+padding: 9px 11px;
+border: 1px solid var(--home-accent-border);
+border-radius: var(--gw-radius-btn, 10px);
+font-size: 12px;
+line-height: 1;
+font-weight: 900;
+cursor: pointer;
+}
+
+.org-promo-advisor-primary-action {
+background: var(--org-accent, #7A3242);
+color: #fff;
+}
+
+.org-promo-advisor-secondary-action,
+.org-promo-advisor-toggle {
+background: rgba(255, 255, 255, 0.82);
+color: var(--org-accent, #7A3242);
+}
+
+.org-promo-advisor-alternatives {
+margin-top: 12px;
+display: grid;
+gap: 9px;
+}
+
+.org-promo-advisor-alternatives[hidden] {
+display: none;
+}
+
+.org-promo-advisor-alternative {
+padding: 10px;
+border: 1px solid rgba(122, 50, 66, 0.14);
+border-radius: var(--gw-radius-btn, 10px);
+background: rgba(255, 255, 255, 0.72);
+}
+
+.org-promo-advisor-alternative span {
+display: block;
+margin-bottom: 4px;
+color: var(--org-accent, #7A3242);
+font-size: 10px;
+line-height: 1.2;
+font-weight: 900;
+letter-spacing: 0.055em;
+text-transform: uppercase;
+}
+
+.org-promo-advisor-alternative strong {
+font-size: 13px;
+}
+
+.org-promo-advisor-alternative p {
+font-size: 12px;
+line-height: 1.36;
+}
 .org-promo-create-suggestions {
 margin-top: 18px;
 padding: 14px;
