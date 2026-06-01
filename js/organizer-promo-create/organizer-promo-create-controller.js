@@ -434,6 +434,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "INVALID_DATE_RANGE",
 });
 renderDemand(qs("[data-promo-demand]"), null);
+clearAdvisorBox();
 
 setSubmitBlocked(true);
 return;
@@ -455,6 +456,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "PROMO_AFTER_EVENT_END",
 });
 renderDemand(qs("[data-promo-demand]"), null);
+clearAdvisorBox();
 
 setSubmitBlocked(true);
 return;
@@ -669,6 +671,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "EVENT_ALREADY_STARTED",
 });
 renderDemand(qs("[data-promo-demand]"), null);
+clearAdvisorBox();
 
 setSubmitBlocked(true);
 return;
@@ -684,6 +687,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "PROMO_DURATION_EXCEEDED",
 });
 renderDemand(qs("[data-promo-demand]"), null);
+clearAdvisorBox();
 
 setSubmitBlocked(true);
 return;
@@ -697,6 +701,7 @@ renderAvailability(qs("[data-promo-availability]"), {
 status: "PROMO_AFTER_EVENT_END",
 });
 renderDemand(qs("[data-promo-demand]"), null);
+clearAdvisorBox();
 
 setSubmitBlocked(true);
 return;
