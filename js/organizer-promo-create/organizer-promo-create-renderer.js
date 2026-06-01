@@ -493,7 +493,20 @@ function renderAdvisorAlternative(strategy = {}) {
     </article>
   `;
 }
+function renderAdvisorFactors(factors = []) {
+  if (!Array.isArray(factors) || !factors.length) return "";
 
+  return `
+    <div class="org-promo-advisor-factors">
+      <span>Fattori rilevati</span>
+      <ul>
+        ${factors
+          .map((factor) => `<li>${normalizeAdvisorText(factor.label)}</li>`)
+          .join("")}
+      </ul>
+    </div>
+  `;
+}
 export function renderAdvisor(card, box, advisor = null) {
   if (!card || !box) return;
 
