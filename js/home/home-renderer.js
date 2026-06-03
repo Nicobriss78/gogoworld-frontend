@@ -490,7 +490,7 @@ export function createBannerSlot(slotIndex = 0) {
 export function createBannerCard(banner) {
   const link = document.createElement("a");
   link.className = "home-banner-card";
-  link.href = String(banner?.targetUrl ?? banner?.url ?? "#");
+  link.href = String(banner?.clickUrl ?? banner?.targetUrl ?? banner?.url ?? "#");
   link.target = "_blank";
   link.rel = "noopener noreferrer";
 
