@@ -122,7 +122,7 @@ export function createSharedBannerEngine({
   let pool = [];
   let timer = null;
   let currentIndex = 0;
-
+const viewTracker = createBannerViewTracker();
   function setData({ banners = [], tips = [] } = {}) {
     const bannerItems = (Array.isArray(banners) ? banners : []).map((banner) => ({
       type: "banner",
