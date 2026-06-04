@@ -151,7 +151,9 @@ const viewTracker = createBannerViewTracker();
     if (emptyClassName) {
       slot.classList.remove(emptyClassName);
     }
-
+    inner
+  .querySelectorAll("[data-banner-view-url]")
+  .forEach((node) => viewTracker.unobserve(node));
     inner.replaceChildren();
 
     if (!item) {
