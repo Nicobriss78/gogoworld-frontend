@@ -17,7 +17,100 @@ function getSlotInner(slot) {
   if (!slot) return null;
   return slot.firstElementChild || null;
 }
+function sendBannerView(url) {
+  const endpoint = String(url || "").trim();
+  if (!endpoint) return;
 
+  try {
+    if (navigator.sendBeacon) {
+      const sent = navigator.sendBeacon(endpoint);
+      if (sent) return;
+    }
+  } catch {}
+
+  fetch(endpoint, {
+    method: "POST",
+    keepalive: true,
+    credentials: "same-origin",
+  }).catch(() => {});
+}
+
+function createBannerViewTracker() {
+  const viewedNodes = new WeakSet();
+  const timers = new WeakMap();
+
+  if (typeof IntersectionObserver !== "function") {
+    return {
+      observe() {},
+      unobserve() {},
+    };
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const node = entry.target;
+
+        if (viewedNodes.has(node)) {
+          observer.unobserve(node);
+          return;
+        }
+
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          if (timers.has(node)) return;
+
+          const timeoutId = window.setTimeout(() => {
+            if (viewedNodes.has(node)) return;
+
+            viewedNodes.add(node);
+            timers.delete(node);
+            observer.unobserve(node);
+
+            sendBannerView(node.dataset.bannerViewUrl);
+          }, 1000);
+
+          timers.set(node, timeoutId);
+          return;
+        }
+
+        const timeoutId = timers.get(node);
+        if (timeoutId) {
+          window.clearTimeout(timeoutId);
+          timers.delete(node);
+        }
+      });
+    },
+    {
+      threshold: [0, 0.5, 1],
+    }
+  );
+
+  function observe(node, banner) {
+    const viewUrl = String(banner?.viewUrl || "").trim();
+
+    if (!node || !viewUrl) return;
+
+    node.dataset.bannerViewUrl = viewUrl;
+    observer.observe(node);
+  }
+
+  function unobserve(node) {
+    if (!node) return;
+
+    const timeoutId = timers.get(node);
+    if (timeoutId) {
+      window.clearTimeout(timeoutId);
+      timers.delete(node);
+    }
+
+    observer.unobserve(node);
+  }
+
+  return {
+    observe,
+    unobserve,
+  };
+}
 export function createSharedBannerEngine({
   rotationInterval = 8000,
   emptyClassName = "",
