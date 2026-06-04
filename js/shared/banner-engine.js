@@ -173,8 +173,12 @@ const viewTracker = createBannerViewTracker();
     }
 
     if (node) {
-      inner.appendChild(node);
-    }
+  inner.appendChild(node);
+
+  if (item.type === "banner") {
+    viewTracker.observe(node, item.data);
+  }
+}
   }
 
   function fillInitial() {
