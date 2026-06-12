@@ -590,66 +590,84 @@ function renderAdvisorFactors(factors = []) {
     </div>
   `;
 }
-export function renderAdvisor(card, box, advisor = null) {
+
+export function renderAdvisor(card, box, advisor = null, campaignAdvisor = null) {
   if (!card || !box) return;
 
   const primaryStrategy = advisor?.primaryStrategy || null;
+  const campaignAdvisorHtml = renderCampaignAdvisor(campaignAdvisor);
 
-  if (!advisor || !primaryStrategy) {
+  if ((!advisor || !primaryStrategy) && !campaignAdvisorHtml) {
     card.hidden = true;
     box.innerHTML = "";
     return;
   }
 
-  const title = normalizeAdvisorText(primaryStrategy.title, "Strategia consigliata");
-  const summary = normalizeAdvisorText(primaryStrategy.summary);
-  const reason = normalizeAdvisorText(primaryStrategy.reason);
-  const primaryAction = renderAdvisorAction(primaryStrategy.primaryAction || {});
-const detectedFactors = Array.isArray(advisor.detectedFactors)
-  ? advisor.detectedFactors
-  : [];
-const alternativeStrategies = Array.isArray(advisor.alternativeStrategies)
+  const title = normalizeAdvisorText(primaryStrategy?.title, "Strategia consigliata");
+  const summary = normalizeAdvisorText(primaryStrategy?.summary);
+  const reason = normalizeAdvisorText(primaryStrategy?.reason);
+  const primaryAction = primaryStrategy?.primaryAction
+    ? renderAdvisorAction(primaryStrategy.primaryAction || {})
+    : "";
+
+  const detectedFactors = Array.isArray(advisor?.detectedFactors)
+    ? advisor.detectedFactors
+    : [];
+
+  const alternativeStrategies = Array.isArray(advisor?.alternativeStrategies)
     ? advisor.alternativeStrategies
     : [];
 
   card.hidden = false;
-  box.dataset.level = normalizeAdvisorText(primaryStrategy.level, "SOFT").toLowerCase();
+  box.dataset.level = normalizeAdvisorText(primaryStrategy?.level, "SOFT").toLowerCase();
+
   box.innerHTML = `
-    <div class="org-promo-advisor-kicker">Strategia consigliata</div>
-    <strong>${title}</strong>
-    ${summary ? `<p>${summary}</p>` : ""}
     ${
-      reason
+      primaryStrategy
         ? `
-          <div class="org-promo-advisor-reason">
-            <span>Perché questa strategia</span>
-            <p>${reason}</p>
-          </div>
+          <section class="org-promo-operational-advisor">
+            <div class="org-promo-advisor-kicker">Primo cervello · strategia operativa</div>
+            <strong>${title}</strong>
+            ${summary ? `<p>${summary}</p>` : ""}
+            ${
+              reason
+                ? `
+                  <div class="org-promo-advisor-reason">
+                    <span>Perché questa strategia</span>
+                    <p>${reason}</p>
+                  </div>
+                `
+                : ""
+            }
+            ${renderAdvisorFactors(detectedFactors)}
+
+            <div class="org-promo-advisor-actions">
+              ${primaryAction}
+              ${
+                alternativeStrategies.length
+                  ? `<button type="button" class="org-promo-advisor-toggle" data-promo-advisor-toggle>Mostra strategie alternative</button>`
+                  : ""
+              }
+            </div>
+
+            ${
+              alternativeStrategies.length
+                ? `
+                  <div class="org-promo-advisor-alternatives" data-promo-advisor-alternatives hidden>
+                    ${alternativeStrategies.map(renderAdvisorAlternative).join("")}
+                  </div>
+                `
+                : ""
+            }
+          </section>
         `
         : ""
     }
-    ${renderAdvisorFactors(detectedFactors)}
 
-    <div class="org-promo-advisor-actions">
-      ${primaryAction}
-      ${
-        alternativeStrategies.length
-          ? `<button type="button" class="org-promo-advisor-toggle" data-promo-advisor-toggle>Mostra strategie alternative</button>`
-          : ""
-      }
-    </div>
-
-    ${
-      alternativeStrategies.length
-        ? `
-          <div class="org-promo-advisor-alternatives" data-promo-advisor-alternatives hidden>
-            ${alternativeStrategies.map(renderAdvisorAlternative).join("")}
-          </div>
-        `
-        : ""
-    }
+    ${campaignAdvisorHtml}
   `;
 }
+
 export function showMessage(el, message) {
   if (!el) return;
   el.textContent = message || "";
