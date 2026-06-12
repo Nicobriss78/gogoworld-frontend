@@ -495,10 +495,10 @@ function renderAdvisorAlternative(strategy = {}) {
 }
 function humanizeCampaignValue(value) {
   const map = {
-    "10_plus_ctr": "CTR superiore al 10%",
-    "5_10_ctr": "CTR tra 5% e 10%",
-    "1_5_ctr": "CTR tra 1% e 5%",
-    "0_1_ctr": "CTR inferiore all'1%",
+"10_plus_ctr": "superiore al 10%",
+"5_10_ctr": "tra 5% e 10%",
+"1_5_ctr": "tra 1% e 5%",
+"0_1_ctr": "inferiore all'1%",
     "1_50_impressions": "1–50 visualizzazioni",
     "51_200_impressions": "51–200 visualizzazioni",
     "201_500_impressions": "201–500 visualizzazioni",
