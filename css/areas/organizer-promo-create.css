@@ -441,7 +441,9 @@ line-height: 1.42;
 font-weight: 650;
 }
 .org-promo-advisor-reason,
-.org-promo-advisor-factors {
+.org-promo-advisor-factors,
+.org-promo-campaign-advisor,
+.org-promo-campaign-advisor-group {
 margin-top: 12px;
 padding: 10px;
 border: 1px solid rgba(122, 50, 66, 0.12);
