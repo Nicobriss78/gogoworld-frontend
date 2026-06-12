@@ -493,6 +493,89 @@ function renderAdvisorAlternative(strategy = {}) {
     </article>
   `;
 }
+function renderCampaignAdvisorItems(items = [], label = "Segnali storici") {
+  if (!Array.isArray(items) || !items.length) return "";
+
+  return `
+    <div class="org-promo-campaign-advisor-group">
+      <span>${label}</span>
+      <div class="org-promo-campaign-advisor-list">
+        ${items
+          .slice(0, 4)
+          .map((item) => {
+            const title = normalizeAdvisorText(item.title, "Segnale storico");
+            const message = normalizeAdvisorText(item.message);
+            const source =
+              item.source === "personal"
+                ? "Storico personale"
+                : item.source === "collective"
+                  ? "Dati collettivi"
+                  : "Storico campagne";
+
+            return `
+              <article class="org-promo-campaign-advisor-item" data-level="${normalizeAdvisorText(item.level, "info")}">
+                <small>${source}</small>
+                <strong>${title}</strong>
+                ${message ? `<p>${message}</p>` : ""}
+              </article>
+            `;
+          })
+          .join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderCampaignAdvisor(campaignAdvisor = null) {
+  if (!campaignAdvisor?.ui?.visible) return "";
+
+  const title = normalizeAdvisorText(
+    campaignAdvisor.ui.title,
+    "Consulente storico campagne"
+  );
+
+  const subtitle = normalizeAdvisorText(
+    campaignAdvisor.ui.subtitle,
+    "Suggerimenti basati sullo storico reale delle campagne."
+  );
+
+  const confidence = normalizeAdvisorText(campaignAdvisor.confidence, "none");
+  const personalSample = Number(campaignAdvisor.sampleSize?.personal || 0);
+  const collectiveSample = Number(campaignAdvisor.sampleSize?.collective || 0);
+
+  const recommendations = Array.isArray(campaignAdvisor.recommendations)
+    ? campaignAdvisor.recommendations
+    : [];
+
+  const opportunities = Array.isArray(campaignAdvisor.opportunities)
+    ? campaignAdvisor.opportunities
+    : [];
+
+  const warnings = Array.isArray(campaignAdvisor.warnings)
+    ? campaignAdvisor.warnings
+    : [];
+
+  return `
+    <section class="org-promo-campaign-advisor" data-priority="${normalizeAdvisorText(campaignAdvisor.ui.priority, "info")}">
+      <div class="org-promo-campaign-advisor-head">
+        <div>
+          <div class="org-promo-advisor-kicker">Secondo cervello · memoria campagne</div>
+          <strong>${title}</strong>
+          <p>${subtitle}</p>
+        </div>
+
+        <div class="org-promo-campaign-advisor-meta">
+          <span>Affidabilità: <b>${confidence}</b></span>
+          <span>Storico: <b>${personalSample}</b> personale · <b>${collectiveSample}</b> collettivo</span>
+        </div>
+      </div>
+
+      ${renderCampaignAdvisorItems(recommendations, "Raccomandazioni")}
+      ${renderCampaignAdvisorItems(opportunities, "Opportunità")}
+      ${renderCampaignAdvisorItems(warnings, "Avvisi")}
+    </section>
+  `;
+}
 function renderAdvisorFactors(factors = []) {
   if (!Array.isArray(factors) || !factors.length) return "";
 
