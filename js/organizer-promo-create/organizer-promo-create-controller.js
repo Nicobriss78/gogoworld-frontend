@@ -613,6 +613,7 @@ const availability = analyze?.availability || null;
 const demand = analyze?.demand || null;
 const suggestions = analyze?.suggestions || null;
 const advisor = analyze?.advisor || null;
+const campaignAdvisor = analyze?.campaignAdvisor || null;
 const isAvailabilityBlocked = availability?.available === false;
 
 state.latestEstimate = isAvailabilityBlocked ? null : estimate;
