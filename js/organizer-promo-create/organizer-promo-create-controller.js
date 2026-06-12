@@ -716,11 +716,12 @@ setSubmitBlocked(false);
 }
 }
 
-function renderAdvisorBox(advisor = null) {
+function renderAdvisorBox(advisor = null, campaignAdvisor = null) {
   renderAdvisor(
     qs("[data-promo-advisor-card]"),
     qs("[data-promo-advisor]"),
-    advisor
+    advisor,
+    campaignAdvisor
   );
 }
 
