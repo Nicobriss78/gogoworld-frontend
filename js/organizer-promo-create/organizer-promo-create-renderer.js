@@ -493,6 +493,25 @@ function renderAdvisorAlternative(strategy = {}) {
     </article>
   `;
 }
+function humanizeCampaignValue(value) {
+  const map = {
+    "10_plus_ctr": "CTR superiore al 10%",
+    "5_10_ctr": "CTR tra 5% e 10%",
+    "1_5_ctr": "CTR tra 1% e 5%",
+    "0_1_ctr": "CTR inferiore all'1%",
+    "1_50_impressions": "1–50 visualizzazioni",
+    "51_200_impressions": "51–200 visualizzazioni",
+    "201_500_impressions": "201–500 visualizzazioni",
+    "500_plus_impressions": "oltre 500 visualizzazioni",
+    "1_day": "1 giorno",
+    "2_3_days": "2–3 giorni",
+    "4_7_days": "4–7 giorni",
+    "8_14_days": "8–14 giorni",
+    "15_plus_days": "15+ giorni",
+  };
+
+  return map[value] || value;
+}
 function renderCampaignAdvisorItems(items = [], label = "Segnali storici") {
   if (!Array.isArray(items) || !items.length) return "";
 
