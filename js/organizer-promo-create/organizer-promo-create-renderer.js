@@ -607,9 +607,27 @@ const warnings = Array.isArray(campaignAdvisor.warnings)
         </div>
       </div>
 
-      ${renderCampaignAdvisorItems(recommendations, "Raccomandazioni")}
-      ${renderCampaignAdvisorItems(opportunities, "Opportunità")}
-      ${renderCampaignAdvisorItems(warnings, "Avvisi")}
+      ${renderCampaignAdvisorItems(recommendations.slice(0, 2), "Raccomandazioni")}
+      ${renderCampaignAdvisorItems(confirmations.slice(0, 2), "Segnali positivi")}
+      ${renderCampaignAdvisorItems(opportunities.slice(0, 2), "Opportunità")}
+      ${renderCampaignAdvisorItems(warnings.slice(0, 2), "Avvisi")}
+
+${
+  recommendations.length > 2 ||
+  confirmations.length > 2 ||
+  opportunities.length > 2 ||
+  warnings.length > 2
+    ? `
+      <button
+        type="button"
+        class="org-promo-advisor-toggle"
+        data-campaign-advisor-expand
+      >
+        Mostra tutto
+      </button>
+    `
+    : ""
+}
     </section>
   `;
 }
