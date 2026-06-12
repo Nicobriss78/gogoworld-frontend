@@ -523,8 +523,14 @@ function renderCampaignAdvisorItems(items = [], label = "Segnali storici") {
           .slice(0, 4)
           .map((item) => {
             const title = normalizeAdvisorText(item.title, "Segnale storico");
-            const message = normalizeAdvisorText(item.message);
-            const source =
+let message = normalizeAdvisorText(item.message);
+
+if (item?.evidence?.key) {
+  message = message.replace(
+    item.evidence.key,
+    humanizeCampaignValue(item.evidence.key)
+  );
+}            const source =
               item.source === "personal"
                 ? "Storico personale"
                 : item.source === "collective"
