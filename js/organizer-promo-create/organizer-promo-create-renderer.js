@@ -568,17 +568,29 @@ function renderCampaignAdvisor(campaignAdvisor = null) {
   const personalSample = Number(campaignAdvisor.sampleSize?.personal || 0);
   const collectiveSample = Number(campaignAdvisor.sampleSize?.collective || 0);
 
-  const recommendations = Array.isArray(campaignAdvisor.recommendations)
-    ? campaignAdvisor.recommendations
-    : [];
+  const allRecommendations = Array.isArray(campaignAdvisor.recommendations)
+  ? campaignAdvisor.recommendations
+  : [];
 
-  const opportunities = Array.isArray(campaignAdvisor.opportunities)
-    ? campaignAdvisor.opportunities
-    : [];
+const confirmations = allRecommendations.filter(
+  (item) =>
+    item.type === "PERSONAL_BEST_MATCH" ||
+    item.type === "COLLECTIVE_BEST_MATCH"
+);
 
-  const warnings = Array.isArray(campaignAdvisor.warnings)
-    ? campaignAdvisor.warnings
-    : [];
+const recommendations = allRecommendations.filter(
+  (item) =>
+    item.type !== "PERSONAL_BEST_MATCH" &&
+    item.type !== "COLLECTIVE_BEST_MATCH"
+);
+
+const opportunities = Array.isArray(campaignAdvisor.opportunities)
+  ? campaignAdvisor.opportunities
+  : [];
+
+const warnings = Array.isArray(campaignAdvisor.warnings)
+  ? campaignAdvisor.warnings
+  : [];
 
   return `
     <section class="org-promo-campaign-advisor" data-priority="${normalizeAdvisorText(campaignAdvisor.ui.priority, "info")}">
