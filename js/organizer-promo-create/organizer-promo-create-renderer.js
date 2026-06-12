@@ -520,7 +520,7 @@ function renderCampaignAdvisorItems(items = [], label = "Segnali storici") {
       <span>${label}</span>
       <div class="org-promo-campaign-advisor-list">
         ${items
-          .slice(0, 4)
+          
           .map((item) => {
             const title = normalizeAdvisorText(item.title, "Segnale storico");
 let message = normalizeAdvisorText(item.message);
