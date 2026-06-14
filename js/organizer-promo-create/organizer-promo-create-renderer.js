@@ -538,10 +538,35 @@ function renderAdvisorAlternative(strategy = {}) {
     ? renderAdvisorAction(strategy.primaryAction, { secondary: true })
     : "";
 
+  const decisionScore = Number(strategy.decisionScore ?? strategy.weightedScore ?? 0);
+  const priorityScore = Number(strategy.priorityScore ?? 0);
+  const rank = Number(strategy.alternativeRank || 0);
+  const label = normalizeAdvisorText(
+    strategy.alternativeLabel,
+    rank === 1 ? "Alternativa consigliata" : "Altra opzione disponibile"
+  );
+
+  const scoreMeta = Number.isFinite(decisionScore) && decisionScore > 0
+    ? `
+      <div class="org-promo-advisor-alternative-score">
+        <span>Score decisionale</span>
+        <strong>${decisionScore}</strong>
+        ${priorityScore > 0 ? `<small>Priorità base: ${priorityScore}</small>` : ""}
+      </div>
+    `
+    : "";
+
   return `
-    <article class="org-promo-advisor-alternative">
-      <span>Strategia alternativa</span>
-      <strong>${title}</strong>
+    <article class="org-promo-advisor-alternative" data-recommended="${strategy.recommendedAlternative ? "true" : "false"}">
+      <div class="org-promo-advisor-alternative-head">
+        <div>
+          <span>${label}</span>
+          <strong>${title}</strong>
+        </div>
+        ${rank ? `<small>#${rank}</small>` : ""}
+      </div>
+
+      ${scoreMeta}
       ${summary ? `<p>${summary}</p>` : ""}
       ${reason ? `<p>${reason}</p>` : ""}
       ${primaryAction ? `<div class="org-promo-advisor-actions">${primaryAction}</div>` : ""}
