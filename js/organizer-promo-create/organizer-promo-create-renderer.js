@@ -474,7 +474,62 @@ function renderAdvisorAction(action = {}, { secondary = false } = {}) {
     </button>
   `;
 }
+function buildAdvisorConflictState(decisionDelta = null) {
+  const delta = Number(decisionDelta?.closestAlternative?.deltaFromPrimary);
 
+  if (!Number.isFinite(delta)) return null;
+
+  if (delta >= -8) {
+    return {
+      level: "high",
+      title: "Scelta contendibile",
+      text: "Esistono strategie molto vicine alla scelta attuale. Potrebbe valere la pena confrontarle.",
+      closestTitle: decisionDelta?.closestAlternative?.title || null,
+      closestScore: decisionDelta?.closestAlternative?.decisionScore ?? null,
+      primaryScore: decisionDelta?.primary?.decisionScore ?? null,
+    };
+  }
+
+  if (delta >= -18) {
+    return {
+      level: "medium",
+      title: "Scelta solida",
+      text: "La strategia attuale è valida, ma alcune alternative restano interessanti.",
+      closestTitle: decisionDelta?.closestAlternative?.title || null,
+      closestScore: decisionDelta?.closestAlternative?.decisionScore ?? null,
+      primaryScore: decisionDelta?.primary?.decisionScore ?? null,
+    };
+  }
+
+  return {
+    level: "low",
+    title: "Scelta nettamente dominante",
+    text: "Le alternative risultano sensibilmente meno forti rispetto alla strategia selezionata.",
+    closestTitle: decisionDelta?.closestAlternative?.title || null,
+    closestScore: decisionDelta?.closestAlternative?.decisionScore ?? null,
+    primaryScore: decisionDelta?.primary?.decisionScore ?? null,
+  };
+}
+
+function renderAdvisorConflictLayer(decisionDelta = null) {
+  const state = buildAdvisorConflictState(decisionDelta);
+
+  if (!state) return "";
+
+  const scoreLine =
+    state.closestTitle && state.primaryScore !== null && state.closestScore !== null
+      ? `<p class="org-promo-advisor-conflict-score">Scelta: ${state.primaryScore} · alternativa più vicina (${state.closestTitle}): ${state.closestScore}</p>`
+      : "";
+
+  return `
+    <div class="org-promo-advisor-conflict" data-conflict="${state.level}">
+      <span>Confronto strategico</span>
+      <strong>${state.title}</strong>
+      <p>${state.text}</p>
+      ${scoreLine}
+    </div>
+  `;
+}
 function renderAdvisorAlternative(strategy = {}) {
   const title = normalizeAdvisorText(strategy.title, "Strategia alternativa");
   const summary = normalizeAdvisorText(strategy.summary);
