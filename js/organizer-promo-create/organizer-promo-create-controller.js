@@ -193,6 +193,14 @@ function getPayload() {
     activeTo: normalizeDateInput(field("activeTo")?.value),
 
     notes: field("notes")?.value?.trim() || "",
+    selectedStrategyType:
+  state.advisorSelection.selectedStrategyType || "",
+
+selectedByAdvisor:
+  !!state.advisorSelection.selectedByAdvisor,
+
+advisorDecisionScore:
+  Number(state.advisorSelection.advisorDecisionScore || 0),
   };
 }
 
