@@ -750,7 +750,7 @@ const decisionDelta = advisor?.decisionDelta || null;
                 : ""
             }
             ${renderAdvisorFactors(detectedFactors)}
-
+            ${renderAdvisorConflictLayer(decisionDelta)}
             <div class="org-promo-advisor-actions">
               ${primaryAction}
               ${
