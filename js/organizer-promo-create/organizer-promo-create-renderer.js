@@ -727,7 +727,7 @@ export function renderAdvisor(card, box, advisor = null, campaignAdvisor = null)
   const alternativeStrategies = Array.isArray(advisor?.alternativeStrategies)
     ? advisor.alternativeStrategies
     : [];
-
+const decisionDelta = advisor?.decisionDelta || null;
   card.hidden = false;
   box.dataset.level = normalizeAdvisorText(primaryStrategy?.level, "SOFT").toLowerCase();
 
