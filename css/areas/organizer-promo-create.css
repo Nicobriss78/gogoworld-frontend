@@ -454,6 +454,7 @@ background: rgba(255, 255, 255, 0.58);
 
 .org-promo-advisor-reason span,
 .org-promo-advisor-factors span,
+.org-promo-advisor-conflict span,
 .org-promo-campaign-advisor-group > span {
 display: block;
 margin-bottom: 6px;
