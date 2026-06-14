@@ -31,6 +31,12 @@ const state = {
   revalidatePromoId: "",
   revalidatePromo: null,
   isHydratingRevalidate: false,
+
+  advisorSelection: {
+    selectedStrategyType: "",
+    selectedByAdvisor: false,
+    advisorDecisionScore: 0,
+  },
 };
 
 function qs(selector) {
