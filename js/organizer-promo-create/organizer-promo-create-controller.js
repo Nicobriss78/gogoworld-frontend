@@ -791,8 +791,23 @@ function handleAdvisorClick(event) {
   if (!action) return;
 
   if (action.action === "APPLY_PROMO_FIELDS") {
-    applyAdvisorFields(action.payload || {});
-    return;
+    state.advisorSelection = {
+  selectedStrategyType:
+    action.payload?.strategyType ||
+    action.payload?.type ||
+    "",
+
+  selectedByAdvisor: true,
+
+  advisorDecisionScore: Number(
+    action.payload?.decisionScore ||
+    action.payload?.weightedScore ||
+    0
+  ),
+};
+
+applyAdvisorFields(action.payload || {});
+return;
   }
 
   if (action.action === "OPEN_KNOWLEDGE_CENTER") {
