@@ -138,7 +138,16 @@ function renderPromoRow(promo) {
   return `
     <article class="org-dashboard-mini-item">
       <strong>${escapeHtml(promo?.title || "Promozione senza titolo")}</strong>
-      <span>${escapeHtml(promo?.status || "Stato non disponibile")}</span>
+      <span>${escapeHtml(
+  ({
+    PENDING_REVIEW: "In revisione",
+    APPROVED: "Approvata",
+    WAITING_PAYMENT: "Attesa pagamento",
+    ACTIVE: "Attiva",
+    COMPLETED: "Terminata",
+    REJECTED: "Respinta",
+  }[promo?.status] || promo?.status || "Stato non disponibile"
+)}</span>
     </article>
   `;
 }
