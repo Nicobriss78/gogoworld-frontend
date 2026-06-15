@@ -322,6 +322,38 @@ export function renderDashboard(state) {
       ${renderTopEvent(stats)}
     </section>
 
+    <section class="org-dashboard-columns">
+      <section class="org-dashboard-panel">
+        <div class="org-dashboard-panel__head">
+          <h2>Promozioni recenti</h2>
+          <p>Le ultime campagne create.</p>
+        </div>
+
+        <div class="org-dashboard-events">
+          ${
+            stats.recentPromos?.length
+              ? stats.recentPromos.map(renderPromoRow).join("")
+              : renderEmpty("Nessuna promozione recente.")
+          }
+        </div>
+      </section>
+
+      <section class="org-dashboard-panel">
+        <div class="org-dashboard-panel__head">
+          <h2>Trilli recenti</h2>
+          <p>Gli ultimi trilli creati.</p>
+        </div>
+
+        <div class="org-dashboard-events">
+          ${
+            stats.recentTrills?.length
+              ? stats.recentTrills.map(renderTrillRow).join("")
+              : renderEmpty("Nessun trillo recente.")
+          }
+        </div>
+      </section>
+    </section>
+
     <section class="org-dashboard-panel">
       <div class="org-dashboard-panel__head">
         <h2>Azioni rapide</h2>
