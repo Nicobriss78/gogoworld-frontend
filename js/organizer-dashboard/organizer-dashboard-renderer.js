@@ -155,7 +155,11 @@ function renderPromoRow(promo) {
 function renderTrillRow(trill) {
   return `
     <article class="org-dashboard-mini-item">
-      <strong>${escapeHtml(trill?.title || "Trillo senza titolo")}</strong>
+      <strong>${escapeHtml(
+  trill?.title ||
+  trill?.message ||
+  "Trillo senza titolo"
+)}</strong>
       <span>${escapeHtml(trill?.status || "Stato non disponibile")}</span>
     </article>
   `;
