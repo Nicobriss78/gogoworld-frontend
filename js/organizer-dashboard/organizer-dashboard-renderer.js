@@ -50,12 +50,25 @@ function getStatusLabel(status) {
   return labels[status] || "Da verificare";
 }
 
-function renderKpi({ label, value, hint, tone = "default" }) {
+function renderKpi({ label, value, hint, tone = "default", href = "" }) {
+  const className = `org-dashboard-kpi org-dashboard-kpi--${tone}`;
+  const content = `
+    <span class="org-dashboard-kpi__label">${escapeHtml(label)}</span>
+    <strong class="org-dashboard-kpi__value">${escapeHtml(value)}</strong>
+    <span class="org-dashboard-kpi__hint">${escapeHtml(hint)}</span>
+  `;
+
+  if (href) {
+    return `
+      <a class="${className} org-dashboard-kpi--link" href="${escapeHtml(href)}">
+        ${content}
+      </a>
+    `;
+  }
+
   return `
-    <article class="org-dashboard-kpi org-dashboard-kpi--${tone}">
-      <span class="org-dashboard-kpi__label">${escapeHtml(label)}</span>
-      <strong class="org-dashboard-kpi__value">${escapeHtml(value)}</strong>
-      <span class="org-dashboard-kpi__hint">${escapeHtml(hint)}</span>
+    <article class="${className}">
+      ${content}
     </article>
   `;
 }
