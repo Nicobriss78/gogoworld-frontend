@@ -134,7 +134,23 @@ function renderEventRow(event) {
 function renderEmpty(message) {
   return `<div class="org-dashboard-empty">${escapeHtml(message)}</div>`;
 }
+function renderPromoRow(promo) {
+  return `
+    <article class="org-dashboard-mini-item">
+      <strong>${escapeHtml(promo?.title || "Promozione senza titolo")}</strong>
+      <span>${escapeHtml(promo?.status || "Stato non disponibile")}</span>
+    </article>
+  `;
+}
 
+function renderTrillRow(trill) {
+  return `
+    <article class="org-dashboard-mini-item">
+      <strong>${escapeHtml(trill?.title || "Trillo senza titolo")}</strong>
+      <span>${escapeHtml(trill?.status || "Stato non disponibile")}</span>
+    </article>
+  `;
+}
 function renderOperationalSummary(stats) {
   if (!stats.attentionItems?.length) {
     return `
