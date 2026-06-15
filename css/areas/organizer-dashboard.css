@@ -55,7 +55,23 @@
   background: var(--home-surface);
   box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
 }
+.org-dashboard-kpi--link {
+color: inherit;
+text-decoration: none;
+transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
 
+.org-dashboard-kpi--link:hover,
+.org-dashboard-kpi--link:focus-visible {
+border-color: var(--home-accent-border);
+box-shadow: var(--gw-shadow-strong, 0 10px 26px rgba(16, 24, 40, 0.10));
+transform: translateY(-1px);
+}
+
+.org-dashboard-kpi--link:focus-visible {
+outline: 2px solid var(--org-accent);
+outline-offset: 2px;
+}
 .org-dashboard-kpi__label,
 .org-dashboard-kpi__hint {
   display: block;
