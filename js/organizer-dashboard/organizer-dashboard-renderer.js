@@ -254,6 +254,11 @@ export function renderDashboard(state) {
         hint: `Media ${stats.averageParticipants || 0} per evento`,
       })}
       ${renderKpi({
+        label: "Promozioni",
+        value: stats.promoCount,
+        hint: "Campagne create",
+      })}
+      ${renderKpi({
         label: "Trilli",
         value: stats.trillCount,
         hint: "Creati dall’organizzatore",
