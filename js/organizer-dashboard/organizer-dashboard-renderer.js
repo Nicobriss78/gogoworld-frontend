@@ -263,7 +263,7 @@ export function renderDashboard(state) {
     value: Number(stats.rejectedEvents || 0) + Number(stats.blockedEvents || 0),
     hint: "Respinti o bloccati",
     tone: stats.rejectedEvents || stats.blockedEvents ? "danger" : "default",
-    href: "/pages/organizer-events-v2.html?from=dashboard&filter=needs-fix",
+    href: "/pages/organizer-events-v2.html?from=dashboard&filter=needs-correction",
   })}
   ${renderKpi({
     label: "Partecipanti",
