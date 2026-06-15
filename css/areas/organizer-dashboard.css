@@ -332,7 +332,26 @@ outline-offset: 2px;
   color: var(--home-text-secondary);
   font-size: 14px;
 }
+.org-dashboard-mini-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--gw-space-sm, 10px);
+  border: 1px solid var(--home-border);
+  border-radius: var(--gw-radius, 12px);
+  background: var(--home-bg);
+}
 
+.org-dashboard-mini-item strong {
+  color: var(--home-text);
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.org-dashboard-mini-item span {
+  color: var(--home-text-secondary);
+  font-size: 13px;
+}
 .org-dashboard-empty {
   padding: var(--gw-space-md, 16px);
   border: 1px dashed var(--home-border);
