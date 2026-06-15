@@ -238,45 +238,52 @@ export function renderDashboard(state) {
     </section>
 
     <section class="org-dashboard-kpis" aria-label="Indicatori principali">
-      ${renderKpi({
-        label: "Eventi totali",
-        value: stats.totalEvents,
-        hint: "Tutti gli eventi creati",
-      })}
-      ${renderKpi({
-        label: "Approvati",
-        value: stats.approvedEvents,
-        hint: "Visibili e utilizzabili",
-        tone: "good",
-      })}
-      ${renderKpi({
-        label: "In revisione",
-        value: stats.pendingEvents,
-        hint: "In attesa di controllo",
-        tone: stats.pendingEvents ? "warning" : "default",
-      })}
-      ${renderKpi({
-        label: "Da correggere",
-        value: Number(stats.rejectedEvents || 0) + Number(stats.blockedEvents || 0),
-        hint: "Respinti o bloccati",
-        tone: stats.rejectedEvents || stats.blockedEvents ? "danger" : "default",
-      })}
-      ${renderKpi({
-        label: "Partecipanti",
-        value: stats.totalParticipants,
-        hint: `Media ${stats.averageParticipants || 0} per evento`,
-      })}
-      ${renderKpi({
-        label: "Promozioni",
-        value: stats.promoCount,
-        hint: "Campagne create",
-      })}
-      ${renderKpi({
-        label: "Trilli",
-        value: stats.trillCount,
-        hint: "Creati dall’organizzatore",
-      })}
-    </section>
+  ${renderKpi({
+    label: "Eventi totali",
+    value: stats.totalEvents,
+    hint: "Tutti gli eventi creati",
+    href: "/pages/organizer-events-v2.html?from=dashboard",
+  })}
+  ${renderKpi({
+    label: "Approvati",
+    value: stats.approvedEvents,
+    hint: "Visibili e utilizzabili",
+    tone: "good",
+    href: "/pages/organizer-events-v2.html?from=dashboard&filter=approved",
+  })}
+  ${renderKpi({
+    label: "In revisione",
+    value: stats.pendingEvents,
+    hint: "In attesa di controllo",
+    tone: stats.pendingEvents ? "warning" : "default",
+    href: "/pages/organizer-events-v2.html?from=dashboard&filter=pending",
+  })}
+  ${renderKpi({
+    label: "Da correggere",
+    value: Number(stats.rejectedEvents || 0) + Number(stats.blockedEvents || 0),
+    hint: "Respinti o bloccati",
+    tone: stats.rejectedEvents || stats.blockedEvents ? "danger" : "default",
+    href: "/pages/organizer-events-v2.html?from=dashboard&filter=needs-fix",
+  })}
+  ${renderKpi({
+    label: "Partecipanti",
+    value: stats.totalParticipants,
+    hint: `Media ${stats.averageParticipants || 0} per evento`,
+    href: "/pages/organizer-events-v2.html?from=dashboard&sort=participants",
+  })}
+  ${renderKpi({
+    label: "Promozioni",
+    value: stats.promoCount,
+    hint: "Campagne create",
+    href: "/pages/organizer-promos-v2.html?from=dashboard",
+  })}
+  ${renderKpi({
+    label: "Trilli",
+    value: stats.trillCount,
+    hint: "Creati dall’organizzatore",
+    href: "/pages/organizer-trills-v2.html?from=dashboard",
+  })}
+</section>
 
     ${renderOperationalSummary(stats)}
 
