@@ -134,20 +134,25 @@ function renderEventRow(event) {
 function renderEmpty(message) {
   return `<div class="org-dashboard-empty">${escapeHtml(message)}</div>`;
 }
-function renderPromoRow(promo) {
-  return `
-    <article class="org-dashboard-mini-item">
-      <strong>${escapeHtml(promo?.title || "Promozione senza titolo")}</strong>
-      <span>${escapeHtml(
-  ({
+
+function getPromoStatusLabel(status) {
+  const labels = {
     PENDING_REVIEW: "In revisione",
     APPROVED: "Approvata",
     WAITING_PAYMENT: "Attesa pagamento",
     ACTIVE: "Attiva",
     COMPLETED: "Terminata",
     REJECTED: "Respinta",
-  }[promo?.status] || promo?.status || "Stato non disponibile"
-)}</span>
+  };
+
+  return labels[status] || status || "Stato non disponibile";
+}
+
+function renderPromoRow(promo) {
+  return `
+    <article class="org-dashboard-mini-item">
+      <strong>${escapeHtml(promo?.title || "Promozione senza titolo")}</strong>
+      <span>${escapeHtml(getPromoStatusLabel(promo?.status))}</span>
     </article>
   `;
 }
@@ -155,11 +160,7 @@ function renderPromoRow(promo) {
 function renderTrillRow(trill) {
   return `
     <article class="org-dashboard-mini-item">
-      <strong>${escapeHtml(
-  trill?.title ||
-  trill?.message ||
-  "Trillo senza titolo"
-)}</strong>
+      <strong>${escapeHtml(trill?.title || trill?.message || "Trillo senza titolo")}</strong>
       <span>${escapeHtml(trill?.status || "Stato non disponibile")}</span>
     </article>
   `;
