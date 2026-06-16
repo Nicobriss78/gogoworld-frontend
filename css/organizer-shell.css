@@ -13,20 +13,15 @@ body.organizer-shell {
   --org-accent-soft: rgba(122, 50, 66, 0.08);
   --org-accent-border: rgba(122, 50, 66, 0.22);
 
-  --home-accent: var(--org-accent);
-  --home-accent-hover: var(--org-accent-hover);
-  --home-accent-soft: var(--org-accent-soft);
-  --home-accent-border: var(--org-accent-border);
-
-  --home-danger: var(--gw-danger, #B52A32);
-  --home-bg: var(--gw-bg, #F4F6F8);
-  --home-surface: var(--gw-surface, #FFFFFF);
-  --home-border: var(--gw-border, #E6EAF0);
-  --home-text: var(--gw-text, #1C2430);
-  --home-text-secondary: var(--gw-text-secondary, #5A6572);
-  --home-text-muted: var(--gw-text-muted, #8B95A1);
-  --home-page-pad-x: var(--gw-page-pad-x, 16px);
-  --home-bottomnav-h: var(--gw-bottomnav-h, 68px);
+  --org-danger: var(--gw-danger, #B52A32);
+  --org-bg: var(--gw-bg, #F4F6F8);
+  --org-surface: var(--gw-surface, #FFFFFF);
+  --org-border: var(--gw-border, #E6EAF0);
+  --org-text: var(--gw-text, #1C2430);
+  --org-text-secondary: var(--gw-text-secondary, #5A6572);
+  --org-text-muted: var(--gw-text-muted, #8B95A1);
+  --org-page-pad-x: var(--gw-page-pad-x, 16px);
+  --org-bottomnav-h: var(--gw-bottomnav-h, 68px);
 
   min-height: var(--gw-app-viewport-h, 100vh);
   display: flex;
