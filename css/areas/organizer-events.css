@@ -251,7 +251,7 @@ min-width: 0;
 .org-event-card__header h2 {
 margin: 0;
 overflow: hidden;
-color: var(--home-text);
+color: var(--org-text);
 font-size: 18px;
 line-height: 1.2;
 font-weight: 800;
