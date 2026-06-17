@@ -374,7 +374,7 @@ color: #fff;
 
 .org-promos-card__event {
   margin-top: 4px;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 13px;
   line-height: 1.35;
   font-weight: 700;
