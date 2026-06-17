@@ -14,5 +14,6 @@ export const eventsState = {
     privacy: "all",
     temporal: "all",
     special: "all",
+    sort: "default",
   },
 };
