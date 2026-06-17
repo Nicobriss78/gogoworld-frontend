@@ -125,7 +125,7 @@ export function applyEventFilters(events, filters) {
         matchesSpecial(event, special)
       );
     })
-    .sort(sortEventsForOrganizer);
+    .sort((a, b) => sortEventsForOrganizer(a, b, sort));
 }
 
 export function sortEventsForOrganizer(a, b) {
