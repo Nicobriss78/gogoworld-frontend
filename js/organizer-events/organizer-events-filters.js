@@ -100,7 +100,7 @@ export function applyEventFilters(events, filters) {
   const privacy = filters.privacy || "all";
   const temporal = filters.temporal || "all";
   const special = filters.special || "all";
-
+  const sort = filters.sort || "default";
   return events
     .filter((event) => {
       const matchesApproval =
