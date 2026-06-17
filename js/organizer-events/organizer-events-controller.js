@@ -23,7 +23,12 @@ function applyInitialFiltersFromUrl() {
     eventsState.sourceLabel = "Filtro aperto dalla Dashboard";
   }
 
-  if (!filter) return;
+  if (source === "dashboard" && sort === "participants") {
+  eventsState.sourceLabel = "Ordinamento aperto dalla Dashboard";
+  eventsState.filters.sort = "participants";
+}
+
+if (!filter) return;
 
   if (["approved", "pending", "rejected", "blocked"].includes(filter)) {
     eventsState.filters.approvalStatus = filter;
