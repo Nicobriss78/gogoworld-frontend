@@ -390,6 +390,12 @@ function renderSecondaryActions(event, eventId, encodedEventId, state, primaryAc
       href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
       visible: canCreateTrill && primaryActionId !== "trill",
     },
+    {
+  id: "promo",
+  label: "Promuovi",
+  href: withOrganizerReturn(`/pages/organizer-promo-create-v2.html?eventId=${encodedEventId}`),
+  visible: status === "approved",
+},
   ];
 
   return `
