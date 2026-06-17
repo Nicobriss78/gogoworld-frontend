@@ -128,7 +128,16 @@ export function applyEventFilters(events, filters) {
     .sort((a, b) => sortEventsForOrganizer(a, b, sort));
 }
 
-export function sortEventsForOrganizer(a, b) {
+export function sortEventsForOrganizer(a, b, sort = "default") {
+  if (sort === "participants") {
+    const participantsA = getParticipantsCount(a);
+    const participantsB = getParticipantsCount(b);
+
+    if (participantsA !== participantsB) {
+      return participantsB - participantsA;
+    }
+  }
+
   const aPast = isPastEvent(a);
   const bPast = isPastEvent(b);
 
