@@ -13,15 +13,15 @@
   justify-content: space-between;
   gap: var(--gw-space-md, 16px);
   padding: var(--gw-space-md, 16px);
-  border: 1px solid var(--home-accent-border);
+  border: 1px solid var(--org-accent-border);
   border-radius: var(--gw-radius, 12px);
-  background: var(--home-surface);
+  background: var(--org-surface);
   box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
 }
 
 .org-dashboard-hero h1 {
   margin: 0;
-  color: var(--home-text);
+  color: var(--org-text);
   font-size: 24px;
   line-height: 1.15;
   font-weight: 800;
@@ -29,7 +29,7 @@
 
 .org-dashboard-hero p {
   margin: 6px 0 0;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 15px;
   line-height: 1.35;
 }
@@ -50,9 +50,9 @@
 .org-dashboard-kpi {
   min-width: 0;
   padding: var(--gw-space-md, 16px);
-  border: 1px solid var(--home-border);
+  border: 1px solid var(--org-border);
   border-radius: var(--gw-radius, 12px);
-  background: var(--home-surface);
+  background: var(--org-surface);
   box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
 }
 .org-dashboard-kpi--link {
@@ -63,7 +63,7 @@ transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease
 
 .org-dashboard-kpi--link:hover,
 .org-dashboard-kpi--link:focus-visible {
-border-color: var(--home-accent-border);
+border-color: var(--org-accent-border);
 box-shadow: var(--gw-shadow-strong, 0 10px 26px rgba(16, 24, 40, 0.10));
 transform: translateY(-1px);
 }
@@ -75,7 +75,7 @@ outline-offset: 2px;
 .org-dashboard-kpi__label,
 .org-dashboard-kpi__hint {
   display: block;
-  color: var(--home-text-muted);
+  color: var(--org-text-muted);
   font-size: 12px;
   line-height: 1.25;
   font-weight: 600;
@@ -84,7 +84,7 @@ outline-offset: 2px;
 .org-dashboard-kpi__value {
   display: block;
   margin: 6px 0;
-  color: var(--home-text);
+  color: var(--org-text);
   font-size: 28px;
   line-height: 1;
   font-weight: 800;
