@@ -17,6 +17,7 @@ function applyInitialFiltersFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const source = params.get("from");
   const filter = params.get("filter");
+  const sort = params.get("sort");
 
   if (source === "dashboard" && filter) {
     eventsState.sourceLabel = "Filtro aperto dalla Dashboard";
