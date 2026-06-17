@@ -18,10 +18,10 @@
   justify-content: space-between;
   gap: var(--gw-space-md, 16px);
   padding: var(--gw-space-md, 16px);
-  border: 1px solid var(--home-accent-border);
+  border: 1px solid var(--org-accent-border);
   border-radius: var(--gw-radius, 12px);
   background:
-    linear-gradient(135deg, var(--home-surface), var(--home-accent-soft));
+    linear-gradient(135deg, var(--org-surface), var(--org-accent-soft));
   box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
 }
 
@@ -41,7 +41,7 @@
 
 .org-promos-hero h1 {
   margin: 0;
-  color: var(--home-text);
+  color: var(--org-text);
   font-size: 24px;
   line-height: 1.15;
   font-weight: 900;
@@ -50,7 +50,7 @@
 .org-promos-hero__text {
   max-width: 660px;
   margin: 8px 0 0;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 15px;
   line-height: 1.45;
 }
@@ -68,7 +68,7 @@ body.organizer-shell .org-promos-smart-banner a,
 body.organizer-shell .org-promos-state button {
   min-height: 40px;
   padding: 10px 14px;
-  border: 1px solid var(--home-accent-border);
+  border: 1px solid var(--org-accent-border);
   border-radius: var(--gw-radius-btn, 10px);
   display: inline-flex;
   align-items: center;
@@ -108,9 +108,9 @@ color: #fff;
 .org-promos-kpi {
   min-width: 0;
   padding: var(--gw-space-md, 16px);
-  border: 1px solid var(--home-border);
+  border: 1px solid var(--org-border);
   border-radius: var(--gw-radius, 12px);
-  background: var(--home-surface);
+  background: var(--org-surface);
   color: inherit;
   text-align: left;
   box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
@@ -119,8 +119,8 @@ color: #fff;
 
 .org-promos-kpi:hover,
 .org-promos-kpi:focus-visible {
-  border-color: var(--home-accent-border);
-  background: var(--home-accent-soft);
+  border-color: var(--org-accent-border);
+  background: var(--org-accent-soft);
   outline: none;
 }
 
@@ -135,7 +135,7 @@ color: #fff;
 .org-promos-kpi__label {
   display: block;
   margin-top: 6px;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 12px;
   line-height: 1.25;
   font-weight: 800;
@@ -149,9 +149,9 @@ color: #fff;
   justify-content: space-between;
   gap: var(--gw-space-md, 16px);
   padding: var(--gw-space-md, 16px);
-  border: 1px solid var(--home-accent-border);
+  border: 1px solid var(--org-accent-border);
   border-radius: var(--gw-radius, 12px);
-  background: var(--home-accent-soft);
+  background: var(--org-accent-soft);
 }
 
 .org-promos-smart-banner[hidden] {
@@ -168,7 +168,7 @@ color: #fff;
 
 .org-promos-smart-banner p {
   margin: 5px 0 0;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 14px;
   line-height: 1.4;
 }
@@ -187,7 +187,7 @@ color: #fff;
   grid-template-columns: minmax(220px, 1fr) minmax(160px, 0.35fr) minmax(160px, 0.35fr);
   gap: var(--gw-space-sm, 10px);
   padding: var(--gw-space-sm, 10px);
-  border: 1px solid var(--home-border);
+  border: 1px solid var(--org-border);
   border-radius: var(--gw-radius, 12px);
   background: rgba(255, 255, 255, 0.94);
   box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
@@ -204,7 +204,7 @@ color: #fff;
 
 .org-promos-search span,
 .org-promos-filter span {
-  color: var(--home-text-muted);
+  color: var(--org-text-muted);
   font-size: 11px;
   line-height: 1.2;
   font-weight: 900;
@@ -217,18 +217,18 @@ color: #fff;
   width: 100%;
   min-height: 40px;
   padding: 9px 11px;
-  border: 1px solid var(--home-border);
+  border: 1px solid var(--org-border);
   border-radius: var(--gw-radius-btn, 10px);
-  background: var(--home-surface);
-  color: var(--home-text);
+  background: var(--org-surface);
+  color: var(--org-text);
   font-size: 14px;
   font-weight: 700;
 }
 
 .org-promos-search input:focus,
 .org-promos-filter select:focus {
-  border-color: var(--home-accent-border);
-  outline: 2px solid var(--home-accent-soft);
+  border-color: var(--org-accent-border);
+  outline: 2px solid var(--org-accent-soft);
   outline-offset: 1px;
 }
 
@@ -237,9 +237,9 @@ color: #fff;
 .org-promos-state,
 .org-promos-empty {
   padding: var(--gw-space-md, 16px);
-  border: 1px solid var(--home-border);
+  border: 1px solid var(--org-border);
   border-radius: var(--gw-radius, 12px);
-  background: var(--home-surface);
+  background: var(--org-surface);
   box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
 }
 
@@ -251,7 +251,7 @@ color: #fff;
 .org-promos-state h2,
 .org-promos-empty h2 {
   margin: 0;
-  color: var(--home-text);
+  color: var(--org-text);
   font-size: 18px;
   line-height: 1.25;
   font-weight: 900;
@@ -260,7 +260,7 @@ color: #fff;
 .org-promos-state p,
 .org-promos-empty p {
   margin: 6px 0 14px;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 14px;
   line-height: 1.4;
 }
@@ -295,9 +295,9 @@ color: #fff;
   background:
     linear-gradient(
       90deg,
-      var(--home-bg) 0%,
-      var(--home-accent-soft) 50%,
-      var(--home-bg) 100%
+      var(--org-bg) 0%,
+      var(--org-accent-soft) 50%,
+      var(--org-bg) 100%
     );
   background-size: 220% 100%;
   animation: org-promos-skeleton 1.2s ease-in-out infinite;
@@ -329,9 +329,9 @@ color: #fff;
   grid-template-columns: 112px minmax(0, 1fr);
   gap: var(--gw-space-md, 16px);
   padding: var(--gw-space-md, 16px);
-  border: 1px solid var(--home-border);
+  border: 1px solid var(--org-border);
   border-radius: var(--gw-radius, 12px);
-  background: var(--home-surface);
+  background: var(--org-surface);
   box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
 }
 
@@ -340,7 +340,7 @@ color: #fff;
   height: 92px;
   overflow: hidden;
   border-radius: var(--gw-radius, 12px);
-  background: var(--home-bg);
+  background: var(--org-bg);
 }
 
 .org-promos-card__media img {
@@ -366,7 +366,7 @@ color: #fff;
 
 .org-promos-card__title {
   margin: 0;
-  color: var(--home-text);
+  color: var(--org-text);
   font-size: 17px;
   line-height: 1.25;
   font-weight: 900;
@@ -385,7 +385,7 @@ color: #fff;
   min-height: 24px;
   padding: 5px 9px;
   border-radius: var(--gw-radius-pill, 999px);
-  background: var(--home-accent-soft);
+  background: var(--org-accent-soft);
   color: var(--org-accent, #7A3242);
   font-size: 12px;
   line-height: 1;
@@ -411,8 +411,8 @@ color: #fff;
 
 .org-promos-badge--paused,
 .org-promos-badge--ended {
-  background: var(--home-bg);
-  color: var(--home-text-muted);
+  background: var(--org-bg);
+  color: var(--org-text-muted);
 }
 
 .org-promos-badge--rejected {
@@ -425,7 +425,7 @@ color: #fff;
   display: flex;
   flex-wrap: wrap;
   gap: 8px 14px;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 13px;
   line-height: 1.3;
   font-weight: 700;
@@ -442,15 +442,15 @@ color: #fff;
   gap: 8px 14px;
   padding: 9px 11px;
   border-radius: var(--gw-radius-btn, 10px);
-  background: var(--home-bg);
-  color: var(--home-text-secondary);
+  background: var(--org-bg);
+  color: var(--org-text-secondary);
   font-size: 13px;
   line-height: 1.3;
   font-weight: 800;
 }
 
 .org-promos-card__commercial strong {
-  color: var(--home-text);
+  color: var(--org-text);
 }
 
 .org-promos-card__actions {
@@ -462,12 +462,12 @@ color: #fff;
 .org-promos-card__action {
   min-height: 38px;
   padding: 9px 13px;
-  border: 1px solid var(--home-accent-border);
+  border: 1px solid var(--org-accent-border);
   border-radius: var(--gw-radius-btn, 10px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--home-surface);
+  background: var(--org-surface);
   color: var(--org-accent, #7A3242);
   font-size: 14px;
   line-height: 1;
