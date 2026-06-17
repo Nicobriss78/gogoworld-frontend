@@ -10,6 +10,7 @@ function resetFilters() {
   eventsState.filters.privacy = "all";
   eventsState.filters.temporal = "all";
   eventsState.filters.special = "all";
+  eventsState.filters.sort = "default";
 }
 
 function applyInitialFiltersFromUrl() {
