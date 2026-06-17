@@ -17,9 +17,9 @@
   flex-direction: column;
   gap: var(--gw-space-md, 16px);
   padding: var(--gw-space-md, 16px);
-  border: 1px solid var(--home-accent-border);
+  border: 1px solid var(--org-accent-border);
   border-radius: var(--gw-radius, 12px);
-  background: linear-gradient(135deg, var(--home-surface), var(--home-accent-soft));
+  background: linear-gradient(135deg, var(--org-surface), var(--org-accent-soft));
   box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
 }
 
@@ -27,12 +27,12 @@ body.organizer-shell .org-promo-create-back {
   width: fit-content;
   min-height: 38px;
   padding: 9px 12px;
-  border: 1px solid var(--home-accent-border);
+  border: 1px solid var(--org-accent-border);
   border-radius: var(--gw-radius-btn, 10px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--home-surface);
+  background: var(--org-surface);
   color: var(--org-accent, #7A3242);
   font-size: 14px;
   font-weight: 900;
@@ -51,7 +51,7 @@ body.organizer-shell .org-promo-create-back {
 
 .org-promo-create-header h1 {
   margin: 0;
-  color: var(--home-text);
+  color: var(--org-text);
   font-size: 26px;
   line-height: 1.15;
   font-weight: 900;
@@ -60,7 +60,7 @@ body.organizer-shell .org-promo-create-back {
 .org-promo-create-header p {
   max-width: 720px;
   margin: 8px 0 0;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 15px;
   line-height: 1.45;
 }
@@ -90,15 +90,15 @@ body.organizer-shell .org-promo-create-back {
 .org-promo-create-error,
 .org-promo-create-success {
   padding: var(--gw-space-md, 16px);
-  border: 1px solid var(--home-border);
+  border: 1px solid var(--org-border);
   border-radius: var(--gw-radius, 12px);
-  background: var(--home-surface);
+  background: var(--org-surface);
   box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
 }
 
 .org-promo-create-card h2 {
   margin: 0;
-  color: var(--home-text);
+  color: var(--org-text);
   font-size: 18px;
   line-height: 1.25;
   font-weight: 900;
@@ -106,7 +106,7 @@ body.organizer-shell .org-promo-create-back {
 
 .org-promo-create-card > p {
   margin: 6px 0 14px;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 14px;
   line-height: 1.4;
 }
@@ -120,7 +120,7 @@ body.organizer-shell .org-promo-create-back {
 }
 
 .org-promo-create-field span {
-  color: var(--home-text-muted);
+  color: var(--org-text-muted);
   font-size: 11px;
   line-height: 1.2;
   font-weight: 900;
@@ -134,10 +134,10 @@ body.organizer-shell .org-promo-create-back {
   width: 100%;
   min-height: 42px;
   padding: 10px 12px;
-  border: 1px solid var(--home-border);
+  border: 1px solid var(--org-border);
   border-radius: var(--gw-radius-btn, 10px);
-  background: var(--home-surface);
-  color: var(--home-text);
+  background: var(--org-surface);
+  color: var(--org-text);
   font-size: 14px;
   line-height: 1.3;
   font-weight: 700;
@@ -151,8 +151,8 @@ body.organizer-shell .org-promo-create-back {
 .org-promo-create-field input:focus,
 .org-promo-create-field select:focus,
 .org-promo-create-field textarea:focus {
-  border-color: var(--home-accent-border);
-  outline: 2px solid var(--home-accent-soft);
+  border-color: var(--org-accent-border);
+  outline: 2px solid var(--org-accent-soft);
   outline-offset: 1px;
 }
 
@@ -166,13 +166,13 @@ body.organizer-shell .org-promo-create-back {
 .org-promo-create-preview {
   margin-top: var(--gw-space-md, 16px);
   padding: 10px;
-  border: 1px solid var(--home-border);
+  border: 1px solid var(--org-border);
   border-radius: var(--gw-radius, 12px);
   display: grid;
   grid-template-columns: 76px minmax(0, 1fr);
   gap: var(--gw-space-sm, 10px);
   align-items: center;
-  background: var(--home-bg);
+  background: var(--org-bg);
 }
 
 .org-promo-create-event-preview[hidden] {
@@ -185,13 +185,13 @@ body.organizer-shell .org-promo-create-back {
   height: 58px;
   border-radius: var(--gw-radius-btn, 10px);
   object-fit: cover;
-  background: var(--home-accent-soft);
+  background: var(--org-accent-soft);
 }
 
 .org-promo-create-event-preview strong,
 .org-promo-create-preview strong {
   display: block;
-  color: var(--home-text);
+  color: var(--org-text);
   font-size: 14px;
   line-height: 1.25;
   font-weight: 900;
@@ -201,7 +201,7 @@ body.organizer-shell .org-promo-create-back {
 .org-promo-create-preview span {
   display: block;
   margin-top: 4px;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 13px;
   line-height: 1.3;
   font-weight: 700;
@@ -218,7 +218,7 @@ body.organizer-shell .org-promo-create-back {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 14px;
   line-height: 1.3;
   font-weight: 800;
@@ -227,18 +227,18 @@ body.organizer-shell .org-promo-create-back {
 .org-promo-create-price span:last-child {
   padding-top: 9px;
   border-top: 1px solid var(--home-border);
-  color: var(--home-text);
+  color: var(--org-text);
   font-size: 16px;
 }
 
 .org-promo-create-price strong {
-  color: var(--home-text);
+  color: var(--org-text);
   font-weight: 900;
 }
 
 .org-promo-create-help {
   margin: 12px 0 0;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 13px;
   line-height: 1.4;
 }
@@ -247,15 +247,15 @@ body.organizer-shell .org-promo-create-back {
 .org-promo-create-demand {
 margin-top: var(--gw-space-md, 16px);
 padding: 12px;
-border: 1px solid var(--home-border);
+border: 1px solid var(--org-border);
 border-radius: var(--gw-radius-btn, 10px);
-background: var(--home-bg);
+background: var(--org-bg);
 }
 
 .org-promo-create-availability strong,
 .org-promo-create-demand strong {
 display: block;
-color: var(--home-text);
+color: var(--org-text);
 font-size: 14px;
 line-height: 1.25;
 font-weight: 850;
@@ -265,7 +265,7 @@ letter-spacing: -0.01em;
 .org-promo-create-availability p,
 .org-promo-create-demand p {
 margin: 6px 0 0;
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 13px;
 line-height: 1.42;
 font-weight: 600;
@@ -277,7 +277,7 @@ margin-top: 10px;
 .org-promo-availability-detail b {
 display: block;
 margin-bottom: 6px;
-color: var(--home-text);
+color: var(--org-text);
 font-size: 12px;
 line-height: 1.25;
 font-weight: 900;
@@ -297,20 +297,20 @@ align-items: center;
 justify-content: space-between;
 gap: 8px;
 padding: 7px 9px;
-border: 1px solid var(--home-border);
+border: 1px solid var(--org-border);
 border-radius: var(--gw-radius-btn, 10px);
 background: rgba(255, 255, 255, 0.68);
 }
 
 .org-promo-availability-days span {
-color: var(--home-text);
+color: var(--org-text);
 font-size: 12px;
 line-height: 1.25;
 font-weight: 900;
 }
 
 .org-promo-availability-days small {
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 12px;
 line-height: 1.25;
 font-weight: 800;
@@ -390,14 +390,14 @@ display: flex;
 justify-content: space-between;
 gap: 10px;
 margin-top: 9px;
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 12px;
 line-height: 1.25;
 font-weight: 800;
 }
 
 .org-promo-demand-meta b {
-color: var(--home-text);
+color: var(--org-text);
 font-weight: 900;
 }
 
@@ -411,7 +411,7 @@ border: 1px solid rgba(122, 50, 66, 0.24);
 border-radius: var(--gw-radius-btn, 10px);
 background:
   linear-gradient(135deg, rgba(122, 50, 66, 0.075), rgba(255, 255, 255, 0.78)),
-  var(--home-bg);
+  var(--org-bg);
 }
 
 .org-promo-advisor-kicker {
@@ -426,7 +426,7 @@ text-transform: uppercase;
 
 .org-promo-create-advisor strong {
 display: block;
-color: var(--home-text);
+color: var(--org-text);
 font-size: 15px;
 line-height: 1.25;
 font-weight: 900;
@@ -435,7 +435,7 @@ letter-spacing: -0.01em;
 
 .org-promo-create-advisor p {
 margin: 7px 0 0;
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 13px;
 line-height: 1.42;
 font-weight: 650;
@@ -478,7 +478,7 @@ gap: 4px;
 }
 
 .org-promo-advisor-factors li {
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 12px;
 line-height: 1.35;
 font-weight: 750;
@@ -491,7 +491,7 @@ background:
 
 .org-promo-advisor-conflict strong {
 display: block;
-color: var(--home-text);
+color: var(--org-text);
 font-size: 13px;
 line-height: 1.28;
 font-weight: 900;
@@ -499,7 +499,7 @@ font-weight: 900;
 
 .org-promo-advisor-conflict p {
 margin: 6px 0 0;
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 12px;
 line-height: 1.36;
 font-weight: 700;
@@ -527,7 +527,7 @@ gap: 10px;
 
 .org-promo-campaign-advisor-head > div:first-child > strong {
 display: block;
-color: var(--home-text);
+color: var(--org-text);
 font-size: 15px;
 line-height: 1.25;
 font-weight: 900;
@@ -535,7 +535,7 @@ font-weight: 900;
 
 .org-promo-campaign-advisor-head > div:first-child > p {
 margin: 7px 0 0;
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 13px;
 line-height: 1.42;
 font-weight: 650;
@@ -551,14 +551,14 @@ background: rgba(255, 255, 255, 0.58);
 }
 
 .org-promo-campaign-advisor-meta span {
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 11px;
 line-height: 1.3;
 font-weight: 800;
 }
 
 .org-promo-campaign-advisor-meta b {
-color: var(--home-text);
+color: var(--org-text);
 font-weight: 900;
 }
 
@@ -587,7 +587,7 @@ text-transform: uppercase;
 
 .org-promo-campaign-advisor-item strong {
 display: block;
-color: var(--home-text);
+color: var(--org-text);
 font-size: 13px;
 line-height: 1.28;
 font-weight: 900;
@@ -595,7 +595,7 @@ font-weight: 900;
 
 .org-promo-campaign-advisor-item p {
 margin: 5px 0 0;
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 12px;
 line-height: 1.36;
 font-weight: 700;
@@ -612,7 +612,7 @@ gap: 8px;
 .org-promo-advisor-toggle {
 min-height: 36px;
 padding: 9px 11px;
-border: 1px solid var(--home-accent-border);
+border: 1px solid var(--org-accent-border);
 border-radius: var(--gw-radius-btn, 10px);
 font-size: 12px;
 line-height: 1;
@@ -710,14 +710,14 @@ text-transform: uppercase;
 }
 
 .org-promo-advisor-alternative-score strong {
-color: var(--home-text);
+color: var(--org-text);
 font-size: 18px;
 line-height: 1;
 font-weight: 950;
 }
 
 .org-promo-advisor-alternative-score small {
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 11px;
 line-height: 1.25;
 font-weight: 800;
@@ -729,28 +729,28 @@ border: 1px solid rgba(122, 50, 66, 0.18);
 border-radius: var(--gw-radius-btn, 10px);
 background:
   linear-gradient(135deg, rgba(122, 50, 66, 0.055), rgba(255, 255, 255, 0.72)),
-  var(--home-bg);
+  var(--org-bg);
 }
 
 .org-promo-create-suggestions[data-tone="window"] {
 border-color: rgba(122, 50, 66, 0.28);
 background:
   linear-gradient(135deg, rgba(122, 50, 66, 0.08), rgba(255, 255, 255, 0.78)),
-  var(--home-bg);
+  var(--org-bg);
 }
 
 .org-promo-create-suggestions[data-tone="trill"] {
 border-color: rgba(154, 106, 18, 0.24);
 background:
   linear-gradient(135deg, rgba(154, 106, 18, 0.08), rgba(255, 255, 255, 0.78)),
-  var(--home-bg);
+  var(--org-bg);
 }
 
 .org-promo-create-suggestions[data-tone="soft"] {
 border-color: rgba(21, 128, 61, 0.18);
 background:
   linear-gradient(135deg, rgba(21, 128, 61, 0.055), rgba(255, 255, 255, 0.76)),
-  var(--home-bg);
+  var(--org-bg);
 }
 
 .org-promo-suggestion-kicker {
@@ -765,7 +765,7 @@ text-transform: uppercase;
 
 .org-promo-create-suggestions strong {
 display: block;
-color: var(--home-text);
+color: var(--org-text);
 font-size: 14px;
 line-height: 1.25;
 font-weight: 850;
@@ -774,7 +774,7 @@ letter-spacing: -0.01em;
 
 .org-promo-create-suggestions p {
 margin: 6px 0 0;
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 13px;
 line-height: 1.42;
 font-weight: 600;
@@ -819,7 +819,7 @@ padding: 10px;
 border-left: 3px solid var(--org-accent, #7A3242);
 border-radius: var(--gw-radius-btn, 10px);
 background: rgba(255, 255, 255, 0.62);
-color: var(--home-text-secondary);
+color: var(--org-text-secondary);
 font-size: 12px;
 line-height: 1.35;
 font-weight: 800;
@@ -834,7 +834,7 @@ font-weight: 800;
 .org-promo-create-submit button {
   min-height: 44px;
   padding: 11px 16px;
-  border: 1px solid var(--home-accent-border);
+  border: 1px solid var(--org-accent-border);
   border-radius: var(--gw-radius-btn, 10px);
   background: var(--org-accent, #7A3242);
   color: #fff;
@@ -851,7 +851,7 @@ font-weight: 800;
 
 .org-promo-create-submit p {
   margin: 0;
-  color: var(--home-text-secondary);
+  color: var(--org-text-secondary);
   font-size: 13px;
   line-height: 1.4;
   font-weight: 700;
