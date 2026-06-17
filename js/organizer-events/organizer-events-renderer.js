@@ -83,7 +83,9 @@ function getActiveFilterLabel(filters) {
   if (filters.special === "needs-correction") {
     return "Eventi da correggere";
   }
-
+  if (filters.sort === "participants") {
+  return "Eventi ordinati per partecipanti";
+}
   const labels = {
     approved: "Eventi approvati",
     pending: "Eventi in revisione",
