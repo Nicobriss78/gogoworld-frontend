@@ -226,7 +226,7 @@ body.organizer-shell .org-promo-create-back {
 
 .org-promo-create-price span:last-child {
   padding-top: 9px;
-  border-top: 1px solid var(--home-border);
+  border-top: 1px solid var(--org-border);
   color: var(--org-text);
   font-size: 16px;
 }
@@ -517,7 +517,7 @@ margin-top: 14px;
 border-color: rgba(122, 50, 66, 0.18);
 background:
   linear-gradient(135deg, rgba(122, 50, 66, 0.05), rgba(255, 255, 255, 0.76)),
-  var(--home-bg);
+  var(--org-bg);
 }
 
 .org-promo-campaign-advisor-head {
