@@ -96,7 +96,6 @@ function matchesSpecial(event, special) {
 export function applyEventFilters(events, filters) {
   const query = String(filters.query || "").trim().toLowerCase();
   const approvalStatus = filters.approvalStatus || "all";
-  const visibility = filters.visibility || "all";
   const privacy = filters.privacy || "all";
   const temporal = filters.temporal || "all";
   const special = filters.special || "all";
