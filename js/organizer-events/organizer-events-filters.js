@@ -114,7 +114,6 @@ export function applyEventFilters(events, filters) {
       return (
         matchesQuery(event, query) &&
         matchesApproval &&
-        matchesVisibility &&
         matchesPrivacy &&
         matchesTemporal(event, temporal) &&
         matchesSpecial(event, special)
