@@ -105,10 +105,6 @@ export function applyEventFilters(events, filters) {
       const matchesApproval =
         approvalStatus === "all" || getApprovalStatus(event) === approvalStatus;
 
-      const matchesVisibility =
-        visibility === "all" ||
-        String(event.visibility || "").toLowerCase() === visibility;
-
       const isPrivate = isPrivateEvent(event);
       const matchesPrivacy =
         privacy === "all" ||
