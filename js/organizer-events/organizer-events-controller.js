@@ -6,7 +6,6 @@ import { handleDeleteEvent } from "./organizer-events-actions.js?v=4";
 function resetFilters() {
   eventsState.filters.query = "";
   eventsState.filters.approvalStatus = "all";
-  eventsState.filters.visibility = "all";
   eventsState.filters.privacy = "all";
   eventsState.filters.temporal = "all";
   eventsState.filters.special = "all";
