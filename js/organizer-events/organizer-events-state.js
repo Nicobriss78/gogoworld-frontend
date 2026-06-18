@@ -10,7 +10,6 @@ export const eventsState = {
   filters: {
     query: "",
     approvalStatus: "all",
-    visibility: "all",
     privacy: "all",
     temporal: "all",
     special: "all",
