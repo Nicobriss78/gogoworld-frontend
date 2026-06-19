@@ -182,9 +182,6 @@ export function renderEventDetail(state) {
   }
 
   const event = state.event || {};
-  const isPrivate =
-  Boolean(event?.isPrivate) ||
-  String(event?.visibility || "").toLowerCase() === "private";
   const eventId = getEventId(event);
   const encodedEventId = encodeUrlValue(eventId);
   const participants = Array.isArray(event.participants) ? event.participants.length : 0;
