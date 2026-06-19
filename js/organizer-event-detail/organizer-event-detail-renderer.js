@@ -233,9 +233,11 @@ export function renderEventDetail(state) {
             : `<button type="button" disabled>Trillo non disponibile</button>`
         }
 
-        <button type="button" disabled title="Funzione Promozioni Organizer V2 non ancora implementata">
-          Crea promo
-        </button>
+        ${
+  String(event.approvalStatus || "").toLowerCase() === "approved"
+    ? `<a href="${escapeHtml(withCurrentReturn(`/pages/organizer-promo-create-v2.html?eventId=${encodedEventId}`))}">Crea promo</a>`
+    : `<button type="button" disabled>Promo non disponibile</button>`
+}
 
         ${renderDeleteAction(state)}
 
