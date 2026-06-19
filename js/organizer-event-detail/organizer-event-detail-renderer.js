@@ -205,8 +205,10 @@ export function renderEventDetail(state) {
         : ""
     }
 
-    <section class="org-event-detail-card">
-      <h2>Dati evento</h2>
+    ${renderSmartNotice(event)}
+
+<section class="org-event-detail-card">
+<h2>Dati evento</h2>
       <p><strong>Stato approvazione:</strong> ${escapeHtml(getApprovalLabel(event.approvalStatus))}</p>
       <p><strong>Visibilità:</strong> ${escapeHtml(event.visibility || "public")}</p>
       <p><strong>Privato:</strong> ${isPrivate ? "Sì" : "No"}</p>
