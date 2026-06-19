@@ -337,7 +337,11 @@ if (!isPrivate) {
     <section class="org-access-card">
       <h2>Utenti autorizzati / invitati</h2>
       ${renderUserList(
-        access.allowedUsers || access.invitedUsers || access.users,
+        [
+  ...(Array.isArray(access.allowedUsers) ? access.allowedUsers : []),
+  ...(Array.isArray(access.invitedUsers) ? access.invitedUsers : []),
+  ...(Array.isArray(access.users) ? access.users : []),
+],
         "Nessun utente autorizzato trovato.",
         "Banna",
         "ban-user",
