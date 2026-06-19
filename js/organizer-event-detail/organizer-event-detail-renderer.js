@@ -250,8 +250,7 @@ export function renderEventDetail(state) {
         <button
           type="button"
           data-action="open-room"
-          data-event-id="${escapeHtml(eventId)}"
-          ${eventId && !state.openingRoom ? "" : "disabled"}
+data-event-id="${escapeHtml(eventId)}" ${eventId && !state.openingRoom && !isPastEvent(event) ? "" : "disabled"}
         >
           ${state.openingRoom ? "Apertura room..." : "Apri room"}
         </button>
