@@ -73,7 +73,16 @@ function isPastEvent(event) {
 function canCreateTrill(event) {
   return String(event?.approvalStatus || "").toLowerCase() === "approved" && !isPastEvent(event);
 }
+function getApprovalLabel(status) {
+  const labels = {
+    approved: "Approvato",
+    pending: "In revisione",
+    rejected: "Respinto",
+    blocked: "Bloccato",
+  };
 
+  return labels[String(status || "").toLowerCase()] || "Da verificare";
+}
 function renderModeration(event) {
   const reason = event?.moderation?.reason || "";
   const notes = event?.moderation?.notes || "";
