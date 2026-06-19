@@ -73,13 +73,6 @@ function isPastEvent(event) {
 function canCreateTrill(event) {
   return String(event?.approvalStatus || "").toLowerCase() === "approved" && !isPastEvent(event);
 }
-function isPastEvent(event) {
-  const end = event?.dateEnd ? new Date(event.dateEnd) : null;
-  const start = event?.dateStart ? new Date(event.dateStart) : null;
-  const reference = end || start;
-
-  return Boolean(reference && reference.getTime() < Date.now());
-}
 
 function isPrivateEvent(event) {
   return Boolean(event?.isPrivate) || String(event?.visibility || "").toLowerCase() === "private";
