@@ -272,9 +272,25 @@ export function renderEventAccess(state) {
   }
 
   const event = state.event || {};
-  const access = state.access || {};
-  const title = event?.title || "Evento privato";
-  const accessCode = event?.accessCode || event?.privateAccessCode || "—";
+const access = state.access || {};
+const isPrivate =
+  Boolean(event?.isPrivate) ||
+  String(event?.visibility || "").toLowerCase() === "private";
+const title = event?.title || "Evento privato";
+const accessCode = event?.accessCode || event?.privateAccessCode || "—";
+
+if (!isPrivate) {
+  root.innerHTML = `
+    <h1>Accessi evento privato</h1>
+    <section class="org-access-error">
+      Questo evento non è privato. La gestione accessi non è disponibile.
+    </section>
+    <p>
+      <a href="${escapeHtml(detailHref)}">Torna al dettaglio evento</a>
+    </p>
+  `;
+  return;
+}
 
   root.innerHTML = `
     <h1>Accessi evento privato</h1>
