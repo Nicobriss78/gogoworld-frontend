@@ -73,6 +73,40 @@ function isPastEvent(event) {
 function canCreateTrill(event) {
   return String(event?.approvalStatus || "").toLowerCase() === "approved" && !isPastEvent(event);
 }
+function isPastEvent(event) {
+  const end = event?.dateEnd ? new Date(event.dateEnd) : null;
+  const start = event?.dateStart ? new Date(event.dateStart) : null;
+  const reference = end || start;
+
+  return Boolean(reference && reference.getTime() < Date.now());
+}
+
+function isPrivateEvent(event) {
+  return Boolean(event?.isPrivate) || String(event?.visibility || "").toLowerCase() === "private";
+}
+
+function renderSmartNotice(event) {
+  const status = String(event?.approvalStatus || "").toLowerCase();
+  const participants = Array.isArray(event?.participants) ? event.participants.length : 0;
+
+  if (status === "rejected" || status === "blocked") {
+    return `
+      <section class="org-event-detail-notice org-event-detail-notice--danger">
+        Evento da correggere prima di tornare operativo.
+      </section>
+    `;
+  }
+
+  if (status === "approved" && !isPastEvent(event) && participants === 0) {
+    return `
+      <section class="org-event-detail-notice org-event-detail-notice--warning">
+        Evento approvato ma senza partecipanti. Valuta trillo o promozione.
+      </section>
+    `;
+  }
+
+  return "";
+}
 function getApprovalLabel(status) {
   const labels = {
     approved: "Approvato",
