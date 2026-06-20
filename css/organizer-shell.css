@@ -27,8 +27,8 @@ body.organizer-shell {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  background: var(--home-bg);
-  color: var(--home-text);
+  background: var(--org-bg);
+color: var(--org-text);
   font-family: var(--gw-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   line-height: 1.35;
 }
