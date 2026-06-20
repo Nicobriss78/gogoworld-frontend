@@ -23,7 +23,9 @@ async function initCurrentView() {
     await module.initOrganizerTrills();
     return;
   }
-
+if (view === "promos") {
+    return;
+}
   const module = await import("../organizer-dashboard/organizer-dashboard-controller.js?v=12");
   await module.initDashboard();
 }
