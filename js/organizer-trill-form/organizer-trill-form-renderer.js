@@ -62,7 +62,41 @@ export function renderOrganizerTrillForm(state) {
   const safeEventTitle = escapeHtml(getEventTitle(state.event));
   const safeError = escapeHtml(state.error);
   const safeSuccess = escapeHtml(state.success);
+  if (state.event) {
+  if (!isApprovedEvent(state.event)) {
+    root.innerHTML = `
+      <section class="org-trill-form-page">
+        <div class="org-trill-form-card">
+          <h1>Crea trillo</h1>
+          <section class="org-trill-error">
+            I trilli sono disponibili solo per eventi approvati.
+          </section>
+          <div class="org-trill-actions" style="margin-top:14px;">
+            <a href="${escapeHtml(getBackHref())}">${escapeHtml(getBackLabel())}</a>
+          </div>
+        </div>
+      </section>
+    `;
+    return;
+  }
 
+  if (isPastEvent(state.event)) {
+    root.innerHTML = `
+      <section class="org-trill-form-page">
+        <div class="org-trill-form-card">
+          <h1>Crea trillo</h1>
+          <section class="org-trill-error">
+            Questo evento è terminato. Non puoi creare nuovi trilli.
+          </section>
+          <div class="org-trill-actions" style="margin-top:14px;">
+            <a href="${escapeHtml(getBackHref())}">${escapeHtml(getBackLabel())}</a>
+          </div>
+        </div>
+      </section>
+    `;
+    return;
+  }
+}
   if (state.loading) {
     root.innerHTML = `
       <section class="org-trill-form-page">
