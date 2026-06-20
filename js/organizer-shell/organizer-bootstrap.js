@@ -27,6 +27,10 @@ if (view === "promos") {
     return;
   }
 
+  if (view === "map") {
+    return;
+  }
+
   if (view === "communications") {
     return;
   }
