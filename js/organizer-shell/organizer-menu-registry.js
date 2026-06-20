@@ -19,7 +19,7 @@ export const organizerMenuSections = [
         label: "Centro comunicazioni",
         type: "link",
         href: "/pages/organizer-communications-v2.html",
-        enabled: false,
+        enabled: true,
       },
       {
         id: "messages",
