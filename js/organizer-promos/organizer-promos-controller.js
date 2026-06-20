@@ -296,9 +296,9 @@ function bindWithdrawActions() {
       await loadPromos();
     } catch (err) {
       console.error("[OrganizerPromos] withdraw error:", err);
-      window.alert(
-        "Non è stato possibile annullare la richiesta. Verifica che sia ancora in revisione."
-      );
+      console.warn(
+  "Non è stato possibile annullare la richiesta. Verifica che sia ancora in revisione."
+);
 
       button.disabled = false;
       button.textContent = originalText;
