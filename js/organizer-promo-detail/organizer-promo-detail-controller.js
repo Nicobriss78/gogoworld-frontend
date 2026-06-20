@@ -116,11 +116,11 @@ function bindPromoActions() {
       return;
     }
     if (action === "pay-test") {
-      const confirmed = window.confirm(
-        `Vuoi simulare il pagamento test per "${promoTitle}"?\n\nQuesta azione non apre un checkout reale: serve solo per testare il lifecycle commerciale.`
-      );
-
-      if (!confirmed) return;
+      if (button.dataset.confirmed !== "true") {
+  button.dataset.confirmed = "true";
+  button.textContent = "Conferma pagamento test";
+  return;
+}
 
       const originalText = button.textContent;
 
