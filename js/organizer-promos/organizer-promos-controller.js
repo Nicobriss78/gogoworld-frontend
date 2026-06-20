@@ -8,6 +8,7 @@ import {
 
 const state = {
   promos: [],
+  confirmWithdrawPromoId: "",
   filters: {
     status: "ALL",
     placement: "ALL",
