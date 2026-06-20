@@ -167,9 +167,9 @@ function bindPromoActions() {
       renderPromo(updatedPromo, currentLinkedEvent);
     } catch (err) {
       console.error("[OrganizerPromoDetail] withdraw error:", err);
-      window.alert(
-        "Non è stato possibile annullare la richiesta. Verifica che sia ancora in revisione."
-      );
+      console.warn(
+  "Non è stato possibile annullare la richiesta. Verifica che sia ancora in revisione."
+);
 
       button.disabled = false;
       button.textContent = originalText;
