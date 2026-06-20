@@ -37,6 +37,17 @@ function withCurrentReturn(href) {
   const separator = href.includes("?") ? "&" : "?";
   return `${href}${separator}rootReturnTo=${encodeURIComponent(rootReturnTo)}`;
 }
+function isPastEvent(event) {
+  const end = event?.dateEnd ? new Date(event.dateEnd) : null;
+  const start = event?.dateStart ? new Date(event.dateStart) : null;
+  const reference = end || start;
+
+  return Boolean(reference && reference.getTime() < Date.now());
+}
+
+function isApprovedEvent(event) {
+  return String(event?.approvalStatus || "").toLowerCase() === "approved";
+}
 function getEventTitle(event) {
   return event?.title || "Evento";
 }
