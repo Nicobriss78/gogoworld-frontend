@@ -75,7 +75,7 @@
   align-items: center;
   justify-content: center;
   background: var(--org-accent);
-  color: #fff;
+  color: #fff !important;
   font: inherit;
   font-size: 14px;
   line-height: 1;
