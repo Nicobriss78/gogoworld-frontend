@@ -25,7 +25,11 @@ async function initCurrentView() {
   }
 if (view === "promos") {
     return;
-}
+  }
+
+  if (view === "communications") {
+    return;
+  }
   const module = await import("../organizer-dashboard/organizer-dashboard-controller.js?v=12");
   await module.initDashboard();
 }
