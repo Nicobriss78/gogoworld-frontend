@@ -137,9 +137,9 @@ function bindPromoActions() {
         renderPromo(updatedPromo, currentLinkedEvent);
       } catch (err) {
         console.error("[OrganizerPromoDetail] pay-test error:", err);
-        window.alert(
-          "Non è stato possibile completare il pagamento test. Verifica che la promozione sia in attesa di pagamento."
-        );
+        console.warn(
+  "Non è stato possibile completare il pagamento test. Verifica che la promozione sia in attesa di pagamento."
+);
 
         button.disabled = false;
         button.textContent = originalText;
