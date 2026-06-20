@@ -147,12 +147,11 @@ function bindPromoActions() {
 
       return;
     }
-    const confirmed = window.confirm(
-      `Vuoi annullare la richiesta "${promoTitle}"?\n\nQuesta azione è possibile solo finché la promozione è in revisione.`
-    );
-
-    if (!confirmed) return;
-
+    if (button.dataset.confirmed !== "true") {
+  button.dataset.confirmed = "true";
+  button.textContent = "Conferma annullamento";
+  return;
+}
     const originalText = button.textContent;
 
     try {
