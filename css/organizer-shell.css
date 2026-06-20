@@ -64,12 +64,12 @@ body.organizer-shell .gw-iconbtn {
 
 #organizer-view {
   flex: 1 1 auto;
-  min-height: calc(var(--gw-app-viewport-h, 100vh) - var(--gw-topbar-h, 104px) - var(--home-bottomnav-h));
+  min-height: calc(var(--gw-app-viewport-h, 100vh) - var(--gw-topbar-h, 104px) - var(--org-bottomnav-h));
   width: 100%;
   max-width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: var(--gw-page-pad-y, 12px) var(--home-page-pad-x) calc(var(--home-bottomnav-h) + 10px);
+  padding: var(--gw-page-pad-y, 12px) var(--org-page-pad-x) calc(var(--org-bottomnav-h) + 10px);
   -webkit-overflow-scrolling: touch;
 }
 
