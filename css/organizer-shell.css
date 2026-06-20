@@ -188,7 +188,7 @@ body.organizer-shell .gw-iconbtn {
 .org-menu-section + .org-menu-section {
   margin-top: 6px;
   padding-top: 10px;
-  border-top: 1px solid var(--home-border);
+  border-top: 1px solid var(--org-border);
 }
 
 .org-menu-section__title {
