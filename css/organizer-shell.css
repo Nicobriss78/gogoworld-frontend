@@ -172,9 +172,11 @@ body.organizer-shell .gw-iconbtn {
   flex-direction: column;
   gap: 4px;
   padding: 10px;
-  border: 1px solid var(--home-border);
+  border: 1px solid var(--org-border);
   border-radius: 16px;
-  background: var(--home-surface);
+  background: var(--org-surface);
+  opacity: 1;
+  backdrop-filter: none;
   box-shadow: 0 10px 24px rgba(16, 24, 40, 0.10);
   -webkit-overflow-scrolling: touch;
 }
