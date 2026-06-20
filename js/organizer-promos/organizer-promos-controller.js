@@ -279,11 +279,11 @@ function bindWithdrawActions() {
 
     if (!promoId) return;
 
-    const confirmed = window.confirm(
-      `Vuoi annullare la richiesta "${promoTitle}"?\n\nQuesta azione è possibile solo finché la promozione è in revisione.`
-    );
-
-    if (!confirmed) return;
+    if (state.confirmWithdrawPromoId !== promoId) {
+  state.confirmWithdrawPromoId = promoId;
+  button.textContent = "Conferma annullamento";
+  return;
+}
 
     const originalText = button.textContent;
 
