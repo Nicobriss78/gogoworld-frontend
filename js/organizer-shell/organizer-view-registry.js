@@ -3,6 +3,6 @@ export const organizerViews = {
   events: "/pages/organizer-events-v2.html",
   trills: "/pages/organizer-trills-v2.html",
   promos: "/pages/organizer-promos-v2.html",
-  communications: "/pages/organizer-communications-v2.html",
+  map: "/pages/organizer-map-v2.html",
   profile: "/pages/profilo-v2.html?rootReturnTo=organizer",
 };
