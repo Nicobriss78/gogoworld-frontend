@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <title>Comunicazioni Organizer V2</title>
+
+  <link rel="stylesheet" href="/css/tokens.v2.css" />
+  <link rel="stylesheet" href="/css/icons-v2.css" />
+  <link rel="stylesheet" href="/css/shared-shell.css" />
+  <link rel="stylesheet" href="/css/shared-notifications.css" />
+
+  <link rel="stylesheet" href="/css/organizer-shell.css" />
+  <link rel="stylesheet" href="/css/areas/organizer-communications.css" />
+</head>
+
+<body class="organizer-shell" data-organizer-view="communications">
+  <header id="organizer-topbar"></header>
+
+  <main id="organizer-view">
+    <section class="org-communications-page" data-org-communications-root>
+      <section class="org-communications-hero">
+        <div>
+          <p class="org-communications-eyebrow">Centro comunicazioni</p>
+          <h1>Comunicazioni</h1>
+          <p>
+            Gestisci messaggi, notifiche e segnali operativi collegati alla tua attività da organizzatore.
+          </p>
+        </div>
+
+        <div class="org-communications-hero__actions">
+          <a href="/pages/messages-v2.html?rootReturnTo=organizer">Apri messaggi</a>
+          <button type="button" data-org-communications-open-notifications>
+            Apri notifiche
+          </button>
+        </div>
+      </section>
+
+      <section class="org-communications-state" data-org-communications-loading>
+        Caricamento comunicazioni...
+      </section>
+
+      <section class="org-communications-error" data-org-communications-error hidden>
+        Non riesco a caricare il centro comunicazioni in questo momento.
+      </section>
+
+      <section data-org-communications-content hidden></section>
+    </section>
+  </main>
+
+  <nav id="organizer-bottomnav"></nav>
+  <div id="organizer-menu"></div>
+
+  <script type="module" src="/js/organizer-shell/organizer-bootstrap.js?v=10"></script>
+  <script type="module" src="/js/organizer-communications/organizer-communications-controller.js?v=1"></script>
+</body>
+</html>
