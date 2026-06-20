@@ -18,7 +18,7 @@ export const organizerNav = [
     label: "Mappa",
     icon: "map",
     href: "/pages/organizer-map-v2.html",
-    enabled: false,
+    enabled: true,
   },
   {
     id: "trills",
