@@ -7,4 +7,5 @@ export const organizerMapState = {
     events: [],
   },
   selectedEventId: "",
+  filter: "operational",
 };
