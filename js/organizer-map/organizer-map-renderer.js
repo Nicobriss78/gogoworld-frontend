@@ -99,7 +99,7 @@ function renderPrivacyBox(privacy) {
       <div class="org-map-panel__head">
         <h2>Privacy safe</h2>
         <p>
-          ${escapeHtml(privacy?.mode || "aggregate_only")}
+          ${escapeHtml(getPrivacyModeLabel(privacy?.mode))}
           · soglia minima cluster: ${escapeHtml(privacy?.minClusterSize || 5)}
         </p>
       </div>
