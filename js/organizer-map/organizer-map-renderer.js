@@ -123,9 +123,7 @@ function renderSuggestion(suggestion) {
 
 function renderEventCard(event) {
   const level = getStatusClass(event?.operationalStatus?.level);
-  const pointLabel = event?.point
-    ? `${Number(event.point.lat).toFixed(3)}, ${Number(event.point.lon).toFixed(3)}`
-    : "Coordinate evento non disponibili";
+  const pointLabel = getAreaLabel(event);
 
   return `
     <article class="org-map-event-card org-map-event-card--${level}" data-org-map-event-id="${escapeHtml(event.id)}">
