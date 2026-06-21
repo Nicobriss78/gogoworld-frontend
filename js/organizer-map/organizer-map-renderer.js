@@ -123,7 +123,7 @@ function renderKpi(label, value, hint) {
 
 function renderLegend() {
   return `
-    <section class="org-map-panel" ${state.selectedEventId ? "" : "hidden"}>
+    <section class="org-map-panel">
       <div class="org-map-panel__head">
         <h2>Legenda operativa</h2>
         <p>Stato calcolato dal backend in modalità privacy-safe.</p>
