@@ -40,7 +40,31 @@ function getStatusClass(level) {
 
   return "ok";
 }
+function getApprovalLabel(status) {
+  const map = {
+    approved: "Approvato",
+    pending_review: "In revisione",
+    rejected: "Da correggere",
+    blocked: "Bloccato",
+  };
 
+  return map[status] || "In revisione";
+}
+
+function getPrivacyModeLabel(mode) {
+  const map = {
+    privacy_safe_aggregate_only: "Modalità aggregata protetta",
+    aggregate_only: "Modalità aggregata protetta",
+  };
+
+  return map[mode] || "Modalità protetta";
+}
+
+function getAreaLabel(event) {
+  if (event?.city) return `Area ${event.city}`;
+  if (event?.region) return `Area ${event.region}`;
+  return "Area operativa";
+}
 function renderKpi(label, value, hint) {
   return `
     <article class="org-map-kpi">
