@@ -285,7 +285,10 @@ export function renderOrganizerMap(state) {
       <div class="org-map-event-list">
         ${
           events.length
-            ? events.map(renderEventCard).join("")
+  ? events
+      .filter((event) => event.id === state.selectedEventId)
+      .map(renderEventCard)
+      .join("")
             : `<div class="org-map-empty">Nessun evento disponibile.</div>`
         }
       </div>
