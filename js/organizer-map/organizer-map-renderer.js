@@ -140,7 +140,7 @@ function renderEventCard(event) {
 
       <div class="org-map-event-card__meta">
         <span>${event.isPrivate ? "Privato" : "Pubblico"}</span>
-        <span>${escapeHtml(event.approvalStatus || "pending")}</span>
+        <span>${escapeHtml(getApprovalLabel(event.approvalStatus))}</span>
         <span>${escapeHtml(pointLabel)}</span>
       </div>
 
