@@ -254,7 +254,8 @@ export function renderOrganizerMap(state) {
     return;
   }
 
-  const events = getEvents(state);
+  const rawEvents = getEvents(state);
+  const events = filterEvents(rawEvents, state.filter);
   const kpis = getKpis(state);
   const privacy = state?.data?.privacy || {};
 
