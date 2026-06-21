@@ -30,7 +30,53 @@ function getEvents(state) {
 function getKpis(state) {
   return state?.data?.kpis || {};
 }
+function filterEvents(events, filter) {
+  const now = Date.now();
 
+  if (filter === "all") return events;
+
+  if (filter === "critical") {
+    return events.filter((event) =>
+      ["critical"].includes(event?.operationalStatus?.level)
+    );
+  }
+
+  if (filter === "action") {
+    return events.filter((event) =>
+      ["action"].includes(event?.operationalStatus?.level)
+    );
+  }
+
+  if (filter === "operational") {
+    return events.filter((event) =>
+      ["critical", "action", "monitor"].includes(event?.operationalStatus?.level)
+    );
+  }
+
+  if (filter === "live") {
+    return events.filter((event) => {
+      const start = new Date(event.dateStart).getTime();
+      const end = new Date(event.dateEnd).getTime();
+      return start <= now && end >= now;
+    });
+  }
+
+  if (filter === "upcoming") {
+    return events.filter((event) => {
+      const start = new Date(event.dateStart).getTime();
+      return start > now;
+    });
+  }
+
+  if (filter === "past") {
+    return events.filter((event) => {
+      const end = new Date(event.dateEnd).getTime();
+      return end < now;
+    });
+  }
+
+  return events;
+}
 function getStatusClass(level) {
   const safeLevel = String(level || "ok").toLowerCase();
 
