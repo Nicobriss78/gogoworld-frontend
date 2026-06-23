@@ -1,10 +1,14 @@
 .org-map-page {
-  width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gw-space-md, 16px);
+width: 100%;
+max-width: 1120px;
+margin: 0 auto;
+display: flex;
+flex-direction: column;
+gap: var(--gw-space-md, 16px);
+--org-map-status-ok: #1E8E5A;
+--org-map-status-monitor: #B98900;
+--org-map-status-action: #C65F1A;
+--org-map-status-critical: var(--org-danger, #B52A32);
 }
 
 .org-map-hero,
