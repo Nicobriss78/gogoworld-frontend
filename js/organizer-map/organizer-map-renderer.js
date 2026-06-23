@@ -354,6 +354,8 @@ export function renderOrganizerMap(state) {
       ${renderKpi("Promo", kpis.totalPromos, "Promozioni collegate")}
     </section>
 
+    ${renderMapFilters(state.filter, rawEvents.length, events.length)}
+
     ${renderMapPlaceholder(events)}
 
     <section class="org-map-grid">
