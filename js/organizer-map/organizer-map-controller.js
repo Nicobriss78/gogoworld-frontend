@@ -1,6 +1,8 @@
 import { fetchOrganizerMapSummary } from "./organizer-map-api.js?v=1";
-import { renderOrganizerMap } from "./organizer-map-renderer.js?v=1";
-import { organizerMapState } from "./organizer-map-state.js?v=1";
+import {
+  getVisibleOrganizerMapEvents,
+  renderOrganizerMap,
+} from "./organizer-map-renderer.js?v=1";import { organizerMapState } from "./organizer-map-state.js?v=1";
 
 async function loadOrganizerMap() {
   organizerMapState.loading = true;
