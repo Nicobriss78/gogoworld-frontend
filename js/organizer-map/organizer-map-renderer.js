@@ -281,7 +281,7 @@ export function renderOrganizerMap(state) {
         <p>Cruscotto operativo basato su eventi, metriche e suggerimenti.</p>
       </div>
 
-      <div class="org-map-event-list">
+      <div class="org-map-event-list" data-org-map-selected-event>
         ${
           events.length
   ? events
