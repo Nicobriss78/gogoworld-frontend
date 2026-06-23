@@ -206,20 +206,24 @@ gap: var(--gw-space-md, 16px);
   display: inline-block;
 }
 
-.org-map-dot--ok {
-  background: #1E8E5A;
+.org-map-dot--ok,
+.org-map-marker--ok {
+background: var(--org-map-status-ok);
 }
 
-.org-map-dot--monitor {
-  background: #B98900;
+.org-map-dot--monitor,
+.org-map-marker--monitor {
+background: var(--org-map-status-monitor);
 }
 
-.org-map-dot--action {
-  background: #C65F1A;
+.org-map-dot--action,
+.org-map-marker--action {
+background: var(--org-map-status-action);
 }
 
-.org-map-dot--critical {
-  background: var(--org-danger, #B52A32);
+.org-map-dot--critical,
+.org-map-marker--critical {
+background: var(--org-map-status-critical);
 }
 
 .org-map-event-list {
