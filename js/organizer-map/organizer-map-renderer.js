@@ -234,7 +234,9 @@ function renderMapPlaceholder(events) {
     </section>
   `;
 }
-
+export function getVisibleOrganizerMapEvents(state) {
+  return filterEvents(getEvents(state), state.filter);
+}
 export function renderOrganizerMap(state) {
   const loading = document.querySelector("[data-org-map-loading]");
   const error = document.querySelector("[data-org-map-error]");
