@@ -87,9 +87,9 @@
   background: var(--org-surface);
 }
 
-.org-map-canvas__inner {
-  max-width: 520px;
-  text-align: center;
+.org-map-leaflet {
+  width: 100%;
+  min-height: 360px;
 }
 
 .org-map-canvas__label {
