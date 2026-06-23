@@ -237,6 +237,20 @@ function renderMapPlaceholder(events) {
 export function getVisibleOrganizerMapEvents(state) {
   return filterEvents(getEvents(state), state.filter);
 }
+export function renderSelectedOrganizerMapEvent(state) {
+  const panel = document.querySelector("[data-org-map-selected-panel]");
+  const target = document.querySelector("[data-org-map-selected-event]");
+
+  if (!panel || !target) return;
+
+  const events = getVisibleOrganizerMapEvents(state);
+  const selectedEvent = events.find((event) => event.id === state.selectedEventId);
+
+  panel.hidden = !selectedEvent;
+  target.innerHTML = selectedEvent
+    ? renderEventCard(selectedEvent)
+    : `<div class="org-map-empty">Nessun evento selezionato.</div>`;
+}
 export function renderOrganizerMap(state) {
   const loading = document.querySelector("[data-org-map-loading]");
   const error = document.querySelector("[data-org-map-error]");
