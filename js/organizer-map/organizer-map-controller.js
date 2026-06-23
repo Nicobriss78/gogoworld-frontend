@@ -10,23 +10,21 @@ let mapInstance = null;
 let markerLayer = null;
 
 function getMarkerClass(level) {
-  const map = {
-    ok: "#1E8E5A",
-    monitor: "#B98900",
-    action: "#C65F1A",
-    critical: "#B52A32",
-  };
+  const safeLevel = String(level || "ok").toLowerCase();
 
-  return map[level] || map.ok;
+  if (["ok", "monitor", "action", "critical"].includes(safeLevel)) {
+    return safeLevel;
+  }
+
+  return "ok";
 }
 
 function createEventIcon(event) {
-  const level = String(event?.operationalStatus?.level || "ok").toLowerCase();
-  const color = getMarkerColor(level);
+  const level = getMarkerClass(event?.operationalStatus?.level);
 
   return window.L.divIcon({
     className: "org-map-marker-wrap",
-    html: `<span class="org-map-marker" style="background:${color}"></span>`,
+    html: `<span class="org-map-marker org-map-marker--${level}"></span>`,
     iconSize: [22, 22],
     iconAnchor: [11, 11],
   });
@@ -55,8 +53,10 @@ function mountOrganizerLeafletMap() {
     }
   }
 
-  const events = getVisibleOrganizerMapEvents(organizerMapState)
-    .filter((event) => getMapPoint(event));
+  const events = getVisibleOrganizerMapEvents(organizerMapState).filter((event) =>
+    getMapPoint(event)
+  );
+
   if (!mapInstance) {
     mapInstance = window.L.map(node, {
       zoomControl: true,
@@ -65,7 +65,7 @@ function mountOrganizerLeafletMap() {
 
     window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
-      attribution: "&copy; OpenStreetMap",
+      attribution: "© OpenStreetMap",
     }).addTo(mapInstance);
   }
 
@@ -89,23 +89,23 @@ function mountOrganizerLeafletMap() {
     });
 
     marker.on("click", () => {
-  organizerMapState.selectedEventId = event.id;
-  renderSelectedOrganizerMapEvent(organizerMapState);
+      organizerMapState.selectedEventId = event.id;
+      renderSelectedOrganizerMapEvent(organizerMapState);
 
-  const panel = document.querySelector("[data-org-map-selected-panel]");
-  if (panel) {
-    panel.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
+      const panel = document.querySelector("[data-org-map-selected-panel]");
+      if (panel) {
+        panel.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+
+      setTimeout(() => {
+        if (mapInstance) {
+          mapInstance.invalidateSize();
+        }
+      }, 60);
     });
-  }
-
-  setTimeout(() => {
-    if (mapInstance) {
-      mapInstance.invalidateSize();
-    }
-  }, 60);
-});
 
     markerLayer.addLayer(marker);
   });
@@ -121,6 +121,7 @@ function mountOrganizerLeafletMap() {
     mapInstance.invalidateSize();
   }, 80);
 }
+
 async function loadOrganizerMap() {
   organizerMapState.loading = true;
   organizerMapState.error = "";
@@ -138,6 +139,7 @@ async function loadOrganizerMap() {
     mountOrganizerLeafletMap();
   }
 }
+
 function bindOrganizerMapFilters() {
   document.addEventListener("click", (event) => {
     const button = event.target.closest("[data-org-map-filter]");
@@ -156,12 +158,13 @@ function bindOrganizerMapFilters() {
     }, 80);
   });
 }
+
 function initOrganizerMap() {
   const root = document.querySelector("[data-org-map-root]");
   if (!root) return;
 
   bindOrganizerMapFilters();
-loadOrganizerMap();
+  loadOrganizerMap();
 }
 
 document.addEventListener("DOMContentLoaded", initOrganizerMap);
