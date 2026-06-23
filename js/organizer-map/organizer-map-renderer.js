@@ -4,7 +4,7 @@ function escapeHtml(value) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll("'", "&#39;");
 }
 
 function formatDate(value) {
@@ -30,26 +30,29 @@ function getEvents(state) {
 function getKpis(state) {
   return state?.data?.kpis || {};
 }
+
 function filterEvents(events, filter) {
   const now = Date.now();
 
   if (filter === "all") return events;
 
   if (filter === "critical") {
-    return events.filter((event) =>
-      ["critical"].includes(event?.operationalStatus?.level)
+    return events.filter(
+      (event) => event?.operationalStatus?.level === "critical"
     );
   }
 
   if (filter === "action") {
-    return events.filter((event) =>
-      ["action"].includes(event?.operationalStatus?.level)
+    return events.filter(
+      (event) => event?.operationalStatus?.level === "action"
     );
   }
 
   if (filter === "operational") {
     return events.filter((event) =>
-      ["critical", "action", "monitor"].includes(event?.operationalStatus?.level)
+      ["critical", "action", "monitor"].includes(
+        event?.operationalStatus?.level
+      )
     );
   }
 
@@ -77,6 +80,7 @@ function filterEvents(events, filter) {
 
   return events;
 }
+
 function getStatusClass(level) {
   const safeLevel = String(level || "ok").toLowerCase();
 
@@ -86,6 +90,7 @@ function getStatusClass(level) {
 
   return "ok";
 }
+
 function getApprovalLabel(status) {
   const map = {
     approved: "Approvato",
@@ -111,47 +116,27 @@ function getAreaLabel(event) {
   if (event?.region) return `Area ${event.region}`;
   return "Area operativa";
 }
+
 const MAP_FILTERS = [
   {
     value: "operational",
     label: "Operativi",
     hint: "Critici, da monitorare o con azioni consigliate",
   },
-  {
-    value: "live",
-    label: "In corso",
-    hint: "Eventi attivi ora",
-  },
-  {
-    value: "upcoming",
-    label: "Imminenti",
-    hint: "Eventi futuri",
-  },
-  {
-    value: "past",
-    label: "Passati",
-    hint: "Storico eventi",
-  },
-  {
-    value: "critical",
-    label: "Critici",
-    hint: "Intervento urgente",
-  },
-  {
-    value: "action",
-    label: "Azione",
-    hint: "Serve intervento",
-  },
-  {
-    value: "all",
-    label: "Tutti",
-    hint: "Tutti gli eventi",
-  },
+  { value: "live", label: "In corso", hint: "Eventi attivi ora" },
+  { value: "upcoming", label: "Imminenti", hint: "Eventi futuri" },
+  { value: "past", label: "Passati", hint: "Storico eventi" },
+  { value: "critical", label: "Critici", hint: "Intervento urgente" },
+  { value: "action", label: "Azione", hint: "Serve intervento" },
+  { value: "all", label: "Tutti", hint: "Tutti gli eventi" },
 ];
 
 function getFilterLabel(filter) {
-  return MAP_FILTERS.find((item) => item.value === filter)?.label || "Operativi";
+  return (
+    MAP_FILTERS.find((item) => item.value === filter)?.label || "Operativi"
+  );
 }
+
 function renderKpi(label, value, hint) {
   return `
     <article class="org-map-kpi">
@@ -161,15 +146,16 @@ function renderKpi(label, value, hint) {
     </article>
   `;
 }
+
 function renderMapFilters(activeFilter, total, visible) {
   return `
     <section class="org-map-filter-panel" aria-label="Filtri mappa organizer">
       <div class="org-map-filter-panel__head">
         <div>
           <h2>Vista territoriale</h2>
-          <p>
-            ${escapeHtml(visible)} di ${escapeHtml(total)} eventi · filtro ${escapeHtml(getFilterLabel(activeFilter))}
-          </p>
+          <p>${escapeHtml(visible)} di ${escapeHtml(total)} eventi · filtro ${escapeHtml(
+    getFilterLabel(activeFilter)
+  )}</p>
         </div>
       </div>
 
@@ -181,7 +167,7 @@ function renderMapFilters(activeFilter, total, visible) {
             <button
               type="button"
               class="org-map-filter ${active ? "is-active" : ""}"
-              data-org-map-filter="${escapeHtml(filter.value)}"
+              data-org-map-filter="${filter.value}"
               title="${escapeHtml(filter.hint)}"
               aria-pressed="${active ? "true" : "false"}"
             >
@@ -193,12 +179,13 @@ function renderMapFilters(activeFilter, total, visible) {
     </section>
   `;
 }
+
 function renderLegend() {
   return `
     <section class="org-map-panel">
       <div class="org-map-panel__head">
         <h2>Legenda operativa</h2>
-        <p>Stato calcolato dal backend in modalità privacy-safe.</p>
+        <p>Colori e stati aiutano a capire dove intervenire prima.</p>
       </div>
 
       <div class="org-map-legend">
@@ -215,16 +202,14 @@ function renderPrivacyBox(privacy) {
   return `
     <section class="org-map-panel org-map-panel--privacy">
       <div class="org-map-panel__head">
-        <h2>Privacy safe</h2>
-        <p>
-          ${escapeHtml(getPrivacyModeLabel(privacy?.mode))}
-          · soglia minima cluster: ${escapeHtml(privacy?.minClusterSize || 5)}
-        </p>
+        <h2>Dati protetti</h2>
+        <p>${escapeHtml(getPrivacyModeLabel(privacy?.mode))}</p>
       </div>
 
       <div class="org-map-privacy-list">
-        <span>Identità utenti: ${privacy?.exposesUserIdentity ? "esposta" : "non esposta"}</span>
-        <span>Coordinate utenti: ${privacy?.exposesUserCoordinates ? "esposte" : "non esposte"}</span>
+        <span>Identità utenti: ${
+          privacy?.exposesUserCoordinates ? "esposte" : "non esposte"
+        }</span>
       </div>
     </section>
   `;
@@ -244,11 +229,13 @@ function renderEventCard(event) {
   const pointLabel = getAreaLabel(event);
 
   return `
-    <article class="org-map-event-card org-map-event-card--${level}" data-org-map-event-id="${escapeHtml(event.id)}">
+    <article class="org-map-event-card org-map-event-card--${level}">
       <div class="org-map-event-card__head">
         <div>
           <h3>${escapeHtml(event.title || "Evento senza titolo")}</h3>
-          <p>${escapeHtml(event.city || event.region || "Luogo non indicato")} · ${escapeHtml(formatDate(event.dateStart))}</p>
+          <p>${escapeHtml(event.city || event.region || "Luogo non indicato")} · ${escapeHtml(
+    formatDate(event.dateStart)
+  )}</p>
         </div>
 
         <span class="org-map-status org-map-status--${level}">
@@ -263,10 +250,12 @@ function renderEventCard(event) {
       </div>
 
       <div class="org-map-metrics">
-        <span><strong>${escapeHtml(event?.metrics?.participantsCount || 0)}</strong> partecipanti</span>
-        <span><strong>${escapeHtml(event?.metrics?.checkInsCount || 0)}</strong> check-in</span>
-        <span><strong>${escapeHtml(event?.metrics?.trillsCount || 0)}</strong> trilli</span>
-        <span><strong>${escapeHtml(event?.metrics?.promosCount || 0)}</strong> promo</span>
+        <span><strong>${escapeHtml(
+          event?.metrics?.checkInsCount || 0
+        )}</strong> check-in</span>
+        <span><strong>${escapeHtml(
+          event?.metrics?.promosCount || 0
+        )}</strong> promo</span>
       </div>
 
       <p class="org-map-reason">
@@ -275,7 +264,9 @@ function renderEventCard(event) {
 
       ${
         event?.suggestions?.length
-          ? `<ul class="org-map-suggestions">${event.suggestions.map(renderSuggestion).join("")}</ul>`
+          ? `<ul class="org-map-suggestions">${event.suggestions
+              .map(renderSuggestion)
+              .join("")}</ul>`
           : ""
       }
 
@@ -285,7 +276,9 @@ function renderEventCard(event) {
         <a href="${escapeHtml(event?.ctas?.createPromo || "#")}">Promuovi</a>
         ${
           event.isPrivate
-            ? `<a href="${escapeHtml(event?.ctas?.manageAccess || "#")}">Accessi</a>`
+            ? `<a href="${escapeHtml(
+                event?.ctas?.manageAccess || "#"
+              )}">Accessi</a>`
             : ""
         }
       </div>
@@ -297,7 +290,7 @@ function renderMapPlaceholder(events) {
   const withPoint = events.filter((event) => event.point).length;
 
   return `
-    <section class="org-map-canvas" aria-label="Mappa territoriale Organizer">
+    <section class="org-map-canvas" aria-label="Mappa territoriale organizer">
       <div
         class="org-map-leaflet"
         data-org-map-leaflet
@@ -306,9 +299,11 @@ function renderMapPlaceholder(events) {
     </section>
   `;
 }
+
 export function getVisibleOrganizerMapEvents(state) {
   return filterEvents(getEvents(state), state.filter);
 }
+
 export function renderSelectedOrganizerMapEvent(state) {
   const panel = document.querySelector("[data-org-map-selected-panel]");
   const target = document.querySelector("[data-org-map-selected-event]");
@@ -316,13 +311,17 @@ export function renderSelectedOrganizerMapEvent(state) {
   if (!panel || !target) return;
 
   const events = getVisibleOrganizerMapEvents(state);
-  const selectedEvent = events.find((event) => event.id === state.selectedEventId);
+  const selectedEvent = events.find(
+    (event) => event.id === state.selectedEventId
+  );
 
   panel.hidden = !selectedEvent;
+
   target.innerHTML = selectedEvent
     ? renderEventCard(selectedEvent)
     : `<div class="org-map-empty">Nessun evento selezionato.</div>`;
 }
+
 export function renderOrganizerMap(state) {
   const loading = document.querySelector("[data-org-map-loading]");
   const error = document.querySelector("[data-org-map-error]");
@@ -347,9 +346,7 @@ export function renderOrganizerMap(state) {
   content.innerHTML = `
     <section class="org-map-kpis" aria-label="KPI territoriali">
       ${renderKpi("Eventi", kpis.totalEvents, "Totale eventi organizer")}
-      ${renderKpi("Critici", kpis.criticalEvents, "Richiedono intervento")}
       ${renderKpi("Azioni", kpis.actionEvents, "Richiedono azione")}
-      ${renderKpi("Check-in", kpis.totalCheckIns, "Check-in aggregati")}
       ${renderKpi("Trilli", kpis.totalTrills, "Trilli collegati")}
       ${renderKpi("Promo", kpis.totalPromos, "Promozioni collegate")}
     </section>
@@ -363,19 +360,21 @@ export function renderOrganizerMap(state) {
       ${renderPrivacyBox(privacy)}
     </section>
 
-    <section class="org-map-panel" data-org-map-selected-panel ${state.selectedEventId ? "" : "hidden"}>
-  <div class="org-map-panel__head">
-    <h2>Evento selezionato</h2>
-        <p>Cruscotto operativo basato su eventi, metriche e suggerimenti.</p>
+    <section class="org-map-panel" data-org-map-selected-panel ${
+      state.selectedEventId ? "" : "hidden"
+    }>
+      <div class="org-map-panel__head">
+        <h2>Evento selezionato</h2>
+        <p>Dettaglio operativo dell’evento scelto sulla mappa.</p>
       </div>
 
       <div class="org-map-event-list" data-org-map-selected-event>
         ${
           events.length
-  ? events
-      .filter((event) => event.id === state.selectedEventId)
-      .map(renderEventCard)
-      .join("")
+            ? events
+                .filter((event) => event.id === state.selectedEventId)
+                .map(renderEventCard)
+                .join("")
             : `<div class="org-map-empty">Nessun evento disponibile.</div>`
         }
       </div>
