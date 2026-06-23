@@ -10,9 +10,7 @@ const organizerMapState = {
   error: "",
   data: null,
   selectedEventId: null,
-  filters: {
-    scope: "upcoming"
-  }
+  filter: "operational",
 };
 
 let mapInstance = null;
