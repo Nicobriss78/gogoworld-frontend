@@ -78,7 +78,71 @@
   line-height: 1;
   font-weight: 800;
 }
+.org-map-filter-panel {
+  padding: var(--gw-space-md, 16px);
+  border: 1px solid var(--org-border);
+  border-radius: var(--gw-radius, 12px);
+  background: var(--org-surface);
+  box-shadow: var(--gw-shadow-main, 0 6px 18px rgba(16, 24, 40, 0.06));
+}
 
+.org-map-filter-panel__head {
+  margin-bottom: var(--gw-space-sm, 10px);
+}
+
+.org-map-filter-panel__head h2 {
+  margin: 0;
+  color: var(--org-text);
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.org-map-filter-panel__head p {
+  margin: 4px 0 0;
+  color: var(--org-text-secondary);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.org-map-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gw-space-sm, 10px);
+}
+
+.org-map-filter {
+  min-height: 38px;
+  padding: 9px 13px;
+  border: 1px solid var(--org-border);
+  border-radius: var(--gw-radius-btn, 10px);
+  background: var(--org-surface);
+  color: var(--org-accent);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.org-map-filter.is-active {
+  border-color: var(--org-accent-border);
+  background: var(--org-accent);
+  color: #ffffff;
+}
+
+.org-map-filter.is-active:hover,
+.org-map-filter.is-active:focus-visible {
+  color: #ffffff;
+}
+
+.org-map-filter:hover,
+.org-map-filter:focus-visible {
+  border-color: var(--org-accent-border);
+  background: var(--org-accent-soft);
+  color: var(--org-accent-hover);
+  outline: none;
+}
 .org-map-canvas {
   min-height: 360px;
   padding: 0;
