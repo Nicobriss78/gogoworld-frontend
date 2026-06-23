@@ -110,6 +110,7 @@ async function loadOrganizerMap() {
   } finally {
     organizerMapState.loading = false;
     renderOrganizerMap(organizerMapState);
+    mountOrganizerLeafletMap();
   }
 }
 
