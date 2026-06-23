@@ -157,7 +157,8 @@ function initOrganizerMap() {
   const root = document.querySelector("[data-org-map-root]");
   if (!root) return;
 
-  loadOrganizerMap();
+  bindOrganizerMapFilters();
+loadOrganizerMap();
 }
 
 document.addEventListener("DOMContentLoaded", initOrganizerMap);
