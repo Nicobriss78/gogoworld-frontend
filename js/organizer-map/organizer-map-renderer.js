@@ -111,6 +111,47 @@ function getAreaLabel(event) {
   if (event?.region) return `Area ${event.region}`;
   return "Area operativa";
 }
+const MAP_FILTERS = [
+  {
+    value: "operational",
+    label: "Operativi",
+    hint: "Critici, da monitorare o con azioni consigliate",
+  },
+  {
+    value: "live",
+    label: "In corso",
+    hint: "Eventi attivi ora",
+  },
+  {
+    value: "upcoming",
+    label: "Imminenti",
+    hint: "Eventi futuri",
+  },
+  {
+    value: "past",
+    label: "Passati",
+    hint: "Storico eventi",
+  },
+  {
+    value: "critical",
+    label: "Critici",
+    hint: "Intervento urgente",
+  },
+  {
+    value: "action",
+    label: "Azione",
+    hint: "Serve intervento",
+  },
+  {
+    value: "all",
+    label: "Tutti",
+    hint: "Tutti gli eventi",
+  },
+];
+
+function getFilterLabel(filter) {
+  return MAP_FILTERS.find((item) => item.value === filter)?.label || "Operativi";
+}
 function renderKpi(label, value, hint) {
   return `
     <article class="org-map-kpi">
