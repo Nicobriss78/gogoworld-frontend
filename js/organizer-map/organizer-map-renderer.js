@@ -275,7 +275,7 @@ export function renderOrganizerMap(state) {
       ${renderPrivacyBox(privacy)}
     </section>
 
-    <section class="org-map-panel" ${state.selectedEventId ? "" : "hidden"}>
+    <section class="org-map-panel" data-org-map-selected-panel ${state.selectedEventId ? "" : "hidden"}>
   <div class="org-map-panel__head">
     <h2>Evento selezionato</h2>
         <p>Cruscotto operativo basato su eventi, metriche e suggerimenti.</p>
