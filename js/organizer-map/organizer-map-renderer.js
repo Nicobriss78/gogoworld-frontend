@@ -161,7 +161,38 @@ function renderKpi(label, value, hint) {
     </article>
   `;
 }
+function renderMapFilters(activeFilter, total, visible) {
+  return `
+    <section class="org-map-filter-panel" aria-label="Filtri mappa organizer">
+      <div class="org-map-filter-panel__head">
+        <div>
+          <h2>Vista territoriale</h2>
+          <p>
+            ${escapeHtml(visible)} di ${escapeHtml(total)} eventi · filtro ${escapeHtml(getFilterLabel(activeFilter))}
+          </p>
+        </div>
+      </div>
 
+      <div class="org-map-filters">
+        ${MAP_FILTERS.map((filter) => {
+          const active = filter.value === activeFilter;
+
+          return `
+            <button
+              type="button"
+              class="org-map-filter ${active ? "is-active" : ""}"
+              data-org-map-filter="${escapeHtml(filter.value)}"
+              title="${escapeHtml(filter.hint)}"
+              aria-pressed="${active ? "true" : "false"}"
+            >
+              ${escapeHtml(filter.label)}
+            </button>
+          `;
+        }).join("")}
+      </div>
+    </section>
+  `;
+}
 function renderLegend() {
   return `
     <section class="org-map-panel">
