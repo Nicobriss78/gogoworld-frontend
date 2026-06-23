@@ -51,9 +51,18 @@ function mountOrganizerLeafletMap() {
   const node = document.querySelector("[data-org-map-leaflet]");
   if (!node || !window.L) return;
 
+  if (mapInstance) {
+    const currentContainer = mapInstance.getContainer();
+
+    if (currentContainer !== node) {
+      mapInstance.remove();
+      mapInstance = null;
+      markerLayer = null;
+    }
+  }
+
   const events = getVisibleOrganizerMapEvents(organizerMapState)
     .filter((event) => getMapPoint(event));
-
   if (!mapInstance) {
     mapInstance = window.L.map(node, {
       zoomControl: true,
