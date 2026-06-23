@@ -1,11 +1,7 @@
 export const organizerMapState = {
   loading: false,
   error: "",
-  data: {
-    privacy: null,
-    kpis: null,
-    events: [],
-  },
-  selectedEventId: "",
+  data: null,
+  selectedEventId: null,
   filter: "operational",
 };
