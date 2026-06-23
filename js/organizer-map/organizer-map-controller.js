@@ -79,7 +79,7 @@ function mountOrganizerLeafletMap() {
 
     marker.on("click", () => {
   organizerMapState.selectedEventId = event.id;
-  renderOrganizerMap(organizerMapState);
+  renderSelectedOrganizerMapEvent(organizerMapState);
 
   setTimeout(() => {
     if (mapInstance) {
