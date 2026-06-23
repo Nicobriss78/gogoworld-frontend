@@ -135,7 +135,24 @@ async function loadOrganizerMap() {
     mountOrganizerLeafletMap();
   }
 }
+function bindOrganizerMapFilters() {
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-org-map-filter]");
+    if (!button) return;
 
+    organizerMapState.filter = button.dataset.orgMapFilter || "operational";
+    organizerMapState.selectedEventId = null;
+
+    renderOrganizerMap(organizerMapState);
+    mountOrganizerLeafletMap();
+
+    setTimeout(() => {
+      if (mapInstance) {
+        mapInstance.invalidateSize();
+      }
+    }, 80);
+  });
+}
 function initOrganizerMap() {
   const root = document.querySelector("[data-org-map-root]");
   if (!root) return;
