@@ -226,14 +226,11 @@ function renderMapPlaceholder(events) {
 
   return `
     <section class="org-map-canvas" aria-label="Mappa territoriale Organizer">
-      <div class="org-map-canvas__inner">
-        <p class="org-map-canvas__label">Map Canvas V2</p>
-        <h2>${escapeHtml(withPoint)} eventi geolocalizzati</h2>
-        <p>
-          Skeleton operativo: i marker reali verranno montati nel prossimo step
-          sopra questo canvas privacy-safe.
-        </p>
-      </div>
+      <div
+        class="org-map-leaflet"
+        data-org-map-leaflet
+        data-org-map-count="${escapeHtml(withPoint)}"
+      ></div>
     </section>
   `;
 }
