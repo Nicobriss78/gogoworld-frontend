@@ -80,13 +80,11 @@
 }
 
 .org-map-canvas {
-  min-height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    linear-gradient(135deg, rgba(122, 50, 66, 0.08), rgba(122, 50, 66, 0.02)),
-    var(--org-surface);
+  min-height: 360px;
+  padding: 0;
+  overflow: hidden;
+  display: block;
+  background: var(--org-surface);
 }
 
 .org-map-canvas__inner {
