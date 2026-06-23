@@ -3,7 +3,99 @@ import {
   getVisibleOrganizerMapEvents,
   renderOrganizerMap,
 } from "./organizer-map-renderer.js?v=1";import { organizerMapState } from "./organizer-map-state.js?v=1";
+let mapInstance = null;
+let markerLayer = null;
 
+function getMarkerColor(level) {
+  const map = {
+    ok: "#1E8E5A",
+    monitor: "#B98900",
+    action: "#C65F1A",
+    critical: "#B52A32",
+  };
+
+  return map[level] || map.ok;
+}
+
+function createEventIcon(event) {
+  const level = String(event?.operationalStatus?.level || "ok").toLowerCase();
+  const color = getMarkerColor(level);
+
+  return window.L.divIcon({
+    className: "org-map-marker-wrap",
+    html: `<span class="org-map-marker" style="background:${color}"></span>`,
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+  });
+}
+
+function getMapPoint(event) {
+  const lat = Number(event?.point?.lat);
+  const lon = Number(event?.point?.lon);
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+
+  return [lat, lon];
+}
+
+function mountOrganizerLeafletMap() {
+  const node = document.querySelector("[data-org-map-leaflet]");
+  if (!node || !window.L) return;
+
+  const events = getVisibleOrganizerMapEvents(organizerMapState)
+    .filter((event) => getMapPoint(event));
+
+  if (!mapInstance) {
+    mapInstance = window.L.map(node, {
+      zoomControl: true,
+      attributionControl: true,
+    }).setView([41.9028, 12.4964], 6);
+
+    window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap",
+    }).addTo(mapInstance);
+  }
+
+  if (markerLayer) {
+    markerLayer.clearLayers();
+  } else {
+    markerLayer = window.L.layerGroup().addTo(mapInstance);
+  }
+
+  const bounds = [];
+
+  events.forEach((event) => {
+    const point = getMapPoint(event);
+    if (!point) return;
+
+    bounds.push(point);
+
+    const marker = window.L.marker(point, {
+      icon: createEventIcon(event),
+      title: event.title || "Evento",
+    });
+
+    marker.on("click", () => {
+      organizerMapState.selectedEventId = event.id;
+      renderOrganizerMap(organizerMapState);
+      mountOrganizerLeafletMap();
+    });
+
+    markerLayer.addLayer(marker);
+  });
+
+  if (bounds.length) {
+    mapInstance.fitBounds(bounds, {
+      padding: [28, 28],
+      maxZoom: 12,
+    });
+  }
+
+  setTimeout(() => {
+    mapInstance.invalidateSize();
+  }, 80);
+}
 async function loadOrganizerMap() {
   organizerMapState.loading = true;
   organizerMapState.error = "";
