@@ -77,10 +77,15 @@ function mountOrganizerLeafletMap() {
     });
 
     marker.on("click", () => {
-      organizerMapState.selectedEventId = event.id;
-      renderOrganizerMap(organizerMapState);
-      mountOrganizerLeafletMap();
-    });
+  organizerMapState.selectedEventId = event.id;
+  renderOrganizerMap(organizerMapState);
+
+  setTimeout(() => {
+    if (mapInstance) {
+      mapInstance.invalidateSize();
+    }
+  }, 60);
+});
 
     markerLayer.addLayer(marker);
   });
