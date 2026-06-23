@@ -4,9 +4,19 @@ import {
   renderOrganizerMap,
   renderSelectedOrganizerMapEvent,
 } from "./organizer-map-renderer.js?v=1";
+
+const organizerMapState = {
+  loading: false,
+  error: "",
+  data: null,
+  selectedEventId: null,
+  filters: {
+    scope: "upcoming"
+  }
+};
+
 let mapInstance = null;
 let markerLayer = null;
-
 function getMarkerColor(level) {
   const map = {
     ok: "#1E8E5A",
