@@ -91,6 +91,14 @@ function mountOrganizerLeafletMap() {
   organizerMapState.selectedEventId = event.id;
   renderSelectedOrganizerMapEvent(organizerMapState);
 
+  const panel = document.querySelector("[data-org-map-selected-panel]");
+  if (panel) {
+    panel.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
   setTimeout(() => {
     if (mapInstance) {
       mapInstance.invalidateSize();
