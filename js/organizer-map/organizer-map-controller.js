@@ -1,21 +1,15 @@
 import { fetchOrganizerMapSummary } from "./organizer-map-api.js?v=1";
+import { organizerMapState } from "./organizer-map-state.js?v=1";
 import {
   getVisibleOrganizerMapEvents,
   renderOrganizerMap,
   renderSelectedOrganizerMapEvent,
 } from "./organizer-map-renderer.js?v=1";
 
-const organizerMapState = {
-  loading: false,
-  error: "",
-  data: null,
-  selectedEventId: null,
-  filter: "operational",
-};
-
 let mapInstance = null;
 let markerLayer = null;
-function getMarkerColor(level) {
+
+function getMarkerClass(level) {
   const map = {
     ok: "#1E8E5A",
     monitor: "#B98900",
