@@ -92,11 +92,18 @@
   min-height: 360px;
 }
 
-.org-map-canvas__label {
-  color: var(--org-accent);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+.org-map-marker-wrap {
+  background: transparent;
+  border: 0;
+}
+
+.org-map-marker {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #ffffff;
+  border-radius: 999px;
+  display: block;
+  box-shadow: 0 4px 12px rgba(16, 24, 40, 0.28);
 }
 
 .org-map-grid {
