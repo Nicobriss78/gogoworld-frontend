@@ -104,7 +104,7 @@ const isCustomSubcategory = Boolean(
 );
   root.innerHTML = `
     <h1>${title}</h1>
-    <p>Crea il tuo evento compilando tutte le informazioni necessarie alla pubblicazione.</p>
+    <p>Compila tutte le informazioni necessarie alla pubblicazione.</p>
 
     ${state.error ? `<section class="org-event-error">${escapeHtml(state.error)}</section>` : ""}
     ${state.success ? `<section class="org-event-success">${escapeHtml(state.success)}</section>` : ""}
