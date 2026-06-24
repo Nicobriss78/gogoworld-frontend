@@ -191,7 +191,7 @@ export function renderEventDetail(state) {
 
   root.innerHTML = `
     <h1>${escapeHtml(event.title || "Evento senza titolo")}</h1>
-    <p>Hub operativo evento Organizer V2.</p>
+    <p>Panoramica completa del tuo evento.</p>
 
     ${
       state.actionMessage
