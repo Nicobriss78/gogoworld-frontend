@@ -73,11 +73,32 @@ padding: calc(var(--gw-topbar-h, 104px) + var(--gw-page-pad-y, 12px)) var(--org-
 -webkit-overflow-scrolling: touch;
 }
 
-.organizer-shell .home-topbar,
+.organizer-shell .home-topbar {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+z-index: 920;
+width: 100%;
+max-width: 100vw;
+overflow-x: hidden;
+background: var(--org-surface);
+border-bottom: 1px solid var(--org-border);
+box-shadow: 0 1px 0 rgba(16, 24, 40, 0.04);
+}
+
 .organizer-shell .home-bottomnav {
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
+position: fixed;
+left: 0;
+right: 0;
+bottom: 0;
+z-index: 920;
+width: 100%;
+max-width: 100vw;
+overflow-x: hidden;
+background: var(--org-surface);
+border-top: 1px solid var(--org-border);
+box-shadow: 0 -4px 14px rgba(16, 24, 40, 0.06);
 }
 
 .organizer-shell .home-topbar__row {
