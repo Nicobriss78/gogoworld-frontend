@@ -1,35 +1,43 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-  <title>Modifica Evento Organizer V2</title>
+<title>Modifica Evento Organizer V2</title>
 
-  <link rel="stylesheet" href="/css/tokens.v2.css" />
-  <link rel="stylesheet" href="/css/icons-v2.css" />
-  <link rel="stylesheet" href="/css/shared-shell.css" />
-  <link rel="stylesheet" href="/css/organizer-shell.css" />
-  <link rel="stylesheet" href="/css/areas/organizer-event-form.css" />
+<link rel="stylesheet" href="/css/tokens.v2.css" />
+<link rel="stylesheet" href="/css/icons-v2.css" />
+<link rel="stylesheet" href="/css/shared-shell.css" />
+<link rel="stylesheet" href="/css/shared-notifications.css" />
+<link rel="stylesheet" href="/css/organizer-shell.css" />
+<link rel="stylesheet" href="/css/areas/organizer-event-form.css" />
 </head>
 
-<body class="gw-shell">
-  <main class="gw-page">
-    <section class="org-event-form-container" data-org-event-form-root>
-      <h1>Modifica evento</h1>
-      <p>Caricamento evento...</p>
-    </section>
-  </main>
+<body class="organizer-shell" data-organizer-view="events">
+<header id="organizer-topbar"></header>
 
-  <script type="module">
-    import { checkAccess } from "/js/organizer-shell/organizer-access-guard.js?v=7";
-    import { initEventForm } from "/js/organizer-event-form/organizer-event-form-controller.js?v=8";
+<main id="organizer-view">
+<section class="org-event-form-container" data-org-event-form-root>
+<h1>Modifica evento</h1>
+<p>Caricamento evento...</p>
+</section>
+</main>
 
-    const accessResult = await checkAccess();
+<nav id="organizer-bottomnav"></nav>
+<div id="organizer-menu"></div>
 
-    if (accessResult.allowed) {
-      await initEventForm();
-    }
-  </script>
+<script type="module" src="/js/organizer-shell/organizer-bootstrap.js?v=10"></script>
+
+<script type="module">
+import { checkAccess } from "/js/organizer-shell/organizer-access-guard.js?v=7";
+import { initEventForm } from "/js/organizer-event-form/organizer-event-form-controller.js?v=8";
+
+const accessResult = await checkAccess();
+
+if (accessResult.allowed) {
+  await initEventForm();
+}
+</script>
 </body>
 </html>
