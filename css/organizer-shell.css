@@ -63,14 +63,14 @@ body.organizer-shell .gw-iconbtn {
 }
 
 #organizer-view {
-  flex: 1 1 auto;
-  min-height: calc(var(--gw-app-viewport-h, 100vh) - var(--gw-topbar-h, 104px) - var(--org-bottomnav-h));
-  width: 100%;
-  max-width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: var(--gw-page-pad-y, 12px) var(--org-page-pad-x) calc(var(--org-bottomnav-h) + 10px);
-  -webkit-overflow-scrolling: touch;
+flex: 1 1 auto;
+min-height: calc(var(--gw-app-viewport-h, 100vh) - var(--gw-topbar-h, 104px) - var(--org-bottomnav-h));
+width: 100%;
+max-width: 100%;
+overflow-y: visible;
+overflow-x: hidden;
+padding: calc(var(--gw-topbar-h, 104px) + var(--gw-page-pad-y, 12px)) var(--org-page-pad-x) calc(var(--org-bottomnav-h) + 10px);
+-webkit-overflow-scrolling: touch;
 }
 
 .organizer-shell .home-topbar,
