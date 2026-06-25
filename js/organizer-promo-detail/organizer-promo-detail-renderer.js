@@ -450,7 +450,7 @@ return [
 label: "Vedi motivo",
 tone: "secondary",
 disabled: true,
-title: "Il motivo del rifiuto sarà mostrato quando il backend esporrà le note admin strutturate.",
+title: "Il motivo del rifiuto non è ancora disponibile in questa schermata.",
 },
 {
 label: "Modifica e reinvia",
