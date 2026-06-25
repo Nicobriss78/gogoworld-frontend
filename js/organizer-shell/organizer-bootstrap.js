@@ -12,18 +12,34 @@ let notificationsCenter = null;
 async function initCurrentView() {
   const view = document.body?.dataset?.organizerView || "dashboard";
 
+  if (view === "dashboard") {
+    const root = document.querySelector("[data-org-dashboard-root]");
+    if (!root) return;
+
+    const module = await import("../organizer-dashboard/organizer-dashboard-controller.js?v=12");
+    await module.initDashboard();
+    return;
+  }
+
   if (view === "events") {
+    const root = document.querySelector("[data-org-events-root]");
+    if (!root) return;
+
     const module = await import("../organizer-events/organizer-events-controller.js?v=8");
     await module.initEventsPage();
     return;
   }
 
   if (view === "trills") {
+    const root = document.querySelector("[data-org-trills-root]");
+    if (!root) return;
+
     const module = await import("../organizer-trills/organizer-trills-controller.js?v=8");
     await module.initOrganizerTrills();
     return;
   }
-if (view === "promos") {
+
+  if (view === "promos") {
     return;
   }
 
@@ -34,8 +50,6 @@ if (view === "promos") {
   if (view === "communications") {
     return;
   }
-  const module = await import("../organizer-dashboard/organizer-dashboard-controller.js?v=12");
-  await module.initDashboard();
 }
 
 function bindShellActions() {
