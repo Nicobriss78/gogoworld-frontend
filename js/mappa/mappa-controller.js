@@ -69,6 +69,10 @@ let geoWatchActive = false;
   chat.mount();
   chat.showIdle();
 syncLocateBtnMode(state.getState().geo?.mode || "explore");
+  mountSharedGeoBanner({
+  variant: "map",
+  respectDismiss: false,
+}).catch(() => {});
   await loadEvents({
     fitBounds: true
   });
