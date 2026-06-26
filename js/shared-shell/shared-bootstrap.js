@@ -14,6 +14,7 @@ import { mountMenu, setMenuOpen } from "./shared-menu.js";
 import { mountBottomnav } from "./shared-bottomnav.js";
 import { initNotificationsCenter } from "../shared/notifications-center.js";
 import { syncLocationIfAlreadyGranted } from "../shared/shared-geo-consent.js";
+import { mountSharedGeoBanner } from "../shared/shared-geo-banner.js";
 let notificationsCenter = null;
 const SHARED_ICON_SPRITE_ID = "shared-v2-icon-sprite";
 
