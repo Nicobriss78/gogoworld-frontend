@@ -84,7 +84,9 @@ export async function mountSharedGeoBanner(options = {}) {
   const view = document.getElementById("sharedTopbarMount");
   if (!view) return;
 
-  const banner = createBanner();
+  const banner = createBanner({
+  variant: options.variant || "default",
+});
 
   banner.addEventListener("click", async (event) => {
     const button = event.target.closest("[data-geo-action]");
