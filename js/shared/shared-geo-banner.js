@@ -74,7 +74,7 @@ export async function mountSharedGeoBanner(options = {}) {
   const state = getGeoPromptState();
 
   if (!state.hasGeolocation) return;
-  if (shouldRespectDismiss(state.dismissedAt)) return;
+  if (options.respectDismiss !== false && shouldRespectDismiss(state.dismissedAt)) return;
 
   const permissionState = await getPermissionState();
 
