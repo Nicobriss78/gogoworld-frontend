@@ -22,19 +22,33 @@ async function getPermissionState() {
   }
 }
 
-function createBanner() {
+function getBannerCopy(variant = "default") {
+  if (variant === "map") {
+    return {
+      title: "Attiva la posizione sulla mappa",
+      text:
+        "Con la posizione attiva possiamo mostrarti eventi vicini, trilli live e luoghi più rilevanti intorno a te.",
+    };
+  }
+
+  return {
+    title: "Vivi GoGoWorld intorno a te",
+    text:
+      "Attiva la posizione per scoprire eventi vicini, ricevere trilli live e trovare esperienze più rilevanti nella tua zona.",
+  };
+}
+
+function createBanner({ variant = "default" } = {}) {
+  const copy = getBannerCopy(variant);
   const banner = document.createElement("section");
   banner.id = GEO_BANNER_ID;
-  banner.className = "shared-geo-banner";
+  banner.className = `shared-geo-banner shared-geo-banner--${variant}`;
   banner.setAttribute("aria-label", "Attiva posizione GoGoWorld");
 
   banner.innerHTML = `
     <div class="shared-geo-banner__content">
-      <strong>Vivi GoGoWorld intorno a te</strong>
-      <p>
-        Attiva la posizione per scoprire eventi vicini, ricevere trilli live
-        e trovare esperienze più rilevanti nella tua zona.
-      </p>
+      <strong>${copy.title}</strong>
+      <p>${copy.text}</p>
     </div>
 
     <div class="shared-geo-banner__actions">
