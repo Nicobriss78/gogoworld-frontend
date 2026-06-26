@@ -85,24 +85,55 @@ export async function mountSharedGeoBanner() {
     }
 
     if (action === "enable") {
-      button.disabled = true;
-      button.textContent = "Attivazione...";
+  button.disabled = true;
+  button.textContent = "Attivazione...";
 
-      try {
-        const result = await requestAndSyncLocation();
+  try {
+    const result = await requestAndSyncLocation();
 
-        if (result?.ok) {
-          removeBanner();
-          return;
-        }
+    if (result?.ok) {
+      removeBanner();
 
-        button.disabled = false;
-        button.textContent = "Riprova";
-      } catch {
-        button.disabled = false;
-        button.textContent = "Riprova";
-      }
+      window.dispatchEvent(
+        new CustomEvent("gw:toast", {
+          detail: {
+            type: "success",
+            message:
+              "Posizione attivata. Ora puoi ricevere trilli e scoprire eventi vicini.",
+          },
+        })
+      );
+
+      return;
     }
+
+    button.disabled = false;
+    button.textContent = "Riprova";
+
+    window.dispatchEvent(
+      new CustomEvent("gw:toast", {
+        detail: {
+          type: "error",
+          message:
+            "Non siamo riusciti ad attivare la posizione. Puoi riprovare quando vuoi.",
+          },
+        })
+      );
+  } catch {
+    button.disabled = false;
+    button.textContent = "Riprova";
+
+    window.dispatchEvent(
+      new CustomEvent("gw:toast", {
+        detail: {
+          type: "error",
+          message:
+            "Non siamo riusciti ad attivare la posizione. Puoi riprovare quando vuoi.",
+          },
+        })
+      );
+  }
+}
   });
 
   view.insertAdjacentElement("afterend", banner);
