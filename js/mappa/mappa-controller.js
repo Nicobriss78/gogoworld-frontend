@@ -11,6 +11,7 @@ import {
   normalizePosition,
   getDistanceMeters
 } from "/js/mappa/mappa-geo.js";
+import { mountSharedGeoBanner } from "/js/shared/shared-geo-banner.js";
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
