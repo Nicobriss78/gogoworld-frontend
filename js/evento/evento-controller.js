@@ -666,9 +666,10 @@ async function bootstrapEventoPage() {
   await loadEventoData(state, renderer);
 
   if (state.event && !state.notFound && !state.error) {
-    await loadEventoCheckIn(state, renderer);
-    await loadEventoReviews(state, renderer);
-  }
+await ensureGeoReminderForEvent();
+await loadEventoCheckIn(state, renderer);
+await loadEventoReviews(state, renderer);
+}
 }
 bootstrapEventoPage().catch(() => {
   /* bootstrap error already reflected in UI state where possible */
