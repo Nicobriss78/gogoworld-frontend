@@ -68,7 +68,8 @@ function removeBanner() {
   document.getElementById(GEO_BANNER_ID)?.remove();
 }
 
-export async function mountSharedGeoBanner(options = {}) {  if (document.getElementById(GEO_BANNER_ID)) return;
+export async function mountSharedGeoBanner(options = {}) {  
+  if (document.getElementById(GEO_BANNER_ID)) return;
 
   const state = getGeoPromptState();
 
