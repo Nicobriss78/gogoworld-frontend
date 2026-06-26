@@ -145,7 +145,9 @@ const notificationsButton = document.querySelector(
     mode: viewConfig.bottomnavMode,
   });
   syncLocationIfAlreadyGranted().catch(() => {});
-  subscribe((state) => {
+mountSharedGeoBanner().catch(() => {});
+
+subscribe((state) => {
     setMenuOpen(document.getElementById("sharedMenuMount"), state.menuOpen);
   });
 
