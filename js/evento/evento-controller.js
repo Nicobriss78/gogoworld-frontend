@@ -13,7 +13,22 @@ import {
 import { requestUserPosition, getGeoPermissionState } from "../mappa/mappa-geo.js";
 import { mountSharedGeoBanner } from "../shared/shared-geo-banner.js";
 import { createEventoRenderer } from "./evento-renderer.js";
+async function ensureGeoReminderForEvent() {
+  try {
+    const permission = await getGeoPermissionState();
 
+    if (permission === "granted") {
+      return;
+    }
+
+    await mountSharedGeoBanner({
+      variant: "event",
+      respectDismiss: false,
+    });
+  } catch {
+    // silenzioso
+  }
+}
 function getSearchParams() {
   return new URLSearchParams(window.location.search);
 }
