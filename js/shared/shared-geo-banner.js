@@ -79,7 +79,6 @@ export async function mountSharedGeoBanner(options = {}) {
   const permissionState = await getPermissionState();
 
   if (permissionState === "granted") return;
-  if (permissionState === "denied") return;
 
   const view = document.getElementById("sharedTopbarMount");
   if (!view) return;
