@@ -30,7 +30,13 @@ function getBannerCopy(variant = "default") {
         "Con la posizione attiva possiamo mostrarti eventi vicini, trilli live e luoghi più rilevanti intorno a te.",
     };
   }
-
+if (variant === "event") {
+  return {
+    title: "Attiva la posizione per vivere meglio questo evento",
+    text:
+      "Con la posizione attiva puoi ricevere trilli live, velocizzare il check-in e scoprire cosa succede intorno a te durante l’evento.",
+  };
+}
   return {
     title: "Vivi GoGoWorld intorno a te",
     text:
