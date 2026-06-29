@@ -81,12 +81,13 @@ function bindForm() {
     const formData = new FormData(form);
 
     const payload = {
-      eventId: organizerTrillFormState.eventId,
-      type: "base",
-      message: String(formData.get("message") || "").trim(),
-      targetingMode: String(formData.get("targetingMode") || "nearby"),
-      radiusMeters: Number(formData.get("radiusMeters") || 1000),
-    };
+eventId: organizerTrillFormState.eventId,
+type: "base",
+priority: String(formData.get("priority") || "live"),
+message: String(formData.get("message") || "").trim(),
+targetingMode: String(formData.get("targetingMode") || "nearby"),
+radiusMeters: Number(formData.get("radiusMeters") || 1000),
+};
 
     organizerTrillFormState.saving = true;
     organizerTrillFormState.error = null;
