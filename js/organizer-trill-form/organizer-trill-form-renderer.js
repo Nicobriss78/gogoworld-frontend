@@ -167,7 +167,18 @@ export function renderOrganizerTrillForm(state) {
               <option value="both">Entrambi</option>
             </select>
           </div>
-
+          <div class="org-trill-field">
+            <label for="trill-priority">Priorità</label>
+            <select id="trill-priority" name="priority">
+              <option value="soft">Morbido</option>
+              <option value="live" selected>Live</option>
+              <option value="urgent">Urgente</option>
+              <option value="final_call">Ultima chiamata</option>
+            </select>
+<span class="org-trill-muted">
+La priorità aiuta a distinguere il tono e l’urgenza del trillo.
+</span>
+</div>
           <div class="org-trill-field">
             <label for="trill-radius">Raggio</label>
             <select id="trill-radius" name="radiusMeters">
