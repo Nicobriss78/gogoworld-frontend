@@ -198,7 +198,24 @@
 .gw-notifications__item.is-unread {
   background: rgba(46, 139, 192, 0.06);
 }
+.gw-notifications__item.is-pinned {
+border: 1px solid rgba(181, 42, 50, 0.18);
+}
 
+.gw-notifications__item--highlight {
+background: rgba(46, 139, 192, 0.08);
+}
+
+.gw-notifications__item--urgent,
+.gw-notifications__item--final_call {
+background: rgba(181, 42, 50, 0.08);
+}
+
+.gw-notifications__item--urgent .gw-notifications__icon,
+.gw-notifications__item--final_call .gw-notifications__icon {
+background: rgba(181, 42, 50, 0.10);
+color: var(--gw-danger, var(--brand-red, #b52a32));
+}
 .gw-notifications__icon {
   display: grid;
   place-items: center;
