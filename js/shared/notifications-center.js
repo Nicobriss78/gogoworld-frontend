@@ -210,9 +210,9 @@ function renderTabs() {
 function renderNotifications() {
   if (!listEl) return;
 
-  const items = notificationsCache.filter((notification) =>
-    matchesCategory(notification, activeCategory)
-  );
+  const items = notificationsCache
+    .filter((notification) => matchesCategory(notification, activeCategory))
+    .sort(sortNotificationsByPriority);
 
   if (!items.length) {
     listEl.innerHTML = `
