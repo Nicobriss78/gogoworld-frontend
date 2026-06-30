@@ -229,7 +229,51 @@ function renderNotifications() {
 
   listEl.innerHTML = items.map(renderNotificationItem).join("");
 }
+function getNotificationData(notification) {
+  return notification?.data && typeof notification.data === "object"
+    ? notification.data
+    : {};
+}
 
+function getNotificationWeight(notification) {
+  const data = getNotificationData(notification);
+  const weight = Number(data.notificationWeight || 0);
+
+  return Number.isFinite(weight) ? weight : 0;
+}
+
+function isPinnedNotification(notification) {
+  const data = getNotificationData(notification);
+  return data.pinned === true;
+}
+
+function sortNotificationsByPriority(a, b) {
+  const pinnedDiff =
+    Number(isPinnedNotification(b)) - Number(isPinnedNotification(a));
+
+  if (pinnedDiff !== 0) return pinnedDiff;
+
+  const weightDiff = getNotificationWeight(b) - getNotificationWeight(a);
+  if (weightDiff !== 0) return weightDiff;
+
+  return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+}
+
+function getVisualTone(notification) {
+  const data = getNotificationData(notification);
+  const tone = String(data.visualTone || "standard").trim().toLowerCase();
+
+  if (["standard", "highlight", "urgent", "final_call"].includes(tone)) {
+    return tone;
+  }
+
+  return "standard";
+}
+
+function getPriorityLabel(notification) {
+  const data = getNotificationData(notification);
+  return String(data.priorityLabel || "").trim();
+}
 function renderNotificationItem(notification) {
   const id = String(notification._id || "");
   const title = escapeHtml(notification.title || "Notifica");
