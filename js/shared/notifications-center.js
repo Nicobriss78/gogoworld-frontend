@@ -280,11 +280,14 @@ function renderNotificationItem(notification) {
   const message = escapeHtml(notification.message || "");
   const time = formatTime(notification.createdAt);
   const type = escapeHtml(notification.type || "system");
-  const unreadClass = notification.isRead ? "" : " is-unread";
+    const unreadClass = notification.isRead ? "" : " is-unread";
+  const visualTone = escapeHtml(getVisualTone(notification));
+  const pinnedClass = isPinnedNotification(notification) ? " is-pinned" : "";
+  const priorityLabel = escapeHtml(getPriorityLabel(notification));
 
   return `
     <article
-      class="gw-notifications__item${unreadClass}"
+      class="gw-notifications__item${unreadClass}${pinnedClass} gw-notifications__item--${visualTone}"
       data-notification-id="${id}"
       data-notification-type="${type}"
       tabindex="0"
