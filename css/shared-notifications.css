@@ -229,7 +229,24 @@ color: var(--gw-danger, var(--brand-red, #b52a32));
 .gw-notifications__body {
   min-width: 0;
 }
+.gw-notifications__item-title-row {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+gap: 8px;
+}
 
+.gw-notifications__priority {
+flex: 0 0 auto;
+padding: 4px 7px;
+border-radius: 999px;
+background: rgba(181, 42, 50, 0.10);
+color: var(--gw-danger, var(--brand-red, #b52a32));
+font-size: 11px;
+line-height: 1;
+font-weight: 800;
+white-space: nowrap;
+}
 .gw-notifications__item-title {
   margin: 0 0 4px;
   color: var(--gw-text-primary, #1c2430);
