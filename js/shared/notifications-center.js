@@ -297,7 +297,14 @@ function renderNotificationItem(notification) {
       </div>
 
       <div class="gw-notifications__body">
-        <h3 class="gw-notifications__item-title">${title}</h3>
+                <div class="gw-notifications__item-title-row">
+          <h3 class="gw-notifications__item-title">${title}</h3>
+          ${
+            priorityLabel
+              ? `<span class="gw-notifications__priority">${priorityLabel}</span>`
+              : ""
+          }
+        </div>
         ${message ? `<p class="gw-notifications__item-message">${message}</p>` : ""}
         <p class="gw-notifications__item-time">${time}</p>
       </div>
