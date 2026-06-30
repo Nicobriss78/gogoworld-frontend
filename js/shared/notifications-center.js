@@ -390,7 +390,9 @@ function resolveNotificationLink(notification) {
   if (typeof data.link === "string" && data.link.trim()) {
     return data.link.trim();
   }
-
+    if (typeof data.deepLink === "string" && data.deepLink.trim()) {
+    return data.deepLink.trim();
+  }
   if (notification.event?._id) {
     return `/pages/evento-v2.html?id=${notification.event._id}`;
   }
