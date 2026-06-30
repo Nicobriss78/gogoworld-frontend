@@ -369,6 +369,7 @@ function matchesCategory(notification, category) {
       "review_received",
       "review_available",
       "organizer_event_activity",
+      "trill",
     ].includes(type);
   }
 
