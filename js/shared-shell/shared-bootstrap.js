@@ -146,9 +146,10 @@ const notificationsButton = document.querySelector(
     mode: viewConfig.bottomnavMode,
   });
   syncLocationIfAlreadyGranted().catch(() => {});
+resumeParticipantGeoTrackingIfEnabled().catch(() => {});
 
 if (viewId !== "map") {
-  mountSharedGeoBanner().catch(() => {});
+mountSharedGeoBanner().catch(() => {});
 }
 
 subscribe((state) => {
