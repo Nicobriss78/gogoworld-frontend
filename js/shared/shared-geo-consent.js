@@ -78,11 +78,17 @@ export function dismissGeoPrompt() {
 }
 
 export function getGeoPromptState() {
-  return {
-    dismissedAt: getStoredTimestamp(STORAGE_KEYS.dismissedAt),
-    lastSyncAt: getStoredTimestamp(STORAGE_KEYS.lastSyncAt),
-    hasGeolocation: hasNavigatorGeolocation(),
-  };
+const trackingState = getParticipantGeoTrackingState();
+
+return {
+dismissedAt: getStoredTimestamp(STORAGE_KEYS.dismissedAt),
+lastSyncAt: getStoredTimestamp(STORAGE_KEYS.lastSyncAt),
+hasGeolocation: hasNavigatorGeolocation(),
+trackingEnabled: trackingState.enabled,
+trackingActive: trackingState.active,
+trackingLastSyncAt: trackingState.lastSyncAt,
+trackingLastError: trackingState.lastError,
+};
 }
 
 export async function syncLocationIfAlreadyGranted() {
