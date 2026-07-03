@@ -123,7 +123,14 @@ export async function syncLocationIfAlreadyGranted() {
 }
 
 export async function requestAndSyncLocation() {
-  return syncPositionFromBrowser({
-    enableHighAccuracy: true,
-  });
-    }
+return startParticipantGeoTracking({
+forceInitialSync: true,
+});
+}
+
+export function disableGeoTracking() {
+return stopParticipantGeoTracking({
+persistDisabled: true,
+reason: "USER_DISABLED_GEO_TRACKING",
+});
+}
