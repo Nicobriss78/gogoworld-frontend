@@ -1,5 +1,9 @@
 import { updateMyLocation } from "/js/shared/user-location-api.js";
-
+import {
+  startParticipantGeoTracking,
+  stopParticipantGeoTracking,
+  getParticipantGeoTrackingState,
+} from "/js/shared/participant-geo-tracking-session.js";
 const STORAGE_KEYS = {
   dismissedAt: "ggw_geo_prompt_dismissed_at",
   lastSyncAt: "ggw_geo_last_sync_at",
