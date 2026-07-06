@@ -31,9 +31,33 @@ function getKpis(state) {
   return state?.data?.kpis || {};
 }
 
-function filterEvents(events, filter) {
-  const now = Date.now();
+function getValidEventTime(value) {
+  const time = value ? new Date(value).getTime() : NaN;
+  return Number.isFinite(time) ? time : null;
+}
 
+function getEventTemporalStatus(event) {
+  const backendStatus = String(event?.temporalStatus || "").toLowerCase();
+
+  if (["live", "upcoming", "past"].includes(backendStatus)) {
+    return backendStatus;
+  }
+
+  const now = Date.now();
+  const start = getValidEventTime(event?.dateStart);
+  const end = getValidEventTime(event?.dateEnd) ?? start;
+
+  if (start === null && end === null) return "unknown";
+  if (start !== null && start > now) return "upcoming";
+  if (end !== null && end < now) return "past";
+  if (start !== null && end !== null && start <= now && end >= now) {
+    return "live";
+  }
+
+  return "unknown";
+}
+
+function filterEvents(events, filter) {
   if (filter === "all") return events;
 
   if (filter === "critical") {
@@ -57,25 +81,15 @@ function filterEvents(events, filter) {
   }
 
   if (filter === "live") {
-    return events.filter((event) => {
-      const start = new Date(event.dateStart).getTime();
-      const end = new Date(event.dateEnd).getTime();
-      return start <= now && end >= now;
-    });
+    return events.filter((event) => getEventTemporalStatus(event) === "live");
   }
 
   if (filter === "upcoming") {
-    return events.filter((event) => {
-      const start = new Date(event.dateStart).getTime();
-      return start > now;
-    });
+    return events.filter((event) => getEventTemporalStatus(event) === "upcoming");
   }
 
   if (filter === "past") {
-    return events.filter((event) => {
-      const end = new Date(event.dateEnd).getTime();
-      return end < now;
-    });
+    return events.filter((event) => getEventTemporalStatus(event) === "past");
   }
 
   return events;
