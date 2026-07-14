@@ -98,15 +98,20 @@
 
 <div id="sharedBottomnavMount"></div>
 
-  <script type="module">
-    import { initSharedShell } from "/js/shared-shell/shared-bootstrap.js";
-    import { initHome } from "/js/home/home-controller.js";
+  <script
+  type="module"
+  src="/js/participant/participant-bootstrap.js"
+></script>
 
-    window.addEventListener("DOMContentLoaded", () => {
-      initSharedShell();
-      initHome(document);
-    });
-  </script>
+<script type="module">
+  import { initSharedShell } from "/js/shared-shell/shared-bootstrap.js";
+  import { initHome } from "/js/home/home-controller.js";
+
+  window.addEventListener("DOMContentLoaded", () => {
+    initSharedShell();
+    initHome(document);
+  });
+</script>
 
 
 </body>
