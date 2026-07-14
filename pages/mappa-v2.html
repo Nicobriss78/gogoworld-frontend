@@ -343,24 +343,34 @@
   </main>
 <div id="sharedBottomnavMount"></div>
 
-  <!-- Leaflet -->
   <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  type="module"
+  src="/js/participant/participant-bootstrap.js"
+></script>
 
-  <script type="module">
-    import { initSharedShell } from "/js/shared-shell/shared-bootstrap.js";
+<!-- Leaflet -->
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""
+></script>
 
-    window.addEventListener("DOMContentLoaded", () => {
-      initSharedShell();
-    });
-  </script>
+<script
+  src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"
+></script>
 
-  <!-- Controller -->
-  <script type="module" src="/js/mappa/mappa-controller.js"></script>
+<script type="module">
+  import { initSharedShell } from "/js/shared-shell/shared-bootstrap.js";
+
+  window.addEventListener("DOMContentLoaded", () => {
+    initSharedShell();
+  });
+</script>
+
+<script
+  type="module"
+  src="/js/mappa/mappa-controller.js"
+></script>
 </body>
 </html>
 
