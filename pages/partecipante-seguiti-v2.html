@@ -149,14 +149,19 @@
     </article>
   </template>
 
-  <script type="module">
-    import { initSharedShell } from "/js/shared-shell/shared-bootstrap.js";
-    import { initSeguitiController } from "/js/seguiti/seguiti-controller.js";
+  <script
+  type="module"
+  src="/js/participant/participant-bootstrap.js"
+></script>
 
-    window.addEventListener("DOMContentLoaded", () => {
-      initSharedShell();
-      initSeguitiController(document);
-    });
-  </script>
+<script type="module">
+  import { initSharedShell } from "/js/shared-shell/shared-bootstrap.js";
+  import { initSeguitiController } from "/js/seguiti/seguiti-controller.js";
+
+  window.addEventListener("DOMContentLoaded", () => {
+    initSharedShell();
+    initSeguitiController(document);
+  });
+</script>
 </body>
             </html>        
