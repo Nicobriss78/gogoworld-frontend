@@ -143,13 +143,7 @@ const notificationsButton = document.querySelector(
     onEvent: handleEvent,
     mode: viewConfig.bottomnavMode,
   });
-  syncLocationIfAlreadyGranted().catch(() => {});
-resumeParticipantGeoTrackingIfEnabled().catch(() => {});
-
-if (viewId !== "map") {
-mountSharedGeoBanner().catch(() => {});
-}
-
+  
 subscribe((state) => {
     setMenuOpen(document.getElementById("sharedMenuMount"), state.menuOpen);
   });
