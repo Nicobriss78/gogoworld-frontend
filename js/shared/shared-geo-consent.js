@@ -103,17 +103,19 @@ export async function syncLocationIfAlreadyGranted() {
     };
   }
 
-  if (!navigator.permissions?.query) {
+  await refreshGeoPermissionState();
+
+  const runtimeState = getGeoRuntimeState();
+
+  if (runtimeState.permissionState === "unknown") {
     return {
       ok: false,
       skipped: true,
-      reason: "PERMISSIONS_API_NOT_AVAILABLE",
+      reason: "GEOLOCATION_PERMISSION_UNKNOWN",
     };
   }
 
-  const permission = await navigator.permissions.query({ name: "geolocation" });
-
-  if (permission.state !== "granted") {
+  if (runtimeState.permissionState !== "granted") {
     return {
       ok: false,
       skipped: true,
