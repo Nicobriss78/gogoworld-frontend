@@ -1,15 +1,25 @@
 // frontend/js/shared/geo-runtime.js
-// Runtime strutturale globale per i servizi geografici dell'Area Partecipante.
 //
-// Fase attuale:
+// Runtime strutturale globale per i servizi geografici
+// dell'Area Partecipante.
+//
+// Fase 2B-2:
 // - mantiene uno stato geografico/lifecycle centralizzato;
 // - pubblica aggiornamenti in modo idempotente;
-// - NON accede al GPS;
-// - NON gestisce consenso, watcher, backend, banner o Leaflet.
+// - legge e osserva centralmente il permesso geolocalizzazione;
+// - NON accede alle coordinate GPS;
+// - NON gestisce consenso applicativo;
+// - NON avvia watcher geografici;
+// - NON sincronizza il backend;
+// - NON monta banner;
+// - NON interagisce con Leaflet.
 
 const GEO_RUNTIME_EVENTS = Object.freeze({
-  INITIALIZED: "ggw:geo-runtime:initialized",
-  STATE_CHANGED: "ggw:geo-runtime:state-changed",
+  INITIALIZED:
+    "ggw:geo-runtime:initialized",
+
+  STATE_CHANGED:
+    "ggw:geo-runtime:state-changed",
 });
 
 const subscribers = new Set();
@@ -17,42 +27,72 @@ const subscribers = new Set();
 let initialized = false;
 let lifecycleBound = false;
 
+let permissionStatus = null;
+let permissionQueryPromise = null;
+let permissionListenerBound = false;
+
 let state = createInitialState();
 
 function createInitialState() {
   return {
     initialized: false,
     authenticated: false,
-    online: readOnlineState(),
-    pageVisible: readPageVisibleState(),
-    pageFocused: readPageFocusedState(),
+
+    online:
+      readOnlineState(),
+
+    pageVisible:
+      readPageVisibleState(),
+
+    pageFocused:
+      readPageFocusedState(),
+
     pagePersisted: false,
-    permissionState: "unknown",
-    consentEnabled: false,
-    trackingEnabled: false,
-    trackingRunning: false,
-    watchActive: false,
-    lastKnownPosition: null,
-    lastSyncAt: null,
+
+    permissionState:
+      "unknown",
+
+    consentEnabled:
+      false,
+
+    trackingEnabled:
+      false,
+
+    trackingRunning:
+      false,
+
+    watchActive:
+      false,
+
+    lastKnownPosition:
+      null,
+
+    lastSyncAt:
+      null,
   };
 }
 
 function readOnlineState() {
-  return typeof navigator === "undefined"
+  return typeof navigator ===
+    "undefined"
     ? true
     : navigator.onLine !== false;
 }
 
 function readPageVisibleState() {
-  return typeof document === "undefined"
+  return typeof document ===
+    "undefined"
     ? true
-    : document.visibilityState !== "hidden";
+    : document.visibilityState !==
+        "hidden";
 }
 
 function readPageFocusedState() {
   if (
-    typeof document === "undefined" ||
-    typeof document.hasFocus !== "function"
+    typeof document ===
+      "undefined" ||
+    typeof document.hasFocus !==
+      "function"
   ) {
     return true;
   }
@@ -60,8 +100,25 @@ function readPageFocusedState() {
   return document.hasFocus();
 }
 
+function normalizePermissionState(
+  value
+) {
+  if (
+    value === "granted" ||
+    value === "prompt" ||
+    value === "denied"
+  ) {
+    return value;
+  }
+
+  return "unknown";
+}
+
 function clonePosition(position) {
-  if (!position || typeof position !== "object") {
+  if (
+    !position ||
+    typeof position !== "object"
+  ) {
     return null;
   }
 
@@ -73,14 +130,23 @@ function clonePosition(position) {
 function createStateSnapshot() {
   return Object.freeze({
     ...state,
-    lastKnownPosition: clonePosition(state.lastKnownPosition),
+
+    lastKnownPosition:
+      clonePosition(
+        state.lastKnownPosition
+      ),
   });
 }
 
-function emitWindowEvent(eventName, detail) {
+function emitWindowEvent(
+  eventName,
+  detail
+) {
   if (
-    typeof window === "undefined" ||
-    typeof CustomEvent !== "function"
+    typeof window ===
+      "undefined" ||
+    typeof CustomEvent !==
+      "function"
   ) {
     return;
   }
@@ -92,56 +158,95 @@ function emitWindowEvent(eventName, detail) {
   );
 }
 
-function notifySubscribers(snapshot, changedKeys) {
-  subscribers.forEach((subscriber) => {
-    try {
-      subscriber(snapshot, changedKeys);
-    } catch (error) {
-      console.error("geo-runtime: subscriber failed", error);
+function notifySubscribers(
+  snapshot,
+  changedKeys
+) {
+  subscribers.forEach(
+    (subscriber) => {
+      try {
+        subscriber(
+          snapshot,
+          changedKeys
+        );
+      } catch (error) {
+        console.error(
+          "geo-runtime: subscriber failed",
+          error
+        );
+      }
     }
-  });
+  );
 }
 
-function applyStatePatch(patch, { emit = true } = {}) {
-  if (!patch || typeof patch !== "object") {
+function applyStatePatch(
+  patch,
+  {
+    emit = true,
+  } = {}
+) {
+  if (
+    !patch ||
+    typeof patch !== "object"
+  ) {
     return createStateSnapshot();
   }
 
   const changedKeys = [];
+
   const nextState = {
     ...state,
   };
 
-  Object.entries(patch).forEach(([key, value]) => {
-    if (!(key in nextState)) {
-      return;
+  Object.entries(patch).forEach(
+    ([key, value]) => {
+      if (!(key in nextState)) {
+        return;
+      }
+
+      const normalizedValue =
+        key ===
+        "lastKnownPosition"
+          ? clonePosition(value)
+          : key ===
+              "permissionState"
+            ? normalizePermissionState(
+                value
+              )
+            : value;
+
+      if (
+        Object.is(
+          nextState[key],
+          normalizedValue
+        )
+      ) {
+        return;
+      }
+
+      nextState[key] =
+        normalizedValue;
+
+      changedKeys.push(key);
     }
+  );
 
-    const normalizedValue =
-      key === "lastKnownPosition"
-        ? clonePosition(value)
-        : value;
-
-    if (Object.is(nextState[key], normalizedValue)) {
-      return;
-    }
-
-    nextState[key] = normalizedValue;
-    changedKeys.push(key);
-  });
-
-  if (changedKeys.length === 0) {
+  if (
+    changedKeys.length === 0
+  ) {
     return createStateSnapshot();
   }
 
   state = nextState;
 
-  const snapshot = createStateSnapshot();
+  const snapshot =
+    createStateSnapshot();
 
   if (emit) {
-    const immutableChangedKeys = Object.freeze([
-      ...changedKeys,
-    ]);
+    const immutableChangedKeys =
+      Object.freeze([
+        ...changedKeys,
+      ]);
 
     notifySubscribers(
       snapshot,
@@ -149,10 +254,13 @@ function applyStatePatch(patch, { emit = true } = {}) {
     );
 
     emitWindowEvent(
-      GEO_RUNTIME_EVENTS.STATE_CHANGED,
+      GEO_RUNTIME_EVENTS
+        .STATE_CHANGED,
       {
         state: snapshot,
-        changedKeys: immutableChangedKeys,
+
+        changedKeys:
+          immutableChangedKeys,
       }
     );
   }
@@ -162,25 +270,48 @@ function applyStatePatch(patch, { emit = true } = {}) {
 
 function handlePageShow(event) {
   applyStatePatch({
-    pageVisible: readPageVisibleState(),
-    pageFocused: readPageFocusedState(),
-    pagePersisted: Boolean(event?.persisted),
-    online: readOnlineState(),
+    pageVisible:
+      readPageVisibleState(),
+
+    pageFocused:
+      readPageFocusedState(),
+
+    pagePersisted:
+      Boolean(event?.persisted),
+
+    online:
+      readOnlineState(),
   });
+
+  refreshGeoPermissionState()
+    .catch(() => {});
 }
 
 function handlePageHide(event) {
   applyStatePatch({
-    pageVisible: false,
-    pageFocused: false,
-    pagePersisted: Boolean(event?.persisted),
+    pageVisible:
+      false,
+
+    pageFocused:
+      false,
+
+    pagePersisted:
+      Boolean(event?.persisted),
   });
 }
 
 function handleVisibilityChange() {
+  const pageVisible =
+    readPageVisibleState();
+
   applyStatePatch({
-    pageVisible: readPageVisibleState(),
+    pageVisible,
   });
+
+  if (pageVisible) {
+    refreshGeoPermissionState()
+      .catch(() => {});
+  }
 }
 
 function handleOnline() {
@@ -207,10 +338,50 @@ function handleBlur() {
   });
 }
 
+function handlePermissionChange() {
+  if (!permissionStatus) {
+    return;
+  }
+
+  applyStatePatch({
+    permissionState:
+      permissionStatus.state,
+  });
+}
+
+function bindPermissionListener(
+  status
+) {
+  if (
+    permissionListenerBound ||
+    !status
+  ) {
+    return;
+  }
+
+  permissionListenerBound = true;
+
+  if (
+    typeof status.addEventListener ===
+    "function"
+  ) {
+    status.addEventListener(
+      "change",
+      handlePermissionChange
+    );
+
+    return;
+  }
+
+  status.onchange =
+    handlePermissionChange;
+}
+
 function bindLifecycleListeners() {
   if (
     lifecycleBound ||
-    typeof window === "undefined"
+    typeof window ===
+      "undefined"
   ) {
     return;
   }
@@ -247,7 +418,10 @@ function bindLifecycleListeners() {
     handleBlur
   );
 
-  if (typeof document !== "undefined") {
+  if (
+    typeof document !==
+    "undefined"
+  ) {
     document.addEventListener(
       "visibilitychange",
       handleVisibilityChange
@@ -255,37 +429,142 @@ function bindLifecycleListeners() {
   }
 }
 
+/*
+ * Unico punto autorizzato a interrogare
+ * la Permissions API per la geolocalizzazione.
+ *
+ * I componenti UI, incluso il Banner,
+ * devono leggere il risultato dal Runtime.
+ */
+export async function refreshGeoPermissionState() {
+  if (
+    typeof navigator ===
+      "undefined" ||
+    !navigator.permissions?.query
+  ) {
+    return applyStatePatch({
+      permissionState:
+        "unknown",
+    }).permissionState;
+  }
+
+  if (permissionStatus) {
+    applyStatePatch({
+      permissionState:
+        permissionStatus.state,
+    });
+
+    return normalizePermissionState(
+      permissionStatus.state
+    );
+  }
+
+  if (permissionQueryPromise) {
+    return permissionQueryPromise;
+  }
+
+  permissionQueryPromise =
+    navigator.permissions
+      .query({
+        name: "geolocation",
+      })
+      .then((status) => {
+        permissionStatus =
+          status;
+
+        bindPermissionListener(
+          status
+        );
+
+        const nextPermissionState =
+          normalizePermissionState(
+            status.state
+          );
+
+        applyStatePatch({
+          permissionState:
+            nextPermissionState,
+        });
+
+        return nextPermissionState;
+      })
+      .catch(() => {
+        permissionStatus =
+          null;
+
+        permissionListenerBound =
+          false;
+
+        applyStatePatch({
+          permissionState:
+            "unknown",
+        });
+
+        return "unknown";
+      })
+      .finally(() => {
+        permissionQueryPromise =
+          null;
+      });
+
+  return permissionQueryPromise;
+}
+
 export function initGeoRuntime({
   authenticated = false,
 } = {}) {
   if (initialized) {
-    return applyStatePatch({
-      authenticated: Boolean(authenticated),
-    });
+    const snapshot =
+      applyStatePatch({
+        authenticated:
+          Boolean(
+            authenticated
+          ),
+      });
+
+    refreshGeoPermissionState()
+      .catch(() => {});
+
+    return snapshot;
   }
 
   initialized = true;
 
   bindLifecycleListeners();
 
-  const snapshot = applyStatePatch(
-    {
-      initialized: true,
-      authenticated: Boolean(authenticated),
-      online: readOnlineState(),
-      pageVisible: readPageVisibleState(),
-      pageFocused: readPageFocusedState(),
-      pagePersisted: false,
-    },
-    {
-      emit: false,
-    }
-  );
+  const snapshot =
+    applyStatePatch(
+      {
+        initialized:
+          true,
 
-  const initializedKeys = Object.freeze([
-    "initialized",
-    "authenticated",
-  ]);
+        authenticated:
+          Boolean(
+            authenticated
+          ),
+
+        online:
+          readOnlineState(),
+
+        pageVisible:
+          readPageVisibleState(),
+
+        pageFocused:
+          readPageFocusedState(),
+
+        pagePersisted:
+          false,
+      },
+      {
+        emit: false,
+      }
+    );
+
+  const initializedKeys =
+    Object.freeze([
+      "initialized",
+      "authenticated",
+    ]);
 
   notifySubscribers(
     snapshot,
@@ -293,11 +572,21 @@ export function initGeoRuntime({
   );
 
   emitWindowEvent(
-    GEO_RUNTIME_EVENTS.INITIALIZED,
+    GEO_RUNTIME_EVENTS
+      .INITIALIZED,
     {
       state: snapshot,
     }
   );
+
+  /*
+   * Lettura asincrona e non bloccante.
+   *
+   * Non apre alcuna richiesta GPS
+   * e non mostra il prompt del browser.
+   */
+  refreshGeoPermissionState()
+    .catch(() => {});
 
   return snapshot;
 }
@@ -306,12 +595,16 @@ export function getGeoRuntimeState() {
   return createStateSnapshot();
 }
 
-export function updateGeoRuntimeState(patch) {
+export function updateGeoRuntimeState(
+  patch
+) {
   if (!initialized) {
     initGeoRuntime();
   }
 
-  return applyStatePatch(patch);
+  return applyStatePatch(
+    patch
+  );
 }
 
 export function subscribeGeoRuntime(
@@ -320,11 +613,16 @@ export function subscribeGeoRuntime(
     emitCurrent = false,
   } = {}
 ) {
-  if (typeof subscriber !== "function") {
+  if (
+    typeof subscriber !==
+    "function"
+  ) {
     return () => {};
   }
 
-  subscribers.add(subscriber);
+  subscribers.add(
+    subscriber
+  );
 
   if (emitCurrent) {
     try {
@@ -341,7 +639,9 @@ export function subscribeGeoRuntime(
   }
 
   return () => {
-    subscribers.delete(subscriber);
+    subscribers.delete(
+      subscriber
+    );
   };
 }
 
