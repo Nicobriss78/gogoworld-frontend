@@ -148,9 +148,7 @@ mountBottomnav({
   mode: viewConfig.bottomnavMode,
 });
 
-syncLocationIfAlreadyGranted().catch(() => {});
 resumeParticipantGeoTrackingIfEnabled().catch(() => {});
-
 if (viewId !== "map") {
   mountSharedGeoBanner().catch(() => {});
 }
