@@ -1,55 +1,147 @@
+// frontend/js/shared/shared-geo-banner.js
+//
+// Banner geografico condiviso dell'Area Partecipante.
+//
+// Fase 2B-1:
+// - mantiene invariato il comportamento legacy;
+// - continua temporaneamente a leggere direttamente
+//   consenso e permesso geografico;
+// - si collega al Geo Runtime come subscriber;
+// - non trasferisce ancora al Runtime la gestione
+//   del permesso, del consenso o del montaggio.
+
 import {
   dismissGeoPrompt,
   getGeoPromptState,
   requestAndSyncLocation,
 } from "/js/shared/shared-geo-consent.js";
 
-const GEO_BANNER_ID = "sharedGeoConsentBanner";
-const DISMISS_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+import {
+  getGeoRuntimeState,
+  subscribeGeoRuntime,
+} from "/js/shared/geo-runtime.js";
 
-function shouldRespectDismiss(dismissedAt) {
-  return dismissedAt && Date.now() - dismissedAt < DISMISS_COOLDOWN_MS;
+const GEO_BANNER_ID =
+  "sharedGeoConsentBanner";
+
+const DISMISS_COOLDOWN_MS =
+  24 * 60 * 60 * 1000;
+
+/*
+ * Stato strutturale ricevuto dal Geo Runtime.
+ *
+ * In questa fase viene solamente osservato:
+ * non modifica ancora le decisioni del Banner.
+ */
+let runtimeState =
+  getGeoRuntimeState();
+
+/*
+ * Funzione di unsubscribe.
+ *
+ * La presenza di un unico riferimento impedisce
+ * sottoscrizioni duplicate quando mountSharedGeoBanner()
+ * viene richiamata più volte.
+ */
+let stopRuntimeSubscription = null;
+
+function bindGeoRuntimeSubscription() {
+  if (stopRuntimeSubscription) {
+    return;
+  }
+
+  stopRuntimeSubscription =
+    subscribeGeoRuntime(
+      (nextState) => {
+        runtimeState = nextState;
+      },
+      {
+        emitCurrent: true,
+      }
+    );
 }
 
+function shouldRespectDismiss(
+  dismissedAt
+) {
+  return (
+    dismissedAt &&
+    Date.now() - dismissedAt <
+      DISMISS_COOLDOWN_MS
+  );
+}
+
+/*
+ * Lettura legacy temporanea.
+ *
+ * Verrà eliminata nella Fase 2B-2,
+ * quando permissionState sarà fornito
+ * dal Geo Runtime.
+ */
 async function getPermissionState() {
-  if (!navigator.permissions?.query) return "unknown";
+  if (!navigator.permissions?.query) {
+    return "unknown";
+  }
 
   try {
-    const permission = await navigator.permissions.query({ name: "geolocation" });
+    const permission =
+      await navigator.permissions.query({
+        name: "geolocation",
+      });
+
     return permission.state;
   } catch {
     return "unknown";
   }
 }
 
-function getBannerCopy(variant = "default") {
+function getBannerCopy(
+  variant = "default"
+) {
   if (variant === "map") {
     return {
-      title: "Attiva la posizione sulla mappa",
+      title:
+        "Attiva la posizione sulla mappa",
       text:
         "Con la posizione attiva possiamo mostrarti eventi vicini, trilli live e luoghi più rilevanti intorno a te.",
     };
   }
-if (variant === "event") {
+
+  if (variant === "event") {
+    return {
+      title:
+        "Attiva la posizione per vivere meglio questo evento",
+      text:
+        "Con la posizione attiva puoi ricevere trilli live, velocizzare il check-in e scoprire cosa succede intorno a te durante l’evento.",
+    };
+  }
+
   return {
-    title: "Attiva la posizione per vivere meglio questo evento",
-    text:
-      "Con la posizione attiva puoi ricevere trilli live, velocizzare il check-in e scoprire cosa succede intorno a te durante l’evento.",
-  };
-}
-  return {
-    title: "Vivi GoGoWorld intorno a te",
+    title:
+      "Vivi GoGoWorld intorno a te",
     text:
       "Attiva la posizione per scoprire eventi vicini, ricevere trilli live e trovare esperienze più rilevanti nella tua zona.",
   };
 }
 
-function createBanner({ variant = "default" } = {}) {
-  const copy = getBannerCopy(variant);
-  const banner = document.createElement("section");
+function createBanner({
+  variant = "default",
+} = {}) {
+  const copy =
+    getBannerCopy(variant);
+
+  const banner =
+    document.createElement("section");
+
   banner.id = GEO_BANNER_ID;
-  banner.className = `shared-geo-banner shared-geo-banner--${variant}`;
-  banner.setAttribute("aria-label", "Attiva posizione GoGoWorld");
+
+  banner.className =
+    `shared-geo-banner shared-geo-banner--${variant}`;
+
+  banner.setAttribute(
+    "aria-label",
+    "Attiva posizione GoGoWorld"
+  );
 
   banner.innerHTML = `
     <div class="shared-geo-banner__content">
@@ -58,10 +150,19 @@ function createBanner({ variant = "default" } = {}) {
     </div>
 
     <div class="shared-geo-banner__actions">
-      <button type="button" class="shared-geo-banner__primary" data-geo-action="enable">
+      <button
+        type="button"
+        class="shared-geo-banner__primary"
+        data-geo-action="enable"
+      >
         Attiva posizione
       </button>
-      <button type="button" class="shared-geo-banner__secondary" data-geo-action="dismiss">
+
+      <button
+        type="button"
+        class="shared-geo-banner__secondary"
+        data-geo-action="dismiss"
+      >
         Continua senza posizione
       </button>
     </div>
@@ -71,58 +172,42 @@ function createBanner({ variant = "default" } = {}) {
 }
 
 function removeBanner() {
-  document.getElementById(GEO_BANNER_ID)?.remove();
+  document
+    .getElementById(GEO_BANNER_ID)
+    ?.remove();
 }
 
-export async function mountSharedGeoBanner(options = {}) {  
-  if (document.getElementById(GEO_BANNER_ID)) return;
+function dispatchGeoToast(
+  type,
+  message
+) {
+  window.dispatchEvent(
+    new CustomEvent("gw:toast", {
+      detail: {
+        type,
+        message,
+      },
+    })
+  );
+}
 
-  const state = getGeoPromptState();
-
-  if (!state.hasGeolocation) return;
-  if (options.respectDismiss !== false && shouldRespectDismiss(state.dismissedAt)) return;
-
-  const permissionState = await getPermissionState();
-
-  if (permissionState === "granted") return;
-
-  const view = document.getElementById("sharedTopbarMount");
-  if (!view) return;
-
-  const banner = createBanner({
-  variant: options.variant || "default",
-});
-
-  banner.addEventListener("click", async (event) => {
-    const button = event.target.closest("[data-geo-action]");
-    if (!button) return;
-
-    const action = button.dataset.geoAction;
-
-    if (action === "dismiss") {
-      dismissGeoPrompt();
-      removeBanner();
-      return;
-    }
-
-    if (action === "enable") {
+async function handleEnableAction(
+  button
+) {
   button.disabled = true;
-  button.textContent = "Attivazione...";
+  button.textContent =
+    "Attivazione...";
 
   try {
-    const result = await requestAndSyncLocation();
+    const result =
+      await requestAndSyncLocation();
 
     if (result?.ok) {
       removeBanner();
 
-      window.dispatchEvent(
-        new CustomEvent("gw:toast", {
-          detail: {
-            type: "success",
-            message:
-              "Posizione attivata. Ora puoi ricevere trilli e scoprire eventi vicini.",
-          },
-        })
+      dispatchGeoToast(
+        "success",
+        "Posizione attivata. Ora puoi ricevere trilli e scoprire eventi vicini."
       );
 
       return;
@@ -131,31 +216,128 @@ export async function mountSharedGeoBanner(options = {}) {
     button.disabled = false;
     button.textContent = "Riprova";
 
-    window.dispatchEvent(
-      new CustomEvent("gw:toast", {
-        detail: {
-          type: "error",
-          message:
-            "Non siamo riusciti ad attivare la posizione. Puoi riprovare quando vuoi.",
-          },
-        })
-      );
+    dispatchGeoToast(
+      "error",
+      "Non siamo riusciti ad attivare la posizione. Puoi riprovare quando vuoi."
+    );
   } catch {
     button.disabled = false;
     button.textContent = "Riprova";
 
-    window.dispatchEvent(
-      new CustomEvent("gw:toast", {
-        detail: {
-          type: "error",
-          message:
-            "Non siamo riusciti ad attivare la posizione. Puoi riprovare quando vuoi.",
-          },
-        })
-      );
+    dispatchGeoToast(
+      "error",
+      "Non siamo riusciti ad attivare la posizione. Puoi riprovare quando vuoi."
+    );
   }
 }
-  });
 
-  view.insertAdjacentElement("afterend", banner);
+function bindBannerActions(
+  banner
+) {
+  banner.addEventListener(
+    "click",
+    async (event) => {
+      const button =
+        event.target.closest(
+          "[data-geo-action]"
+        );
+
+      if (!button) {
+        return;
+      }
+
+      const action =
+        button.dataset.geoAction;
+
+      if (action === "dismiss") {
+        dismissGeoPrompt();
+        removeBanner();
+        return;
+      }
+
+      if (action === "enable") {
+        await handleEnableAction(
+          button
+        );
+      }
+    }
+  );
+}
+
+export async function mountSharedGeoBanner(
+  options = {}
+) {
+  /*
+   * Fase 2B-1:
+   * il Banner entra nel flusso del Runtime.
+   *
+   * La sottoscrizione è idempotente e non altera
+   * ancora il comportamento visivo o geografico.
+   */
+  bindGeoRuntimeSubscription();
+
+  /*
+   * Il valore è mantenuto sincronizzato dal Runtime.
+   *
+   * In questa fase non viene ancora usato come
+   * condizione di rendering: questo evita qualsiasi
+   * variazione funzionale prematura.
+   */
+  void runtimeState;
+
+  if (
+    document.getElementById(
+      GEO_BANNER_ID
+    )
+  ) {
+    return;
+  }
+
+  const state =
+    getGeoPromptState();
+
+  if (!state.hasGeolocation) {
+    return;
+  }
+
+  if (
+    options.respectDismiss !== false &&
+    shouldRespectDismiss(
+      state.dismissedAt
+    )
+  ) {
+    return;
+  }
+
+  const permissionState =
+    await getPermissionState();
+
+  if (
+    permissionState === "granted"
+  ) {
+    return;
+  }
+
+  const view =
+    document.getElementById(
+      "sharedTopbarMount"
+    );
+
+  if (!view) {
+    return;
+  }
+
+  const banner =
+    createBanner({
+      variant:
+        options.variant ||
+        "default",
+    });
+
+  bindBannerActions(banner);
+
+  view.insertAdjacentElement(
+    "afterend",
+    banner
+  );
 }
