@@ -1,5 +1,9 @@
 import { updateMyLocation } from "/js/shared/user-location-api.js";
 import {
+  getGeoRuntimeState,
+  refreshGeoPermissionState,
+} from "/js/shared/geo-runtime.js";
+import {
   startParticipantGeoTracking,
   stopParticipantGeoTracking,
   getParticipantGeoTrackingState,
