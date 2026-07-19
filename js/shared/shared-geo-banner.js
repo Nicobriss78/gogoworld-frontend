@@ -2,13 +2,12 @@
 //
 // Banner geografico condiviso dell'Area Partecipante.
 //
-// Fase 2B-1:
-// - mantiene invariato il comportamento legacy;
-// - continua temporaneamente a leggere direttamente
-//   consenso e permesso geografico;
-// - si collega al Geo Runtime come subscriber;
-// - non trasferisce ancora al Runtime la gestione
-//   del permesso, del consenso o del montaggio.
+// Fase 2B-2:
+// - mantiene invariato il comportamento utente;
+// - resta temporaneamente collegato al Consent Service;
+// - legge il permesso esclusivamente dal Geo Runtime;
+// - non interroga più direttamente navigator.permissions;
+// - resta temporaneamente montato dalla Shared Shell.
 
 import {
   dismissGeoPrompt,
@@ -18,6 +17,7 @@ import {
 
 import {
   getGeoRuntimeState,
+  refreshGeoPermissionState,
   subscribeGeoRuntime,
 } from "/js/shared/geo-runtime.js";
 
@@ -27,23 +27,11 @@ const GEO_BANNER_ID =
 const DISMISS_COOLDOWN_MS =
   24 * 60 * 60 * 1000;
 
-/*
- * Stato strutturale ricevuto dal Geo Runtime.
- *
- * In questa fase viene solamente osservato:
- * non modifica ancora le decisioni del Banner.
- */
 let runtimeState =
   getGeoRuntimeState();
 
-/*
- * Funzione di unsubscribe.
- *
- * La presenza di un unico riferimento impedisce
- * sottoscrizioni duplicate quando mountSharedGeoBanner()
- * viene richiamata più volte.
- */
-let stopRuntimeSubscription = null;
+let stopRuntimeSubscription =
+  null;
 
 function bindGeoRuntimeSubscription() {
   if (stopRuntimeSubscription) {
@@ -53,10 +41,12 @@ function bindGeoRuntimeSubscription() {
   stopRuntimeSubscription =
     subscribeGeoRuntime(
       (nextState) => {
-        runtimeState = nextState;
+        runtimeState =
+          nextState;
       },
       {
-        emitCurrent: true,
+        emitCurrent:
+          true,
       }
     );
 }
@@ -66,33 +56,10 @@ function shouldRespectDismiss(
 ) {
   return (
     dismissedAt &&
-    Date.now() - dismissedAt <
+    Date.now() -
+      dismissedAt <
       DISMISS_COOLDOWN_MS
   );
-}
-
-/*
- * Lettura legacy temporanea.
- *
- * Verrà eliminata nella Fase 2B-2,
- * quando permissionState sarà fornito
- * dal Geo Runtime.
- */
-async function getPermissionState() {
-  if (!navigator.permissions?.query) {
-    return "unknown";
-  }
-
-  try {
-    const permission =
-      await navigator.permissions.query({
-        name: "geolocation",
-      });
-
-    return permission.state;
-  } catch {
-    return "unknown";
-  }
 }
 
 function getBannerCopy(
@@ -102,6 +69,7 @@ function getBannerCopy(
     return {
       title:
         "Attiva la posizione sulla mappa",
+
       text:
         "Con la posizione attiva possiamo mostrarti eventi vicini, trilli live e luoghi più rilevanti intorno a te.",
     };
@@ -111,6 +79,7 @@ function getBannerCopy(
     return {
       title:
         "Attiva la posizione per vivere meglio questo evento",
+
       text:
         "Con la posizione attiva puoi ricevere trilli live, velocizzare il check-in e scoprire cosa succede intorno a te durante l’evento.",
     };
@@ -119,6 +88,7 @@ function getBannerCopy(
   return {
     title:
       "Vivi GoGoWorld intorno a te",
+
     text:
       "Attiva la posizione per scoprire eventi vicini, ricevere trilli live e trovare esperienze più rilevanti nella tua zona.",
   };
@@ -128,12 +98,17 @@ function createBanner({
   variant = "default",
 } = {}) {
   const copy =
-    getBannerCopy(variant);
+    getBannerCopy(
+      variant
+    );
 
   const banner =
-    document.createElement("section");
+    document.createElement(
+      "section"
+    );
 
-  banner.id = GEO_BANNER_ID;
+  banner.id =
+    GEO_BANNER_ID;
 
   banner.className =
     `shared-geo-banner shared-geo-banner--${variant}`;
@@ -173,7 +148,9 @@ function createBanner({
 
 function removeBanner() {
   document
-    .getElementById(GEO_BANNER_ID)
+    .getElementById(
+      GEO_BANNER_ID
+    )
     ?.remove();
 }
 
@@ -182,25 +159,41 @@ function dispatchGeoToast(
   message
 ) {
   window.dispatchEvent(
-    new CustomEvent("gw:toast", {
-      detail: {
-        type,
-        message,
-      },
-    })
+    new CustomEvent(
+      "gw:toast",
+      {
+        detail: {
+          type,
+          message,
+        },
+      }
+    )
   );
 }
 
 async function handleEnableAction(
   button
 ) {
-  button.disabled = true;
+  button.disabled =
+    true;
+
   button.textContent =
     "Attivazione...";
 
   try {
     const result =
       await requestAndSyncLocation();
+
+    /*
+     * Dopo l'interazione geografica aggiorniamo
+     * il permesso centralizzato del Runtime.
+     *
+     * Il Runtime osserva normalmente anche
+     * PermissionStatus.change, ma il refresh
+     * esplicito rende il flusso robusto anche
+     * sui browser meno coerenti.
+     */
+    await refreshGeoPermissionState();
 
     if (result?.ok) {
       removeBanner();
@@ -213,16 +206,25 @@ async function handleEnableAction(
       return;
     }
 
-    button.disabled = false;
-    button.textContent = "Riprova";
+    button.disabled =
+      false;
+
+    button.textContent =
+      "Riprova";
 
     dispatchGeoToast(
       "error",
       "Non siamo riusciti ad attivare la posizione. Puoi riprovare quando vuoi."
     );
   } catch {
-    button.disabled = false;
-    button.textContent = "Riprova";
+    await refreshGeoPermissionState()
+      .catch(() => {});
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "Riprova";
 
     dispatchGeoToast(
       "error",
@@ -247,15 +249,22 @@ function bindBannerActions(
       }
 
       const action =
-        button.dataset.geoAction;
+        button.dataset
+          .geoAction;
 
-      if (action === "dismiss") {
+      if (
+        action ===
+        "dismiss"
+      ) {
         dismissGeoPrompt();
         removeBanner();
         return;
       }
 
-      if (action === "enable") {
+      if (
+        action ===
+        "enable"
+      ) {
         await handleEnableAction(
           button
         );
@@ -267,23 +276,7 @@ function bindBannerActions(
 export async function mountSharedGeoBanner(
   options = {}
 ) {
-  /*
-   * Fase 2B-1:
-   * il Banner entra nel flusso del Runtime.
-   *
-   * La sottoscrizione è idempotente e non altera
-   * ancora il comportamento visivo o geografico.
-   */
   bindGeoRuntimeSubscription();
-
-  /*
-   * Il valore è mantenuto sincronizzato dal Runtime.
-   *
-   * In questa fase non viene ancora usato come
-   * condizione di rendering: questo evita qualsiasi
-   * variazione funzionale prematura.
-   */
-  void runtimeState;
 
   if (
     document.getElementById(
@@ -293,27 +286,43 @@ export async function mountSharedGeoBanner(
     return;
   }
 
-  const state =
+  const promptState =
     getGeoPromptState();
 
-  if (!state.hasGeolocation) {
+  if (
+    !promptState
+      .hasGeolocation
+  ) {
     return;
   }
 
   if (
-    options.respectDismiss !== false &&
+    options.respectDismiss !==
+      false &&
     shouldRespectDismiss(
-      state.dismissedAt
+      promptState
+        .dismissedAt
     )
   ) {
     return;
   }
 
-  const permissionState =
-    await getPermissionState();
+  /*
+   * Il Banner non interroga più direttamente
+   * navigator.permissions.
+   *
+   * Chiede al Runtime di garantire che il suo
+   * stato centralizzato sia aggiornato.
+   */
+  await refreshGeoPermissionState();
+
+  runtimeState =
+    getGeoRuntimeState();
 
   if (
-    permissionState === "granted"
+    runtimeState
+      .permissionState ===
+    "granted"
   ) {
     return;
   }
@@ -334,7 +343,9 @@ export async function mountSharedGeoBanner(
         "default",
     });
 
-  bindBannerActions(banner);
+  bindBannerActions(
+    banner
+  );
 
   view.insertAdjacentElement(
     "afterend",
