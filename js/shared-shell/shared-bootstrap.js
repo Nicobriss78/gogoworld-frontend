@@ -13,7 +13,6 @@ import { mountTopbar } from "./shared-topbar.js";
 import { mountMenu, setMenuOpen } from "./shared-menu.js";
 import { mountBottomnav } from "./shared-bottomnav.js";
 import { initNotificationsCenter } from "../shared/notifications-center.js";
-import { syncLocationIfAlreadyGranted } from "../shared/shared-geo-consent.js";
 import { mountSharedGeoBanner } from "../shared/shared-geo-banner.js";
 import {
   resumeParticipantGeoTrackingIfEnabled,
