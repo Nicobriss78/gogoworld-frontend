@@ -2,6 +2,7 @@
 // Bootstrap strutturale globale dell'Area Partecipante.
 //
 // Responsabilità attuale:
+// - inizializzare il Geo Runtime strutturale;
 // - verificare l'esistenza di una sessione autenticata valida;
 // - offrire un punto di inizializzazione comune e idempotente;
 // - restare indipendente dalla Shared Shell e dai controller di pagina.
@@ -13,6 +14,9 @@
 // - watcher o sincronizzazione della posizione.
 
 import { apiGet } from "/js/api.js";
+import {
+  initGeoRuntime,
+} from "/js/shared/geo-runtime.js";
 
 let bootstrapPromise = null;
 
@@ -25,14 +29,19 @@ function readAuthToken() {
     );
   } catch {
     try {
-      return sessionStorage.getItem("token") || "";
+      return (
+        sessionStorage.getItem("token") ||
+        ""
+      );
     } catch {
       return "";
     }
   }
 }
 
-async function validateAuthenticatedSession(token) {
+async function validateAuthenticatedSession(
+  token
+) {
   if (!token) {
     return {
       ok: false,
@@ -40,7 +49,10 @@ async function validateAuthenticatedSession(token) {
     };
   }
 
-  const result = await apiGet("/users/me", token);
+  const result = await apiGet(
+    "/users/me",
+    token
+  );
 
   if (!result?.ok) {
     return {
@@ -60,13 +72,26 @@ async function validateAuthenticatedSession(token) {
 }
 
 async function runParticipantBootstrap() {
-  const token = readAuthToken();
-  const session = await validateAuthenticatedSession(token);
-
   /*
-   * Il bootstrap resta session-aware, ma non avvia alcun servizio
-   * geografico e non modifica il DOM della pagina.
+   * Il Runtime nasce subito come infrastruttura
+   * strutturale.
+   *
+   * In questa fase registra esclusivamente stato
+   * e lifecycle della pagina.
+   *
+   * Non avvia alcun servizio geografico.
    */
+  initGeoRuntime({
+    authenticated: false,
+  });
+
+  const token = readAuthToken();
+
+  const session =
+    await validateAuthenticatedSession(
+      token
+    );
+
   if (!session.ok) {
     return {
       ok: true,
@@ -75,6 +100,14 @@ async function runParticipantBootstrap() {
       status: session.status || 0,
     };
   }
+
+  /*
+   * Aggiorniamo soltanto lo stato strutturale
+   * del Runtime dopo la conferma della sessione.
+   */
+  initGeoRuntime({
+    authenticated: true,
+  });
 
   return {
     ok: true,
@@ -86,28 +119,35 @@ async function runParticipantBootstrap() {
 export function initParticipantBootstrap() {
   /*
    * Protezione idempotente:
-   * eventuali richiami successivi condividono la stessa Promise.
+   * eventuali richiami successivi condividono
+   * la stessa Promise.
    */
   if (bootstrapPromise) {
     return bootstrapPromise;
   }
 
-  bootstrapPromise = runParticipantBootstrap().catch(() => ({
-    ok: false,
-    error: "PARTICIPANT_BOOTSTRAP_FAILED",
-  }));
+  bootstrapPromise =
+    runParticipantBootstrap().catch(() => ({
+      ok: false,
+      error:
+        "PARTICIPANT_BOOTSTRAP_FAILED",
+    }));
 
   return bootstrapPromise;
 }
 
 function initWhenDocumentIsReady() {
-  if (document.readyState === "loading") {
+  if (
+    document.readyState === "loading"
+  ) {
     window.addEventListener(
       "DOMContentLoaded",
       () => {
         initParticipantBootstrap();
       },
-      { once: true }
+      {
+        once: true,
+      }
     );
 
     return;
