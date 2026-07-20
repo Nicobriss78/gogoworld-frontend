@@ -289,6 +289,8 @@ export function stopParticipantGeoTracking({
     setTrackingEnabled(false);
   }
 
+  publishRuntimeState();
+
   emitGeoTrackingEvent("stopped", {
     reason,
   });
@@ -299,7 +301,6 @@ export function stopParticipantGeoTracking({
     reason,
   };
 }
-
 export async function resumeParticipantGeoTrackingIfEnabled() {
   if (!isParticipantGeoTrackingEnabled()) {
     return {
