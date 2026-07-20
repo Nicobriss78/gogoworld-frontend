@@ -81,6 +81,8 @@ function markBackendSyncError(error) {
     STORAGE_KEYS.lastError,
     String(error?.message || error?.error || error || "LOCATION_SYNC_FAILED")
   );
+
+  publishRuntimeState();
 }
 
 function emitGeoTrackingEvent(type, detail = {}) {
