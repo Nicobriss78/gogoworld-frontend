@@ -16,7 +16,15 @@ const GEO_TRACKING_MAX_ACCEPTED_ACCURACY_METERS = 250;
 
 let watchId = null;
 let isStarting = false;
-
+function publishRuntimeState(overrides = {}) {
+  updateGeoRuntimeState({
+    trackingEnabled: isParticipantGeoTrackingEnabled(),
+    trackingRunning: watchId !== null,
+    watchActive: watchId !== null,
+    lastSyncAt: getStoredNumber(STORAGE_KEYS.lastSyncAt),
+    ...overrides,
+  });
+}
 function hasNavigatorGeolocation() {
   return Boolean(navigator?.geolocation);
 }
