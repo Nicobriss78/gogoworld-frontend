@@ -240,6 +240,8 @@ export async function startParticipantGeoTracking({ forceInitialSync = true } = 
       }
     );
 
+    publishRuntimeState();
+
     emitGeoTrackingEvent("started", {
       active: true,
     });
