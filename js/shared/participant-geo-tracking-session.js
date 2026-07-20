@@ -73,6 +73,7 @@ function shouldThrottleBackendSync() {
 function markBackendSyncOk() {
   localStorage.setItem(STORAGE_KEYS.lastSyncAt, String(Date.now()));
   localStorage.removeItem(STORAGE_KEYS.lastError);
+  publishRuntimeState();
 }
 
 function markBackendSyncError(error) {
