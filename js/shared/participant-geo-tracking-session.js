@@ -201,6 +201,8 @@ export async function startParticipantGeoTracking({ forceInitialSync = true } = 
 
   if (watchId !== null) {
     setTrackingEnabled(true);
+    publishRuntimeState();
+
     return {
       ok: true,
       alreadyActive: true,
