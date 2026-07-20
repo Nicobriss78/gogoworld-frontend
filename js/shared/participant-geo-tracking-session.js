@@ -220,12 +220,12 @@ export async function startParticipantGeoTracking({ forceInitialSync = true } = 
 
   try {
     setTrackingEnabled(true);
+    publishRuntimeState();
 
     const position = await getCurrentPosition({
       timeout: 12000,
       maximumAge: 30000,
     });
-
     if (forceInitialSync) {
       await syncPositionToBackend(position, { force: true });
     }
