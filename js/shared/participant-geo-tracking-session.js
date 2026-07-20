@@ -257,6 +257,8 @@ export async function startParticipantGeoTracking({ forceInitialSync = true } = 
       setTrackingEnabled(false);
     }
 
+    publishRuntimeState();
+
     emitGeoTrackingEvent("error", {
       error: "GEOLOCATION_START_FAILED",
       code: error?.code || null,
