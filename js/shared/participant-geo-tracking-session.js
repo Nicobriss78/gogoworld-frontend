@@ -115,6 +115,10 @@ async function syncPositionToBackend(position, { force = false } = {}) {
     };
   }
 
+  publishRuntimeState({
+    lastKnownPosition: normalized,
+  });
+
   if (!force && shouldThrottleBackendSync()) {
     return {
       ok: true,
