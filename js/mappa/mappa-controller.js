@@ -1023,6 +1023,10 @@ document.addEventListener("visibilitychange", () => {
     if (event.persisted) return;
 
     stopGeoWatchTracking();
+
+    unsubscribeGeoRuntime?.();
+    unsubscribeGeoRuntime = null;
+
     unbindUi();
     chat.destroy();
     drawer.destroy();
