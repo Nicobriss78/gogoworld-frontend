@@ -1016,13 +1016,15 @@ function handleOpenFullChat(eventId) {
   });
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState !== "visible") {
-    stopGeoWatchTracking();
     return;
   }
 
   if ((state.getState().geo?.mode || "explore") === GEO_FOLLOW_MODE) {
-  ensureGeoWatchStarted();
-}
+    handleGeoRuntimeUpdate(
+      getGeoRuntimeState(),
+      []
+    );
+  }
 
   scheduleMapRefresh();
 });
