@@ -29,7 +29,9 @@ async function init() {
   if (!elements.mapEl) {
     return;
   }
-let geoWatchActive = false;
+  let geoWatchActive = false;
+  let unsubscribeGeoRuntime = null;
+
   const drawer = createMappaDrawer({
     overlayEl: elements.drawerOverlay,
     drawerEl: elements.drawer,
