@@ -401,7 +401,6 @@ async function init() {
   }
 
   function handleGeoWatchUpdate(position) {
-  function handleGeoWatchUpdate(position) {
     const normalized = normalizePosition(position);
     if (!normalized) return;
 
