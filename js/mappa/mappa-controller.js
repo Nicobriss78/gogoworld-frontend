@@ -375,6 +375,32 @@ async function init() {
 /* ===============================
      GEO
      =============================== */
+    function handleGeoRuntimeUpdate(runtimeState, changedKeys = []) {
+    const runtimePosition = runtimeState?.lastKnownPosition;
+
+    if (!runtimePosition) return;
+
+    const isInitialEmission =
+      Array.isArray(changedKeys) &&
+      changedKeys.length === 0;
+
+    const positionChanged =
+      Array.isArray(changedKeys) &&
+      changedKeys.includes("lastKnownPosition");
+
+    if (!isInitialEmission && !positionChanged) {
+      return;
+    }
+
+    handleGeoWatchUpdate({
+      lat: runtimePosition.lat,
+      lng: runtimePosition.lon,
+      accuracy: runtimePosition.accuracyMeters,
+      timestamp: runtimePosition.timestamp
+    });
+  }
+
+  function handleGeoWatchUpdate(position) {
   function handleGeoWatchUpdate(position) {
     const normalized = normalizePosition(position);
     if (!normalized) return;
