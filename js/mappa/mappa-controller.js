@@ -72,7 +72,16 @@ async function init() {
 
   chat.mount();
   chat.showIdle();
-syncLocateBtnMode(state.getState().geo?.mode || "explore");
+
+  unsubscribeGeoRuntime = subscribeGeoRuntime(
+    handleGeoRuntimeUpdate,
+    {
+      emitCurrent: true
+    }
+  );
+
+  syncLocateBtnMode(state.getState().geo?.mode || "explore");
+
   mountSharedGeoBanner({
   variant: "map",
   respectDismiss: false,
