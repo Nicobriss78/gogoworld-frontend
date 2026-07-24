@@ -551,33 +551,39 @@ function normalizeBearingDelta(newBearing) {
     geoWatchActive = false;
   }
   function handleFollowMeToggle() {
-  const currentGeo = state.getState().geo || {};
-  const currentMode = currentGeo.mode || "explore";
-  const selectedEvent = state.getState().selectedEvent || null;
+    const currentGeo = state.getState().geo || {};
+    const currentMode = currentGeo.mode || "explore";
+
     clearActiveEventSelection();
-  if (currentMode === GEO_FOLLOW_MODE) {
-  stopGeoWatchTracking();
-  map.resetMapRotation();
 
-  state.setGeoState({
-    mode: "explore"
-  });
+    if (currentMode === GEO_FOLLOW_MODE) {
+      map.resetMapRotation();
 
-    syncLocateBtnMode("explore");
-    setGeoStatus("Modalità Seguimi disattivata.", "success");
-    return;
+      state.setGeoState({
+        mode: "explore"
+      });
+
+      syncLocateBtnMode("explore");
+      setGeoStatus("Modalità Seguimi disattivata.", "success");
+      return;
+    }
+
+    state.setGeoState({
+      mode: GEO_FOLLOW_MODE,
+      geoError: ""
+    });
+
+    syncLocateBtnMode(GEO_FOLLOW_MODE);
+    setGeoStatus(
+      "Modalità Seguimi attiva. Sto seguendo i tuoi spostamenti...",
+      "loading"
+    );
+
+    handleGeoRuntimeUpdate(
+      getGeoRuntimeState(),
+      []
+    );
   }
-
-  state.setGeoState({
-    mode: GEO_FOLLOW_MODE,
-    geoError: ""
-  });
-
-  syncLocateBtnMode(GEO_FOLLOW_MODE);
-  setGeoStatus("Modalità Seguimi attiva. Sto seguendo i tuoi spostamenti...", "loading");
-
-  ensureGeoWatchStarted();
-}
   async function handleLocateMe() {
     try {
       clearActiveEventSelection();
