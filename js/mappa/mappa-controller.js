@@ -12,6 +12,8 @@ import {
   getDistanceMeters
 } from "/js/mappa/mappa-geo.js";
 import { mountSharedGeoBanner } from "/js/shared/shared-geo-banner.js";
+import { subscribeGeoRuntime } from "/js/shared/geo-runtime.js";
+
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
