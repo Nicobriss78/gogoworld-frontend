@@ -355,24 +355,20 @@ function destroy() {
   }
 
   const rotateEl =
-    getRotationElement();
-
-  if (rotateEl) {
-    rotateEl.classList.remove(
-      "is-rotating"
+    document.getElementById(
+      "mappaMapRotate"
     );
 
+  if (rotateEl) {
     rotateEl.style.transform =
-      "none";
+      "rotate(0deg)";
   }
-
-  rotationSurfaceExpanded =
-    false;
 
   currentRotation = 0;
   targetRotation = 0;
 
   if (map) {
+    map.stop();
     map.off();
     map.remove();
     map = null;
@@ -384,7 +380,6 @@ function destroy() {
   userLocationMarker = null;
   userLocationCircle = null;
 }
-
   function isValidEvent(ev) {
     return (
       ev &&
