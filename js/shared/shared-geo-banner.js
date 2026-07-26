@@ -2,12 +2,13 @@
 //
 // Banner geografico condiviso dell'Area Partecipante.
 //
-// Fase 2B-2:
-// - mantiene invariato il comportamento utente;
-// - resta temporaneamente collegato al Consent Service;
-// - legge il permesso esclusivamente dal Geo Runtime;
-// - non interroga più direttamente navigator.permissions;
-// - resta temporaneamente montato dalla Shared Shell.
+// Step 3E.3-B1:
+// - resta collegato al Consent Service per l'azione esplicita dell'utente;
+// - usa authenticated e consentEnabled dal Geo Runtime;
+// - reagisce ai cambiamenti del Runtime;
+// - non interroga direttamente navigator.permissions;
+// - mantiene varianti e regole di dismissal esistenti;
+// - resta temporaneamente montato dalla Shared Shell e dai controller di pagina.
 
 import {
   dismissGeoPrompt,
@@ -27,29 +28,24 @@ const GEO_BANNER_ID =
 const DISMISS_COOLDOWN_MS =
   24 * 60 * 60 * 1000;
 
+const DEFAULT_BANNER_OPTIONS =
+  Object.freeze({
+    variant: "default",
+    respectDismiss: true,
+  });
+
 let runtimeState =
   getGeoRuntimeState();
 
+let activeBannerOptions = {
+  ...DEFAULT_BANNER_OPTIONS,
+};
+
+let bannerMountRequested =
+  false;
+
 let stopRuntimeSubscription =
   null;
-
-function bindGeoRuntimeSubscription() {
-  if (stopRuntimeSubscription) {
-    return;
-  }
-
-  stopRuntimeSubscription =
-    subscribeGeoRuntime(
-      (nextState) => {
-        runtimeState =
-          nextState;
-      },
-      {
-        emitCurrent:
-          true,
-      }
-    );
-}
 
 function shouldRespectDismiss(
   dismissedAt
@@ -112,6 +108,9 @@ function createBanner({
 
   banner.className =
     `shared-geo-banner shared-geo-banner--${variant}`;
+
+  banner.dataset.geoVariant =
+    variant;
 
   banner.setAttribute(
     "aria-label",
@@ -273,17 +272,36 @@ function bindBannerActions(
   );
 }
 
-export async function mountSharedGeoBanner(
+function normalizeBannerOptions(
   options = {}
 ) {
-  bindGeoRuntimeSubscription();
+  return {
+    variant:
+      options.variant ||
+      DEFAULT_BANNER_OPTIONS.variant,
+
+    respectDismiss:
+      options.respectDismiss !== false,
+  };
+}
+
+function shouldShowBanner() {
+  if (!bannerMountRequested) {
+    return false;
+  }
 
   if (
-    document.getElementById(
-      GEO_BANNER_ID
-    )
+    runtimeState.authenticated !==
+    true
   ) {
-    return;
+    return false;
+  }
+
+  if (
+    runtimeState.consentEnabled ===
+    true
+  ) {
+    return false;
   }
 
   const promptState =
@@ -293,37 +311,26 @@ export async function mountSharedGeoBanner(
     !promptState
       .hasGeolocation
   ) {
-    return;
+    return false;
   }
 
   if (
-    options.respectDismiss !==
-      false &&
+    activeBannerOptions
+      .respectDismiss &&
     shouldRespectDismiss(
       promptState
         .dismissedAt
     )
   ) {
-    return;
+    return false;
   }
 
-  /*
-   * Il Banner non interroga più direttamente
-   * navigator.permissions.
-   *
-   * Chiede al Runtime di garantire che il suo
-   * stato centralizzato sia aggiornato.
-   */
-  await refreshGeoPermissionState();
+  return true;
+}
 
-  runtimeState =
-    getGeoRuntimeState();
-
-  if (
-    runtimeState
-      .permissionState ===
-    "granted"
-  ) {
+function reconcileGeoBanner() {
+  if (!shouldShowBanner()) {
+    removeBanner();
     return;
   }
 
@@ -333,14 +340,29 @@ export async function mountSharedGeoBanner(
     );
 
   if (!view) {
+    removeBanner();
     return;
   }
+
+  const currentBanner =
+    document.getElementById(
+      GEO_BANNER_ID
+    );
+
+  if (
+    currentBanner?.dataset
+      .geoVariant ===
+    activeBannerOptions.variant
+  ) {
+    return;
+  }
+
+  currentBanner?.remove();
 
   const banner =
     createBanner({
       variant:
-        options.variant ||
-        "default",
+        activeBannerOptions.variant,
     });
 
   bindBannerActions(
@@ -351,4 +373,54 @@ export async function mountSharedGeoBanner(
     "afterend",
     banner
   );
+}
+
+function bindGeoRuntimeSubscription() {
+  if (stopRuntimeSubscription) {
+    return;
+  }
+
+  stopRuntimeSubscription =
+    subscribeGeoRuntime(
+      (nextState) => {
+        runtimeState =
+          nextState;
+
+        reconcileGeoBanner();
+      },
+      {
+        emitCurrent:
+          true,
+      }
+    );
+}
+
+export async function mountSharedGeoBanner(
+  options = {}
+) {
+  activeBannerOptions =
+    normalizeBannerOptions(
+      options
+    );
+
+  bannerMountRequested =
+    true;
+
+  bindGeoRuntimeSubscription();
+
+  /*
+   * Il Banner non interroga direttamente
+   * navigator.permissions.
+   *
+   * Chiede al Runtime di aggiornare il proprio
+   * stato centralizzato e poi riconcilia la UI
+   * usando autenticazione e consenso applicativo.
+   */
+  await refreshGeoPermissionState()
+    .catch(() => {});
+
+  runtimeState =
+    getGeoRuntimeState();
+
+  reconcileGeoBanner();
 }
