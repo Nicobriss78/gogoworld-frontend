@@ -121,7 +121,52 @@ window.gwMappaDebug = {
       }, 320);
     });
   }
+function bindMapResizeObserver() {
+  if (
+    mapResizeObserver ||
+    !elements.mapEl ||
+    typeof ResizeObserver !== "function"
+  ) {
+    return;
+  }
 
+  let lastWidth = 0;
+  let lastHeight = 0;
+
+  mapResizeObserver = new ResizeObserver(
+    (entries) => {
+      const entry = entries[0];
+
+      if (!entry) {
+        return;
+      }
+
+      const width = Math.round(
+        entry.contentRect.width
+      );
+
+      const height = Math.round(
+        entry.contentRect.height
+      );
+
+      if (
+        width === lastWidth &&
+        height === lastHeight
+      ) {
+        return;
+      }
+
+      lastWidth = width;
+      lastHeight = height;
+
+      scheduleMapRefresh();
+    }
+  );
+
+  mapResizeObserver.observe(
+    elements.mapEl
+  );
+}
   function bindUi() {
     elements.infoBtn?.addEventListener("click", handleOpenEventPage);
     elements.clearEventBtn?.addEventListener("click", handleClearSelectedEvent);
