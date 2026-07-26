@@ -1,22 +1,29 @@
 // frontend/js/participant/participant-bootstrap.js
-// Bootstrap strutturale globale dell'Area Partecipante.
+// Bootstrap globale dell'Area Partecipante.
 //
-// Responsabilità attuale:
+// Responsabilità:
 // - inizializzare il Geo Runtime strutturale;
 // - verificare l'esistenza di una sessione autenticata valida;
+// - ripristinare i servizi globali del Partecipante soltanto
+//   dopo la conferma della sessione;
 // - offrire un punto di inizializzazione comune e idempotente;
 // - restare indipendente dalla Shared Shell e dai controller di pagina.
 //
-// In questa fase NON gestisce:
-// - geolocalizzazione;
+// Non gestisce direttamente:
 // - consenso geografico;
 // - banner geografico;
 // - watcher o sincronizzazione della posizione.
+//
+// Il watcher resta di proprietà esclusiva di:
+// participant-geo-tracking-session.js
 
 import { apiGet } from "/js/api.js";
 import {
   initGeoRuntime,
 } from "/js/shared/geo-runtime.js";
+import {
+  resumeParticipantGeoTrackingIfEnabled,
+} from "/js/shared/participant-geo-tracking-session.js";
 
 let bootstrapPromise = null;
 
@@ -74,12 +81,10 @@ async function validateAuthenticatedSession(
 async function runParticipantBootstrap() {
   /*
    * Il Runtime nasce subito come infrastruttura
-   * strutturale.
+   * strutturale della pagina.
    *
-   * In questa fase registra esclusivamente stato
-   * e lifecycle della pagina.
-   *
-   * Non avvia alcun servizio geografico.
+   * In questa prima fase registra esclusivamente
+   * lo stato iniziale e il lifecycle.
    */
   initGeoRuntime({
     authenticated: false,
@@ -92,6 +97,12 @@ async function runParticipantBootstrap() {
       token
     );
 
+  /*
+   * In assenza di una sessione valida il bootstrap
+   * termina silenziosamente.
+   *
+   * Nessun servizio globale viene avviato.
+   */
   if (!session.ok) {
     return {
       ok: true,
@@ -102,17 +113,30 @@ async function runParticipantBootstrap() {
   }
 
   /*
-   * Aggiorniamo soltanto lo stato strutturale
-   * del Runtime dopo la conferma della sessione.
+   * La sessione autenticata è stata confermata.
+   *
+   * Solo da questo momento i servizi globali
+   * del Partecipante possono essere ripristinati.
    */
   initGeoRuntime({
     authenticated: true,
   });
 
+  /*
+   * Il Tracking Session decide autonomamente se
+   * esiste un consenso persistente da ripristinare.
+   *
+   * Se il tracking non era stato abilitato,
+   * restituisce uno stato skipped e non avvia nulla.
+   */
+  const geoTracking =
+    await resumeParticipantGeoTrackingIfEnabled();
+
   return {
     ok: true,
     authenticated: true,
     user: session.user,
+    geoTracking,
   };
 }
 
