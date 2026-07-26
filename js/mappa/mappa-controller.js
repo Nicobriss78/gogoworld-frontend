@@ -1050,12 +1050,7 @@ map.focusEvent(event.id, {
 
 clearReturnContextStorage();
 state.clearReturnContext();
-    }
-
-    clearReturnContextStorage();
-    state.clearReturnContext();
   }
-
   function saveReturnContext({ returnEventId, returnDrawerOpen }) {
     try {
       sessionStorage.setItem(
