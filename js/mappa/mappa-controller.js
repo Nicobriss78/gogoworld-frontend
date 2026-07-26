@@ -1144,19 +1144,22 @@ document.addEventListener("visibilitychange", () => {
 
   scheduleMapRefresh();
 });
-  window.addEventListener("pagehide", (event) => {
-    if (event.persisted) return;
+window.addEventListener("pagehide", (event) => {
+  if (event.persisted) return;
 
-    stopGeoWatchTracking();
+  stopGeoWatchTracking();
 
-    unsubscribeGeoRuntime?.();
-    unsubscribeGeoRuntime = null;
+  unsubscribeGeoRuntime?.();
+  unsubscribeGeoRuntime = null;
 
-    unbindUi();
-    chat.destroy();
-    drawer.destroy();
-    map.destroy();
-  });
+  mapResizeObserver?.disconnect();
+  mapResizeObserver = null;
+
+  unbindUi();
+  chat.destroy();
+  drawer.destroy();
+  map.destroy();
+});
 }
 
 function getDomElements() {
