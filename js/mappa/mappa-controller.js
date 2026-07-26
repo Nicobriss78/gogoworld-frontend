@@ -553,21 +553,69 @@ function normalizeBearingDelta(newBearing) {
     stopUserPositionWatch();
     geoWatchActive = false;
   }
-  function handleFollowMeToggle() {
-    const currentGeo = state.getState().geo || {};
-    const currentMode = currentGeo.mode || "explore";
+async function handleFollowMeToggle() {
+  const currentGeo = state.getState().geo || {};
+  const currentMode = currentGeo.mode || "explore";
 
-    clearActiveEventSelection();
+  clearActiveEventSelection();
 
-    if (currentMode === GEO_FOLLOW_MODE) {
-      map.resetMapRotation();
+  if (currentMode === GEO_FOLLOW_MODE) {
+    map.resetMapRotation();
+
+    state.setGeoState({
+      mode: "explore"
+    });
+
+    syncLocateBtnMode("explore");
+    setGeoStatus("Modalità Seguimi disattivata.", "success");
+    return;
+  }
+
+  elements.followBtn?.setAttribute("disabled", "disabled");
+
+  setGeoStatus(
+    "Sto attivando il tracciamento della posizione...",
+    "loading"
+  );
+
+  try {
+    const result = await ensureGeoTrackingAvailable();
+
+    if (!result?.ok) {
+      const errorCode = String(
+        result?.error || "GEOLOCATION_START_FAILED"
+      );
 
       state.setGeoState({
-        mode: "explore"
+        mode: "explore",
+        geoError: errorCode
       });
 
       syncLocateBtnMode("explore");
-      setGeoStatus("Modalità Seguimi disattivata.", "success");
+
+      if (
+        errorCode === "GEOLOCATION_PERMISSION_DENIED" ||
+        Number(result?.code) === 1
+      ) {
+        setGeoStatus(
+          "Permesso posizione negato. Abilitalo nelle impostazioni del browser per usare Seguimi.",
+          "error"
+        );
+        return;
+      }
+
+      if (errorCode === "GEOLOCATION_NOT_AVAILABLE") {
+        setGeoStatus(
+          "Geolocalizzazione non disponibile su questo dispositivo.",
+          "error"
+        );
+        return;
+      }
+
+      setGeoStatus(
+        "Non è stato possibile avviare Seguimi. Riprova tra qualche istante.",
+        "error"
+      );
       return;
     }
 
@@ -577,6 +625,7 @@ function normalizeBearingDelta(newBearing) {
     });
 
     syncLocateBtnMode(GEO_FOLLOW_MODE);
+
     setGeoStatus(
       "Modalità Seguimi attiva. Sto seguendo i tuoi spostamenti...",
       "loading"
@@ -586,7 +635,24 @@ function normalizeBearingDelta(newBearing) {
       getGeoRuntimeState(),
       []
     );
+  } catch (error) {
+    state.setGeoState({
+      mode: "explore",
+      geoError: String(
+        error?.message || "GEOLOCATION_START_FAILED"
+      )
+    });
+
+    syncLocateBtnMode("explore");
+
+    setGeoStatus(
+      "Non è stato possibile avviare Seguimi. Riprova tra qualche istante.",
+      "error"
+    );
+  } finally {
+    elements.followBtn?.removeAttribute("disabled");
   }
+}
   async function handleLocateMe() {
     try {
       clearActiveEventSelection();
