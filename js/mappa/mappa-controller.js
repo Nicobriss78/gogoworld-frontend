@@ -13,6 +13,9 @@ import {
 } from "/js/mappa/mappa-geo.js";
 import { mountSharedGeoBanner } from "/js/shared/shared-geo-banner.js";
 import {
+  ensureGeoTrackingAvailable
+} from "/js/shared/shared-geo-consent.js";
+import {
   getGeoRuntimeState,
   subscribeGeoRuntime
 } from "/js/shared/geo-runtime.js";
