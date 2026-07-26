@@ -7,6 +7,7 @@ import {
   startParticipantGeoTracking,
   stopParticipantGeoTracking,
   getParticipantGeoTrackingState,
+  resumeParticipantGeoTrackingIfEnabled,
 } from "/js/shared/participant-geo-tracking-session.js";
 const STORAGE_KEYS = {
   dismissedAt: "ggw_geo_prompt_dismissed_at",
