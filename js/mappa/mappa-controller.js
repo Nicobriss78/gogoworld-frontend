@@ -36,8 +36,6 @@ async function init() {
   }
 let geoWatchActive = false;
 let unsubscribeGeoRuntime = null;
-let mapResizeObserver = null;
-
   const drawer = createMappaDrawer({
     overlayEl: elements.drawerOverlay,
     drawerEl: elements.drawer,
