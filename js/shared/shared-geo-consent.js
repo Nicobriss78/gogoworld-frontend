@@ -134,7 +134,90 @@ return startParticipantGeoTracking({
 forceInitialSync: true,
 });
 }
+function waitForTrackingRunning({ timeoutMs = 15000 } = {}) {
+  return new Promise((resolve) => {
+    const startedAt = Date.now();
 
+    function check() {
+      const runtimeState = getGeoRuntimeState();
+
+      if (runtimeState.trackingRunning === true) {
+        resolve({
+          ok: true,
+          active: true,
+          runtimeState,
+        });
+        return;
+      }
+
+      if (Date.now() - startedAt >= timeoutMs) {
+        resolve({
+          ok: false,
+          error: "GEOLOCATION_TRACKING_NOT_RUNNING",
+          permissionState: runtimeState.permissionState,
+        });
+        return;
+      }
+
+      window.setTimeout(check, 100);
+    }
+
+    check();
+  });
+}
+
+export async function ensureGeoTrackingAvailable() {
+  if (!hasNavigatorGeolocation()) {
+    return {
+      ok: false,
+      error: "GEOLOCATION_NOT_AVAILABLE",
+    };
+  }
+
+  await refreshGeoPermissionState();
+
+  let runtimeState = getGeoRuntimeState();
+
+  if (runtimeState.permissionState === "denied") {
+    return {
+      ok: false,
+      error: "GEOLOCATION_PERMISSION_DENIED",
+      permissionState: "denied",
+    };
+  }
+
+  if (runtimeState.trackingRunning === true) {
+    return {
+      ok: true,
+      active: true,
+      alreadyActive: true,
+      runtimeState,
+    };
+  }
+
+  const result = runtimeState.trackingEnabled
+    ? await resumeParticipantGeoTrackingIfEnabled()
+    : await startParticipantGeoTracking({
+        forceInitialSync: true,
+      });
+
+  if (!result?.ok) {
+    return result;
+  }
+
+  runtimeState = getGeoRuntimeState();
+
+  if (runtimeState.trackingRunning === true) {
+    return {
+      ...result,
+      ok: true,
+      active: true,
+      runtimeState,
+    };
+  }
+
+  return waitForTrackingRunning();
+}
 export function disableGeoTracking() {
 return stopParticipantGeoTracking({
 persistDisabled: true,
