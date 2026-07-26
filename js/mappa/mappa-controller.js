@@ -1024,18 +1024,32 @@ function handleOpenFullChat(eventId) {
       return;
     }
 
-    state.setSelectedEvent(event);
-    map.focusEvent(event.id);
-    scheduleMapRefresh();
+state.setSelectedEvent(event);
 
-    await chat.openForEvent(event);
-    scheduleMapRefresh();
+/*
+ * Prima completiamo tutte le modifiche DOM
+ * collegate al ripristino dell'evento.
+ */
+await chat.openForEvent(event);
 
-    if (stored.returnDrawerOpen) {
-      renderDetailCard(event);
-      drawer.open();
-      state.setDrawerOpen(true);
-      scheduleMapRefresh();
+if (stored.returnDrawerOpen) {
+  renderDetailCard(event);
+  drawer.open();
+  state.setDrawerOpen(true);
+}
+
+/*
+ * Il focus viene applicato soltanto dopo che
+ * chat e drawer hanno raggiunto lo stato finale.
+ *
+ * Nessuna animazione Leaflet durante il ritorno.
+ */
+map.focusEvent(event.id, {
+  animate: false
+});
+
+clearReturnContextStorage();
+state.clearReturnContext();
     }
 
     clearReturnContextStorage();
