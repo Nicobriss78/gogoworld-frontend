@@ -379,46 +379,204 @@ if (!userLocationMarker) {
       .replaceAll(">", "&gt;");
   }
 
-  let currentRotation = 0;
+let currentRotation = 0;
 let targetRotation = 0;
 let rotationFrame = null;
+let rotationSurfaceExpanded = false;
 
-function applyRotation(deg) {
-  const rotateEl = document.getElementById("mappaMapRotate");
-  if (!rotateEl) return;
-
-  rotateEl.style.transform = `rotate(${deg}deg)`;
+function getRotationElement() {
+  return document.getElementById(
+    "mappaMapRotate"
+  );
 }
 
-function animateRotation() {
-  const diff = targetRotation - currentRotation;
-
-  if (Math.abs(diff) < 0.1) {
-    currentRotation = targetRotation;
-    applyRotation(currentRotation);
-    rotationFrame = null;
+function refreshAfterRotationGeometryChange() {
+  if (!map) {
     return;
   }
 
-  currentRotation += diff * 0.08; // smoothing fluido
-  applyRotation(currentRotation);
+  const center = map.getCenter();
+  const zoom = map.getZoom();
 
-  rotationFrame = requestAnimationFrame(animateRotation);
+  window.requestAnimationFrame(() => {
+    if (!map) {
+      return;
+    }
+
+    refreshLeafletLayout(
+      map,
+      clusterGroup
+    );
+
+    map.setView(
+      center,
+      zoom,
+      {
+        animate: false,
+        reset: true
+      }
+    );
+
+    window.setTimeout(() => {
+      if (!map) {
+        return;
+      }
+
+      refreshLeafletLayout(
+        map,
+        clusterGroup
+      );
+    }, 140);
+  });
+}
+
+function setRotationSurfaceExpanded(
+  expanded
+) {
+  const rotateEl =
+    getRotationElement();
+
+  if (
+    !rotateEl ||
+    rotationSurfaceExpanded ===
+      expanded
+  ) {
+    return;
+  }
+
+  rotationSurfaceExpanded =
+    expanded;
+
+  rotateEl.classList.toggle(
+    "is-rotating",
+    expanded
+  );
+
+  refreshAfterRotationGeometryChange();
+}
+
+function applyRotation(deg) {
+  const rotateEl =
+    getRotationElement();
+
+  if (!rotateEl) {
+    return;
+  }
+
+  if (
+    Math.abs(deg) <
+    0.01
+  ) {
+    rotateEl.style.transform =
+      "none";
+    return;
+  }
+
+  rotateEl.style.transform =
+    `rotate(${deg}deg)`;
+}
+
+function completeRotationIfNeeded() {
+  if (
+    Math.abs(currentRotation) <
+      0.01 &&
+    Math.abs(targetRotation) <
+      0.01
+  ) {
+    currentRotation = 0;
+    targetRotation = 0;
+
+    applyRotation(0);
+
+    setRotationSurfaceExpanded(
+      false
+    );
+  }
+}
+
+function animateRotation() {
+  const diff =
+    targetRotation -
+    currentRotation;
+
+  if (
+    Math.abs(diff) <
+    0.1
+  ) {
+    currentRotation =
+      targetRotation;
+
+    applyRotation(
+      currentRotation
+    );
+
+    rotationFrame = null;
+
+    completeRotationIfNeeded();
+    return;
+  }
+
+  currentRotation +=
+    diff * 0.08;
+
+  applyRotation(
+    currentRotation
+  );
+
+  rotationFrame =
+    requestAnimationFrame(
+      animateRotation
+    );
 }
 
 function setMapRotation(deg) {
-  targetRotation = Number(deg) || 0;
+  const nextRotation =
+    Number(deg) || 0;
+
+  targetRotation =
+    nextRotation;
+
+  if (
+    Math.abs(nextRotation) >=
+      0.01 ||
+    Math.abs(currentRotation) >=
+      0.01
+  ) {
+    setRotationSurfaceExpanded(
+      true
+    );
+  }
 
   if (!rotationFrame) {
-    rotationFrame = requestAnimationFrame(animateRotation);
+    rotationFrame =
+      requestAnimationFrame(
+        animateRotation
+      );
   }
 }
 
 function resetMapRotation() {
   targetRotation = 0;
 
+  if (
+    Math.abs(currentRotation) <
+    0.01
+  ) {
+    currentRotation = 0;
+    applyRotation(0);
+
+    setRotationSurfaceExpanded(
+      false
+    );
+
+    return;
+  }
+
   if (!rotationFrame) {
-    rotationFrame = requestAnimationFrame(animateRotation);
+    rotationFrame =
+      requestAnimationFrame(
+        animateRotation
+      );
   }
 }
 
