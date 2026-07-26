@@ -113,16 +113,47 @@ export function createMappaMap({
   });
 }
 
-  function focusEvent(eventId) {
-    const marker = markersById.get(eventId);
-    if (!marker) return;
+function focusEvent(eventId, options = {}) {
+  const marker = markersById.get(eventId);
 
-    highlightMarker(eventId);
+  if (!marker || !map) {
+    return;
+  }
 
-    map.setView(marker.getLatLng(), 14, {
-      animate: true
+  const animate =
+    options.animate !== false;
+
+  highlightMarker(eventId);
+
+  suppressViewportChanged = true;
+
+  /*
+   * Interrompe qualsiasi pan o zoom ancora
+   * attivo prima di applicare una nuova vista.
+   */
+  map.stop();
+
+  /*
+   * Nel ripristino da un'altra pagina il focus
+   * deve essere deterministico e non animato.
+   */
+  if (!animate) {
+    map.invalidateSize({
+      animate: false,
+      pan: false,
+      debounceMoveend: true
     });
   }
+
+  map.setView(
+    marker.getLatLng(),
+    14,
+    {
+      animate,
+      reset: !animate
+    }
+  );
+}
 
   function clearSelection() {
     if (selectedMarker) {
