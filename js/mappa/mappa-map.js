@@ -314,19 +314,45 @@ if (!userLocationMarker) {
   function refreshLayout() {
     refreshLeafletLayout(map, clusterGroup);
   }
-  function destroy() {
-    if (map) {
-      map.off();
-      map.remove();
-      map = null;
-    }
+function destroy() {
+  if (rotationFrame) {
+    cancelAnimationFrame(
+      rotationFrame
+    );
 
-    clusterGroup = null;
-    markersById.clear();
-    selectedMarker = null;
-    userLocationMarker = null;
-    userLocationCircle = null;
+    rotationFrame = null;
   }
+
+  const rotateEl =
+    getRotationElement();
+
+  if (rotateEl) {
+    rotateEl.classList.remove(
+      "is-rotating"
+    );
+
+    rotateEl.style.transform =
+      "none";
+  }
+
+  rotationSurfaceExpanded =
+    false;
+
+  currentRotation = 0;
+  targetRotation = 0;
+
+  if (map) {
+    map.off();
+    map.remove();
+    map = null;
+  }
+
+  clusterGroup = null;
+  markersById.clear();
+  selectedMarker = null;
+  userLocationMarker = null;
+  userLocationCircle = null;
+}
 
   function isValidEvent(ev) {
     return (
