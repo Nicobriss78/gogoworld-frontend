@@ -17,11 +17,17 @@ const GEO_TRACKING_MAX_ACCEPTED_ACCURACY_METERS = 250;
 let watchId = null;
 let isStarting = false;
 function publishRuntimeState(overrides = {}) {
+  const consentEnabled =
+    isParticipantGeoTrackingEnabled();
+
   updateGeoRuntimeState({
-    trackingEnabled: isParticipantGeoTrackingEnabled(),
+    consentEnabled,
+    trackingEnabled: consentEnabled,
     trackingRunning: watchId !== null,
     watchActive: watchId !== null,
-    lastSyncAt: getStoredNumber(STORAGE_KEYS.lastSyncAt),
+    lastSyncAt: getStoredNumber(
+      STORAGE_KEYS.lastSyncAt
+    ),
     ...overrides,
   });
 }
