@@ -24,7 +24,9 @@ import {
 import {
   resumeParticipantGeoTrackingIfEnabled,
 } from "/js/shared/participant-geo-tracking-session.js";
-
+import {
+  installGeoDebugConsole,
+} from "/js/shared/geo-debug.js";
 let bootstrapPromise = null;
 
 function readAuthToken() {
