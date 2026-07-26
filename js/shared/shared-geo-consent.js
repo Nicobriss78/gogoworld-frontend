@@ -195,11 +195,11 @@ export async function ensureGeoTrackingAvailable() {
     };
   }
 
-  const result = runtimeState.trackingEnabled
-    ? await resumeParticipantGeoTrackingIfEnabled()
-    : await startParticipantGeoTracking({
-        forceInitialSync: true,
-      });
+const result = runtimeState.consentEnabled
+  ? await resumeParticipantGeoTrackingIfEnabled()
+  : await startParticipantGeoTracking({
+      forceInitialSync: true,
+    });
 
   if (!result?.ok) {
     return result;
