@@ -67,11 +67,12 @@ let mapResizeObserver = null;
     }
   });
 
- bindUi();
-  drawer.mount();
-  map.mount();
+bindUi();
+drawer.mount();
+map.mount();
+bindMapResizeObserver();
 
-  window.gwMappaDebug = {
+window.gwMappaDebug = {
     rotate: (deg) => map.setMapRotation(deg),
     resetRotation: () => map.resetMapRotation()
   };
