@@ -502,16 +502,6 @@ function resetMapRotation() {
   }
 }
 
-  if (!rotationFrame) {
-    rotationFrame =
-      requestAnimationFrame(
-        animateRotation
-      );
-  }
-}
-
-
-
   return {
     mount,
     setEvents,
