@@ -145,11 +145,9 @@ mountBottomnav({
   mode: viewConfig.bottomnavMode,
 });
 
-resumeParticipantGeoTrackingIfEnabled().catch(() => {});
 if (viewId !== "map") {
   mountSharedGeoBanner().catch(() => {});
 }
-
 subscribe((state) => {
   setMenuOpen(document.getElementById("sharedMenuMount"), state.menuOpen);
 });
