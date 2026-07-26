@@ -1104,9 +1104,6 @@ window.addEventListener("pagehide", (event) => {
   unsubscribeGeoRuntime?.();
   unsubscribeGeoRuntime = null;
 
-  mapResizeObserver?.disconnect();
-  mapResizeObserver = null;
-
   unbindUi();
   chat.destroy();
   drawer.destroy();
