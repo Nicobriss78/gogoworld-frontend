@@ -88,12 +88,13 @@ async function runParticipantBootstrap() {
    * In questa prima fase registra esclusivamente
    * lo stato iniziale e il lifecycle.
    */
-  initGeoRuntime({
-    authenticated: false,
-  });
+initGeoRuntime({
+  authenticated: false,
+});
 
-  const token = readAuthToken();
+installGeoDebugConsole();
 
+const token = readAuthToken();
   const session =
     await validateAuthenticatedSession(
       token
