@@ -439,93 +439,14 @@ function destroy() {
 let currentRotation = 0;
 let targetRotation = 0;
 let rotationFrame = null;
-let rotationSurfaceExpanded = false;
-
-function getRotationElement() {
-  return document.getElementById(
-    "mappaMapRotate"
-  );
-}
-
-function refreshAfterRotationGeometryChange() {
-  if (!map) {
-    return;
-  }
-
-  const center = map.getCenter();
-  const zoom = map.getZoom();
-
-  window.requestAnimationFrame(() => {
-    if (!map) {
-      return;
-    }
-
-    refreshLeafletLayout(
-      map,
-      clusterGroup
-    );
-
-    map.setView(
-      center,
-      zoom,
-      {
-        animate: false,
-        reset: true
-      }
-    );
-
-    window.setTimeout(() => {
-      if (!map) {
-        return;
-      }
-
-      refreshLeafletLayout(
-        map,
-        clusterGroup
-      );
-    }, 140);
-  });
-}
-
-function setRotationSurfaceExpanded(
-  expanded
-) {
-  const rotateEl =
-    getRotationElement();
-
-  if (
-    !rotateEl ||
-    rotationSurfaceExpanded ===
-      expanded
-  ) {
-    return;
-  }
-
-  rotationSurfaceExpanded =
-    expanded;
-
-  rotateEl.classList.toggle(
-    "is-rotating",
-    expanded
-  );
-
-  refreshAfterRotationGeometryChange();
-}
 
 function applyRotation(deg) {
   const rotateEl =
-    getRotationElement();
+    document.getElementById(
+      "mappaMapRotate"
+    );
 
   if (!rotateEl) {
-    return;
-  }
-
-  if (
-    Math.abs(deg) <
-    0.01
-  ) {
-    rotateEl.style.transform =
-      "none";
     return;
   }
 
@@ -533,33 +454,12 @@ function applyRotation(deg) {
     `rotate(${deg}deg)`;
 }
 
-function completeRotationIfNeeded() {
-  if (
-    Math.abs(currentRotation) <
-      0.01 &&
-    Math.abs(targetRotation) <
-      0.01
-  ) {
-    currentRotation = 0;
-    targetRotation = 0;
-
-    applyRotation(0);
-
-    setRotationSurfaceExpanded(
-      false
-    );
-  }
-}
-
 function animateRotation() {
   const diff =
     targetRotation -
     currentRotation;
 
-  if (
-    Math.abs(diff) <
-    0.1
-  ) {
+  if (Math.abs(diff) < 0.1) {
     currentRotation =
       targetRotation;
 
@@ -568,8 +468,6 @@ function animateRotation() {
     );
 
     rotationFrame = null;
-
-    completeRotationIfNeeded();
     return;
   }
 
@@ -587,22 +485,8 @@ function animateRotation() {
 }
 
 function setMapRotation(deg) {
-  const nextRotation =
-    Number(deg) || 0;
-
   targetRotation =
-    nextRotation;
-
-  if (
-    Math.abs(nextRotation) >=
-      0.01 ||
-    Math.abs(currentRotation) >=
-      0.01
-  ) {
-    setRotationSurfaceExpanded(
-      true
-    );
-  }
+    Number(deg) || 0;
 
   if (!rotationFrame) {
     rotationFrame =
@@ -615,19 +499,13 @@ function setMapRotation(deg) {
 function resetMapRotation() {
   targetRotation = 0;
 
-  if (
-    Math.abs(currentRotation) <
-    0.01
-  ) {
-    currentRotation = 0;
-    applyRotation(0);
-
-    setRotationSurfaceExpanded(
-      false
-    );
-
-    return;
+  if (!rotationFrame) {
+    rotationFrame =
+      requestAnimationFrame(
+        animateRotation
+      );
   }
+}
 
   if (!rotationFrame) {
     rotationFrame =
