@@ -68,7 +68,6 @@ let unsubscribeGeoRuntime = null;
 bindUi();
 drawer.mount();
 map.mount();
-bindMapResizeObserver();
 
 window.gwMappaDebug = {
     rotate: (deg) => map.setMapRotation(deg),
