@@ -343,12 +343,12 @@ function reconcileGeoBanner() {
     return;
   }
 
-  const view =
+  const anchor =
     document.getElementById(
-      "sharedTopbarMount"
+      activeBannerOptions.anchorId
     );
 
-  if (!view) {
+  if (!anchor) {
     removeBanner();
     return;
   }
@@ -358,10 +358,23 @@ function reconcileGeoBanner() {
       GEO_BANNER_ID
     );
 
-  if (
+  const currentVariant =
     currentBanner?.dataset
-      .geoVariant ===
-    activeBannerOptions.variant
+      .geoVariant || "";
+
+  const currentAnchorId =
+    currentBanner?.dataset
+      .geoAnchorId || "";
+
+  if (
+    currentBanner &&
+    currentVariant ===
+      activeBannerOptions.variant &&
+    currentAnchorId ===
+      activeBannerOptions.anchorId &&
+    currentBanner
+      .previousElementSibling ===
+      anchor
   ) {
     return;
   }
@@ -374,16 +387,18 @@ function reconcileGeoBanner() {
         activeBannerOptions.variant,
     });
 
+  banner.dataset.geoAnchorId =
+    activeBannerOptions.anchorId;
+
   bindBannerActions(
     banner
   );
 
-  view.insertAdjacentElement(
+  anchor.insertAdjacentElement(
     "afterend",
     banner
   );
 }
-
 function bindGeoRuntimeSubscription() {
   if (stopRuntimeSubscription) {
     return;
