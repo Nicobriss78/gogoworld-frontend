@@ -669,11 +669,24 @@ async function bootstrapEventoPage() {
   bindUi(state, renderer);
   renderer.render(state);
 
-  await loadEventoData(state, renderer);
+ await loadEventoData(state, renderer);
 
-  if (state.event && !state.notFound && !state.error) {
-await loadEventoCheckIn(state, renderer);
-await loadEventoReviews(state, renderer);
+if (
+  state.event &&
+  !state.notFound &&
+  !state.error
+) {
+  await ensureGeoReminderForEvent();
+
+  await loadEventoCheckIn(
+    state,
+    renderer
+  );
+
+  await loadEventoReviews(
+    state,
+    renderer
+  );
 }
 }
 bootstrapEventoPage().catch(() => {
