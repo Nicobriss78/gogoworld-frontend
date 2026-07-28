@@ -32,6 +32,7 @@ const DEFAULT_BANNER_OPTIONS =
   Object.freeze({
     variant: "default",
     respectDismiss: true,
+    anchorId: "sharedTopbarMount",
   });
 
 let runtimeState =
