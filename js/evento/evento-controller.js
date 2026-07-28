@@ -22,6 +22,7 @@ async function ensureGeoReminderForEvent() {
     await mountSharedGeoBanner({
       variant: "event",
       respectDismiss: false,
+      anchorId: "eventoTopbar",
     });
   } catch {
     // silenzioso
