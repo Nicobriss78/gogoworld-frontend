@@ -10,8 +10,12 @@ import {
   joinEvent,
   leaveEvent,
 } from "./evento-api.js";
-import { requestUserPosition, getGeoPermissionState } from "../mappa/mappa-geo.js";
+import { requestUserPosition } from "../mappa/mappa-geo.js";
 import { mountSharedGeoBanner } from "../shared/shared-geo-banner.js";
+import {
+  getGeoRuntimeState,
+  refreshGeoPermissionState
+} from "../shared/geo-runtime.js";
 import { createEventoRenderer } from "./evento-renderer.js";
 async function ensureGeoReminderForEvent() {
   try {
