@@ -276,6 +276,11 @@ function bindBannerActions(
 function normalizeBannerOptions(
   options = {}
 ) {
+  const anchorId = String(
+    options.anchorId ||
+    DEFAULT_BANNER_OPTIONS.anchorId
+  ).trim();
+
   return {
     variant:
       options.variant ||
@@ -283,9 +288,12 @@ function normalizeBannerOptions(
 
     respectDismiss:
       options.respectDismiss !== false,
+
+    anchorId:
+      anchorId ||
+      DEFAULT_BANNER_OPTIONS.anchorId,
   };
 }
-
 function shouldShowBanner() {
   if (!bannerMountRequested) {
     return false;
