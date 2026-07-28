@@ -321,8 +321,15 @@ async function hydrateCheckInUxState(state) {
     return;
   }
 
-  const permission = await getGeoPermissionState();
-  state.checkInPermission = permission;
+await refreshGeoPermissionState().catch(() => {});
+
+const permission =
+  typeof navigator === "undefined" ||
+  !("geolocation" in navigator)
+    ? "not_supported"
+    : getGeoRuntimeState().permissionState || "unknown";
+
+state.checkInPermission = permission;
 
   if (permission === "denied" || permission === "prompt" || permission === "unknown" || permission === "not_supported") {
     state.checkInPreview = null;
