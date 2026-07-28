@@ -19,12 +19,6 @@ import {
 import { createEventoRenderer } from "./evento-renderer.js";
 async function ensureGeoReminderForEvent() {
   try {
-    const permission = await getGeoPermissionState();
-
-    if (permission === "granted") {
-      return;
-    }
-
     await mountSharedGeoBanner({
       variant: "event",
       respectDismiss: false,
