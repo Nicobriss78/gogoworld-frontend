@@ -52,21 +52,14 @@ function createStatusSnapshot() {
       runtime.permissionState ||
       "unknown",
 
-    consentEnabled:
-      runtime.consentEnabled === true,
+consentEnabled:
+  runtime.consentEnabled === true,
 
-    trackingEnabled:
-      runtime.trackingEnabled === true,
+trackingRunning:
+  runtime.trackingRunning === true,
 
-    trackingRunning:
-      runtime.trackingRunning === true,
-
-    watchActive:
-      runtime.watchActive === true,
-
-    hasGeolocation:
-      tracking.hasGeolocation === true,
-
+hasGeolocation:
+  tracking.hasGeolocation === true,
     pageVisible:
       runtime.pageVisible === true,
 
