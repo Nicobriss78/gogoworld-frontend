@@ -53,19 +53,13 @@ function createInitialState() {
       "unknown",
 
     consentEnabled:
-      false,
+  false,
 
-    trackingEnabled:
-      false,
+trackingRunning:
+  false,
 
-    trackingRunning:
-      false,
-
-    watchActive:
-      false,
-
-    lastKnownPosition:
-      null,
+lastKnownPosition:
+  null,
 
     lastSyncAt:
       null,
