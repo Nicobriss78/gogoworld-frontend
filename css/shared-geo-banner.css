@@ -1,0 +1,139 @@
+/* frontend/css/shared-geo-banner.css
+ *
+ * Stili autonomi del banner GEO condiviso.
+ *
+ * Il componente non deve dipendere graficamente
+ * dalla Shared Shell, perché viene utilizzato anche
+ * nelle pagine con layout autonomo, come Evento V2.
+ */
+
+.shared-geo-banner {
+  box-sizing: border-box;
+  width: auto;
+  margin: 10px 16px 0;
+  padding: 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  border: 1px solid rgba(63, 124, 150, 0.22);
+  border-radius: 16px;
+
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
+
+  color: #1c2430;
+  font-family: inherit;
+}
+
+.shared-geo-banner__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shared-geo-banner__content strong {
+  display: block;
+
+  color: #1c2430;
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.shared-geo-banner__content p {
+  margin: 0;
+
+  color: #5a6572;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.shared-geo-banner__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.shared-geo-banner__primary,
+.shared-geo-banner__secondary {
+  min-height: 42px;
+  padding: 10px 14px;
+
+  border-radius: 12px;
+
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.15;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.shared-geo-banner__primary {
+  border: 1px solid rgba(29, 120, 242, 0.28);
+  background: #1d78f2;
+  color: #ffffff;
+}
+
+.shared-geo-banner__primary:hover,
+.shared-geo-banner__primary:focus-visible {
+  background: #1669d8;
+  color: #ffffff;
+}
+
+.shared-geo-banner__primary:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.shared-geo-banner__secondary {
+  border: 1px solid #dfe5ec;
+  background: #ffffff;
+  color: #4d5967;
+}
+
+.shared-geo-banner__secondary:hover,
+.shared-geo-banner__secondary:focus-visible {
+  background: #f5f7fa;
+  color: #1c2430;
+}
+
+/* Variante Evento V2 */
+
+.evento-page > .shared-geo-banner--event {
+  position: relative;
+  z-index: 4;
+
+  margin: 12px 24px 0;
+
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 12px 28px rgba(16, 24, 40, 0.14);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@media (max-width: 640px) {
+  .shared-geo-banner {
+    margin-right: 12px;
+    margin-left: 12px;
+    padding: 13px;
+  }
+
+  .evento-page > .shared-geo-banner--event {
+    margin: 10px 12px 0;
+  }
+
+  .shared-geo-banner__actions {
+    align-items: stretch;
+  }
+
+  .shared-geo-banner__primary,
+  .shared-geo-banner__secondary {
+    flex: 1 1 160px;
+  }
+}
