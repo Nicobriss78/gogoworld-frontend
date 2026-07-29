@@ -22,9 +22,7 @@ function publishRuntimeState(overrides = {}) {
 
   updateGeoRuntimeState({
     consentEnabled,
-    trackingEnabled: consentEnabled,
     trackingRunning: watchId !== null,
-    watchActive: watchId !== null,
     lastSyncAt: getStoredNumber(
       STORAGE_KEYS.lastSyncAt
     ),
