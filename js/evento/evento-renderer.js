@@ -744,10 +744,21 @@ function renderActions(refs, state) {
     } else if (uxState === "checked_in") {
       label = "Check-in effettuato";
       disabled = true;
-    } else if (uxState === "gps_missing" || uxState === "gps_denied") {
-      label = "Attiva posizione";
-      disabled = false;
-    } else if (uxState === "inside_radius_ready") {
+    } else if (
+  uxState === "gps_missing" ||
+  uxState === "gps_denied"
+) {
+  /*
+   * Il banner GEO condiviso è il punto autorevole
+   * per l'attivazione generale della posizione.
+   *
+   * Questo pulsante mantiene invece la propria
+   * responsabilità contestuale: effettuare il check-in.
+   * Al click, requestUserPosition() gestirà il permesso.
+   */
+  label = "Fai check-in";
+  disabled = false;
+} else if (uxState === "inside_radius_ready") {
       label = "Fai check-in";
       disabled = false;
     } else if (
