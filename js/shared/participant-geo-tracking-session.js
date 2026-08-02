@@ -313,8 +313,21 @@ export function stopParticipantGeoTracking({
     reason,
   };
 }
-export async function resumeParticipantGeoTrackingIfEnabled() {
-  if (!isParticipantGeoTrackingEnabled()) {
+export async function resumeParticipantGeoTrackingIfEnabled({
+  permissionState = null,
+  allowPermissionPrompt = false,
+} = {}) {
+  const consentEnabled =
+    isParticipantGeoTrackingEnabled();
+
+  /*
+   * Il consenso persistente deve essere pubblicato
+   * nel Runtime anche quando il watcher non viene
+   * ripristinato.
+   */
+  publishRuntimeState();
+
+  if (!consentEnabled) {
     return {
       ok: true,
       skipped: true,
@@ -322,11 +335,42 @@ export async function resumeParticipantGeoTrackingIfEnabled() {
     };
   }
 
+  const runtimePermissionState =
+    permissionState ||
+    getGeoRuntimeState().permissionState ||
+    "unknown";
+
+  if (
+    runtimePermissionState === "denied"
+  ) {
+    return {
+      ok: true,
+      skipped: true,
+      reason:
+        "GEOLOCATION_PERMISSION_DENIED",
+      permissionState:
+        runtimePermissionState,
+    };
+  }
+
+  if (
+    runtimePermissionState === "prompt" &&
+    allowPermissionPrompt !== true
+  ) {
+    return {
+      ok: true,
+      skipped: true,
+      reason:
+        "GEOLOCATION_PERMISSION_PROMPT_REQUIRED",
+      permissionState:
+        runtimePermissionState,
+    };
+  }
+
   return startParticipantGeoTracking({
     forceInitialSync: false,
   });
 }
-
 export async function syncParticipantGeoOnce({ force = true } = {}) {
   const position = await getCurrentPosition({
     timeout: 12000,
