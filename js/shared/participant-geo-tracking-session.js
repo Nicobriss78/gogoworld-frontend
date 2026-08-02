@@ -4,8 +4,10 @@
 // in modo globale, indipendente da Home/Mappa/Eventi Privati.
 
 import { updateMyLocation } from "/js/shared/user-location-api.js";
-import { updateGeoRuntimeState } from "/js/shared/geo-runtime.js";
-const STORAGE_KEYS = {
+import {
+  getGeoRuntimeState,
+  updateGeoRuntimeState,
+} from "/js/shared/geo-runtime.js";const STORAGE_KEYS = {
   enabled: "ggw_participant_geo_tracking_enabled",
   lastSyncAt: "ggw_participant_geo_tracking_last_sync_at",
   lastError: "ggw_participant_geo_tracking_last_error",
