@@ -127,14 +127,27 @@ const token = readAuthToken();
   });
 
   /*
-   * Il Tracking Session decide autonomamente se
-   * esiste un consenso persistente da ripristinare.
+   * Prima del ripristino automatico attendiamo lo
+   * stato centralizzato del permesso browser.
    *
-   * Se il tracking non era stato abilitato,
-   * restituisce uno stato skipped e non avvia nulla.
+   * Lo stato "prompt" non deve aprire una richiesta
+   * GPS automatica durante il caricamento pagina:
+   * servirà un gesto esplicito dell'utente.
+   */
+  const permissionState =
+    await refreshGeoPermissionState()
+      .catch(() => "unknown");
+
+  /*
+   * Il Tracking Session pubblica sempre nel Runtime
+   * il consenso persistente e decide se il watcher
+   * può essere ripristinato senza prompt automatici.
    */
   const geoTracking =
-    await resumeParticipantGeoTrackingIfEnabled();
+    await resumeParticipantGeoTrackingIfEnabled({
+      permissionState,
+      allowPermissionPrompt: false,
+    });
 
   return {
     ok: true,
