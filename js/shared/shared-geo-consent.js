@@ -194,7 +194,13 @@ export async function ensureGeoTrackingAvailable() {
   }
 
 const result = runtimeState.consentEnabled
-  ? await resumeParticipantGeoTrackingIfEnabled()
+  ? await resumeParticipantGeoTrackingIfEnabled({
+      permissionState:
+        runtimeState.permissionState,
+
+      allowPermissionPrompt:
+        true,
+    })
   : await startParticipantGeoTracking({
       forceInitialSync: true,
     });
