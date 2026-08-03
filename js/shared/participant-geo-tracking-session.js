@@ -271,13 +271,13 @@ export async function startParticipantGeoTracking({ forceInitialSync = true } = 
       active: true,
     };
   } catch (error) {
-    markBackendSyncError(error);
-
     if (error?.code === 1) {
-      setTrackingEnabled(false);
+      publishRuntimeState({
+        permissionState: "denied",
+      });
     }
 
-    publishRuntimeState();
+    markBackendSyncError(error);
 
     emitGeoTrackingEvent("error", {
       error: "GEOLOCATION_START_FAILED",
