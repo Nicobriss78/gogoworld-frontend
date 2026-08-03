@@ -187,6 +187,15 @@ function handleWatchPosition(position) {
 }
 
 function handleWatchError(error) {
+  const permissionDenied =
+    error?.code === 1;
+
+  if (permissionDenied) {
+    publishRuntimeState({
+      permissionState: "denied",
+    });
+  }
+
   markBackendSyncError(error);
 
   emitGeoTrackingEvent("error", {
@@ -195,14 +204,13 @@ function handleWatchError(error) {
     message: error?.message || String(error || ""),
   });
 
-  if (error?.code === 1) {
+  if (permissionDenied) {
     stopParticipantGeoTracking({
-      persistDisabled: true,
+      persistDisabled: false,
       reason: "PERMISSION_DENIED",
     });
   }
 }
-
 export async function startParticipantGeoTracking({ forceInitialSync = true } = {}) {
   if (!hasNavigatorGeolocation()) {
     return {
