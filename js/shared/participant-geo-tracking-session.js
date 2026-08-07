@@ -412,13 +412,23 @@ export async function resumeParticipantGeoTrackingIfEnabled({
     activateBackendConsent,
   });
 }
-export async function syncParticipantGeoOnce({ force = true } = {}) {
-  const position = await getCurrentPosition({
-    timeout: 12000,
-    maximumAge: 30000,
-  });
+export async function syncParticipantGeoOnce({
+  force = true,
+  consentAction = "sync",
+} = {}) {
+  const position =
+    await getCurrentPosition({
+      timeout: 12000,
+      maximumAge: 30000,
+    });
 
-  return syncPositionToBackend(position, { force });
+  return syncPositionToBackend(
+    position,
+    {
+      force,
+      consentAction,
+    }
+  );
 }
 
 export function getParticipantGeoTrackingState() {
