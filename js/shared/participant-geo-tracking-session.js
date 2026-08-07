@@ -354,6 +354,8 @@ export function stopParticipantGeoTracking({
 export async function resumeParticipantGeoTrackingIfEnabled({
   permissionState = null,
   allowPermissionPrompt = false,
+  forceInitialSync = false,
+  activateBackendConsent = false,
 } = {}) {
   const consentEnabled =
     isParticipantGeoTrackingEnabled();
