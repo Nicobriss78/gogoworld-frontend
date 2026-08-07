@@ -407,8 +407,9 @@ export async function resumeParticipantGeoTrackingIfEnabled({
     };
   }
 
-  return startParticipantGeoTracking({
-    forceInitialSync: false,
+    return startParticipantGeoTracking({
+    forceInitialSync,
+    activateBackendConsent,
   });
 }
 export async function syncParticipantGeoOnce({ force = true } = {}) {
