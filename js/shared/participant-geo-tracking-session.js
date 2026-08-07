@@ -228,7 +228,10 @@ function handleWatchError(error) {
     });
   }
 }
-export async function startParticipantGeoTracking({ forceInitialSync = true } = {}) {
+export async function startParticipantGeoTracking({
+  forceInitialSync = true,
+  activateBackendConsent = false,
+} = {}) {
   if (!hasNavigatorGeolocation()) {
     return {
       ok: false,
