@@ -266,8 +266,18 @@ export async function startParticipantGeoTracking({
       timeout: 12000,
       maximumAge: 30000,
     });
-    if (forceInitialSync) {
-      await syncPositionToBackend(position, { force: true });
+       if (forceInitialSync) {
+      await syncPositionToBackend(
+        position,
+        {
+          force: true,
+
+          consentAction:
+            activateBackendConsent
+              ? "activate"
+              : "sync",
+        }
+      );
     }
 
     watchId = navigator.geolocation.watchPosition(
