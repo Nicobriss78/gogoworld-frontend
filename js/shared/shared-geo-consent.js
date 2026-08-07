@@ -194,17 +194,29 @@ export async function ensureGeoTrackingAvailable() {
     };
   }
 
-const result = runtimeState.consentEnabled
-  ? await resumeParticipantGeoTrackingIfEnabled({
-      permissionState:
-        runtimeState.permissionState,
+const result =
+  runtimeState.consentEnabled
+    ? await resumeParticipantGeoTrackingIfEnabled({
+        permissionState:
+          runtimeState
+            .permissionState,
 
-      allowPermissionPrompt:
-        true,
-    })
-  : await startParticipantGeoTracking({
-      forceInitialSync: true,
-    });
+        allowPermissionPrompt:
+          true,
+
+        forceInitialSync:
+          true,
+
+        activateBackendConsent:
+          true,
+      })
+    : await startParticipantGeoTracking({
+        forceInitialSync:
+          true,
+
+        activateBackendConsent:
+          true,
+      });
 
   if (!result?.ok) {
     return result;
