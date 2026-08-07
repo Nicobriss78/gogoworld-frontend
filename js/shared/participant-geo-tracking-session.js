@@ -140,12 +140,23 @@ async function syncPositionToBackend(
   }
 
   try {
-    const result = await updateMyLocation({
-      lat: normalized.lat,
-      lon: normalized.lon,
-      accuracyMeters: normalized.accuracyMeters,
-      source: "browser",
-    });
+       const result =
+      await updateMyLocation({
+        lat:
+          normalized.lat,
+
+        lon:
+          normalized.lon,
+
+        accuracyMeters:
+          normalized
+            .accuracyMeters,
+
+        source:
+          "browser",
+
+        consentAction,
+      });
 
     if (result?.ok) {
       markBackendSyncOk();
