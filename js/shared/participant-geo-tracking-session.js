@@ -99,7 +99,13 @@ function emitGeoTrackingEvent(type, detail = {}) {
   );
 }
 
-async function syncPositionToBackend(position, { force = false } = {}) {
+async function syncPositionToBackend(
+  position,
+  {
+    force = false,
+    consentAction = "sync",
+  } = {}
+) {
   const normalized = normalizePosition(position);
 
   if (!normalized) {
