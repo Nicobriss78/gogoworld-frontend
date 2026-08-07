@@ -128,9 +128,10 @@ export async function syncLocationIfAlreadyGranted() {
 }
 
 export async function requestAndSyncLocation() {
-return startParticipantGeoTracking({
-forceInitialSync: true,
-});
+  return startParticipantGeoTracking({
+    forceInitialSync: true,
+    activateBackendConsent: true,
+  });
 }
 function waitForTrackingRunning({ timeoutMs = 15000 } = {}) {
   return new Promise((resolve) => {
