@@ -21,6 +21,7 @@ import { apiGet } from "/js/api.js";
 import {
   initGeoRuntime,
   refreshGeoPermissionState,
+  updateGeoRuntimeState,
 } from "/js/shared/geo-runtime.js";
 import {
   resumeParticipantGeoTrackingIfEnabled,
