@@ -143,12 +143,36 @@ const token = readAuthToken();
    * Il Tracking Session pubblica sempre nel Runtime
    * il consenso persistente e decide se il watcher
    * può essere ripristinato senza prompt automatici.
+   *
+   * Durante questa fase il Banner resta sospeso:
+   * consentEnabled=true + trackingRunning=false
+   * può essere semplicemente uno stato transitorio
+   * del normale ripristino.
    */
-  const geoTracking =
-    await resumeParticipantGeoTrackingIfEnabled({
-      permissionState,
-      allowPermissionPrompt: false,
+  let geoTracking = null;
+
+  try {
+    geoTracking =
+      await resumeParticipantGeoTrackingIfEnabled({
+        permissionState,
+        allowPermissionPrompt: false,
+      });
+  } finally {
+    /*
+     * Da questo momento gli stati GEO della pagina
+     * sono interpretabili dalla UI.
+     *
+     * Se il watcher è partito:
+     * trackingRunning=true.
+     *
+     * Se non è partito realmente:
+     * il Banner potrà ora mostrare il messaggio
+     * corretto senza produrre lampeggi transitori.
+     */
+    updateGeoRuntimeState({
+      geoBootstrapReady: true,
     });
+  }
 
   return {
     ok: true,
