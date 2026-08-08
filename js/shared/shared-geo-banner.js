@@ -588,8 +588,30 @@ function resolveBannerMode() {
     return null;
   }
 
-  if (
+   if (
     runtimeState.authenticated !==
+    true
+  ) {
+    return null;
+  }
+
+  /*
+   * Durante il bootstrap GEO esistono stati
+   * transitori perfettamente legittimi.
+   *
+   * Esempio:
+   *
+   * consentEnabled = true
+   * trackingRunning = false
+   *
+   * mentre il Tracking Session sta ancora
+   * ripristinando il watcher.
+   *
+   * Il Banner deve interpretare questi stati
+   * soltanto quando il bootstrap è concluso.
+   */
+  if (
+    runtimeState.geoBootstrapReady !==
     true
   ) {
     return null;
