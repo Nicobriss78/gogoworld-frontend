@@ -38,6 +38,13 @@ function createInitialState() {
     initialized: false,
     authenticated: false,
 
+    /*
+     * Diventa true soltanto quando il Participant
+     * Bootstrap ha concluso la riconciliazione GEO
+     * iniziale della pagina.
+     */
+    geoBootstrapReady: false,
+
     online:
       readOnlineState(),
 
