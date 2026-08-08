@@ -158,12 +158,43 @@ async function syncPositionToBackend(
         consentAction,
       });
 
+        /*
+     * Il backend può rifiutare una normale sync
+     * quando il consenso account-wide è stato
+     * revocato, per esempio da un altro dispositivo.
+     *
+     * In quel caso fermiamo il watcher locale ma
+     * NON cancelliamo la preferenza locale:
+     * l'utente potrà riattivarla esplicitamente.
+     */
+    if (
+      result?.ok === false &&
+      result?.error ===
+        "location_consent_not_enabled"
+    ) {
+      stopParticipantGeoTracking({
+        persistDisabled: false,
+
+        reason:
+          "BACKEND_LOCATION_CONSENT_DISABLED",
+      });
+
+      emitGeoTrackingEvent("error", {
+        error:
+          "BACKEND_LOCATION_CONSENT_DISABLED",
+      });
+
+      return result;
+    }
+
     if (result?.ok) {
       markBackendSyncOk();
+
       emitGeoTrackingEvent("synced", {
         lat: normalized.lat,
         lon: normalized.lon,
-        accuracyMeters: normalized.accuracyMeters,
+        accuracyMeters:
+          normalized.accuracyMeters,
       });
     }
 
