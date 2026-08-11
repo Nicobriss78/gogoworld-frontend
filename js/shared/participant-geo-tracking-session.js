@@ -461,6 +461,109 @@ export async function resumeParticipantGeoTrackingIfEnabled({
     activateBackendConsent,
   });
 }
+export async function recoverParticipantGeoTrackingOnForeground() {
+  const runtimeState =
+    getGeoRuntimeState();
+
+  if (
+    runtimeState.authenticated !== true ||
+    runtimeState.consentEnabled !== true
+  ) {
+    return {
+      ok: true,
+      skipped: true,
+      reason:
+        "GEO_FOREGROUND_RECOVERY_NOT_ENABLED",
+    };
+  }
+
+  if (
+    runtimeState.permissionState !==
+    "granted"
+  ) {
+    return {
+      ok: true,
+      skipped: true,
+      reason:
+        "GEO_FOREGROUND_RECOVERY_PERMISSION_NOT_GRANTED",
+      permissionState:
+        runtimeState.permissionState,
+    };
+  }
+
+  if (
+    runtimeState.locationAvailability !==
+    "unavailable"
+  ) {
+    return {
+      ok: true,
+      skipped: true,
+      reason:
+        "GEO_FOREGROUND_RECOVERY_NOT_REQUIRED",
+    };
+  }
+
+  /*
+   * Se il watcher è ancora registrato, effettuiamo
+   * soltanto una lettura puntuale per verificare che
+   * il dispositivo sia tornato a fornire posizione.
+   *
+   * Non creiamo un secondo watcher.
+   */
+  if (watchId !== null) {
+    try {
+      const position =
+        await getCurrentPosition({
+          timeout: 8000,
+          maximumAge: 0,
+        });
+
+      const normalized =
+        normalizePosition(position);
+
+      publishRuntimeState({
+        locationAvailability:
+          "available",
+
+        ...(normalized
+          ? {
+              lastKnownPosition:
+                normalized,
+            }
+          : {}),
+      });
+
+      return {
+        ok: true,
+        recovered: true,
+        active: true,
+      };
+    } catch (error) {
+      publishRuntimeState({
+        locationAvailability:
+          "unavailable",
+      });
+
+      return {
+        ok: false,
+        error:
+          "GEOLOCATION_FOREGROUND_RECOVERY_FAILED",
+        code:
+          error?.code || null,
+      };
+    }
+  }
+
+  /*
+   * Se il precedente errore aveva fermato il watcher,
+   * lo ripristiniamo senza prompt e senza riattivare
+   * implicitamente il consenso backend.
+   */
+  return startParticipantGeoTracking({
+    forceInitialSync: false,
+    activateBackendConsent: false,
+  });
+}
 export async function syncParticipantGeoOnce({
   force = true,
   consentAction = "sync",
