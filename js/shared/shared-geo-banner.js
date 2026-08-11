@@ -142,33 +142,33 @@ function getBannerCopy(
   mode = GEO_BANNER_MODES.ENABLE
 ) {
   if (
-    mode ===
-    GEO_BANNER_MODES
-      .BROWSER_BLOCKED
-  ) {
-    return {
-      title:
-        "La posizione è bloccata dal browser",
+  mode ===
+  GEO_BANNER_MODES
+    .BROWSER_BLOCKED
+) {
+  return {
+    title:
+      "L’accesso alla posizione è bloccato",
 
-      text:
-        "Per usare gli eventi vicini, i trilli live e il check-in, devi consentire a GoGoWorld l’accesso alla posizione nelle impostazioni del sito.",
+    text:
+      "GoGoWorld non ha il permesso di accedere alla posizione. Verifica l’autorizzazione del sito nelle impostazioni del browser.",
 
-      primaryLabel:
-        "Come abilitarla",
+    primaryLabel:
+      "Come abilitarla",
 
-      primaryAction:
-        "show-help",
+    primaryAction:
+      "show-help",
 
-      secondaryLabel:
-        "Chiudi",
+    secondaryLabel:
+      "Chiudi",
 
-      ariaLabel:
-        "Posizione bloccata dal browser",
+    ariaLabel:
+      "Accesso alla posizione bloccato",
 
-      helpText:
-        "Apri le impostazioni del sito dal menu del browser, consenti l’accesso alla posizione per GoGoWorld e poi torna su questa pagina. Se necessario, ricarica la pagina.",
-    };
-  }
+    helpText:
+      "Apri le impostazioni del sito dal menu del browser, consenti l’accesso alla posizione per GoGoWorld e poi torna su questa pagina. Se necessario, ricarica la pagina.",
+  };
+}
 
   if (
     mode ===
