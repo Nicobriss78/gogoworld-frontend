@@ -322,17 +322,20 @@ export async function startParticipantGeoTracking({
       );
     }
 
-    watchId = navigator.geolocation.watchPosition(
-      handleWatchPosition,
-      handleWatchError,
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 30000,
-      }
-    );
+   watchId = navigator.geolocation.watchPosition(
+  handleWatchPosition,
+  handleWatchError,
+  {
+    enableHighAccuracy: true,
+    timeout: 15000,
+    maximumAge: 30000,
+  }
+);
 
-    publishRuntimeState();
+publishRuntimeState({
+  locationAvailability:
+    "available",
+});
 
     emitGeoTrackingEvent("started", {
       active: true,
