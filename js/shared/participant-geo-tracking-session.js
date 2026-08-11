@@ -241,18 +241,26 @@ function handleWatchError(error) {
   const permissionDenied =
     error?.code === 1;
 
-  if (permissionDenied) {
-    publishRuntimeState({
-      permissionState: "denied",
-    });
-  }
+  /*
+   * Un errore della Geolocation API NON determina
+   * da solo lo stato della permission del browser.
+   *
+   * Registra soltanto che, in questo momento, il
+   * dispositivo non sta fornendo una posizione.
+   */
+  publishRuntimeState({
+    locationAvailability:
+      "unavailable",
+  });
 
   markBackendSyncError(error);
 
   emitGeoTrackingEvent("error", {
     error: "GEOLOCATION_WATCH_ERROR",
     code: error?.code || null,
-    message: error?.message || String(error || ""),
+    message:
+      error?.message ||
+      String(error || ""),
   });
 
   if (permissionDenied) {
