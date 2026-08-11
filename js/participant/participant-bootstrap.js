@@ -85,7 +85,102 @@ async function validateAuthenticatedSession(
     user: result?.user || result,
   };
 }
+async function attemptGeoForegroundRecovery() {
+  if (foregroundRecoveryInProgress) {
+    return;
+  }
 
+  const beforeRefresh =
+    getGeoRuntimeState();
+
+  if (
+    beforeRefresh.authenticated !== true ||
+    beforeRefresh.geoBootstrapReady !== true ||
+    beforeRefresh.pageVisible !== true ||
+    beforeRefresh.pageFocused !== true ||
+    beforeRefresh.consentEnabled !== true ||
+    beforeRefresh.locationAvailability !==
+      "unavailable"
+  ) {
+    return;
+  }
+
+  foregroundRecoveryInProgress =
+    true;
+
+  try {
+    /*
+     * Prima di qualsiasi nuovo accesso GPS
+     * rileggiamo la permission reale centralizzata.
+     */
+    await refreshGeoPermissionState()
+      .catch(() => "unknown");
+
+    const runtimeState =
+      getGeoRuntimeState();
+
+    if (
+      runtimeState.permissionState !==
+      "granted"
+    ) {
+      return;
+    }
+
+    await recoverParticipantGeoTrackingOnForeground();
+  } finally {
+    foregroundRecoveryInProgress =
+      false;
+  }
+}
+
+function bindGeoForegroundRecovery() {
+  if (foregroundRecoveryBound) {
+    return;
+  }
+
+  foregroundRecoveryBound = true;
+
+  subscribeGeoRuntime(
+    (nextState, changedKeys) => {
+      /*
+       * Non reagiamo a locationAvailability stessa:
+       * evitiamo qualsiasi loop di tentativi.
+       *
+       * Il recupero avviene soltanto quando la pagina
+       * torna realmente in foreground o quando cambia
+       * la permission.
+       */
+      const foregroundChanged =
+        changedKeys.includes(
+          "pageFocused"
+        ) ||
+        changedKeys.includes(
+          "pageVisible"
+        ) ||
+        changedKeys.includes(
+          "permissionState"
+        );
+
+      if (!foregroundChanged) {
+        return;
+      }
+
+      if (
+        nextState.authenticated !== true ||
+        nextState.geoBootstrapReady !== true ||
+        nextState.pageVisible !== true ||
+        nextState.pageFocused !== true ||
+        nextState.consentEnabled !== true ||
+        nextState.locationAvailability !==
+          "unavailable"
+      ) {
+        return;
+      }
+
+      void attemptGeoForegroundRecovery();
+    }
+  );
+}
 async function runParticipantBootstrap() {
   /*
    * Il Runtime nasce subito come infrastruttura
