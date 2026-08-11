@@ -48,9 +48,16 @@ function createStatusSnapshot() {
     authenticated:
       runtime.authenticated === true,
 
-    permissionState:
-      runtime.permissionState ||
-      "unknown",
+   permissionState:
+  runtime.permissionState ||
+  "unknown",
+
+locationAvailability:
+  runtime.locationAvailability ||
+  "unknown",
+
+geoBootstrapReady:
+  runtime.geoBootstrapReady === true,
 
 consentEnabled:
   runtime.consentEnabled === true,
