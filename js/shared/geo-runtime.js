@@ -117,7 +117,18 @@ function normalizePermissionState(
 
   return "unknown";
 }
+function normalizeLocationAvailability(
+  value
+) {
+  if (
+    value === "available" ||
+    value === "unavailable"
+  ) {
+    return value;
+  }
 
+  return "unknown";
+}
 function clonePosition(position) {
   if (
     !position ||
