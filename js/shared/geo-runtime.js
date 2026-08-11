@@ -525,7 +525,9 @@ function bindLifecycleListeners() {
  * I componenti UI, incluso il Banner,
  * devono leggere il risultato dal Runtime.
  */
-export async function refreshGeoPermissionState() {
+export async function refreshGeoPermissionState({
+  forceQuery = false,
+} = {}) {
   if (
     typeof navigator ===
       "undefined" ||
@@ -537,7 +539,17 @@ export async function refreshGeoPermissionState() {
     }).permissionState;
   }
 
-  if (permissionStatus) {
+  /*
+   * Nel normale funzionamento usiamo il
+   * PermissionStatus già osservato.
+   *
+   * Durante il recovery Android possiamo invece
+   * richiedere esplicitamente una nuova query.
+   */
+  if (
+    permissionStatus &&
+    forceQuery !== true
+  ) {
     applyStatePatch({
       permissionState:
         permissionStatus.state,
@@ -558,10 +570,7 @@ export async function refreshGeoPermissionState() {
         name: "geolocation",
       })
       .then((status) => {
-        permissionStatus =
-          status;
-
-        bindPermissionListener(
+        setPermissionStatus(
           status
         );
 
@@ -578,11 +587,19 @@ export async function refreshGeoPermissionState() {
         return nextPermissionState;
       })
       .catch(() => {
-        permissionStatus =
-          null;
+        /*
+         * Durante un probe forzato manteniamo lo
+         * stato già noto.
+         *
+         * Un errore transitorio della Permissions API
+         * non deve generare un falso cambio di stato
+         * e interrompere il recovery.
+         */
+        if (forceQuery === true) {
+          return state.permissionState;
+        }
 
-        permissionListenerBound =
-          false;
+        setPermissionStatus(null);
 
         applyStatePatch({
           permissionState:
