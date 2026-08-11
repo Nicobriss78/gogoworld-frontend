@@ -80,6 +80,10 @@ function shouldRespectDismiss(
 }
 
 function getBannerMode() {
+  /*
+   * Questo stato arriva esclusivamente dalla
+   * Permissions API centralizzata.
+   */
   if (
     runtimeState.permissionState ===
     "denied"
@@ -97,18 +101,30 @@ function getBannerMode() {
   }
 
   if (
-    runtimeState.trackingRunning ===
-    true
-  ) {
-    return null;
-  }
-
-  if (
     runtimeState.permissionState ===
     "prompt"
   ) {
     return GEO_BANNER_MODES
       .COMPLETE_PERMISSION;
+  }
+
+  /*
+   * Il permesso non è bloccato, ma il dispositivo
+   * non sta fornendo una posizione utilizzabile.
+   */
+  if (
+    runtimeState.locationAvailability ===
+    "unavailable"
+  ) {
+    return GEO_BANNER_MODES
+      .LOCATION_UNAVAILABLE;
+  }
+
+  if (
+    runtimeState.trackingRunning ===
+    true
+  ) {
+    return null;
   }
 
   if (
@@ -121,7 +137,6 @@ function getBannerMode() {
 
   return null;
 }
-
 function getBannerCopy(
   variant = "default",
   mode = GEO_BANNER_MODES.ENABLE
