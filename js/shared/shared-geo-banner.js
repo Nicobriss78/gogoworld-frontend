@@ -43,9 +43,12 @@ const GEO_BANNER_MODES =
       "complete-permission",
 
     BROWSER_BLOCKED:
-      "browser-blocked",
+  "browser-blocked",
 
-    RESTART_TRACKING:
+LOCATION_UNAVAILABLE:
+  "location-unavailable",
+
+RESTART_TRACKING:
       "restart-tracking",
   });
 
