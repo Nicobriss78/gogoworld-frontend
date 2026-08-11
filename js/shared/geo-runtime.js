@@ -406,7 +406,66 @@ function bindPermissionListener(
   status.onchange =
     handlePermissionChange;
 }
+function unbindPermissionListener(
+  status
+) {
+  if (!status) {
+    return;
+  }
 
+  if (
+    typeof status.removeEventListener ===
+    "function"
+  ) {
+    status.removeEventListener(
+      "change",
+      handlePermissionChange
+    );
+  } else if (
+    status.onchange ===
+    handlePermissionChange
+  ) {
+    status.onchange = null;
+  }
+}
+
+function setPermissionStatus(
+  status
+) {
+  if (permissionStatus === status) {
+    if (
+      status &&
+      !permissionListenerBound
+    ) {
+      bindPermissionListener(
+        status
+      );
+    }
+
+    return;
+  }
+
+  if (
+    permissionStatus &&
+    permissionListenerBound
+  ) {
+    unbindPermissionListener(
+      permissionStatus
+    );
+  }
+
+  permissionStatus =
+    status || null;
+
+  permissionListenerBound =
+    false;
+
+  if (permissionStatus) {
+    bindPermissionListener(
+      permissionStatus
+    );
+  }
+}
 function bindLifecycleListeners() {
   if (
     lifecycleBound ||
