@@ -94,40 +94,97 @@ async function validateAuthenticatedSession(
     user: result?.user || result,
   };
 }
-async function attemptGeoForegroundRecovery() {
-  if (foregroundRecoveryInProgress) {
-    return;
+function shouldRunGeoRecoveryMonitor(
+  runtimeState =
+    getGeoRuntimeState()
+) {
+  if (
+    runtimeState.authenticated !== true ||
+    runtimeState.geoBootstrapReady !== true ||
+    runtimeState.pageVisible !== true ||
+    runtimeState.consentEnabled !== true
+  ) {
+    return false;
   }
 
-  const beforeRefresh =
-    getGeoRuntimeState();
-
+  /*
+   * Lo stato prompt richiede sempre un gesto
+   * esplicito dell'utente.
+   *
+   * Il recovery automatico non deve mai aprire
+   * il prompt del browser.
+   */
   if (
-    beforeRefresh.authenticated !== true ||
-    beforeRefresh.geoBootstrapReady !== true ||
-    beforeRefresh.pageVisible !== true ||
-    beforeRefresh.pageFocused !== true ||
-    beforeRefresh.consentEnabled !== true ||
-    beforeRefresh.locationAvailability !==
-      "unavailable"
+    runtimeState.permissionState ===
+    "prompt"
+  ) {
+    return false;
+  }
+
+  return (
+    runtimeState.locationAvailability ===
+      "unavailable" ||
+    (
+      runtimeState.permissionState ===
+        "denied" &&
+      runtimeState.trackingRunning !== true
+    )
+  );
+}
+
+function stopGeoRecoveryMonitor() {
+  if (
+    geoRecoveryTimerId === null
   ) {
     return;
   }
 
-  foregroundRecoveryInProgress =
+  window.clearInterval(
+    geoRecoveryTimerId
+  );
+
+  geoRecoveryTimerId =
+    null;
+}
+
+async function attemptGeoRecovery() {
+  if (geoRecoveryInProgress) {
+    return;
+  }
+
+  if (
+    !shouldRunGeoRecoveryMonitor()
+  ) {
+    stopGeoRecoveryMonitor();
+    return;
+  }
+
+  geoRecoveryInProgress =
     true;
 
   try {
     /*
-     * Prima di qualsiasi nuovo accesso GPS
-     * rileggiamo la permission reale centralizzata.
+     * Chrome Android può non notificare alla pagina
+     * il cambio dell'interruttore Posizione del
+     * dispositivo.
+     *
+     * Soltanto durante lo stato degradato forziamo
+     * quindi una nuova query della permission.
      */
-    await refreshGeoPermissionState()
-      .catch(() => "unknown");
+    await refreshGeoPermissionState({
+      forceQuery: true,
+    }).catch(() => "unknown");
 
     const runtimeState =
       getGeoRuntimeState();
 
+    /*
+     * Se è ancora denied/unknown non tentiamo
+     * geolocalizzazione.
+     *
+     * In particolare non generiamo mai prompt
+     * automatici.
+     */
     if (
       runtimeState.permissionState !==
       "granted"
@@ -137,56 +194,67 @@ async function attemptGeoForegroundRecovery() {
 
     await recoverParticipantGeoTrackingOnForeground();
   } finally {
-    foregroundRecoveryInProgress =
+    geoRecoveryInProgress =
       false;
+
+    reconcileGeoRecoveryMonitor();
   }
 }
 
-function bindGeoForegroundRecovery() {
-  if (foregroundRecoveryBound) {
+function startGeoRecoveryMonitor() {
+  if (
+    geoRecoveryTimerId !== null
+  ) {
     return;
   }
 
-  foregroundRecoveryBound = true;
+  geoRecoveryTimerId =
+    window.setInterval(
+      () => {
+        void attemptGeoRecovery();
+      },
+      GEO_RECOVERY_INTERVAL_MS
+    );
 
+  /*
+   * Primo controllo immediato:
+   * non obblighiamo l'utente ad attendere
+   * l'intero intervallo.
+   */
+  void attemptGeoRecovery();
+}
+
+function reconcileGeoRecoveryMonitor() {
+  if (
+    shouldRunGeoRecoveryMonitor()
+  ) {
+    startGeoRecoveryMonitor();
+    return;
+  }
+
+  stopGeoRecoveryMonitor();
+}
+
+function bindGeoForegroundRecovery() {
+  if (geoRecoveryBound) {
+    return;
+  }
+
+  geoRecoveryBound = true;
+
+  /*
+   * Qualunque cambiamento del Runtime può far
+   * entrare o uscire dallo stato degradato.
+   *
+   * reconcile non modifica il Runtime:
+   * accende o spegne soltanto il monitor.
+   */
   subscribeGeoRuntime(
-    (nextState, changedKeys) => {
-      /*
-       * Non reagiamo a locationAvailability stessa:
-       * evitiamo qualsiasi loop di tentativi.
-       *
-       * Il recupero avviene soltanto quando la pagina
-       * torna realmente in foreground o quando cambia
-       * la permission.
-       */
-      const foregroundChanged =
-        changedKeys.includes(
-          "pageFocused"
-        ) ||
-        changedKeys.includes(
-          "pageVisible"
-        ) ||
-        changedKeys.includes(
-          "permissionState"
-        );
-
-      if (!foregroundChanged) {
-        return;
-      }
-
-      if (
-        nextState.authenticated !== true ||
-        nextState.geoBootstrapReady !== true ||
-        nextState.pageVisible !== true ||
-        nextState.pageFocused !== true ||
-        nextState.consentEnabled !== true ||
-        nextState.locationAvailability !==
-          "unavailable"
-      ) {
-        return;
-      }
-
-      void attemptGeoForegroundRecovery();
+    () => {
+      reconcileGeoRecoveryMonitor();
+    },
+    {
+      emitCurrent: true,
     }
   );
 }
