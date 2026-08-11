@@ -114,7 +114,10 @@ async function syncPositionToBackend(
       error: "INVALID_BROWSER_POSITION",
     };
   }
-
+  publishRuntimeState({
+  locationAvailability:
+    "available",
+});
   if (
     normalized.accuracyMeters !== null &&
     normalized.accuracyMeters > GEO_TRACKING_MAX_ACCEPTED_ACCURACY_METERS
