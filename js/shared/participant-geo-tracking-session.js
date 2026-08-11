@@ -304,11 +304,34 @@ export async function startParticipantGeoTracking({
     setTrackingEnabled(true);
     publishRuntimeState();
 
-    const position = await getCurrentPosition({
+        const position = await getCurrentPosition({
       timeout: 12000,
       maximumAge: 30000,
     });
-       if (forceInitialSync) {
+
+    /*
+     * La posizione è disponibile soltanto dopo una
+     * posizione realmente ricevuta dal dispositivo.
+     *
+     * La sola registrazione di watchPosition()
+     * NON dimostra che il dispositivo possa
+     * effettivamente fornire coordinate.
+     */
+    const initialPosition =
+      normalizePosition(position);
+
+    if (!initialPosition) {
+      throw new Error(
+        "INVALID_BROWSER_POSITION"
+      );
+    }
+
+    publishRuntimeState({
+      locationAvailability:
+        "available",
+    });
+
+    if (forceInitialSync) {
       await syncPositionToBackend(
         position,
         {
@@ -322,16 +345,23 @@ export async function startParticipantGeoTracking({
       );
     }
 
-   watchId = navigator.geolocation.watchPosition(
-  handleWatchPosition,
-  handleWatchError,
-  {
-    enableHighAccuracy: true,
-    timeout: 15000,
-    maximumAge: 30000,
-  }
-);
+    watchId =
+      navigator.geolocation.watchPosition(
+        handleWatchPosition,
+        handleWatchError,
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 30000,
+        }
+      );
 
+    /*
+     * Qui pubblichiamo soltanto trackingRunning.
+     * locationAvailability è già stata determinata
+     * dalla posizione realmente ricevuta.
+     */
+    publishRuntimeState();
 publishRuntimeState({
   locationAvailability:
     "available",
