@@ -268,12 +268,14 @@ const token = readAuthToken();
      * il Banner potrà ora mostrare il messaggio
      * corretto senza produrre lampeggi transitori.
      */
-    updateGeoRuntimeState({
-      geoBootstrapReady: true,
-    });
-  }
+  updateGeoRuntimeState({
+  geoBootstrapReady: true,
+});
+}
 
-  return {
+bindGeoForegroundRecovery();
+
+return {
     ok: true,
     authenticated: true,
     user: session.user,
