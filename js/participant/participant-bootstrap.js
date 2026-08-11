@@ -33,7 +33,8 @@ import {
   installGeoDebugConsole,
 } from "/js/shared/geo-debug.js";
 let bootstrapPromise = null;
-
+let foregroundRecoveryBound = false;
+let foregroundRecoveryInProgress = false;
 function readAuthToken() {
   try {
     return (
