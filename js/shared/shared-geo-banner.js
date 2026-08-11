@@ -42,16 +42,12 @@ const GEO_BANNER_MODES =
     COMPLETE_PERMISSION:
       "complete-permission",
 
-    BROWSER_BLOCKED:
-  "browser-blocked",
+    POSITION_UNAVAILABLE:
+      "position-unavailable",
 
-LOCATION_UNAVAILABLE:
-  "location-unavailable",
-
-RESTART_TRACKING:
+    RESTART_TRACKING:
       "restart-tracking",
   });
-
 let runtimeState =
   getGeoRuntimeState();
 
