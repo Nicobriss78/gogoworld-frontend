@@ -77,17 +77,10 @@ function shouldRespectDismiss(
 
 function getBannerMode() {
   /*
-   * Questo stato arriva esclusivamente dalla
-   * Permissions API centralizzata.
+   * Prima responsabilità:
+   * l'utente non ha ancora attivato il servizio
+   * dentro GoGoWorld.
    */
-  if (
-    runtimeState.permissionState ===
-    "denied"
-  ) {
-    return GEO_BANNER_MODES
-      .BROWSER_BLOCKED;
-  }
-
   if (
     runtimeState.consentEnabled !==
     true
@@ -96,6 +89,10 @@ function getBannerMode() {
       .ENABLE;
   }
 
+  /*
+   * Qui sappiamo che è necessario un gesto
+   * esplicito per completare l'autorizzazione.
+   */
   if (
     runtimeState.permissionState ===
     "prompt"
@@ -105,15 +102,22 @@ function getBannerMode() {
   }
 
   /*
-   * Il permesso non è bloccato, ma il dispositivo
-   * non sta fornendo una posizione utilizzabile.
+   * Su Chrome Android permissionState=denied può
+   * rappresentare sia un vero permesso del sito
+   * negato sia l'indisponibilità della Posizione
+   * di sistema.
+   *
+   * Non attribuiamo quindi artificialmente
+   * la causa al browser.
    */
   if (
+    runtimeState.permissionState ===
+      "denied" ||
     runtimeState.locationAvailability ===
-    "unavailable"
+      "unavailable"
   ) {
     return GEO_BANNER_MODES
-      .LOCATION_UNAVAILABLE;
+      .POSITION_UNAVAILABLE;
   }
 
   if (
