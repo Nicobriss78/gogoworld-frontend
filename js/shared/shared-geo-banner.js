@@ -169,7 +169,31 @@ function getBannerCopy(
       "Apri le impostazioni del sito dal menu del browser, consenti l’accesso alla posizione per GoGoWorld e poi torna su questa pagina. Se necessario, ricarica la pagina.",
   };
 }
+if (
+  mode ===
+  GEO_BANNER_MODES
+    .LOCATION_UNAVAILABLE
+) {
+  return {
+    title:
+      "La posizione del dispositivo non è disponibile",
 
+    text:
+      "GoGoWorld non sta ricevendo una posizione dal dispositivo. Verifica che la funzione Posizione sia attiva sul telefono e poi torna su GoGoWorld.",
+
+    primaryLabel:
+      "Riprova",
+
+    primaryAction:
+      "enable",
+
+    secondaryLabel:
+      "Chiudi",
+
+    ariaLabel:
+      "Posizione del dispositivo non disponibile",
+  };
+}
   if (
     mode ===
     GEO_BANNER_MODES
