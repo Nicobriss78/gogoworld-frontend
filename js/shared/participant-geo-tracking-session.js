@@ -304,18 +304,16 @@ export async function startParticipantGeoTracking({
     setTrackingEnabled(true);
     publishRuntimeState();
 
-        const position = await getCurrentPosition({
-      timeout: 12000,
-      maximumAge: 30000,
-    });
+    const position =
+      await getCurrentPosition({
+        timeout: 12000,
+        maximumAge: 30000,
+      });
 
     /*
-     * La posizione è disponibile soltanto dopo una
-     * posizione realmente ricevuta dal dispositivo.
-     *
-     * La sola registrazione di watchPosition()
-     * NON dimostra che il dispositivo possa
-     * effettivamente fornire coordinate.
+     * La disponibilità della posizione viene
+     * considerata reale soltanto dopo aver ricevuto
+     * coordinate valide dal dispositivo.
      */
     const initialPosition =
       normalizePosition(position);
@@ -326,11 +324,44 @@ export async function startParticipantGeoTracking({
       );
     }
 
+    /*
+     * Creiamo prima il watcher e poi pubblichiamo
+     * in un solo aggiornamento lo stato osservabile
+     * dalla UI.
+     *
+     * In questo modo non esiste più la finestra
+     * transitoria:
+     *
+     * locationAvailability = available
+     * trackingRunning = false
+     *
+     * che faceva comparire per un istante il banner
+     * "Riattiva la posizione" durante il recovery.
+     */
+    watchId =
+      navigator.geolocation.watchPosition(
+        handleWatchPosition,
+        handleWatchError,
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 30000,
+        }
+      );
+
     publishRuntimeState({
       locationAvailability:
         "available",
+
+      lastKnownPosition:
+        initialPosition,
     });
 
+    /*
+     * L'eventuale sync iniziale avviene quando il
+     * watcher è già registrato e il Runtime descrive
+     * uno stato GEO coerente.
+     */
     if (forceInitialSync) {
       await syncPositionToBackend(
         position,
@@ -345,24 +376,6 @@ export async function startParticipantGeoTracking({
       );
     }
 
-    watchId =
-      navigator.geolocation.watchPosition(
-        handleWatchPosition,
-        handleWatchError,
-        {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 30000,
-        }
-      );
-
-    /*
-     * Qui pubblichiamo soltanto trackingRunning.
-     * locationAvailability è già stata determinata
-     * dalla posizione realmente ricevuta.
-     */
-    publishRuntimeState();
-
     emitGeoTrackingEvent("started", {
       active: true,
     });
@@ -371,35 +384,40 @@ export async function startParticipantGeoTracking({
       ok: true,
       active: true,
     };
- } catch (error) {
-  /*
-   * Non deduciamo permissionState dall'errore GPS.
-   * Il permesso resta di proprietà del Geo Runtime
-   * tramite Permissions API.
-   */
-  publishRuntimeState({
-    locationAvailability:
-      "unavailable",
-  });
+  } catch (error) {
+    /*
+     * Non deduciamo permissionState dall'errore GPS.
+     * Il permesso resta di proprietà del Geo Runtime
+     * tramite Permissions API.
+     */
+    publishRuntimeState({
+      locationAvailability:
+        "unavailable",
+    });
 
-  markBackendSyncError(error);
+    markBackendSyncError(error);
 
     emitGeoTrackingEvent("error", {
-      error: "GEOLOCATION_START_FAILED",
-      code: error?.code || null,
-      message: error?.message || String(error || ""),
+      error:
+        "GEOLOCATION_START_FAILED",
+      code:
+        error?.code || null,
+      message:
+        error?.message ||
+        String(error || ""),
     });
 
     return {
       ok: false,
-      error: "GEOLOCATION_START_FAILED",
-      code: error?.code || null,
+      error:
+        "GEOLOCATION_START_FAILED",
+      code:
+        error?.code || null,
     };
   } finally {
     isStarting = false;
   }
 }
-
 export function stopParticipantGeoTracking({
   persistDisabled = true,
   reason = "USER_DISABLED",
