@@ -56,10 +56,13 @@ function createInitialState() {
 
     pagePersisted: false,
 
-    permissionState:
-      "unknown",
+   permissionState:
+  "unknown",
 
-    consentEnabled:
+locationAvailability:
+  "unknown",
+
+consentEnabled:
   false,
 
 trackingRunning:
