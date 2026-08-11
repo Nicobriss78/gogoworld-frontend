@@ -345,14 +345,18 @@ publishRuntimeState({
       ok: true,
       active: true,
     };
-  } catch (error) {
-    if (error?.code === 1) {
-      publishRuntimeState({
-        permissionState: "denied",
-      });
-    }
+ } catch (error) {
+  /*
+   * Non deduciamo permissionState dall'errore GPS.
+   * Il permesso resta di proprietà del Geo Runtime
+   * tramite Permissions API.
+   */
+  publishRuntimeState({
+    locationAvailability:
+      "unavailable",
+  });
 
-    markBackendSyncError(error);
+  markBackendSyncError(error);
 
     emitGeoTrackingEvent("error", {
       error: "GEOLOCATION_START_FAILED",
