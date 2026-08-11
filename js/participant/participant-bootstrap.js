@@ -26,6 +26,7 @@ import {
   updateGeoRuntimeState,
 } from "/js/shared/geo-runtime.js";
 import {
+  recoverParticipantGeoTrackingOnForeground,
   resumeParticipantGeoTrackingIfEnabled,
 } from "/js/shared/participant-geo-tracking-session.js";
 import {
