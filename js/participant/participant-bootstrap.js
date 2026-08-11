@@ -19,8 +19,10 @@
 
 import { apiGet } from "/js/api.js";
 import {
+  getGeoRuntimeState,
   initGeoRuntime,
   refreshGeoPermissionState,
+  subscribeGeoRuntime,
   updateGeoRuntimeState,
 } from "/js/shared/geo-runtime.js";
 import {
