@@ -434,34 +434,35 @@ async function handleEnableAction(
       return;
     }
 
+    /*
+     * Su Chrome Android permissionState=denied
+     * può rappresentare sia un vero blocco del
+     * permesso del sito sia l'indisponibilità
+     * della Posizione di sistema.
+     *
+     * Anche locationAvailability=unavailable
+     * indica che il dispositivo non sta
+     * fornendo una posizione utilizzabile.
+     *
+     * Non attribuiamo quindi artificialmente
+     * la causa al browser o al GPS.
+     */
     if (
-      runtimeState
-        .permissionState ===
-      "denied"
+      runtimeState.permissionState ===
+        "denied" ||
+      runtimeState.locationAvailability ===
+        "unavailable"
     ) {
       reconcileGeoBanner();
 
       dispatchGeoToast(
         "error",
-        "L’accesso alla posizione è bloccato. Consulta le istruzioni nel banner per abilitarlo."
+        "La posizione non è disponibile. Verifica la Posizione del dispositivo e l’autorizzazione di GoGoWorld nel browser."
       );
 
       return;
     }
-    if (
-  runtimeState
-    .locationAvailability ===
-  "unavailable"
-) {
-  reconcileGeoBanner();
 
-  dispatchGeoToast(
-    "error",
-    "La posizione del dispositivo non è disponibile. Verifica che la funzione Posizione sia attiva e riprova."
-  );
-
-  return;
-}
     button.disabled =
       false;
 
@@ -485,33 +486,21 @@ async function handleEnableAction(
       false;
 
     if (
-      runtimeState
-        .permissionState ===
-      "denied"
+      runtimeState.permissionState ===
+        "denied" ||
+      runtimeState.locationAvailability ===
+        "unavailable"
     ) {
       reconcileGeoBanner();
 
       dispatchGeoToast(
         "error",
-        "L’accesso alla posizione è bloccato. Consulta le istruzioni nel banner per abilitarlo."
+        "La posizione non è disponibile. Verifica la Posizione del dispositivo e l’autorizzazione di GoGoWorld nel browser."
       );
 
       return;
     }
-    if (
-  runtimeState
-    .locationAvailability ===
-  "unavailable"
-) {
-  reconcileGeoBanner();
 
-  dispatchGeoToast(
-    "error",
-    "La posizione del dispositivo non è disponibile. Verifica che la funzione Posizione sia attiva e riprova."
-  );
-
-  return;
-}
     button.disabled =
       false;
 
@@ -526,7 +515,6 @@ async function handleEnableAction(
     );
   }
 }
-
 function handleShowHelpAction(
   banner,
   button
