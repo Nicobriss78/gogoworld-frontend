@@ -141,59 +141,34 @@ function getBannerCopy(
   variant = "default",
   mode = GEO_BANNER_MODES.ENABLE
 ) {
-  if (
-  mode ===
-  GEO_BANNER_MODES
-    .BROWSER_BLOCKED
-) {
-  return {
-    title:
-      "L’accesso alla posizione è bloccato",
+    if (
+    mode ===
+    GEO_BANNER_MODES
+      .POSITION_UNAVAILABLE
+  ) {
+    return {
+      title:
+        "La posizione non è disponibile",
 
-    text:
-      "GoGoWorld non ha il permesso di accedere alla posizione. Verifica l’autorizzazione del sito nelle impostazioni del browser.",
+      text:
+        "GoGoWorld al momento non riesce ad accedere alla tua posizione. Verifica che la funzione Posizione del dispositivo sia attiva e che GoGoWorld sia autorizzato nelle impostazioni del browser.",
 
-    primaryLabel:
-      "Come abilitarla",
+      primaryLabel:
+        "Come risolvere",
 
-    primaryAction:
-      "show-help",
+      primaryAction:
+        "show-help",
 
-    secondaryLabel:
-      "Chiudi",
+      secondaryLabel:
+        "Chiudi",
 
-    ariaLabel:
-      "Accesso alla posizione bloccato",
+      ariaLabel:
+        "Posizione non disponibile",
 
-    helpText:
-      "Apri le impostazioni del sito dal menu del browser, consenti l’accesso alla posizione per GoGoWorld e poi torna su questa pagina. Se necessario, ricarica la pagina.",
-  };
-}
-if (
-  mode ===
-  GEO_BANNER_MODES
-    .LOCATION_UNAVAILABLE
-) {
-  return {
-    title:
-      "La posizione del dispositivo non è disponibile",
-
-    text:
-      "GoGoWorld non sta ricevendo una posizione dal dispositivo. Verifica che la funzione Posizione sia attiva sul telefono e poi torna su GoGoWorld.",
-
-    primaryLabel:
-      "Riprova",
-
-    primaryAction:
-      "enable",
-
-    secondaryLabel:
-      "Chiudi",
-
-    ariaLabel:
-      "Posizione del dispositivo non disponibile",
-  };
-}
+      helpText:
+        "Controlla che la funzione Posizione sia attiva sul dispositivo e che GoGoWorld abbia l’autorizzazione alla posizione nelle impostazioni del sito. Dopo la modifica torna su GoGoWorld: il servizio proverà a ripartire automaticamente.",
+    };
+  }
   if (
     mode ===
     GEO_BANNER_MODES
