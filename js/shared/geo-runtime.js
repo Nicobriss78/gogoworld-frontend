@@ -220,15 +220,20 @@ function applyStatePatch(
       }
 
       const normalizedValue =
-        key ===
-        "lastKnownPosition"
-          ? clonePosition(value)
-          : key ===
-              "permissionState"
-            ? normalizePermissionState(
-                value
-              )
-            : value;
+  key ===
+  "lastKnownPosition"
+    ? clonePosition(value)
+    : key ===
+        "permissionState"
+      ? normalizePermissionState(
+          value
+        )
+      : key ===
+          "locationAvailability"
+        ? normalizeLocationAvailability(
+            value
+          )
+        : value;
 
       if (
         Object.is(
