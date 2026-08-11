@@ -32,9 +32,18 @@ import {
 import {
   installGeoDebugConsole,
 } from "/js/shared/geo-debug.js";
+const GEO_RECOVERY_INTERVAL_MS =
+  3000;
+
 let bootstrapPromise = null;
-let foregroundRecoveryBound = false;
-let foregroundRecoveryInProgress = false;
+
+let geoRecoveryBound = false;
+
+let geoRecoveryInProgress =
+  false;
+
+let geoRecoveryTimerId =
+  null;
 function readAuthToken() {
   try {
     return (
