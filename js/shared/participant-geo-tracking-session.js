@@ -362,10 +362,6 @@ export async function startParticipantGeoTracking({
      * dalla posizione realmente ricevuta.
      */
     publishRuntimeState();
-publishRuntimeState({
-  locationAvailability:
-    "available",
-});
 
     emitGeoTrackingEvent("started", {
       active: true,
