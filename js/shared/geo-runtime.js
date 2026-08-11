@@ -350,8 +350,18 @@ function handleFocus() {
   applyStatePatch({
     pageFocused: true,
   });
-}
 
+  /*
+   * Il ritorno in foreground può avvenire dopo
+   * una modifica dei permessi o delle impostazioni
+   * di localizzazione del dispositivo.
+   *
+   * Il Runtime aggiorna qui esclusivamente lo stato
+   * della permission; non accede alle coordinate.
+   */
+  refreshGeoPermissionState()
+    .catch(() => {});
+}
 function handleBlur() {
   applyStatePatch({
     pageFocused: false,
