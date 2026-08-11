@@ -468,12 +468,25 @@ async function handleEnableAction(
 
       dispatchGeoToast(
         "error",
-        "La posizione è bloccata dal browser. Consulta le istruzioni nel banner per abilitarla."
+        "L’accesso alla posizione è bloccato. Consulta le istruzioni nel banner per abilitarlo."
       );
 
       return;
     }
+    if (
+  runtimeState
+    .locationAvailability ===
+  "unavailable"
+) {
+  reconcileGeoBanner();
 
+  dispatchGeoToast(
+    "error",
+    "La posizione del dispositivo non è disponibile. Verifica che la funzione Posizione sia attiva e riprova."
+  );
+
+  return;
+}
     button.disabled =
       false;
 
@@ -505,12 +518,25 @@ async function handleEnableAction(
 
       dispatchGeoToast(
         "error",
-        "La posizione è bloccata dal browser. Consulta le istruzioni nel banner per abilitarla."
+        "L’accesso alla posizione è bloccato. Consulta le istruzioni nel banner per abilitarlo."
       );
 
       return;
     }
+    if (
+  runtimeState
+    .locationAvailability ===
+  "unavailable"
+) {
+  reconcileGeoBanner();
 
+  dispatchGeoToast(
+    "error",
+    "La posizione del dispositivo non è disponibile. Verifica che la funzione Posizione sia attiva e riprova."
+  );
+
+  return;
+}
     button.disabled =
       false;
 
