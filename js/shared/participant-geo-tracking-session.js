@@ -507,6 +507,13 @@ export async function recoverParticipantGeoTrackingOnForeground() {
     };
   }
 
+  /*
+   * Il recovery automatico può accedere alla
+   * geolocalizzazione soltanto quando la permission
+   * è realmente tornata granted.
+   *
+   * Nessun prompt automatico.
+   */
   if (
     runtimeState.permissionState !==
     "granted"
@@ -516,14 +523,34 @@ export async function recoverParticipantGeoTrackingOnForeground() {
       skipped: true,
       reason:
         "GEO_FOREGROUND_RECOVERY_PERMISSION_NOT_GRANTED",
+
       permissionState:
         runtimeState.permissionState,
     };
   }
 
+  const availabilityRecoveryRequired =
+    runtimeState.locationAvailability ===
+    "unavailable";
+
+  /*
+   * Caso Chrome Android:
+   *
+   * con Posizione di sistema OFF il bootstrap può
+   * vedere permissionState=denied senza aver mai
+   * tentato una posizione.
+   *
+   * Quando il recovery rileva poi granted,
+   * locationAvailability può essere ancora unknown.
+   */
+  const unknownRecoveryRequired =
+    runtimeState.locationAvailability ===
+      "unknown" &&
+    watchId === null;
+
   if (
-    runtimeState.locationAvailability !==
-    "unavailable"
+    !availabilityRecoveryRequired &&
+    !unknownRecoveryRequired
   ) {
     return {
       ok: true,
@@ -534,11 +561,12 @@ export async function recoverParticipantGeoTrackingOnForeground() {
   }
 
   /*
-   * Se il watcher è ancora registrato, effettuiamo
-   * soltanto una lettura puntuale per verificare che
-   * il dispositivo sia tornato a fornire posizione.
+   * Se il watcher esiste ancora non ne creiamo
+   * un secondo.
    *
-   * Non creiamo un secondo watcher.
+   * Facciamo soltanto una lettura puntuale per
+   * verificare se il dispositivo è tornato a
+   * produrre una posizione.
    */
   if (watchId !== null) {
     try {
@@ -551,16 +579,25 @@ export async function recoverParticipantGeoTrackingOnForeground() {
       const normalized =
         normalizePosition(position);
 
+      if (!normalized) {
+        publishRuntimeState({
+          locationAvailability:
+            "unavailable",
+        });
+
+        return {
+          ok: false,
+          error:
+            "INVALID_BROWSER_POSITION",
+        };
+      }
+
       publishRuntimeState({
         locationAvailability:
           "available",
 
-        ...(normalized
-          ? {
-              lastKnownPosition:
-                normalized,
-            }
-          : {}),
+        lastKnownPosition:
+          normalized,
       });
 
       return {
@@ -578,6 +615,7 @@ export async function recoverParticipantGeoTrackingOnForeground() {
         ok: false,
         error:
           "GEOLOCATION_FOREGROUND_RECOVERY_FAILED",
+
         code:
           error?.code || null,
       };
@@ -585,9 +623,10 @@ export async function recoverParticipantGeoTrackingOnForeground() {
   }
 
   /*
-   * Se il precedente errore aveva fermato il watcher,
-   * lo ripristiniamo senza prompt e senza riattivare
-   * implicitamente il consenso backend.
+   * Il watcher non esiste più.
+   *
+   * Lo ricreiamo senza prompt e soprattutto senza
+   * riattivare implicitamente il consenso backend.
    */
   return startParticipantGeoTracking({
     forceInitialSync: false,
