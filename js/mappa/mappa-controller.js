@@ -91,7 +91,7 @@ window.gwMappaDebug = {
   respectDismiss: false,
 }).catch(() => {});
   await loadEvents({
-    fitBounds: true
+    fitBounds: false
   });
   await handleReturnContext();
 
