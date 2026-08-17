@@ -92,6 +92,11 @@ function normalizeComparableId(value) {
 }
 
 function isJoinedByCurrentUser(event, currentUserId) {
+  if (typeof event?.isJoined === "boolean") {
+    return event.isJoined;
+  }
+
+  // Compatibilità con payload precedenti alla Public Event DTO.
   const currentId = normalizeComparableId(currentUserId);
   if (!currentId) return false;
 
