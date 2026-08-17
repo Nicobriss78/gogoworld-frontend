@@ -433,31 +433,6 @@ export function renderHomeView(dom, payload) {
 
   return { bannerEngine };
 }
-export function bindRailModeDelegation(dom) {
-  const shells = [dom.generalShell, dom.joinedShell];
-
-  shells.forEach((shell) => {
-    if (!shell) return;
-
-    shell.addEventListener("click", (event) => {
-      const btn = event.target.closest("[data-home-switch]");
-      if (!btn) return;
-
-      const direction = btn.dataset.homeSwitch;
-
-      if (direction === "to-past") {
-        setRailMode(shell, "past");
-        resetRailScrollForMode(shell, "past");
-      }
-
-      if (direction === "to-active") {
-        setRailMode(shell, "active");
-        resetRailScrollForMode(shell, "active");
-      }
-    });
-  });
-}
-
 export function bindCardActions(dom) {
   const root = document;
 
@@ -468,11 +443,59 @@ export function bindCardActions(dom) {
     const action = btn.dataset.homeAction;
     const eventId = btn.dataset.eventId;
 
+    if (action === "show-past" || action === "show-hot-past") {
+      const shell = btn.closest(".home-rail-shell");
+      if (!shell) return;
+
+      setRailMode(shell, "past");
+
+      requestAnimationFrame(() => {
+        resetRailScrollForMode(shell, "past");
+      });
+
+      return;
+    }
+
+    if (action === "show-active" || action === "stay-active") {
+      const shell = btn.closest(".home-rail-shell");
+      if (!shell) return;
+
+      setRailMode(shell, "active");
+
+      requestAnimationFrame(() => {
+        const activeRail = shell.querySelector(".home-rail--active");
+
+        if (hasDirectionalBridgeCard(activeRail)) {
+          const firstEvent = activeRail?.querySelector(
+            ".home-card[data-event-id]"
+          );
+
+          if (firstEvent) {
+            const railRect = activeRail.getBoundingClientRect();
+            const cardRect = firstEvent.getBoundingClientRect();
+
+            const offset =
+              cardRect.left -
+              railRect.left +
+              activeRail.scrollLeft;
+
+            scrollRailTo(activeRail, offset);
+          } else {
+            scrollRailTo(activeRail, 0);
+          }
+        } else {
+          autoFocusFirstRealEvent(activeRail);
+        }
+      });
+
+      return;
+    }
+
     if (action === "details" && eventId) {
-  window.location.href =
-    `/pages/evento-v2.html?id=${encodeURIComponent(eventId)}` +
-    `&fromView=home` +
-    `&rootReturnTo=${encodeURIComponent("/pages/home-v2.html")}`;
-}
+      window.location.href =
+        `/pages/evento-v2.html?id=${encodeURIComponent(eventId)}` +
+        `&fromView=home` +
+        `&rootReturnTo=${encodeURIComponent("/pages/home-v2.html")}`;
+    }
   });
 }
