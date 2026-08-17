@@ -65,10 +65,9 @@ export async function initHome(root = document) {
     }
   } catch {}
 
-  renderLoading(dom);
-  bindRailModeDelegation(dom);
-  bindCardActions(dom);
-
+renderLoading(dom);
+bindCardActions(dom);
+  
   try {
     const payload = await fetchHomePayload();
     return renderHome(dom, payload);
