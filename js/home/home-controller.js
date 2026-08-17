@@ -8,10 +8,8 @@ import {
   renderHomeView,
   renderLoading,
   renderError,
-  bindRailModeDelegation,
   bindCardActions,
 } from "./home-view.js";
-
 import { fetchHomePayload } from "./home-api.js";
 import { gwNotify } from "../utils.js";
 /* =========================================================
