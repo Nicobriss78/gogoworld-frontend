@@ -330,6 +330,11 @@ function buildMediaHtml(event) {
 }
 
 function resolveParticipation(event, currentUser) {
+  if (typeof event?.isJoined === "boolean") {
+    return event.isJoined;
+  }
+
+  // Compatibilità con payload legacy che esponevano participants[].
   const currentUserId = firstNonEmpty(
     currentUser?._id,
     currentUser?.id
@@ -356,6 +361,7 @@ function resolveParticipation(event, currentUser) {
         participant.user?._id,
         participant.user?.id
       );
+
       return participantId === currentUserId;
     }
 
