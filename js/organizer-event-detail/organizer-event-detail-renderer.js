@@ -185,9 +185,18 @@ export function renderEventDetail(state) {
   const eventId = getEventId(event);
   const encodedEventId = encodeUrlValue(eventId);
   const participants = Array.isArray(event.participants) ? event.participants.length : 0;
-  const isPrivate = Boolean(event.isPrivate || event.visibility === "private");
-  const editable = canEditEvent(event);
-  const trillAvailable = eventId && canCreateTrill(event);
+const isPrivate = Boolean(event.isPrivate || event.visibility === "private");
+const editable = canEditEvent(event);
+
+const isApproved =
+  String(event.approvalStatus || "").toLowerCase() === "approved";
+
+const roomAvailable =
+  eventId &&
+  isApproved &&
+  !isPastEvent(event);
+
+const trillAvailable = eventId && canCreateTrill(event);
 
   root.innerHTML = `
     <h1>${escapeHtml(event.title || "Evento senza titolo")}</h1>
