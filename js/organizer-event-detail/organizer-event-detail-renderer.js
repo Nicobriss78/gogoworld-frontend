@@ -259,8 +259,7 @@ const trillAvailable = eventId && canCreateTrill(event);
         <button
           type="button"
           data-action="open-room"
-data-event-id="${escapeHtml(eventId)}" ${eventId && !state.openingRoom && !isPastEvent(event) ? "" : "disabled"}
-        >
+          data-event-id="${escapeHtml(eventId)}" ${roomAvailable && !state.openingRoom ? "" : "disabled"}        >
           ${state.openingRoom ? "Apertura room..." : "Apri room"}
         </button>
 
