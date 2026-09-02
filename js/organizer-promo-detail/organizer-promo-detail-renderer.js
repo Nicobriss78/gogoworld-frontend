@@ -769,10 +769,21 @@ export function renderNotes(root, promo) {
 export function renderActions(root, promo) {
   if (!root) return;
 
-  const actions = actionsForStatus(promo.status);
+  const promotionEligible = promo?.promotionEligible !== false;
+  const actions = promotionEligible
+    ? actionsForStatus(promo.status)
+    : actionsForStatus(promo.status).filter(
+        (action) => action.action === "withdraw"
+      );
 
   root.innerHTML = `
     <h2>Azioni</h2>
+
+    ${
+      promotionEligible
+        ? ""
+        : `<p>Questa promozione non può avanzare: l’evento collegato non è pubblico e approvato.</p>`
+    }
 
     <div class="org-promo-detail-actions">
       ${actions
