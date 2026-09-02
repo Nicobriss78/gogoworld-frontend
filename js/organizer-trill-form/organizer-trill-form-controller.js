@@ -36,6 +36,10 @@ function mapTrillError(error) {
     return "Puoi creare trilli solo per eventi approvati.";
   }
 
+  if (message.includes("EVENT_NOT_PROMOTABLE")) {
+    return "Gli eventi privati non utilizzano Trilli o strumenti promozionali.";
+  }
+
   if (message.includes("DRAFT_ALREADY_EXISTS")) {
     return "Esiste già una bozza trillo per questo evento. Vai nella lista Trilli per inviarla.";
   }
