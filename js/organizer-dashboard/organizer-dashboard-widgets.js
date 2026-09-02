@@ -176,8 +176,8 @@ export function buildDashboardStats({ events = [], promos = [], trills = [] }) {
     blockedEvents,
     totalParticipants,
     averageParticipants,
-    promoCount: promos.length,
-    trillCount: trills.length,
+    promoCount: promotionPromos.length,
+    trillCount: promotionTrills.length,
 
     topEvent,
     topEventTitle: topEvent?.title || "Nessun evento",
