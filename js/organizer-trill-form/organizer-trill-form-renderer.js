@@ -71,6 +71,23 @@ export function renderOrganizerTrillForm(state) {
   const safeError = escapeHtml(state.error);
   const safeSuccess = escapeHtml(state.success);
   if (state.event) {
+  if (isPrivateEvent(state.event)) {
+    root.innerHTML = `
+      <section class="org-trill-form-page">
+        <div class="org-trill-form-card">
+          <h1>Crea trillo</h1>
+          <section class="org-trill-error">
+            Gli eventi privati non utilizzano Trilli o strumenti promozionali.
+          </section>
+          <div class="org-trill-actions" style="margin-top:14px;">
+            <a href="${escapeHtml(getBackHref())}">${escapeHtml(getBackLabel())}</a>
+          </div>
+        </div>
+      </section>
+    `;
+    return;
+  }
+
   if (!isApprovedEvent(state.event)) {
     root.innerHTML = `
       <section class="org-trill-form-page">
