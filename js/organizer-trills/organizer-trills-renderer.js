@@ -63,6 +63,15 @@ function getEventTitle(trill) {
   return event?.title || trill?.eventTitle || "Evento non indicato";
 }
 
+function isPrivateTrillEvent(trill) {
+  const event = getTrillEvent(trill);
+
+  return (
+    event?.isPrivate === true ||
+    String(event?.visibility || "").toLowerCase() === "private"
+  );
+}
+
 function getRadiusLabel(trill) {
   const radius = Number(trill?.radiusMeters || trill?.radius || 0);
   if (!radius) return "Raggio non indicato";
