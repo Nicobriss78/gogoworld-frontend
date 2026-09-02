@@ -156,6 +156,8 @@ function renderSmartNotice(trill) {
 function renderActions(trill, state) {
   const id = getTrillId(trill);
 
+  if (isPrivateTrillEvent(trill)) return "";
+
   if (!canSendTrill(trill)) {
     if (isTrillEventPast(trill) && normalizeStatus(trill.status) === "draft") {
       return `
