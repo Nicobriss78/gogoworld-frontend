@@ -89,6 +89,7 @@ function isTrillEventPast(trill) {
 }
 
 function canSendTrill(trill) {
+  if (isPrivateTrillEvent(trill)) return false;
   if (isTrillEventPast(trill)) return false;
 
   const normalized = normalizeStatus(trill.status);
