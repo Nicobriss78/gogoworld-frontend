@@ -118,6 +118,10 @@ function renderSmartNotice(trill) {
   const isInProgress = start && end && start <= now && end >= now;
   const isPast = end && end < now;
 
+  if (isPrivateTrillEvent(trill)) {
+    return `<div class="org-trill-smart-notice">Gli eventi privati non utilizzano Trilli o strumenti promozionali.</div>`;
+  }
+
   if (status === "draft") {
     if (isInProgress) {
       return `<div class="org-trill-smart-notice">Evento in corso: valuta invio immediato.</div>`;
