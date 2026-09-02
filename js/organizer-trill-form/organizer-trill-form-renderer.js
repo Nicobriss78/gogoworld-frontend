@@ -48,6 +48,14 @@ function isPastEvent(event) {
 function isApprovedEvent(event) {
   return String(event?.approvalStatus || "").toLowerCase() === "approved";
 }
+
+function isPrivateEvent(event) {
+  return (
+    event?.isPrivate === true ||
+    String(event?.visibility || "").toLowerCase() === "private"
+  );
+}
+
 function getEventTitle(event) {
   return event?.title || "Evento";
 }
