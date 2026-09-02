@@ -260,8 +260,12 @@ function renderSmartNotice(event) {
     `;
   }
 
-  if (getApprovalStatus(event) === "approved" && isOngoingEvent(event) && participants === 0) {
-    return `
+  if (
+    getApprovalStatus(event) === "approved" &&
+    !isPrivateEvent(event) &&
+    isOngoingEvent(event) &&
+    participants === 0
+  ) {    return `
       <div class="org-event-card__notice org-event-card__notice--warning">
         Evento in corso senza partecipanti. Valuta un trillo immediato.
       </div>
