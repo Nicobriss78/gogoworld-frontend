@@ -249,12 +249,18 @@ async function loadPromos() {
   setHidden(qs("[data-org-promos-empty]"), true);
 
   try {
-    const response = await fetchOrganizerPromos({
-      status: state.filters.status,
-      placement: state.filters.placement,
-    });
+    const [response, events] = await Promise.all([
+      fetchOrganizerPromos({
+        status: state.filters.status,
+        placement: state.filters.placement,
+      }),
+      fetchOrganizerPromoEvents(),
+    ]);
 
     state.promos = normalizeApiResponse(response);
+    state.promotableEventIds = new Set(
+      events.filter(isPromotableEvent).map((event) => getEventId(event))
+    );
     render();
   } catch (err) {
     console.error("[OrganizerPromos] load error:", err);
