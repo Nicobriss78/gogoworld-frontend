@@ -93,7 +93,12 @@ function renderSmartNotice(event) {
     `;
   }
 
-  if (status === "approved" && !isPastEvent(event) && participants === 0) {
+    if (
+    status === "approved" &&
+    !isPrivateEvent(event) &&
+    !isPastEvent(event) &&
+    participants === 0
+  ) {
     return `
       <section class="org-event-detail-notice org-event-detail-notice--warning">
         Evento approvato ma senza partecipanti. Valuta trillo o promozione.
