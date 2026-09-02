@@ -65,6 +65,7 @@ function buildAttentionItems(events, trills) {
 
   const upcomingWithoutParticipants = events
     .filter((event) => getApprovalStatus(event) === "approved")
+    .filter((event) => !isPrivateEvent(event))
     .filter((event) => isUpcomingEvent(event))
     .filter((event) => getParticipantsCount(event) === 0)
     .sort(sortByDateAsc)
