@@ -13,6 +13,20 @@ function getApprovalStatus(event) {
   return String(event?.approvalStatus || "pending").toLowerCase();
 }
 
+function isPrivateEvent(event) {
+  return (
+    event?.isPrivate === true ||
+    String(event?.visibility || "").toLowerCase() === "private"
+  );
+}
+
+function getLinkedEventId(item) {
+  const value = item?.eventId;
+  if (!value) return "";
+  if (typeof value === "object") return getEventId(value);
+  return String(value).trim();
+}
+
 function getEventDate(event) {
   const value = event?.dateStart || event?.startDate || event?.startAt || event?.date;
   const date = value ? new Date(value) : null;
