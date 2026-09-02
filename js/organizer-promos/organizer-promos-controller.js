@@ -202,6 +202,7 @@ function render() {
   const filtered = state.promos.filter(matchesFilters);
 
   renderKpis();
+  renderCreateActions();
   renderSmartBanner(state.promos);
 
   if (!filtered.length) {
