@@ -318,6 +318,14 @@ function getPrimaryAction(event, encodedEventId) {
     };
   }
 
+  if (privateEvent) {
+    return {
+      id: "access",
+      label: "Gestisci accessi",
+      href: withOrganizerReturn(`/pages/organizer-event-access-v2.html?id=${encodedEventId}`),
+    };
+  }
+
   if (status === "approved" && isOngoingEvent(event) && getParticipantsCount(event) === 0) {
     return {
       id: "trill",
@@ -331,14 +339,6 @@ function getPrimaryAction(event, encodedEventId) {
       id: "trill",
       label: "Crea trillo",
       href: withOrganizerReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`),
-    };
-  }
-
-  if (privateEvent) {
-    return {
-      id: "access",
-      label: "Gestisci accessi",
-      href: withOrganizerReturn(`/pages/organizer-event-access-v2.html?id=${encodedEventId}`),
     };
   }
 
@@ -356,7 +356,6 @@ function getPrimaryAction(event, encodedEventId) {
     href: withOrganizerReturn(`/pages/organizer-event-detail-v2.html?id=${encodedEventId}`),
   };
 }
-
 function renderPrimaryAction(action) {
   return `
     <a class="org-event-primary-action" href="${escapeHtml(action.href)}">
