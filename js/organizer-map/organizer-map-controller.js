@@ -157,14 +157,18 @@ function bindOrganizerMapFilters() {
     organizerMapState.filter = button.dataset.orgMapFilter || "operational";
     organizerMapState.selectedEventId = null;
 
+    destroyOrganizerLeafletMap();
     renderOrganizerMap(organizerMapState);
-    mountOrganizerLeafletMap();
 
-    setTimeout(() => {
-      if (mapInstance) {
-        mapInstance.invalidateSize();
-      }
-    }, 80);
+    requestAnimationFrame(() => {
+      mountOrganizerLeafletMap();
+
+      setTimeout(() => {
+        if (mapInstance) {
+          mapInstance.invalidateSize();
+        }
+      }, 80);
+    });
   });
 }
 
