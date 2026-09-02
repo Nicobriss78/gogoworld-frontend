@@ -212,7 +212,13 @@ function render() {
   }
 
   setHidden(empty, true);
-  renderPromos(list, filtered);
+  renderPromos(
+    list,
+    filtered.map((promo) => ({
+      ...promo,
+      promotionEligible: isPromoLinkedToPromotableEvent(promo),
+    }))
+  );
 }
 
 function setLoading(isLoading) {
