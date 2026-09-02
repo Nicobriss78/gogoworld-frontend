@@ -185,9 +185,9 @@ export function buildDashboardStats({ events = [], promos = [], trills = [] }) {
 
     upcomingEvents,
     recentEvents,
-    attentionItems: buildAttentionItems(events, trills),
-    recentPromos: promos.slice(0, 3),
-    recentTrills: trills.slice(0, 3),
+    attentionItems: buildAttentionItems(events, promotionTrills),
+    recentPromos: promotionPromos.slice(0, 3),
+    recentTrills: promotionTrills.slice(0, 3),
   };
 }
 
