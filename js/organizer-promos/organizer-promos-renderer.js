@@ -155,6 +155,7 @@ function normalizePromo(raw = {}) {
     statusTone: status.tone,
 
     paymentStatus: raw.paymentStatus || null,
+    promotionEligible: raw.promotionEligible !== false,
 
     estimatedPrice,
     vatAmount,
