@@ -286,8 +286,16 @@ function renderEventCard(event) {
 
       <div class="org-map-actions">
         <a href="${escapeHtml(event?.ctas?.openEvent || "#")}">Apri evento</a>
-        <a href="${escapeHtml(event?.ctas?.createTrill || "#")}">Crea trillo</a>
-        <a href="${escapeHtml(event?.ctas?.createPromo || "#")}">Promuovi</a>
+        ${
+          event?.ctas?.createTrill
+            ? `<a href="${escapeHtml(event.ctas.createTrill)}">Crea trillo</a>`
+            : ""
+        }
+        ${
+          event?.ctas?.createPromo
+            ? `<a href="${escapeHtml(event.ctas.createPromo)}">Promuovi</a>`
+            : ""
+        }
         ${
           event.isPrivate
             ? `<a href="${escapeHtml(
