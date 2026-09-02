@@ -18,6 +18,17 @@ export async function fetchOrganizerPromos(params = {}) {
 
   return apiGet(endpoint);
 }
+
+export async function fetchOrganizerPromoEvents() {
+  const response = await apiGet("/events/mine/list");
+
+  if (Array.isArray(response)) return response;
+  if (Array.isArray(response?.events)) return response.events;
+  if (Array.isArray(response?.data)) return response.data;
+
+  return [];
+}
+
 export async function withdrawOrganizerPromo(id, reason = "") {
   if (!id) {
     throw new Error("Promo id mancante");
