@@ -272,17 +272,20 @@ const trillAvailable = eventId && canCreateTrill(event);
         </button>
 
         ${
-          trillAvailable
+          isPrivate
+            ? ""
+            : trillAvailable
             ? `<a href="${escapeHtml(withCurrentReturn(`/pages/organizer-trill-create-v2.html?eventId=${encodedEventId}`))}">Crea trillo</a>`
             : `<button type="button" disabled>Trillo non disponibile</button>`
         }
 
         ${
-  String(event.approvalStatus || "").toLowerCase() === "approved"
+  isPrivate
+    ? ""
+    : String(event.approvalStatus || "").toLowerCase() === "approved"
     ? `<a href="${escapeHtml(withCurrentReturn(`/pages/organizer-promo-create-v2.html?eventId=${encodedEventId}`))}">Crea promo</a>`
     : `<button type="button" disabled>Promo non disponibile</button>`
 }
-
         ${renderDeleteAction(state)}
 
         <a href="${escapeHtml(getBackHref())}">${escapeHtml(getBackLabel())}</a>
