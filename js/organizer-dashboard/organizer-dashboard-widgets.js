@@ -135,6 +135,23 @@ export function buildDashboardStats({ events = [], promos = [], trills = [] }) {
   const now = new Date();
   const totalEvents = events.length;
 
+  const promotionEventIds = new Set(
+    events
+      .filter((event) => getApprovalStatus(event) === "approved")
+      .filter((event) => !isPrivateEvent(event))
+      .filter((event) => String(event?.visibility || "").toLowerCase() === "public")
+      .map(getEventId)
+      .filter(Boolean)
+  );
+
+  const promotionPromos = promos.filter((promo) =>
+    promotionEventIds.has(getLinkedEventId(promo))
+  );
+
+  const promotionTrills = trills.filter((trill) =>
+    promotionEventIds.has(getLinkedEventId(trill))
+  );
+
   const approvedEvents = events.filter((event) => getApprovalStatus(event) === "approved").length;
   const pendingEvents = events.filter((event) => getApprovalStatus(event) === "pending").length;
   const rejectedEvents = events.filter((event) => getApprovalStatus(event) === "rejected").length;
