@@ -400,7 +400,7 @@ function renderSecondaryActions(event, eventId, encodedEventId, state, primaryAc
   id: "promo",
   label: "Promuovi",
   href: withOrganizerReturn(`/pages/organizer-promo-create-v2.html?eventId=${encodedEventId}`),
-  visible: status === "approved",
+  visible: status === "approved" && !privateEvent,
 },
   ];
 
