@@ -145,12 +145,19 @@ function renderSmartBanner(promos = []) {
   if (!banner || !title || !text || !cta) return;
 
   const hasAny = promos.length > 0;
-  const hasPayment = promos.some(
-  (promo) => promo.status === "PENDING_PAYMENT"
-);
-  const hasActive = promos.some((promo) => promo.status === "ACTIVE");
+  const hasPromotableEvents = state.promotableEventIds.size > 0;
+  const eligiblePromos = promos.filter(isPromoLinkedToPromotableEvent);
+  const hasPayment = eligiblePromos.some(
+    (promo) => promo.status === "PENDING_PAYMENT"
+  );
+  const hasActive = eligiblePromos.some((promo) => promo.status === "ACTIVE");
 
   if (!hasAny) {
+    if (!hasPromotableEvents) {
+      setHidden(banner, true);
+      return;
+    }
+
     title.textContent = "Promuovi il tuo primo evento";
     text.textContent =
       "Crea una promozione per aumentare la visibilità dei tuoi eventi.";
@@ -171,6 +178,11 @@ function renderSmartBanner(promos = []) {
   }
 
   if (!hasActive) {
+    if (!hasPromotableEvents) {
+      setHidden(banner, true);
+      return;
+    }
+
     title.textContent = "Nessuna promozione attiva al momento";
     text.textContent =
       "Puoi creare una nuova promozione o attendere l’esito delle richieste in revisione.";
