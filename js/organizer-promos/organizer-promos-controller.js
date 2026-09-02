@@ -31,6 +31,35 @@ function getPromoStatusGroup(status) {
   return status || "UNKNOWN";
 }
 
+function getEventId(value) {
+  if (!value) return "";
+  if (typeof value === "object") return String(value._id || value.id || "");
+  return String(value);
+}
+
+function isPromotableEvent(event) {
+  const visibility = String(event?.visibility || "").toLowerCase();
+  const approvalStatus = String(event?.approvalStatus || "").toLowerCase();
+
+  return (
+    approvalStatus === "approved" &&
+    visibility === "public" &&
+    event?.isPrivate !== true
+  );
+}
+
+function isPromoLinkedToPromotableEvent(promo) {
+  return state.promotableEventIds.has(getEventId(promo?.eventId));
+}
+
+function renderCreateActions() {
+  const hasPromotableEvents = state.promotableEventIds.size > 0;
+
+  document
+    .querySelectorAll("[data-org-promos-create-action]")
+    .forEach((element) => setHidden(element, !hasPromotableEvents));
+}
+
 function matchesFilters(promo) {
   const statusFilter = state.filters.status;
   const placementFilter = state.filters.placement;
