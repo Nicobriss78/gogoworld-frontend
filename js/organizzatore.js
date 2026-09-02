@@ -1037,7 +1037,11 @@ if (btnEmpty) btnEmpty.onclick = () => { try { document.getElementById("btnCreat
                       ? 'Bloccato'
                       : 'Modifica'
               }</button>
-  <button class="btn btn-secondary" data-action="promote" data-id="${ev._id}">Promuovi</button>
+  ${
+    isPromotableEvent(ev)
+      ? `<button class="btn btn-secondary" data-action="promote" data-id="${ev._id}">Promuovi</button>`
+      : ""
+  }
   <button class="btn btn-secondary" data-action="details" data-id="${ev._id}">Dettagli</button>
   <button class="btn btn-danger" data-action="delete" data-id="${ev._id}">Elimina</button>
 </div>
