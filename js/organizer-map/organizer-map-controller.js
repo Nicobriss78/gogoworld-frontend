@@ -9,6 +9,15 @@ import {
 let mapInstance = null;
 let markerLayer = null;
 
+function destroyOrganizerLeafletMap() {
+  if (mapInstance) {
+    mapInstance.remove();
+  }
+
+  mapInstance = null;
+  markerLayer = null;
+}
+
 function getMarkerClass(level) {
   const safeLevel = String(level || "ok").toLowerCase();
 
