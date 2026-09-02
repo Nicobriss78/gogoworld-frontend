@@ -121,7 +121,9 @@ function computeKpis(promos = []) {
 }
 
 function renderKpis() {
-  const kpis = computeKpis(state.promos);
+  const kpis = computeKpis(
+    state.promos.filter(isPromoLinkedToPromotableEvent)
+  );
 
   const review = qs("[data-org-promos-kpi='review']");
   const payment = qs("[data-org-promos-kpi='payment']");
