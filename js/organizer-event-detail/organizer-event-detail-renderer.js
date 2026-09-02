@@ -71,9 +71,12 @@ function isPastEvent(event) {
 }
 
 function canCreateTrill(event) {
-  return String(event?.approvalStatus || "").toLowerCase() === "approved" && !isPastEvent(event);
+  return (
+    String(event?.approvalStatus || "").toLowerCase() === "approved" &&
+    !isPrivateEvent(event) &&
+    !isPastEvent(event)
+  );
 }
-
 function isPrivateEvent(event) {
   return Boolean(event?.isPrivate) || String(event?.visibility || "").toLowerCase() === "private";
 }
