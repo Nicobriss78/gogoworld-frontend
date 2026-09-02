@@ -54,6 +54,7 @@ export function needsCorrection(event) {
 export function isApprovedUpcomingWithoutParticipants(event) {
   return (
     getApprovalStatus(event) === "approved" &&
+    !isPrivateEvent(event) &&
     isUpcomingEvent(event) &&
     getParticipantsCount(event) === 0
   );
