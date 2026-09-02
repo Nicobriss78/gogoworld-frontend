@@ -289,6 +289,8 @@ function getSmartStatusText(event) {
 
   if (needsCorrection(event)) return "Richiede modifiche";
 
+  if (isPrivateEvent(event)) return "Accesso controllato attivo";
+
   if (status === "approved" && isOngoingEvent(event) && participants === 0) {
     return "Evento in corso senza partecipanti";
   }
@@ -299,7 +301,6 @@ function getSmartStatusText(event) {
 
   if (status === "pending" && isPastEvent(event)) return "Evento mai approvato";
   if (status === "pending") return "In attesa di approvazione";
-  if (isPrivateEvent(event)) return "Accesso controllato attivo";
   if (status === "approved") return "Evento operativo";
 
   return "Da verificare";
