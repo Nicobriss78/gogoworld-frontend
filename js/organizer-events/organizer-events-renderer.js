@@ -367,8 +367,10 @@ function renderPrimaryAction(action) {
 function renderSecondaryActions(event, eventId, encodedEventId, state, primaryActionId) {
   const status = getApprovalStatus(event);
   const privateEvent = isPrivateEvent(event);
-  const canCreateTrill = status === "approved" && !isPastEvent(event);
-
+  const canCreateTrill =
+    status === "approved" &&
+    !privateEvent &&
+    !isPastEvent(event);
   const actions = [
     {
       id: "edit",
