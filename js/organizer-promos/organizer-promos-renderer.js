@@ -170,6 +170,29 @@ function normalizePromo(raw = {}) {
 function buildActions(item) {
   const detailHref = `/pages/organizer-promo-detail-v2.html?id=${encodeURIComponent(item.id)}`;
 
+  if (!item.promotionEligible) {
+    const withdrawAction = item.status === "PENDING_REVIEW"
+      ? `
+        <button
+          class="org-promos-card__action org-promos-card__action--danger"
+          type="button"
+          data-org-promos-withdraw
+          data-promo-id="${item.id}"
+          data-promo-title="${item.title}"
+        >
+          Annulla richiesta
+        </button>
+      `
+      : "";
+
+    return `
+      <a class="org-promos-card__action" href="${detailHref}">
+        Visualizza dettagli
+      </a>
+      ${withdrawAction}
+    `;
+  }
+
   switch (item.status) {
     case "PENDING_REVIEW":
       return `
