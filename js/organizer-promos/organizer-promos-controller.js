@@ -3,11 +3,13 @@
 
 import {
   fetchOrganizerPromos,
+  fetchOrganizerPromoEvents,
   withdrawOrganizerPromo,
 } from "./organizer-promos-api.js";import { renderPromos } from "./organizer-promos-renderer.js";
 
 const state = {
   promos: [],
+  promotableEventIds: new Set(),
   confirmWithdrawPromoId: "",
   filters: {
     status: "ALL",
