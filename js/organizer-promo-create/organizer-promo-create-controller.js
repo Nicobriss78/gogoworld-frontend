@@ -119,6 +119,14 @@ null
 }
 
 function isPromotableEvent(event) {
+const visibility = String(event?.visibility || "").toLowerCase();
+const approvalStatus = String(event?.approvalStatus || "").toLowerCase();
+const isPrivate = event?.isPrivate === true || visibility === "private";
+
+if (isPrivate || visibility !== "public" || approvalStatus !== "approved") {
+return false;
+}
+
 const now = new Date();
 
 const end = getEventEndDate(event);
