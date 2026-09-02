@@ -445,8 +445,29 @@ if (me && me.canOrganize !== true && String(me?.user?.role || me?.role || "").to
   const promoteEventIdInput = document.getElementById("promoteEventId");
   const promoteEventTitle = document.getElementById("promoteEventTitle");
 
+  function isPromotableEvent(ev) {
+    const visibility = String(ev?.visibility || "").toLowerCase();
+    const approvalStatus = String(ev?.approvalStatus || "").toLowerCase();
+
+    return (
+      approvalStatus === "approved" &&
+      visibility === "public" &&
+      ev?.isPrivate !== true
+    );
+  }
+
   function openPromotePanel(ev) {
     if (!promotePanel || !promoteForm) return;
+
+    if (!isPromotableEvent(ev)) {
+      showAlert(
+        "Solo gli eventi pubblici e approvati possono essere promossi.",
+        "info",
+        { autoHideMs: 4000 }
+      );
+      return;
+    }
+
     promoteEventIdInput.value = ev._id || "";
     // Prefill: titolo banner = titolo evento
     const title = (ev.title || "").toString().trim();
