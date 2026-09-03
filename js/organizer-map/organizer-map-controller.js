@@ -43,11 +43,19 @@ function getMapPoint(event) {
   const lat = Number(event?.point?.lat);
   const lon = Number(event?.point?.lon);
 
-  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  if (
+    !Number.isFinite(lat) ||
+    !Number.isFinite(lon) ||
+    lat < -90 ||
+    lat > 90 ||
+    lon < -180 ||
+    lon > 180
+  ) {
+    return null;
+  }
 
   return [lat, lon];
 }
-
 function mountOrganizerLeafletMap() {
   const node = document.querySelector("[data-org-map-leaflet]");
   if (!node || !window.L) return;
