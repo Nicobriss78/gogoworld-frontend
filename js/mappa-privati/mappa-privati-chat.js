@@ -23,6 +23,45 @@ function getPreviewMessages(messages = []) {
     .sort((a, b) => getMessageTime(a) - getMessageTime(b))
     .slice(-MAPPA_CHAT_PREVIEW_LIMIT);
 }
+  function isAccessDeniedError(error) {
+  const status = Number(
+    error?.status ||
+    error?.statusCode ||
+    error?.response?.status ||
+    0
+  );
+
+  return status === 401 || status === 403;
+}
+
+function handleAccessLost() {
+  if (accessLossHandled) return;
+
+  accessLossHandled = true;
+
+  const lostEventId = currentEventId;
+
+  stopPolling();
+
+  currentRoomId = null;
+  currentEventId = null;
+
+  elements.chatHeader.textContent = "Chat evento";
+  elements.chatMessages.innerHTML = "";
+  elements.chatNotice.innerHTML = renderer.renderChatError(
+    "Accesso all’evento non più disponibile."
+  );
+
+  disableComposer();
+  toggleInfoButton(false);
+  state.resetChatState();
+
+  if (typeof onAccessLost === "function") {
+    Promise.resolve(
+      onAccessLost({ eventId: lostEventId })
+    ).catch(() => {});
+  }
+}
   function mount() {
     elements.sendBtnEl.addEventListener("click", handleSend);
 
