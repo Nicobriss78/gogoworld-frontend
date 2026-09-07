@@ -276,13 +276,18 @@ function handleAccessLost() {
       elements.chatInput.value = "";
 
       await refreshMessages();
+    } catch (error) {
+      if (isAccessDeniedError(error)) {
+        handleAccessLost();
+        return;
+      }
 
-    } catch {
       elements.chatNotice.innerHTML =
-        renderer.renderChatError("Errore invio messaggio");
+        renderer.renderChatError(
+          "Errore invio messaggio"
+        );
     }
   }
-
   /* ===============================
      COMPOSER
      =============================== */
