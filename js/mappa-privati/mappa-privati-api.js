@@ -110,18 +110,29 @@ async function unlockPrivateEventByCode(code) {
   }
 
   async function fetchRoomMessages(roomId) {
-  try {
-    const res = await apiGet(`/rooms/${roomId}/messages`);
-    if (!res.ok) return [];
+    try {
+      const res = await apiGet(`/rooms/${roomId}/messages`);
 
-    const messages = Array.isArray(res.data) ? res.data : [];
+      if (!res.ok) {
+        throw buildMappaApiError(
+          "MAPPA_API_FETCH_ROOM_MESSAGES_ERROR",
+          res
+        );
+      }
 
-    return messages.map(normalizeMessage).filter(Boolean);
-  } catch {
-    return [];
+      const messages = Array.isArray(res.data) ? res.data : [];
+
+      return messages.map(normalizeMessage).filter(Boolean);
+    } catch (error) {
+      if (error?.response) {
+        throw error;
+      }
+
+      throw buildMappaApiError(
+        "MAPPA_API_FETCH_ROOM_MESSAGES_ERROR"
+      );
+    }
   }
-}
-
   async function sendRoomMessage(roomId, text) {
   const cleanText = String(text || "").trim();
 
