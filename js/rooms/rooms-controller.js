@@ -262,7 +262,14 @@ function stopRoomsPolling() {
 }
 
 function startRoomsPolling() {
-  if (!state.roomId || roomsPollingTimer || document.hidden) return;
+  if (
+    !state.roomId ||
+    roomsAccessLossHandled ||
+    roomsPollingTimer ||
+    document.hidden
+  ) {
+    return;
+  }
 
   roomsPollingTimer = window.setInterval(() => {
     loadMessages({ afterLatest: true });
