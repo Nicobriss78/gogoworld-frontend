@@ -503,12 +503,21 @@ async function handleParticipationClick(state, renderer, refs) {
   const action = getParticipationAction(refs);
   if (!action) return;
 
+  let shouldExitPrivateEvent = false;
+
   try {
     if (action === "leave") {
+      const wasPrivateEvent = isPrivateEvent(state.event);
+
       state.isLeaving = true;
       renderer.render(state);
 
       state.event = await leaveEvent(state.eventId);
+
+      if (wasPrivateEvent) {
+        clearStoredSelectedEventId(state.eventId);
+        shouldExitPrivateEvent = true;
+      }
     } else {
       state.isJoining = true;
       renderer.render(state);
@@ -528,10 +537,14 @@ async function handleParticipationClick(state, renderer, refs) {
     state.isJoining = false;
     state.isLeaving = false;
     state.isLoading = false;
-    renderer.render(state);
+
+    if (shouldExitPrivateEvent) {
+      goBack(state);
+    } else {
+      renderer.render(state);
+    }
   }
 }
-
 async function handleCheckInClick(state, renderer) {
   if (!state.eventId || !state.event) return;
 
