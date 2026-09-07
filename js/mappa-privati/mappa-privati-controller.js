@@ -208,7 +208,16 @@ elements.unlockBtn?.removeEventListener("click", handleUnlockPrivateEventRequest
 
     await chat.openForEvent(event);
   }
+  async function handlePrivateAccessLost() {
+    drawer.close();
+    state.clearSelectedEvent();
+    clearReturnContextStorage();
+    state.clearReturnContext();
 
+    await loadEvents({ fitBounds: false });
+
+    scheduleMapRefresh();
+  }
   /* ===============================
      DRAWER
      =============================== */
