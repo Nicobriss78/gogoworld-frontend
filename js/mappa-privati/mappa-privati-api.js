@@ -83,27 +83,31 @@ async function unlockPrivateEventByCode(code) {
      =============================== */
 
   async function openEventRoom(eventId) {
-  try {
-    const res = await apiPost(`/rooms/event/${eventId}/open-or-join`);
+    try {
+      const res = await apiPost(`/rooms/event/${eventId}/open-or-join`);
 
-    if (!res.ok) {
-      throw new Error("MAPPA_API_OPEN_ROOM_ERROR");
+      if (!res.ok) {
+        throw buildMappaApiError("MAPPA_API_OPEN_ROOM_ERROR", res);
+      }
+
+      const room = res.data || {};
+
+      return {
+        roomId: room.roomId,
+        title: room.title || "",
+        canSend: Boolean(room.canSend),
+        locked: Boolean(room.locked),
+        activeFrom: room.activeFrom || null,
+        activeUntil: room.activeUntil || null
+      };
+    } catch (error) {
+      if (error?.response) {
+        throw error;
+      }
+
+      throw buildMappaApiError("MAPPA_API_OPEN_ROOM_ERROR");
     }
-
-    const room = res.data || {};
-
-    return {
-      roomId: room.roomId,
-      title: room.title || "",
-      canSend: Boolean(room.canSend),
-      locked: Boolean(room.locked),
-      activeFrom: room.activeFrom || null,
-      activeUntil: room.activeUntil || null
-    };
-  } catch {
-    throw new Error("MAPPA_API_OPEN_ROOM_ERROR");
   }
-}
 
   async function fetchRoomMessages(roomId) {
   try {
