@@ -342,10 +342,29 @@ async function init() {
     e.preventDefault();
 
     const text = input.value.trim();
-    if (!text || !state.roomId) return;
 
-    await postRoomMessage(state.roomId, text);
+    if (
+      !text ||
+      !state.roomId ||
+      roomsAccessLossHandled
+    ) {
+      return;
+    }
+
+    const response = await postRoomMessage(
+      state.roomId,
+      text
+    );
+
+    if (isRoomsAccessDeniedResponse(response)) {
+      handleRoomsAccessLost();
+      return;
+    }
+
+    if (!response?.ok) return;
+
     input.value = "";
+
     await loadMessages({ afterLatest: true });
   });
 }
