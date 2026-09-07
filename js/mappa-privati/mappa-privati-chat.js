@@ -240,20 +240,27 @@ function handleAccessLost() {
   async function refreshMessages() {
     if (!currentRoomId) return;
 
+    const requestRoomId = currentRoomId;
+
     try {
-      const messages = await api.fetchRoomMessages(currentRoomId);
+      const messages =
+        await api.fetchRoomMessages(requestRoomId);
+
+      if (currentRoomId !== requestRoomId) return;
 
       elements.chatMessages.innerHTML =
-  renderer.renderChatMessages(
-    getPreviewMessages(messages),
-    state.getState().currentUserId
-  );
+        renderer.renderChatMessages(
+          getPreviewMessages(messages),
+          state.getState().currentUserId
+        );
+    } catch (error) {
+      if (currentRoomId !== requestRoomId) return;
 
-    } catch {
-      // silenzioso
+      if (isAccessDeniedError(error)) {
+        handleAccessLost();
+      }
     }
   }
-
   /* ===============================
      INVIO MESSAGGIO
      =============================== */
