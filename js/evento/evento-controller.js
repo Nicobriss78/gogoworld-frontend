@@ -211,6 +211,12 @@ function isNotFoundError(error) {
 function getParticipationAction(refs) {
   return String(refs?.participationButton?.dataset?.action || "").trim();
 }
+function isPrivateEvent(event) {
+  return (
+    event?.isPrivate === true ||
+    String(event?.visibility || "").trim().toLowerCase() === "private"
+  );
+}
 function mapCheckInReasonToMessage(reasonCode) {
   const code = String(reasonCode || "").trim();
 
