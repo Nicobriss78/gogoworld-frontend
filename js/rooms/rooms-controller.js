@@ -167,9 +167,15 @@ function focusLatestRoomMessage() {
   });
 }
 async function loadRoomMeta() {
-  if (!state.eventId) return;
+  if (!state.eventId || roomsAccessLossHandled) return;
 
   const resp = await getEventRoomMeta(state.eventId);
+
+  if (isRoomsAccessDeniedResponse(resp)) {
+    handleRoomsAccessLost();
+    return;
+  }
+
   state.roomMeta = resp?.data || resp || null;
 
   if (state.roomMeta?.eventId) {
@@ -178,7 +184,6 @@ async function loadRoomMeta() {
 
   updateHeader(state);
 }
-
 async function loadMessages(options = {}) {
   if (!state.roomId || isLoadingMessages) return;
 
