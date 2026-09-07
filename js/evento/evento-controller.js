@@ -53,7 +53,19 @@ function writeStoredSelectedEventId(eventId) {
     /* noop */
   }
 }
+function clearStoredSelectedEventId(eventId) {
+  try {
+    const storedEventId = String(
+      sessionStorage.getItem("selectedEventId") || ""
+    ).trim();
 
+    if (!eventId || storedEventId === String(eventId).trim()) {
+      sessionStorage.removeItem("selectedEventId");
+    }
+  } catch {
+    /* noop */
+  }
+}
 function resolveEventId(params) {
   const fromQuery = readQueryValue(params, "id");
   if (fromQuery) return fromQuery;
