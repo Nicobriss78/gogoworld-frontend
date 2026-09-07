@@ -179,31 +179,45 @@ function handleAccessLost() {
      =============================== */
 
   async function loadMessages() {
-  if (!currentRoomId) return;
+    if (!currentRoomId) return false;
 
-  const requestRoomId = currentRoomId;
+    const requestRoomId = currentRoomId;
 
-  try {
-    const messages = await api.fetchRoomMessages(currentRoomId);
+    try {
+      const messages =
+        await api.fetchRoomMessages(requestRoomId);
 
-    if (currentRoomId !== requestRoomId) return;
+      if (currentRoomId !== requestRoomId) return false;
 
-    elements.chatMessages.innerHTML =
-    renderer.renderChatMessages(
-    getPreviewMessages(messages),
-    state.getState().currentUserId
-  );
+      elements.chatMessages.innerHTML =
+        renderer.renderChatMessages(
+          getPreviewMessages(messages),
+          state.getState().currentUserId
+        );
 
-    elements.chatNotice.innerHTML = "";
+      elements.chatNotice.innerHTML = "";
 
-    await api.markRoomRead(currentRoomId);
+      await api.markRoomRead(requestRoomId);
 
-  } catch {
-    elements.chatNotice.innerHTML =
-      renderer.renderChatError("Errore caricamento messaggi");
+      return true;
+    } catch (error) {
+      if (currentRoomId !== requestRoomId) return false;
+
+      if (isAccessDeniedError(error)) {
+        handleAccessLost();
+        return false;
+      }
+
+      elements.chatNotice.innerHTML =
+        renderer.renderChatError(
+          "Errore caricamento messaggi"
+        );
+
+      // Un errore transitorio non invalida l'accesso:
+      // il polling può provare a recuperare.
+      return true;
+    }
   }
-}
-
   /* ===============================
      POLLING
      =============================== */
