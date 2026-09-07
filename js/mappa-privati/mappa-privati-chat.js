@@ -2,11 +2,13 @@ export function createMappaChat({
   api,
   renderer,
   state,
-  elements
+  elements,
+  onAccessLost
 }) {
   let pollingTimer = null;
   let currentRoomId = null;
   let currentEventId = null;
+  let accessLossHandled = false;
 const MAPPA_CHAT_PREVIEW_LIMIT = 5;
 
 function getMessageTime(message) {
