@@ -96,13 +96,19 @@ function handleAccessLost() {
      =============================== */
 
   async function openForEvent(event) {
-  if (!event || !event.id) return;
+    if (!event || !event.id) return;
 
-  const requestEventId = event.id;
-  currentEventId = requestEventId;
+    const requestEventId = event.id;
 
-    elements.chatHeader.textContent = renderer.renderChatHeader(event.title);
-    elements.chatNotice.innerHTML = renderer.renderChatLoading(event.title);
+    currentEventId = requestEventId;
+    accessLossHandled = false;
+
+    elements.chatHeader.textContent =
+      renderer.renderChatHeader(event.title);
+
+    elements.chatNotice.innerHTML =
+      renderer.renderChatLoading(event.title);
+
     elements.chatMessages.innerHTML = "";
 
     disableComposer();
@@ -117,7 +123,9 @@ function handleAccessLost() {
 
     try {
       const room = await api.openEventRoom(event.id);
-if (currentEventId !== requestEventId) return;
+
+      if (currentEventId !== requestEventId) return;
+
       currentRoomId = room.roomId;
 
       state.setChatState({
@@ -129,18 +137,34 @@ if (currentEventId !== requestEventId) return;
       });
 
       if (room.locked) {
-        elements.chatNotice.innerHTML = renderer.renderChatLocked(event.title);
+        elements.chatNotice.innerHTML =
+          renderer.renderChatLocked(event.title);
+
         disableComposer();
         return;
       }
 
       enableComposer(room.canSend);
 
-      await loadMessages();
+      const canContinue = await loadMessages();
+
+      if (
+        !canContinue ||
+        currentEventId !== requestEventId ||
+        !currentRoomId
+      ) {
+        return;
+      }
 
       startPolling();
+    } catch (error) {
+      if (currentEventId !== requestEventId) return;
 
-    } catch {
+      if (isAccessDeniedError(error)) {
+        handleAccessLost();
+        return;
+      }
+
       elements.chatNotice.innerHTML =
         renderer.renderChatError("Errore apertura chat");
 
@@ -150,7 +174,6 @@ if (currentEventId !== requestEventId) return;
       });
     }
   }
-
   /* ===============================
      CARICAMENTO MESSAGGI
      =============================== */
