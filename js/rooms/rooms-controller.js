@@ -241,7 +241,14 @@ nextMessages.sort((a, b) => {
     const latestMessageCreatedAt = getLatestRoomMessageCreatedAt(state.messages);
 
     if (latestMessageCreatedAt) {
-      await markRoomRead(state.roomId, latestMessageCreatedAt);
+      const readResponse = await markRoomRead(
+        state.roomId,
+        latestMessageCreatedAt
+      );
+
+      if (isRoomsAccessDeniedResponse(readResponse)) {
+        handleRoomsAccessLost();
+      }
     }
   } finally {
     isLoadingMessages = false;
