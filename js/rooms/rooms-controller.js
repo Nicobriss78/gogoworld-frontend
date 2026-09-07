@@ -202,7 +202,16 @@ async function loadMessages(options = {}) {
       ? { after, limit: 20 }
       : { limit: 50 };
 
-    const response = await listRoomMessages(state.roomId, requestOptions);
+    const response = await listRoomMessages(
+      state.roomId,
+      requestOptions
+    );
+
+    if (isRoomsAccessDeniedResponse(response)) {
+      handleRoomsAccessLost();
+      return;
+    }
+
     const messages = response?.data || response || [];
 
     if (!Array.isArray(messages) || !messages.length) return;
