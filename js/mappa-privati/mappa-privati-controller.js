@@ -46,9 +46,9 @@ async function init() {
       chatInput: elements.chatInput,
       sendBtnEl: elements.chatSend,
       infoBtn: elements.infoBtn
-    }
+    },
+    onAccessLost: handlePrivateAccessLost
   });
-
  bindUi();
   drawer.mount();
   map.mount();
