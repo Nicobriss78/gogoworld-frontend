@@ -3,7 +3,19 @@ import {
   apiPost
 } from "/js/api.js";
 export function createMappaApi({ fetchImpl } = {}) {
+  function buildMappaApiError(fallbackCode, response = null) {
+    const code = String(response?.error || fallbackCode).trim();
+    const error = new Error(
+      String(response?.message || code || fallbackCode).trim()
+    );
 
+    error.code = code || fallbackCode;
+    error.status = Number(response?.status || 0);
+    error.statusCode = error.status;
+    error.response = response;
+
+    return error;
+  }
   /* ===============================
      EVENTI PUBBLICI (MAPPA)
      =============================== */
