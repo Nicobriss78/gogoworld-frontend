@@ -19,6 +19,65 @@ const ROOMS_POLLING_INTERVAL_MS = 3000;
 let roomsPollingTimer = null;
 let isLoadingMessages = false;
 let lastRoomsMessagesSignature = "";
+let roomsAccessLossHandled = false;
+
+function isRoomsAccessDeniedResponse(response) {
+  const status = Number(
+    response?.status ||
+    response?.statusCode ||
+    response?.response?.status ||
+    0
+  );
+
+  return status === 401 || status === 403;
+}
+
+function getSafeRoomsReturnTarget() {
+  const target = String(state.rootReturnTo || "").trim();
+
+  if (!target.startsWith("/") || target.startsWith("//")) {
+    return "/pages/home-v2.html";
+  }
+
+  if (target.startsWith("/pages/rooms.html")) {
+    return "/pages/home-v2.html";
+  }
+
+  return target;
+}
+
+function handleRoomsAccessLost() {
+  if (roomsAccessLossHandled) return;
+
+  roomsAccessLossHandled = true;
+
+  stopRoomsPolling();
+
+  state.roomId = null;
+  state.roomMeta = null;
+  state.messages = [];
+  state.canSend = false;
+  state.error = "ROOM_ACCESS_LOST";
+
+  lastRoomsMessagesSignature = "";
+
+  renderMessages(state);
+
+  const status = document.getElementById("roomsStatus");
+  const input = document.getElementById("roomsInput");
+  const submit = document.getElementById("roomsSubmitBtn");
+
+  if (status) {
+    status.textContent =
+      "Accesso all’evento non più disponibile.";
+    status.hidden = false;
+  }
+
+  if (input) input.disabled = true;
+  if (submit) submit.disabled = true;
+
+  window.location.replace(getSafeRoomsReturnTarget());
+}
 function getQueryParams() {
   const params = new URLSearchParams(window.location.search);
   return {
