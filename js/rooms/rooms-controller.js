@@ -288,9 +288,21 @@ function handleRoomsVisibilityChange() {
   }
 }
 async function openRoomFromEvent() {
-  if (!state.eventId || state.roomId) return;
+  if (
+    !state.eventId ||
+    state.roomId ||
+    roomsAccessLossHandled
+  ) {
+    return;
+  }
 
   const res = await openOrJoinEvent(state.eventId);
+
+  if (isRoomsAccessDeniedResponse(res)) {
+    handleRoomsAccessLost();
+    return;
+  }
+
   state.roomId =
     res?.data?.roomId ||
     res?.roomId ||
