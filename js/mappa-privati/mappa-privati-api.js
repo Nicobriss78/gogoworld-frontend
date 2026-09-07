@@ -134,24 +134,31 @@ async function unlockPrivateEventByCode(code) {
     }
   }
   async function sendRoomMessage(roomId, text) {
-  const cleanText = String(text || "").trim();
+    const cleanText = String(text || "").trim();
 
-  if (!cleanText) {
-    throw new Error("EMPTY_MESSAGE");
-  }
-
-  try {
-    const res = await apiPost(`/rooms/${roomId}/messages`, { text: cleanText });
-
-    if (!res.ok) {
-      throw new Error("SEND_MESSAGE_ERROR");
+    if (!cleanText) {
+      throw new Error("EMPTY_MESSAGE");
     }
 
-    return normalizeMessage(res.data);
-  } catch {
-    throw new Error("SEND_MESSAGE_ERROR");
+    try {
+      const res = await apiPost(
+        `/rooms/${roomId}/messages`,
+        { text: cleanText }
+      );
+
+      if (!res.ok) {
+        throw buildMappaApiError("SEND_MESSAGE_ERROR", res);
+      }
+
+      return normalizeMessage(res.data);
+    } catch (error) {
+      if (error?.response) {
+        throw error;
+      }
+
+      throw buildMappaApiError("SEND_MESSAGE_ERROR");
+    }
   }
-}
 
   async function markRoomRead(roomId) {
   try {
