@@ -79,6 +79,7 @@ function handleAccessLost() {
   function showIdle() {
     currentRoomId = null;
     currentEventId = null;
+    accessLossHandled = false;
 
     elements.chatHeader.textContent = "Chat evento";
     elements.chatNotice.innerHTML = renderer.renderChatIdle();
