@@ -98,17 +98,30 @@ function authHeaders() {
   return t ? { Authorization: `Bearer ${t}` } : {};
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 function h(tag, attrs = {}, children = []) {
   const el = document.createElement(tag);
   Object.entries(attrs).forEach(([k, v]) => {
     if (k === "class") el.className = v;
-    else if (k === "html") el.innerHTML = v;
-    else el.setAttribute(k, v);
+    else if (k !== "html") el.setAttribute(k, v);
   });
-  (Array.isArray(children) ? children : [children]).filter(Boolean).forEach(c => {
-    if (typeof c === "string") el.appendChild(document.createTextNode(c));
-    else el.appendChild(c);
-  });
+  (Array.isArray(children) ? children : [children])
+    .filter(Boolean)
+    .forEach((c) => {
+      if (typeof c === "string") {
+        el.appendChild(document.createTextNode(c));
+      } else {
+        el.appendChild(c);
+      }
+    });
   return el;
 }
 function fmtDate(d) {
