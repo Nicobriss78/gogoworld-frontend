@@ -137,20 +137,39 @@ function badge(status) {
 }
 function showAlert(msg, type = "info", { autoHideMs = 2500 } = {}) {
   let box = document.getElementById("adminAlert");
+
   if (!box) {
-    // NB: admin-card resta (coerenza UI), aggiungiamo classi dedicate alert
-    box = h("div", { id: "adminAlert", class: "admin-card admin-alert" });
+    box = h("div", {
+      id: "adminAlert",
+      class: "admin-card admin-alert",
+    });
+
     document.body.appendChild(box);
     box.setAttribute("role", "status");
     box.setAttribute("aria-live", "polite");
   }
 
-  // tipo per styling via CSS (no inline style)
-  box.setAttribute("data-alert-type", String(type || "info").toLowerCase());
+  const normalizedType = ["info", "success", "error", "warning"].includes(
+    String(type || "").toLowerCase()
+  )
+    ? String(type).toLowerCase()
+    : "info";
 
-  box.innerHTML = `<strong>${String(type).toUpperCase()}</strong><div>${msg}</div>`;
+  box.setAttribute("data-alert-type", normalizedType);
 
-  if (autoHideMs) setTimeout(() => { box.remove(); }, autoHideMs);
+  const label = document.createElement("strong");
+  label.textContent = normalizedType.toUpperCase();
+
+  const message = document.createElement("div");
+  message.textContent = String(msg ?? "");
+
+  box.replaceChildren(label, message);
+
+  if (autoHideMs) {
+    setTimeout(() => {
+      box.remove();
+    }, autoHideMs);
+  }
 }
 
 // Auto-logout su 401 proveniente da api.js
