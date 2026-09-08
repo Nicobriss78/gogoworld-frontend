@@ -605,53 +605,87 @@ scoreMax: Number.isFinite(filters.scoreMax) ? String(filters.scoreMax) : "",
 function renderUserCard(u) {
   const card = h("div", { class: "admin-card" });
 
-  const roleBadge = `<span class="badge">${u.role}</span>`;
-  const orgBadge = `<span class="badge ${u.canOrganize ? "approved" : "blocked"}">${u.canOrganize ? "canOrganize" : "noOrganize"}</span>`;
-  const banBadge = `<span class="badge ${u.isBanned ? "blocked" : "approved"}">${u.isBanned ? "banned" : "active"}</span>`;
+  const userId = escapeHtml(u._id || "");
+  const userName = escapeHtml(u.name || "-");
+  const userEmail = escapeHtml(u.email || "-");
 
-  const statusRaw = String(u.status || "").toLowerCase();
+  const roleBadge =
+    `<span class="badge">${escapeHtml(u.role || "-")}</span>`;
+
+  const orgBadge =
+    `<span class="badge ${u.canOrganize ? "approved" : "blocked"}">` +
+    `${u.canOrganize ? "canOrganize" : "noOrganize"}</span>`;
+
+  const banBadge =
+    `<span class="badge ${u.isBanned ? "blocked" : "approved"}">` +
+    `${u.isBanned ? "banned" : "active"}</span>`;
+
+  const statusCandidate = String(u.status || "").toLowerCase();
+
+  const statusRaw = [
+    "novizio",
+    "esploratore",
+    "veterano",
+    "ambassador",
+  ].includes(statusCandidate)
+    ? statusCandidate
+    : "";
+
   const statusLabel = statusRaw
     ? statusRaw[0].toUpperCase() + statusRaw.slice(1)
     : "";
 
-  const score = Number.isFinite(u.score) ? u.score : (u.score || 0);
-  const attended = (u?.stats?.attended || 0);
-  const reviewsApproved = (u?.stats?.reviewsApproved || 0);
+  const score = Number.isFinite(Number(u.score))
+    ? Number(u.score)
+    : 0;
+
+  const attended = Number.isFinite(Number(u?.stats?.attended))
+    ? Number(u.stats.attended)
+    : 0;
+
+  const reviewsApproved = Number.isFinite(
+    Number(u?.stats?.reviewsApproved)
+  )
+    ? Number(u.stats.reviewsApproved)
+    : 0;
 
   card.innerHTML = `
     <h3>
-      ${u.name || "-"}
-      <span class="muted">(${u.email || "-"})</span>
+      ${userName}
+      <span class="muted">(${userEmail})</span>
     </h3>
+
     <div>
       ${roleBadge} ${orgBadge} ${banBadge}
     </div>
+
     <div>
       ${
         statusRaw
           ? `<span class="chip status-chip chip-${statusRaw}">${statusLabel}</span>`
           : ""
       }
+
       <span class="muted">
         • score: ${score}
         • attended: ${attended}
         • reviews: ${reviewsApproved}
       </span>
     </div>
+
     <div class="actions">
-      <button class="btn" data-action="ban" data-id="${u._id}">Ban</button>
-      <button class="btn" data-action="unban" data-id="${u._id}">Unban</button>
-      <button class="btn" data-action="role" data-id="${u._id}" data-role="participant">Set Participant</button>
-      <button class="btn" data-action="role" data-id="${u._id}" data-role="organizer">Set Organizer</button>
-      <button class="btn" data-action="role" data-id="${u._id}" data-role="admin">Set Admin</button>
-      <button class="btn" data-action="org" data-id="${u._id}" data-value="true">Can Organize: ON</button>
-      <button class="btn" data-action="org" data-id="${u._id}" data-value="false">Can Organize: OFF</button>
+      <button class="btn" data-action="ban" data-id="${userId}">Ban</button>
+      <button class="btn" data-action="unban" data-id="${userId}">Unban</button>
+      <button class="btn" data-action="role" data-id="${userId}" data-role="participant">Set Participant</button>
+      <button class="btn" data-action="role" data-id="${userId}" data-role="organizer">Set Organizer</button>
+      <button class="btn" data-action="role" data-id="${userId}" data-role="admin">Set Admin</button>
+      <button class="btn" data-action="org" data-id="${userId}" data-value="true">Can Organize: ON</button>
+      <button class="btn" data-action="org" data-id="${userId}" data-value="false">Can Organize: OFF</button>
     </div>
   `;
 
   return card;
 }
-
 
 async function loadUsers() {
 const seq = ++usRequestSeq; // prendi un token progressivo
