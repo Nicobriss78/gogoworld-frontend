@@ -325,27 +325,55 @@ async function fetchEvents() {
 function renderEventCard(ev) {
   const card = h("div", { class: "admin-card" });
 
-  // PATCH: normalizza status/visibility, niente default a "approved"
-  const st = (ev.approvalStatus ?? ev.status ?? "").toLowerCase() || "-";
+  const st =
+    (ev.approvalStatus ?? ev.status ?? "").toLowerCase() || "-";
   const vis = (ev.visibility ?? "").toLowerCase() || "-";
   const isPrivate = vis === "private";
 
+  const eventId = escapeHtml(ev._id || "");
+  const title = escapeHtml(ev.title || "-");
+  const city = escapeHtml(ev.city || "-");
+  const region = escapeHtml(ev.region || "-");
+  const country = escapeHtml(ev.country || "-");
+  const visibility = escapeHtml(vis);
+  const dateStart = escapeHtml(fmtDate(ev.dateStart));
+  const dateEnd = escapeHtml(fmtDate(ev.dateEnd));
+
   const actionsHtml = (() => {
     const parts = [];
+
     if (st === "pending" || st === "rejected") {
-      parts.push(`<button class="btn" data-action="approve" data-id="${ev._id}">Approve</button>`);
+      parts.push(
+        `<button class="btn" data-action="approve" data-id="${eventId}">Approve</button>`
+      );
     }
+
     if (st === "approved") {
-      parts.push(`<button class="btn" data-action="unapprove" data-id="${ev._id}">Unapprove</button>`);
+      parts.push(
+        `<button class="btn" data-action="unapprove" data-id="${eventId}">Unapprove</button>`
+      );
     }
+
     if (st !== "blocked") {
-      parts.push(`<button class="btn" data-action="block" data-id="${ev._id}">Block</button>`);
+      parts.push(
+        `<button class="btn" data-action="block" data-id="${eventId}">Block</button>`
+      );
     } else {
-      parts.push(`<button class="btn" data-action="unblock" data-id="${ev._id}">Unblock</button>`);
+      parts.push(
+        `<button class="btn" data-action="unblock" data-id="${eventId}">Unblock</button>`
+      );
     }
-    parts.push(`<button class="btn" data-action="reject" data-id="${ev._id}">Reject</button>`);
-    parts.push(`<button class="btn" data-action="force-delete" data-id="${ev._id}">Force Delete</button>`);
-    parts.push(`<button class="btn" data-action="close-award" data-id="${ev._id}">Chiudi & premia</button>`);
+
+    parts.push(
+      `<button class="btn" data-action="reject" data-id="${eventId}">Reject</button>`
+    );
+    parts.push(
+      `<button class="btn" data-action="force-delete" data-id="${eventId}">Force Delete</button>`
+    );
+    parts.push(
+      `<button class="btn" data-action="close-award" data-id="${eventId}">Chiudi & premia</button>`
+    );
+
     return parts.join("");
   })();
 
@@ -353,25 +381,31 @@ function renderEventCard(ev) {
     ? `
       <div class="priv-code-tools">
         <span class="muted">Codice privato:</span>
-        <span class="muted" data-priv-code-for="${ev._id}">non caricato</span>
-        <button class="btn" data-action="show-priv-code" data-id="${ev._id}">Mostra codice</button>
-        <button class="btn" data-action="rotate-priv-code" data-id="${ev._id}">Nuovo codice</button>
+        <span class="muted" data-priv-code-for="${eventId}">non caricato</span>
+        <button class="btn" data-action="show-priv-code" data-id="${eventId}">Mostra codice</button>
+        <button class="btn" data-action="rotate-priv-code" data-id="${eventId}">Nuovo codice</button>
       </div>
     `
     : "";
 
   card.innerHTML = `
-    <h3>${ev.title || "-"}</h3>
-    <div class="muted">${ev.city || "-"}, ${ev.region || "-"}, ${ev.country || "-"}</div>
-    <div>${badge(st)} <span class="muted">•</span> ${vis} <span class="muted">•</span> ${fmtDate(ev.dateStart)} → ${fmtDate(ev.dateEnd)}</div>
+    <h3>${title}</h3>
+    <div class="muted">${city}, ${region}, ${country}</div>
+    <div>
+      ${badge(st)}
+      <span class="muted">•</span>
+      ${visibility}
+      <span class="muted">•</span>
+      ${dateStart} → ${dateEnd}
+    </div>
     <div class="actions">
       ${actionsHtml}
     </div>
     ${privTools}
   `;
+
   return card;
 }
-
 
 async function loadEvents() {
 const seq = ++evRequestSeq; // prendi un token progressivo
