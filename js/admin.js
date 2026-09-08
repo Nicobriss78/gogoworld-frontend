@@ -903,15 +903,31 @@ const res = await callApi(path, { headers: { ...authHeaders() } });
 
 function renderReviewCard(r) {
   const card = h("div", { class: "admin-card" });
+
+  const rating = Math.min(
+    5,
+    Math.max(0, Math.trunc(Number(r.rating) || 0))
+  );
+
+  const reviewId = escapeHtml(r._id || "");
+  const comment = escapeHtml(
+    r.comment || "(nessun commento)"
+  );
+  const eventId = escapeHtml(r.event || "-");
+  const participantId = escapeHtml(r.participant || "-");
+
   card.innerHTML = `
-    <h3>${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</h3>
-    <div class="muted">${r.comment || "(nessun commento)"}</div>
-    <div class="muted">Evento: ${r.event || "-"} • Utente: ${r.participant || "-"}</div>
+    <h3>${"★".repeat(rating)}${"☆".repeat(5 - rating)}</h3>
+    <div class="muted">${comment}</div>
+    <div class="muted">
+      Evento: ${eventId} • Utente: ${participantId}
+    </div>
     <div class="actions">
-      <button class="btn primary" data-action="approve-review" data-id="${r._id}">Approva</button>
-      <button class="btn" data-action="reject-review" data-id="${r._id}">Rifiuta</button>
+      <button class="btn primary" data-action="approve-review" data-id="${reviewId}">Approva</button>
+      <button class="btn" data-action="reject-review" data-id="${reviewId}">Rifiuta</button>
     </div>
   `;
+
   return card;
 }
 
