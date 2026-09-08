@@ -686,7 +686,6 @@ function renderUserCard(u) {
 
   return card;
 }
-
 async function loadUsers() {
 const seq = ++usRequestSeq; // prendi un token progressivo
 elUsList.innerHTML = "";
