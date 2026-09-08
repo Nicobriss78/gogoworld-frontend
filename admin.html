@@ -808,30 +808,101 @@ async function houseCreate() {
 
 // === Approvals (organizer) ===
 async function approvalsList() {
-  var box = document.getElementById("approvalsList");
+  var box =
+    document.getElementById("approvalsList");
+
   if (!box) return;
-  box.innerHTML = '<div class="muted">Caricamento…</div>';
-  var q = await adminFetch("/api/banners?status=PENDING_REVIEW&source=organizer&_=" + Date.now());
-var arr = ((q && q.data) || []).filter(function (b) {
-  return b && b.status === "PENDING_REVIEW" && b.source === "organizer";
-});
+
+  box.innerHTML =
+    '<div class="muted">Caricamento…</div>';
+
+  var q = await adminFetch(
+    "/api/banners?status=PENDING_REVIEW&source=organizer&_=" +
+      Date.now()
+  );
+
+  var arr = ((q && q.data) || []).filter(
+    function (b) {
+      return (
+        b &&
+        b.status === "PENDING_REVIEW" &&
+        b.source === "organizer"
+      );
+    }
+  );
+
   if (!arr.length) {
-    box.innerHTML = '<div class="muted">Nessuna richiesta in attesa.</div>';
+    box.innerHTML =
+      '<div class="muted">Nessuna richiesta in attesa.</div>';
     return;
   }
-  box.innerHTML = arr.map(function(b){
-    var badge = '<span class="badge pending">PENDING_REVIEW</span>';
-    return [
-      '<div class="admin-card">',
-      ' <h3>' + (b.title || '(senza titolo)') + ' ' + badge + '</h3>',
-      ' <div class="muted">evento: ' + (b.eventId || '—') + ' • placement: ' + b.placement + ' • geo: ' + (b.country || '—') + '/' + (b.region || '—') + '</div>',
-      ' <div class="actions">',
-      ' <button class="btn primary" data-action="approve" data-id="' + b._id + '">Approva</button>',
-      ' <button class="btn" data-action="reject" data-id="' + b._id + '">Rifiuta</button>',
-      ' </div>',
-      '</div>'
-    ].join('\n');
-  }).join('');
+
+  box.innerHTML = arr
+    .map(function (b) {
+      var badge =
+        '<span class="badge pending">' +
+        "PENDING_REVIEW" +
+        "</span>";
+
+      var bannerId =
+        adminNormalizeObjectId(b._id);
+
+      var title =
+        adminEscapeHtml(
+          b.title || "(senza titolo)"
+        );
+
+      var eventId =
+        adminEscapeHtml(b.eventId || "—");
+
+      var placement =
+        adminEscapeHtml(b.placement || "—");
+
+      var country =
+        adminEscapeHtml(b.country || "—");
+
+      var region =
+        adminEscapeHtml(b.region || "—");
+
+      return [
+        '<div class="admin-card">',
+
+        " <h3>" +
+          title +
+          " " +
+          badge +
+          "</h3>",
+
+        ' <div class="muted">' +
+          "evento: " +
+          eventId +
+          " • placement: " +
+          placement +
+          " • geo: " +
+          country +
+          "/" +
+          region +
+          "</div>",
+
+        ' <div class="actions">',
+
+        ' <button class="btn primary" ' +
+          'data-action="approve" ' +
+          'data-id="' +
+          bannerId +
+          '">Approva</button>',
+
+        ' <button class="btn" ' +
+          'data-action="reject" ' +
+          'data-id="' +
+          bannerId +
+          '">Rifiuta</button>',
+
+        " </div>",
+        "</div>",
+      ].join("\n");
+    })
+    .join("");
 }
 
 // === Deleghe click (pause/resume/delete/approve/reject) SOLO per i banner ===
