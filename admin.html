@@ -554,46 +554,188 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 // === Render card banner ===
 function renderBannerCard(b) {
-  var status = (b.status || "-").toString().toLowerCase();
-  var badge = '<span class="badge ' + status + '">' + (b.status || "-") + "</span>";
+  var status =
+    adminNormalizeBannerStatus(b.status);
 
-  var imp = Number(b.impressionsTotal || 0);
-  var clk = Number(b.clicksTotal || 0);
-  var ctrVal = imp ? (clk / imp) * 100 : 0;
-  var ctrClass = ctrVal >= 3 ? "ctr-high" : (ctrVal >= 1 ? "ctr-mid" : "ctr-low");
-  var ctr = ctrVal.toFixed(2) + "%";
+  var statusClass = status
+    ? status.toLowerCase()
+    : "";
 
-  var start = b.activeFrom ? new Date(b.activeFrom).toLocaleString() : "—";
-  var end = b.activeTo ? new Date(b.activeTo).toLocaleString() : "—";
-  var isExpired = !!(b.activeTo && new Date(b.activeTo) < new Date());
-  var isSoon = !!(b.activeTo && !isExpired && (new Date(b.activeTo) - new Date() <= 48*3600*1000));
-  var payButton = b.status === "PENDING_PAYMENT"
-  ? '<button class="btn primary" data-action="mark-paid" data-id="' + b._id + '">Segna pagata</button>'
-  : "";
+  var badge =
+    '<span class="badge ' +
+    statusClass +
+    '">' +
+    adminEscapeHtml(status || "-") +
+    "</span>";
+
+  var bannerId =
+    adminNormalizeObjectId(b._id);
+
+  var title =
+    adminEscapeHtml(b.title || "(senza titolo)");
+
+  var placement =
+    adminEscapeHtml(b.placement || "-");
+
+  var country =
+    adminEscapeHtml(b.country || "—");
+
+  var region =
+    adminEscapeHtml(b.region || "—");
+
+  var priority =
+    adminEscapeHtml(b.priority || 100);
+
+  var imageUrl =
+    adminNormalizeHttpsUrl(b.imageUrl);
+
+  var targetUrl =
+    adminNormalizeHttpsUrl(b.targetUrl);
+
+  var imp =
+    Number(b.impressionsTotal || 0);
+
+  var clk =
+    Number(b.clicksTotal || 0);
+
+  var ctrVal =
+    imp ? (clk / imp) * 100 : 0;
+
+  var ctrClass =
+    ctrVal >= 3
+      ? "ctr-high"
+      : ctrVal >= 1
+        ? "ctr-mid"
+        : "ctr-low";
+
+  var ctr =
+    ctrVal.toFixed(2) + "%";
+
+  var start = b.activeFrom
+    ? new Date(b.activeFrom).toLocaleString()
+    : "—";
+
+  var end = b.activeTo
+    ? new Date(b.activeTo).toLocaleString()
+    : "—";
+
+  var isExpired =
+    !!(
+      b.activeTo &&
+      new Date(b.activeTo) < new Date()
+    );
+
+  var isSoon =
+    !!(
+      b.activeTo &&
+      !isExpired &&
+      new Date(b.activeTo) - new Date() <=
+        48 * 3600 * 1000
+    );
+
+  var payButton =
+    b.status === "PENDING_PAYMENT"
+      ? '<button class="btn primary" data-action="mark-paid" data-id="' +
+        bannerId +
+        '">Segna pagata</button>'
+      : "";
+
+  var imageLink = imageUrl
+    ? '<a class="btn" href="' +
+      adminEscapeHtml(imageUrl) +
+      '" target="_blank" rel="noopener">Immagine</a>'
+    : "";
+
+  var targetLink = targetUrl
+    ? '<a class="btn" href="' +
+      adminEscapeHtml(targetUrl) +
+      '" target="_blank" rel="noopener">Landing</a>'
+    : "";
+
   return `
-    <div class="admin-card banner-card${isExpired ? ' expired' : ''}${isSoon ? ' expiring' : ''}">
-      <h3>${b.title || '(senza titolo)'} ${badge} ${isSoon ? '<span class="badge warning">in scadenza</span>' : ''}</h3>
-      <div class="banner-meta">
-        <div><strong>Placement:</strong> ${b.placement || '-'}</div>
-        <div><strong>Area:</strong> ${(b.country || '—')} / ${(b.region || '—')}</div>
-        <div><strong>Inizio:</strong> ${start}</div>
-        <div><strong>Fine:</strong> ${end}</div>
-        <div><strong>Impressions:</strong> ${imp}</div>
-        <div><strong>Click:</strong> ${clk}</div>
-        <div><strong>CTR:</strong> <span class="${ctrClass}">${ctr}</span></div>
-        <div><strong>Priorità:</strong> ${b.priority || 100}</div>
-      </div>
-      <div class="actions">
-  ${payButton}
-  <button class="btn" data-action="pause" data-id="${b._id}">Pausa</button>
-        <button class="btn" data-action="resume" data-id="${b._id}">Riprendi</button>
-        <button class="btn" data-action="delete" data-id="${b._id}">Elimina</button>
-        <a class="btn" href="${b.imageUrl}" target="_blank" rel="noopener">Immagine</a>
-        <a class="btn" href="${b.targetUrl}" target="_blank" rel="noopener">Landing</a>
-      </div>
-    </div>`;
-}
+    <div class="admin-card banner-card${
+      isExpired ? " expired" : ""
+    }${isSoon ? " expiring" : ""}">
+      <h3>
+        ${title}
+        ${badge}
+        ${
+          isSoon
+            ? '<span class="badge warning">in scadenza</span>'
+            : ""
+        }
+      </h3>
 
+      <div class="banner-meta">
+        <div>
+          <strong>Placement:</strong> ${placement}
+        </div>
+
+        <div>
+          <strong>Area:</strong> ${country} / ${region}
+        </div>
+
+        <div>
+          <strong>Inizio:</strong>
+          ${adminEscapeHtml(start)}
+        </div>
+
+        <div>
+          <strong>Fine:</strong>
+          ${adminEscapeHtml(end)}
+        </div>
+
+        <div>
+          <strong>Impressions:</strong> ${imp}
+        </div>
+
+        <div>
+          <strong>Click:</strong> ${clk}
+        </div>
+
+        <div>
+          <strong>CTR:</strong>
+          <span class="${ctrClass}">${ctr}</span>
+        </div>
+
+        <div>
+          <strong>Priorità:</strong> ${priority}
+        </div>
+      </div>
+
+      <div class="actions">
+        ${payButton}
+
+        <button
+          class="btn"
+          data-action="pause"
+          data-id="${bannerId}"
+        >
+          Pausa
+        </button>
+
+        <button
+          class="btn"
+          data-action="resume"
+          data-id="${bannerId}"
+        >
+          Riprendi
+        </button>
+
+        <button
+          class="btn"
+          data-action="delete"
+          data-id="${bannerId}"
+        >
+          Elimina
+        </button>
+
+        ${imageLink}
+        ${targetLink}
+      </div>
+    </div>
+  `;
+}
 
 
 // === Sponsor: create + list ===
