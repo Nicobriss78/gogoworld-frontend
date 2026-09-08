@@ -327,6 +327,46 @@
 
   <script type="module" src="js/admin.js"></script>
   <script>
+    const ADMIN_BANNER_STATUSES = new Set([
+  "DRAFT",
+  "PENDING_PAYMENT",
+  "PENDING_REVIEW",
+  "SCHEDULED",
+  "ACTIVE",
+  "PAUSED",
+  "ENDED",
+  "REJECTED",
+  "CANCELLED",
+  "INVALIDATED_BY_EVENT_CHANGE",
+]);
+
+function adminEscapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function adminNormalizeBannerStatus(value) {
+  const status = String(value || "").trim().toUpperCase();
+  return ADMIN_BANNER_STATUSES.has(status) ? status : "";
+}
+
+function adminNormalizeObjectId(value) {
+  const id = String(value || "").trim();
+  return /^[a-f0-9]{24}$/i.test(id) ? id : "";
+}
+
+function adminNormalizeHttpsUrl(value) {
+  try {
+    const url = new URL(String(value || ""));
+    return url.protocol === "https:" ? url.href : "";
+  } catch {
+    return "";
+  }
+}
     // Listener globale per retry API (503/502/504)
     window.addEventListener("api:status", (e) => {
       const { phase, attempt, status } = e.detail || {};
