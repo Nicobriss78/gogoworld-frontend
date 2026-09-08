@@ -448,55 +448,106 @@ const token = (typeof localStorage !== "undefined" && localStorage.getItem("toke
 async function loadBannerList() {
   const table = document.getElementById("bannerTable");
   if (!table) return;
-  const tbody = table.querySelector("tbody");
-  tbody.innerHTML = '<tr><td colspan="11" class="muted">Caricamento…</td></tr>';
 
-  const status = document.getElementById("bannerFilterStatus")?.value || "";
-  const placement = document.getElementById("bannerFilterPlacement")?.value || "";
+  const tbody = table.querySelector("tbody");
+
+  tbody.innerHTML =
+    '<tr><td colspan="11" class="muted">Caricamento…</td></tr>';
+
+  const status =
+    document.getElementById("bannerFilterStatus")?.value || "";
+
+  const placement =
+    document.getElementById("bannerFilterPlacement")?.value || "";
 
   let query = `?type=sponsor,house&_=${Date.now()}`;
-  if (status) query += `&status=${encodeURIComponent(status)}`;
-  if (placement) query += `&placement=${encodeURIComponent(placement)}`;
+
+  if (status) {
+    query += `&status=${encodeURIComponent(status)}`;
+  }
+
+  if (placement) {
+    query += `&placement=${encodeURIComponent(placement)}`;
+  }
 
   try {
     const q = await adminFetch("/api/banners" + query);
     const arr = (q && q.data) || [];
 
     if (!arr.length) {
-      tbody.innerHTML = '<tr><td colspan="11" class="muted">Nessun banner trovato.</td></tr>';
+      tbody.innerHTML =
+        '<tr><td colspan="11" class="muted">Nessun banner trovato.</td></tr>';
       return;
     }
 
-    tbody.innerHTML = arr.map(b => {
-      const imp = Number(b.impressionsTotal || 0);
-      const clk = Number(b.clicksTotal || 0);
-      const ctr = imp > 0 ? ((clk / imp) * 100).toFixed(2) : "0.00";
-      const start = b.activeFrom ? new Date(b.activeFrom).toLocaleString("it-IT") : "—";
-      const end = b.activeTo ? new Date(b.activeTo).toLocaleString("it-IT") : "—";
-      const badge = `<span class="badge ${String(b.status||'').toLowerCase()}">${b.status || '-'}</span>`;
-      const area = `${b.country || '—'} / ${b.region || '—'}`;
+    tbody.innerHTML = arr
+      .map((b) => {
+        const imp = Number(b.impressionsTotal || 0);
+        const clk = Number(b.clicksTotal || 0);
 
-      return `
-        <tr>
-          <td>${b.title || "-"}</td>
-          <td>${b.type || "-"}</td>
-          <td>${b.placement || "-"}</td>
-          <td>${area}</td>
-          <td>${start}</td>
-          <td>${end}</td>
-          <td>${imp}</td>
-          <td>${clk}</td>
-          <td>${ctr}%</td>
-          <td>${badge}</td>
-          <td><button class="btn" data-action="delete" data-id="${b._id}">Elimina</button></td>
-        </tr>`;
-    }).join("");
+        const ctr =
+          imp > 0
+            ? ((clk / imp) * 100).toFixed(2)
+            : "0.00";
+
+        const start = b.activeFrom
+          ? new Date(b.activeFrom).toLocaleString("it-IT")
+          : "—";
+
+        const end = b.activeTo
+          ? new Date(b.activeTo).toLocaleString("it-IT")
+          : "—";
+
+        const status =
+          adminNormalizeBannerStatus(b.status);
+
+        const statusClass = status
+          ? status.toLowerCase()
+          : "";
+
+        const badge =
+          `<span class="badge ${statusClass}">` +
+          `${adminEscapeHtml(status || "-")}</span>`;
+
+        const area =
+          `${adminEscapeHtml(b.country || "—")} / ` +
+          `${adminEscapeHtml(b.region || "—")}`;
+
+        const bannerId =
+          adminNormalizeObjectId(b._id);
+
+        return `
+          <tr>
+            <td>${adminEscapeHtml(b.title || "-")}</td>
+            <td>${adminEscapeHtml(b.type || "-")}</td>
+            <td>${adminEscapeHtml(b.placement || "-")}</td>
+            <td>${area}</td>
+            <td>${adminEscapeHtml(start)}</td>
+            <td>${adminEscapeHtml(end)}</td>
+            <td>${imp}</td>
+            <td>${clk}</td>
+            <td>${ctr}%</td>
+            <td>${badge}</td>
+            <td>
+              <button
+                class="btn"
+                data-action="delete"
+                data-id="${bannerId}"
+              >
+                Elimina
+              </button>
+            </td>
+          </tr>
+        `;
+      })
+      .join("");
   } catch (err) {
     console.error(err);
-    tbody.innerHTML = '<tr><td colspan="11" class="muted">Errore durante il caricamento</td></tr>';
+
+    tbody.innerHTML =
+      '<tr><td colspan="11" class="muted">Errore durante il caricamento</td></tr>';
   }
 }
-
 // Listener del pulsante (ready)
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("bannerRefresh")?.addEventListener("click", loadBannerList);
