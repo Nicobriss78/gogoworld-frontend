@@ -385,7 +385,7 @@ if (status === "CANCELLED") {
   }));
 }
 
-function actionsForStatus(status) {
+function actionsForStatus(status, { paymentTestEnabled = false } = {}) {
   switch (status) {
     case "PENDING_REVIEW":
       return [
