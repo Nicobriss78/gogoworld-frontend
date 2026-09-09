@@ -777,9 +777,12 @@ export function renderActions(root, promo) {
   if (!root) return;
 
   const promotionEligible = promo?.promotionEligible !== false;
+  const statusActions = actionsForStatus(promo.status, {
+    paymentTestEnabled: promo?.paymentTestEnabled === true,
+  });
   const actions = promotionEligible
-    ? actionsForStatus(promo.status)
-    : actionsForStatus(promo.status).filter(
+    ? statusActions
+    : statusActions.filter(
         (action) => action.action === "withdraw"
       );
 
