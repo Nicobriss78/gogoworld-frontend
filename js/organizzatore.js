@@ -329,10 +329,10 @@ if (btnProfile) btnProfile.href = `/pages/profilo-v2.html?rootReturnTo=organizer
   (async () => {
     try {
       const me = await whoami(token);
-      // accetta organizer/admin o chi ha canOrganize === true
+      // Capability Organizer: admin oppure canOrganize === true
       const role = String(me?.user?.role || "").toLowerCase();
       const canOrg = me?.user?.canOrganize === true;
-      if (!(role === "organizer" || role === "admin" || canOrg)) {
+      if (!(role === "admin" || canOrg)) {
         showAlert("Accesso riservato agli organizzatori.", "error", { autoHideMs: 3500 });
         setTimeout(() => (window.location.href = "/pages/home-v2.html"), 600);
         return;
