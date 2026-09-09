@@ -406,13 +406,20 @@ function actionsForStatus(status, { paymentTestEnabled = false } = {}) {
 
     case "PENDING_PAYMENT":
       return [
-        {
-          label: "Pagamento test",
-          tone: "primary",
-          disabled: false,
-          action: "pay-test",
-          title: "Simula il pagamento in ambiente test. Il checkout reale sarà collegato in una fase successiva.",
-        },
+        paymentTestEnabled
+          ? {
+              label: "Pagamento test",
+              tone: "primary",
+              disabled: false,
+              action: "pay-test",
+              title: "Simula il pagamento in ambiente test.",
+            }
+          : {
+              label: "Pagamento online non ancora disponibile",
+              tone: "secondary",
+              disabled: true,
+              title: "Il checkout reale sarà collegato in una fase successiva.",
+            },
         {
           label: "Dettagli preventivo",
           tone: "secondary",
