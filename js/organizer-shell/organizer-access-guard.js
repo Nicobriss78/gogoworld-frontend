@@ -50,17 +50,11 @@ export async function checkAccess() {
   }
 
   const role = String(user.role || "").toLowerCase();
-  const sessionRole = String(user.sessionRole || "").toLowerCase();
   const canOrganize = Boolean(user.canOrganize);
 
   const allowed =
     role === "admin" ||
-    role === "organizzatore" ||
-    role === "organizer" ||
-    sessionRole === "organizzatore" ||
-    sessionRole === "organizer" ||
     canOrganize === true;
-
   organizerState.access = {
     checked: true,
     allowed,
