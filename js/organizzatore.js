@@ -313,39 +313,52 @@ async function pollNotifications() {
   }
 }
 
-_roomsBadgeInterval = setInterval(pollRoomsBadge, 20000);
-pollRoomsBadge();
-
-// === A9.3.2 — avvia polling notifiche
-_notiInterval = setInterval(pollNotifications, 20000);
-pollNotifications();
-if (btnProfile) btnProfile.href = `/pages/profilo-v2.html?rootReturnTo=organizer`;
   if (!token) {
     window.location.href = "../index.html";
     return;
   }
 
   // PATCH: verifica permessi lato server prima di procedere
-  (async () => {
-    try {
-      const me = await whoami(token);
-      // Capability Organizer: admin oppure canOrganize === true
-      const role = String(me?.user?.role || "").toLowerCase();
-      const canOrg = me?.user?.canOrganize === true;
-      if (!(role === "admin" || canOrg)) {
-        showAlert("Accesso riservato agli organizzatori.", "error", { autoHideMs: 3500 });
-        setTimeout(() => (window.location.href = "/pages/home-v2.html"), 600);
-        return;
-      }
-      // Banner: invito a completare il profilo
-      await maybeShowProfileNag(token);
-    } catch {
-      showAlert("Verifica permessi non riuscita. Effettua di nuovo il login.", "error", { autoHideMs: 3500 });
-      setTimeout(() => (window.location.href = "login.html"), 600);
+  try {
+    const me = await whoami(token);
+    // Capability Organizer: admin oppure canOrganize === true
+    const role = String(me?.user?.role || "").toLowerCase();
+    const canOrg = me?.user?.canOrganize === true;
+
+    if (!(role === "admin" || canOrg)) {
+      showAlert("Accesso riservato agli organizzatori.", "error", {
+        autoHideMs: 3500,
+      });
+      setTimeout(
+        () => (window.location.href = "/pages/home-v2.html"),
+        600
+      );
       return;
     }
-  })();
 
+    // Banner: invito a completare il profilo
+    await maybeShowProfileNag(token);
+  } catch {
+    showAlert(
+      "Verifica permessi non riuscita. Effettua di nuovo il login.",
+      "error",
+      { autoHideMs: 3500 }
+    );
+    setTimeout(() => (window.location.href = "login.html"), 600);
+    return;
+  }
+
+  // I servizi legacy partono soltanto dopo la verifica dei permessi.
+  _roomsBadgeInterval = setInterval(pollRoomsBadge, 20000);
+  pollRoomsBadge();
+
+  // === A9.3.2 — avvia polling notifiche
+  _notiInterval = setInterval(pollNotifications, 20000);
+  pollNotifications();
+
+  if (btnProfile) {
+    btnProfile.href = `/pages/profilo-v2.html?rootReturnTo=organizer`;
+  }
   // Benvenuto: eseguito una sola volta e con guardia anti-duplicazione
   (async () => {
     try {
