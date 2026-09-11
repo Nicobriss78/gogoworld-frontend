@@ -207,7 +207,7 @@ document.getElementById("nagLater")?.addEventListener("click", () => {
 } catch {}
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   // Token base (come da tua logica attuale)
   const token =
   localStorage.getItem("token") ||
