@@ -14,7 +14,10 @@ function ensureEventId(eventId) {
 
 function unwrapEventResponse(result) {
   if (!result?.ok) {
-    throw new Error(apiErrorMessage(result, "Impossibile caricare l'evento"));
+    const error = new Error(apiErrorMessage(result, "Impossibile caricare l'evento"));
+    error.status = Number(result?.status || 0);
+    error.code = String(result?.error || result?.data?.code || "");
+    throw error;
   }
 
   const event = result.event ?? result.data?.event ?? result.data ?? null;
@@ -209,3 +212,4 @@ export async function getEventReviews(
     limit: Number(result.limit || limit),
   };
 }
+
