@@ -1,4 +1,4 @@
-import { createEventoState, setEventoError, setEventoLoading, setEventoNotFound } from "./evento-state.js";
+import { createEventoState, setEventoAccessDenied, setEventoError, setEventoLoading, setEventoNotFound } from "./evento-state.js";
 import {
   getEventById,
   getCurrentUser,
@@ -200,6 +200,7 @@ function buildRoomsNavigationUrl(state) {
 }
 
 function isNotFoundError(error) {
+  if (Number(error?.status) === 404) return true;
   const message = String(error?.message || error || "").toLowerCase();
   return (
     message.includes("404") ||
@@ -216,6 +217,122 @@ function isPrivateEvent(event) {
     event?.isPrivate === true ||
     String(event?.visibility || "").trim().toLowerCase() === "private"
   );
+}
+// Status HTTP autoritativo. Il messaggio serve SOLO a scegliere la label UX.
+function classifyEventAccessError(error) {
+  const status = Number(error?.status || 0);
+  if (status === 401) return "unauthorized";
+  if (status !== 403) return "";
+  const message = String(error?.message || "").toLowerCase().replace(/[’‘]/g, "'");
+  return message.includes("accesso revocato dall'organizzatore") ? "revoked" : "denied";
+}
+function isAccessTerminal(state) {
+  return ["revoked", "denied", "unauthorized"].includes(state.accessStatus);
+}
+function transitionEventAccess(state, renderer, error) {
+  const status = classifyEventAccessError(error);
+  if (!status) return false;
+  setEventoAccessDenied(state, status);
+  clearStoredSelectedEventId(state.eventId);
+  renderer.render(state);
+  return true;
+}
+
+// Un unico timer locale al dettaglio (nessun listener nel runtime Mappa/Geo).
+const PRIVATE_ACCESS_POLL_MS = 25000;
+function startPrivateAccessMonitor(state, renderer) {
+  if (!isPrivateEvent(state.event) || isAccessTerminal(state)) return;
+  let timer = null;
+  let pending = false;
+  let disposed = false;
+  let lastAttempt = 0;
+  let lifecycleVersion = 0;
+
+  const pause = () => {
+    if (timer !== null) clearInterval(timer);
+    timer = null;
+  };
+  const check = async () => {
+    if (disposed || pending || document.hidden || isAccessTerminal(state) ||
+        !isPrivateEvent(state.event) || state.isJoining || state.isLeaving ||
+        state.isSubmittingCheckIn || state.isOpeningChat) return;
+    if (Date.now() - lastAttempt < 1500) return;
+    lastAttempt = Date.now();
+    pending = true;
+    const epoch = state.accessEpoch;
+    const actionGeneration = state.actionGeneration;
+    const version = lifecycleVersion;
+    try {
+      const event = await getEventById(state.eventId);
+      if (disposed || epoch !== state.accessEpoch || isAccessTerminal(state) ||
+          actionGeneration !== state.actionGeneration ||
+          version !== lifecycleVersion || document.hidden) return;
+      state.event = event; // Allinea la vista ai dati server soltanto dopo risposta valida.
+      state.accessStatus = "ok";
+      state.error = "";
+      renderer.render(state);
+      if (!isPrivateEvent(event)) pause();
+    } catch (error) {
+      if (disposed || epoch !== state.accessEpoch || isAccessTerminal(state)) return;
+      if (classifyEventAccessError(error)) {
+        transitionEventAccess(state, renderer, error);
+        pause();
+      } else if (isNotFoundError(error)) {
+        state.accessEpoch += 1;
+        state.event = null;
+        state.accessStatus = "ok";
+        setEventoNotFound(state, true);
+        clearStoredSelectedEventId(state.eventId);
+        renderer.render(state);
+        pause();
+      } else if (version === lifecycleVersion && !document.hidden) {
+        // Errore temporaneo: UI cautelativamente sospesa, non e' una revoca.
+        state.accessStatus = "checking_error";
+        renderer.render(state);
+      }
+    } finally {
+      pending = false;
+      // Un check iniziato prima di pagehide/visibilitychange non deve
+      // ritardare la rivalidazione quando la scheda torna attiva.
+      if (!disposed && version !== lifecycleVersion && !document.hidden &&
+          !isAccessTerminal(state)) {
+        lastAttempt = 0;
+        void check();
+      }
+    }
+  };
+  const resume = () => {
+    if (disposed || isAccessTerminal(state) || !isPrivateEvent(state.event)) return;
+    if (document.hidden) { pause(); return; }
+    if (timer === null) timer = setInterval(check, PRIVATE_ACCESS_POLL_MS);
+    void check();
+  };
+  const onVisibility = () => {
+    lifecycleVersion += 1;
+    if (document.hidden) pause();
+    else resume();
+  };
+  const dispose = () => {
+    disposed = true;
+    pause();
+    document.removeEventListener("visibilitychange", onVisibility);
+    window.removeEventListener("pagehide", onPageHide);
+    window.removeEventListener("pageshow", onPageShow);
+  };
+  const onPageHide = (event) => {
+    lifecycleVersion += 1;
+    pause();
+    if (!event.persisted) dispose();
+  };
+  const onPageShow = () => { lifecycleVersion += 1; resume(); };
+  document.addEventListener("visibilitychange", onVisibility);
+  window.addEventListener("pagehide", onPageHide);
+  window.addEventListener("pageshow", onPageShow);
+  // Il caricamento iniziale e' gia' stato validato; la prima riprova e' cadenzata.
+  if (!document.hidden) {
+    lastAttempt = Date.now();
+    timer = setInterval(check, PRIVATE_ACCESS_POLL_MS);
+  }
 }
 function mapCheckInReasonToMessage(reasonCode) {
   const code = String(reasonCode || "").trim();
@@ -306,6 +423,8 @@ function resolveCheckInUxState(state) {
 }
 
 async function hydrateCheckInUxState(state) {
+  const epoch = state.accessEpoch;
+  const stillAllowed = () => epoch === state.accessEpoch && !isAccessTerminal(state);
   const status = state.checkInStatus || null;
 
   if (!status) {
@@ -341,6 +460,7 @@ async function hydrateCheckInUxState(state) {
   }
 
 await refreshGeoPermissionState().catch(() => {});
+if (!stillAllowed()) return;
 
 const permission =
   typeof navigator === "undefined" ||
@@ -359,15 +479,18 @@ state.checkInPermission = permission;
 
   try {
     const position = await requestUserPosition();
+    if (!stillAllowed()) return;
     state.checkInPosition = position;
 
     const preview = await getEventCheckInPrecheck(
       buildCheckInPrecheckPayload(state, position)
     );
 
+    if (!stillAllowed()) return;
     state.checkInPreview = preview;
     state.checkInUxState = resolveCheckInUxState(state);
   } catch (error) {
+    if (!stillAllowed()) return;
     const code = String(error?.code || error?.message || error || "").trim();
 
     state.checkInPreview = null;
@@ -396,6 +519,7 @@ function buildCheckInPayload(state, position) {
   };
 }
 async function loadEventoData(state, renderer) {
+  const epoch = state.accessEpoch;
   setEventoLoading(state, true);
   state.error = "";
   state.notFound = false;
@@ -412,31 +536,30 @@ async function loadEventoData(state, renderer) {
       getEventById(state.eventId),
       getCurrentUser(),
     ]);
-
+    if (epoch !== state.accessEpoch || isAccessTerminal(state)) return;
     state.event = event;
     state.currentUser = currentUser;
+    state.accessStatus = "ok";
     state.error = "";
     state.notFound = false;
     state.isLoading = false;
-
     writeStoredSelectedEventId(state.eventId);
     renderer.render(state);
   } catch (error) {
+    if (epoch !== state.accessEpoch || isAccessTerminal(state)) return;
+    if (transitionEventAccess(state, renderer, error)) return;
+    state.event = null;
     if (isNotFoundError(error)) {
       setEventoNotFound(state, true);
     } else {
-      setEventoError(
-        state,
-        String(error?.message || "Impossibile caricare il dettaglio evento.")
-      );
+      setEventoError(state, String(error?.message || "Impossibile caricare il dettaglio evento."));
     }
-
-    state.event = null;
     renderer.render(state);
   }
 }
 async function loadEventoCheckIn(state, renderer) {
-  if (!state.eventId) return;
+  if (!state.eventId || isAccessTerminal(state)) return;
+  const epoch = state.accessEpoch;
 
   try {
     state.isCheckInLoading = true;
@@ -448,12 +571,14 @@ async function loadEventoCheckIn(state, renderer) {
       getEventCheckInSummary(state.eventId),
     ]);
 
+    if (epoch !== state.accessEpoch || isAccessTerminal(state)) return;
     state.checkInStatus = status;
     state.checkInSummary = summary;
     state.checkInError = "";
 
     await hydrateCheckInUxState(state);
   } catch (error) {
+    if (epoch !== state.accessEpoch || isAccessTerminal(state)) return;
     state.checkInStatus = null;
     state.checkInSummary = null;
     state.checkInPreview = null;
@@ -464,12 +589,15 @@ async function loadEventoCheckIn(state, renderer) {
       error?.message || "Impossibile recuperare i dati del check-in."
     );
   } finally {
-    state.isCheckInLoading = false;
-    renderer.render(state);
+    if (epoch === state.accessEpoch && !isAccessTerminal(state)) {
+      state.isCheckInLoading = false;
+      renderer.render(state);
+    }
   }
 }
 async function loadEventoReviews(state, renderer) {
-  if (!state.eventId) return;
+  if (!state.eventId || isAccessTerminal(state)) return;
+  const epoch = state.accessEpoch;
 
   try {
     state.isReviewsLoading = true;
@@ -481,29 +609,35 @@ async function loadEventoReviews(state, renderer) {
       limit: state.reviewsLimit || 20,
     });
 
+    if (epoch !== state.accessEpoch || isAccessTerminal(state)) return;
     state.reviews = Array.isArray(result.reviews) ? result.reviews : [];
     state.reviewsTotal = Number(result.total || 0);
     state.reviewsPage = Number(result.page || 1);
     state.reviewsLimit = Number(result.limit || 20);
     state.reviewsError = "";
   } catch (error) {
+    if (epoch !== state.accessEpoch || isAccessTerminal(state)) return;
     state.reviews = [];
     state.reviewsTotal = 0;
     state.reviewsError = String(
       error?.message || "Impossibile caricare le recensioni dell'evento."
     );
   } finally {
-    state.isReviewsLoading = false;
-    renderer.render(state);
+    if (epoch === state.accessEpoch && !isAccessTerminal(state)) {
+      state.isReviewsLoading = false;
+      renderer.render(state);
+    }
   }
 }
 async function handleParticipationClick(state, renderer, refs) {
-  if (!state.eventId || !state.event) return;
+  if (!state.eventId || !state.event || state.accessStatus !== "ok") return;
+  const epoch = state.accessEpoch;
 
   const action = getParticipationAction(refs);
   if (!action) return;
 
   let shouldExitPrivateEvent = false;
+  state.actionGeneration += 1;
 
   try {
     if (action === "leave") {
@@ -512,7 +646,9 @@ async function handleParticipationClick(state, renderer, refs) {
       state.isLeaving = true;
       renderer.render(state);
 
-      state.event = await leaveEvent(state.eventId);
+      const updated = await leaveEvent(state.eventId);
+      if (epoch !== state.accessEpoch || state.accessStatus !== "ok") return;
+      state.event = updated;
 
       if (wasPrivateEvent) {
         clearStoredSelectedEventId(state.eventId);
@@ -522,11 +658,14 @@ async function handleParticipationClick(state, renderer, refs) {
       state.isJoining = true;
       renderer.render(state);
 
-      state.event = await joinEvent(state.eventId);
+      const updated = await joinEvent(state.eventId);
+      if (epoch !== state.accessEpoch || state.accessStatus !== "ok") return;
+      state.event = updated;
     }
 
     state.error = "";
   } catch (error) {
+    if (epoch !== state.accessEpoch || isAccessTerminal(state)) return;
     state.error = String(
       error?.message ||
         (action === "leave"
@@ -534,6 +673,8 @@ async function handleParticipationClick(state, renderer, refs) {
           : "Impossibile partecipare all'evento.")
     );
   } finally {
+    if (epoch !== state.accessEpoch || isAccessTerminal(state)) return;
+    state.actionGeneration += 1;
     state.isJoining = false;
     state.isLeaving = false;
     state.isLoading = false;
@@ -546,7 +687,9 @@ async function handleParticipationClick(state, renderer, refs) {
   }
 }
 async function handleCheckInClick(state, renderer) {
-  if (!state.eventId || !state.event) return;
+  if (!state.eventId || !state.event || state.accessStatus !== "ok") return;
+  const epoch = state.accessEpoch;
+  const stillAllowed = () => epoch === state.accessEpoch && state.accessStatus === "ok";
 
   try {
     state.isSubmittingCheckIn = true;
@@ -554,6 +697,7 @@ async function handleCheckInClick(state, renderer) {
     renderer.render(state);
 
     const position = await requestUserPosition();
+    if (!stillAllowed()) return;
     state.checkInPermission = "granted";
     state.checkInPosition = position;
 
@@ -561,6 +705,7 @@ async function handleCheckInClick(state, renderer) {
       buildCheckInPrecheckPayload(state, position)
     );
 
+    if (!stillAllowed()) return;
     state.checkInPreview = preview;
     state.checkInUxState = resolveCheckInUxState(state);
     renderer.render(state);
@@ -572,18 +717,21 @@ async function handleCheckInClick(state, renderer) {
 
     const payload = buildCheckInPayload(state, position);
     const result = await createEventCheckIn(payload);
+    if (!stillAllowed()) return;
 
     const [status, summary] = await Promise.all([
       getEventCheckInStatus(state.eventId),
       Promise.resolve(result.summary || null),
     ]);
 
+    if (!stillAllowed()) return;
     state.checkInStatus = status;
     state.checkInSummary = summary || state.checkInSummary;
     state.checkInPreview = preview;
     state.checkInUxState = resolveCheckInUxState(state);
     state.checkInError = "";
   } catch (error) {
+    if (!stillAllowed()) return;
     const errorCode = String(error?.code || error?.message || error || "").trim();
 
     if (errorCode === "PERMISSION_DENIED") {
@@ -600,12 +748,14 @@ async function handleCheckInClick(state, renderer) {
 
     state.checkInError = mapCheckInReasonToMessage(errorCode);
   } finally {
-    state.isSubmittingCheckIn = false;
-    renderer.render(state);
+    if (stillAllowed()) {
+      state.isSubmittingCheckIn = false;
+      renderer.render(state);
+    }
   }
 }
 async function handleNavigateClick(state, renderer) {
-  if (!state.event) return;
+  if (!state.event || state.accessStatus !== "ok") return;
 
   try {
     state.error = "";
@@ -620,7 +770,7 @@ async function handleNavigateClick(state, renderer) {
   }
 }
 async function handleOpenChatClick(state, renderer) {
-  if (!state.eventId) return;
+  if (!state.eventId || !state.event || state.accessStatus !== "ok") return;
 
   try {
     state.isOpeningChat = true;
@@ -701,6 +851,9 @@ async function bootstrapEventoPage() {
   renderer.render(state);
 
  await loadEventoData(state, renderer);
+ if (state.event && isPrivateEvent(state.event) && state.accessStatus === "ok") {
+   startPrivateAccessMonitor(state, renderer);
+ }
 
 if (
   state.event &&
