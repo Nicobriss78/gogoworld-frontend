@@ -583,12 +583,18 @@ function createDomRefs(root = document) {
 }
 
 function renderPageStates(refs, state) {
+  const accessMessage = {
+    revoked: "Accesso a questo evento revocato dall'organizzatore.",
+    denied: "Non hai accesso a questo evento.",
+    unauthorized: "Sessione scaduta: accedi nuovamente per consultare l'evento.",
+    checking_error: "Impossibile verificare l'accesso in questo momento. Riprova tra poco.",
+  }[state.accessStatus];
   setHidden(refs.loadingState, !state.isLoading);
-  setHidden(refs.errorState, state.isLoading || !state.error);
+  setHidden(refs.errorState, state.isLoading || !(state.error || accessMessage));
   setHidden(refs.notFoundState, state.isLoading || !state.notFound);
 
-  if (refs.errorState && state.error) {
-    refs.errorState.textContent = state.error;
+  if (refs.errorState) {
+    refs.errorState.textContent = accessMessage || state.error || "";
   }
 }
 
@@ -955,23 +961,54 @@ function renderEmptyContent(refs) {
   }
 }
 
+// L'attributo `hidden` da solo e' sovrascritto dal CSS .evento-btn (display:inline-flex).
+// In caso di diniego forziamo la rimozione visiva delle sole CTA evento.
+function renderDeniedActions(refs, denied) {
+  for (const node of [
+    refs.participationButton,
+    refs.openChatButton,
+    refs.checkInButton,
+    refs.navigateButton,
+    refs.checkInStrip,
+  ]) {
+    if (!node) continue;
+    if (denied) {
+      node.disabled = true;
+      node.hidden = true;
+      node.style.display = "none";
+    } else {
+      node.style.removeProperty("display");
+      if (node !== refs.navigateButton) node.hidden = false;
+    }
+  }
+  if (refs.reviewsSection) {
+    refs.reviewsSection.hidden = denied;
+    refs.reviewsSection.style.display = denied ? "none" : "";
+  }
+}
+
 export function createEventoRenderer(root = document) {
   const refs = createDomRefs(root);
 
   function render(state) {
     renderPageStates(refs, state);
+    const accessBlocked = state.accessStatus !== "ok";
 
     const canRenderReadyState =
       !state.isLoading &&
       !state.error &&
       !state.notFound &&
+      !accessBlocked &&
       state.event;
 
     if (!canRenderReadyState) {
       renderEmptyContent(refs);
+      // Anche 404/loading/error non devono mostrare CTA inconsistenti.
+      renderDeniedActions(refs, true);
       return;
     }
 
+    renderDeniedActions(refs, false);
     renderHero(refs, state);
     renderActions(refs, state);
     renderCheckIn(refs, state);
