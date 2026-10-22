@@ -19,6 +19,9 @@ export function createEventoState() {
 
     notFound: false,
     error: "",
+    accessStatus: "ok", // ok | revoked | denied | unauthorized | checking_error
+    accessEpoch: 0,
+    actionGeneration: 0,
     checkInError: "",
 
     checkInStatus: null,
@@ -61,3 +64,33 @@ export function setEventoNotFound(state, value = true) {
   state.error = "";
   return state;
 }
+
+// Risposta terminale del boundary: nessun dato privato deve restare in memoria UI.
+export function setEventoAccessDenied(state, status) {
+  const allowed = new Set(["revoked", "denied", "unauthorized"]);
+  state.accessEpoch += 1;
+  state.accessStatus = allowed.has(status) ? status : "denied";
+  state.event = null;
+  state.currentUser = null;
+  state.isLoading = false;
+  state.notFound = false;
+  state.error = "";
+  state.isJoining = false;
+  state.isLeaving = false;
+  state.isOpeningChat = false;
+  state.isCheckInLoading = false;
+  state.isSubmittingCheckIn = false;
+  state.checkInStatus = null;
+  state.checkInSummary = null;
+  state.checkInPreview = null;
+  state.checkInUxState = "unknown";
+  state.checkInPermission = "unknown";
+  state.checkInPosition = null;
+  state.checkInError = "";
+  state.reviews = [];
+  state.reviewsTotal = 0;
+  state.isReviewsLoading = false;
+  state.reviewsError = "";
+  return state;
+}
+
