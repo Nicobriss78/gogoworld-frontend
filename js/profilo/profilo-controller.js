@@ -192,16 +192,28 @@ async function handleAvatarChange(event) {
   }
 }
 
+// FE-PKT-03: blocco immediato in-flight contro richieste e doppi click.
+let resendVerificationInFlight = false;
+
 async function handleResendVerification() {
+  if (resendVerificationInFlight) return;
+  const account = getProfileState().accountStatus;
+  if (account.emailVerified || !account.canResendVerification) return;
+
+  const { resendVerifyButton } = getAccountStatusElements();
+  resendVerificationInFlight = true;
+  resendVerifyButton.disabled = true;
   clearProfileFeedback();
   render();
 
   try {
     const result = await resendEmailVerification();
-    setProfileMessage(result.message || "Email di verifica inviata.");
-    render();
+    setProfileMessage(result.message);
   } catch (error) {
-    setProfileError(error.message || "Invio email non riuscito.");
+    setProfileError(error.message || "Impossibile confermare la richiesta. Riprova più tardi.");
+  } finally {
+    resendVerificationInFlight = false;
+    resendVerifyButton.disabled = false;
     render();
   }
 }

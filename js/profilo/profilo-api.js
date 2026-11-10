@@ -1,6 +1,6 @@
 const MY_PROFILE_ENDPOINT = "/api/profile/me";
 const MY_ACCOUNT_ENDPOINT = "/api/users/me";
-const VERIFY_RESEND_ENDPOINT = "/api/users/verify/resend";
+const VERIFY_RESEND_ENDPOINT = "/api/users/me/verify/resend";
 const MY_AVATAR_ENDPOINT = "/api/profile/me/avatar";
 
 function getAuthToken() {
@@ -273,15 +273,63 @@ export async function uploadMyAvatar(file) {
 }
 
 export async function resendEmailVerification() {
-  const response = await fetch(VERIFY_RESEND_ENDPOINT, {
-    method: "POST",
-    headers: buildHeaders(),
-  });
+  // FE-PKT-03: richiesta autenticata, un solo POST, nessun retry o email scelta dal client.
+  // Manteniamo la politica attuale del profilo V2 (token da localStorage).
+  let token = "";
+  try {
+    token = getAuthToken();
+  } catch (_) {}
 
-  const payload = await parseResponse(response);
+  if (!token) {
+    const error = new Error("Per richiedere un nuovo link, accedi nuovamente.");
+    error.status = 401;
+    throw error;
+  }
 
+  let response;
+  try {
+    response = await fetch(VERIFY_RESEND_ENDPOINT, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (_) {
+    const error = new Error("Impossibile confermare la richiesta. Controlla lo stato dell'account prima di ripetere.");
+    error.status = 0;
+    throw error;
+  }
+
+  if (!response.ok) {
+    // Messaggi locali fissi: non riflettere payload o dettagli server nel DOM.
+    const message = response.status === 401
+      ? "Sessione non valida. Accedi nuovamente."
+      : response.status === 503
+        ? "Servizio di verifica temporaneamente non disponibile. Riprova più tardi."
+        : response.status === 429
+          ? "Troppe richieste. Riprova più tardi."
+          : "Impossibile richiedere un nuovo link di verifica. Riprova più tardi.";
+    const error = new Error(message);
+    error.status = response.status;
+    throw error;
+  }
+
+  let payload;
+  try {
+    payload = await response.json();
+  } catch (_) {
+    const error = new Error("Risposta non confermata. Controlla lo stato dell'account prima di ripetere.");
+    error.status = response.status;
+    throw error;
+  }
+
+  if (payload?.ok !== true) {
+    const error = new Error("Risposta non confermata. Controlla lo stato dell'account prima di ripetere.");
+    error.status = response.status;
+    throw error;
+  }
+
+  // ok:true e' un esito neutro: non certifica la consegna dell'email.
   return {
-    message: payload?.message || "Email di verifica inviata con successo.",
+    message: "Richiesta ricevuta. Se la verifica è ancora necessaria e il servizio è disponibile, riceverai un'email.",
   };
 }
 
