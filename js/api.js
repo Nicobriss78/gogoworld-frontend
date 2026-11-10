@@ -87,7 +87,7 @@ function getToken() {
 }
 
 // --- Fetch uniforme con auth, body JSON e gestione errori ---
-async function apiFetch(path, { method = "GET", body, token } = {}) {
+async function apiFetch(path, { method = "GET", body, token, retryPolicy = "default" } = {}) {
   const url = `${API_BASE}${path.startsWith("/") ? path : "/" + path}`;
 
   const headers = {};
@@ -104,7 +104,9 @@ async function apiFetch(path, { method = "GET", body, token } = {}) {
     // ⬇️ usa fetchWithRetry al posto di fetch
    const opts = { method, headers, body: fetchBody };
    if (method.toUpperCase() === "GET") opts.cache = "no-store";
-   res = await fetchWithRetry(url, opts);  } catch (networkErr) {
+   res = retryPolicy === "none"
+     ? await fetch(url, opts)
+     : await fetchWithRetry(url, opts);  } catch (networkErr) {
     return {
       ok: false,
       status: 0,
@@ -140,6 +142,11 @@ export async function apiGet(path, token) {
 }
 export async function apiPost(path, body = {}, token) {
   return apiFetch(path, { method: "POST", body, token: token ?? getToken() });
+}
+// FE-PKT-01: una sola chiamata POST, senza retry automatici.
+// I caller esistenti continuano a usare apiPost() con il comportamento originale.
+export async function apiPostOnce(path, body = {}, token) {
+  return apiFetch(path, { method: "POST", body, token: token ?? getToken(), retryPolicy: "none" });
 }
 export async function apiDelete(path, token) {
   return apiFetch(path, { method: "DELETE", token: token ?? getToken() });
