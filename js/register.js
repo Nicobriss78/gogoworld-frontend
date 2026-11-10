@@ -4,7 +4,7 @@
 // - Feedback di successo con redirect temporizzato e toast informativo
 // - Accessibilità: aria-invalid, aria-describedby, focus management
 
-import { apiPost } from "./api.js";
+import { apiPostOnce } from "./api.js";
 
 // Banner messaggi (error/success) con auto-hide opzionale
 function showAlert(message, type = "error", opts = {}) {
@@ -41,52 +41,70 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form) return;
 
+  // FE-PKT-04: lock locale durante il submit e dopo esito ambiguo/confermato.
+  let registerInFlight = false;
+  let registerOutcomeUncertain = false;
+  let registerCompleted = false;
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (registerInFlight || registerOutcomeUncertain || registerCompleted) return;
+
     const submitBtn = form.querySelector('button[type="submit"]');
+    registerInFlight = true;
     if (submitBtn) submitBtn.disabled = true;
 
-    const name = document.getElementById("name")?.value?.trim();
-    const email = document.getElementById("email")?.value?.trim();
-    const password = document.getElementById("password")?.value?.trim();
-    const role = document.getElementById("role")?.value?.trim() || "participant"; // participant|organizer
+    const name = document.getElementById("name")?.value?.trim() || "";
+    const email = document.getElementById("email")?.value?.trim() || "";
+    const password = document.getElementById("password")?.value?.trim() || "";
+    const role = document.getElementById("role")?.value?.trim() || "participant";
 
-    // Il ruolo scelto in registrazione è solo statistico:
-    // non deve impostare il ruolo di sessione per il login successivo.
-
-    if (!email || !password) {
-      showAlert("Inserisci email e password.", "error", { autoHideMs: 3500 });
+    // Il raccordo a DEC-011 (account unico) è separato dal packet email.
+    // FE-PKT-04 non cambia il campo role né abilita la modalità Organizer.
+    if (name.length < 2 || name.length > 50 || !email || password.length < 8 || password.length > 72) {
+      showAlert("Controlla nome (2–50 caratteri), email e password (8–72 caratteri).", "error");
+      registerInFlight = false;
       if (submitBtn) submitBtn.disabled = false;
       return;
     }
 
     try {
-      // Endpoint corretto: POST /api/users
-      const res = await apiPost("/users", { name, email, password, role });
+      // Una sola POST, senza retry e senza inoltrare credenziali di sessione.
+      const res = await apiPostOnce("/users", { name, email, password, role }, "");
 
-      // L’API wrapper ritorna { ok:false,... } SOLO in errore.
-      // In successo ritorna il payload puro (senza 'ok').
-      // Consideriamo "successo" anche se troviamo campi attesi (_id/token).
-      const isBackendError = res?.ok === false;
-      const seemsSuccessPayload = !!(res && (res._id || res.token || res.email));
-
-      if (isBackendError && !seemsSuccessPayload) {
-        throw new Error(res?.error || "Registrazione fallita");
+      if (res?.ok === true && res.status === 201 && res._id) {
+        registerCompleted = true;
+        const status = res.verificationEmailStatus;
+        const message = status === "requested"
+          ? "Account creato. La richiesta di invio del link di verifica è stata accettata; la consegna non è ancora confermata. Ora puoi accedere."
+          : status === "pending"
+            ? "Account creato. L'invio del link di verifica è in attesa o non confermato. Accedi per controllare lo stato e richiedere un nuovo link se necessario."
+            : "Account creato. Lo stato di invio dell'email non è confermato. Accedi per verificare lo stato del tuo account.";
+        showAlert(message, "success");
+        try { form.reset(); } catch (_) {}
+        try { sessionStorage.setItem("postLoginRedirect", "/pages/home-v2.html"); } catch (_) {}
+        setTimeout(() => { window.location.href = "../login.html"; }, 3800);
+        return;
       }
 
-      // Successo: blocca doppio click, mostra banner, resetta form e fai redirect
-      showAlert("Registrazione avvenuta! Accedi per completare il profilo...", "success", { autoHideMs: 2000 });
-      try { form.reset(); } catch {}
-      if (submitBtn) submitBtn.disabled = true;
-      try { sessionStorage.setItem("postLoginRedirect", "/pages/home-v2.html"); } catch {}
-
-      setTimeout(() => {
-        window.location.href = "../login.html";
-      }, 1200);
-    } catch (err) {
-      console.error("[register] errore:", err);
-      showAlert("Errore registrazione: " + (err?.message || "Operazione non riuscita"), "error", { autoHideMs: 4000 });
-      if (submitBtn) submitBtn.disabled = false;
+      if (res?.status === 400 || res?.status === 409) {
+        showAlert("Registrazione non confermata. Controlla i dati o verifica se esiste già un account con questa email.", "error");
+      } else if (res?.status === 429) {
+        showAlert("Troppe richieste. Riprova più tardi, senza inviare ripetutamente il modulo.", "error");
+      } else if (res?.status === 0 || res?.status >= 500 || res?.status === 201 || !res) {
+        // La risposta può essere persa dopo la creazione dell'account.
+        // Non sbloccare il submit per un nuovo tentativo nello stesso caricamento.
+        registerOutcomeUncertain = true;
+        showAlert("Esito non confermato: l'account potrebbe essere stato creato. Verifica prima se puoi accedere o se hai ricevuto il link. Evita una seconda registrazione.", "info");
+      } else {
+        showAlert("Non è stato possibile confermare la registrazione. Controlla i dati prima di riprovare.", "error");
+      }
+    } catch (_) {
+      registerOutcomeUncertain = true;
+      showAlert("Esito non confermato: la richiesta potrebbe essere stata elaborata. Controlla prima lo stato dell'account e non ripetere subito la registrazione.", "info");
+    } finally {
+      registerInFlight = false;
+      if (submitBtn) submitBtn.disabled = registerCompleted || registerOutcomeUncertain;
     }
   });
 });
